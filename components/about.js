@@ -10,7 +10,7 @@ class About extends Component {
           source={{ uri: 'https://facebook.github.io/react/logo-og.png' }}
         />
         <Text>
-          This app was written by Soo
+          This app was written by Soo!
         </Text>
       </View>
     );
