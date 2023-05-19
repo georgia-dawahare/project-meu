@@ -12,10 +12,14 @@ const SigninPage = (props) => {
     <SafeAreaView>
       {/* <CustomButton onPress={handleButtonPress} title="Press Me" /> */}
       <Button title="Sign Up"/>
-      <Registration_Input/>
+      <Registration_Input 
+      placeholder="Enter your email"
+      top={340}/>
+      <Registration_Input 
+      placeholder="Enter your Password"
+      top={413}/>
     </SafeAreaView>
   )
-  
 };
 
 
