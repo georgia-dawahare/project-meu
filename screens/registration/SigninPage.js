@@ -18,9 +18,18 @@ const SigninPage = (props) => {
       <Registration_Input 
       placeholder="Enter your Password"
       top={413}/>
+      <Text>Forgot Password?</Text>
     </SafeAreaView>
   )
 };
+
+const styles = StyleSheet.create({
+  Text: {
+    fontSize: 14,
+    color: '#828282',
+    alignSelf:'center',
+  },
+});
 
 
 export default SigninPage;
