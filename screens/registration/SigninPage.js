@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
   },
   ForgotPassword: {
     position:'absolute',
-    top:597,
-    left:136,
+    // top:597,
+    // left:136,
     color: 'rgba(230, 43, 133, 1)',
     fontFamily: 'SFProDisplay-Regular',
     fontSize: 14,

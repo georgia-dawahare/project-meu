@@ -3,9 +3,9 @@ import reactDom from 'react-dom';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 // import { FlipInEasyX } from 'react-native-reanimated';
 
-const Button = ({ onPress, title }) => {
+const Button = ({ onPress, title, buttonStyle}) => {
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+    <TouchableOpacity style={[styles.buttonContainer, buttonStyle]} onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
 
     height:56,
     width:300,
-    top:517,
+    // top:517,
     borderRadius: 15,
   },
   buttonText: {
