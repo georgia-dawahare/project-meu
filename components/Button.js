@@ -14,7 +14,7 @@ const Button = ({ onPress, title, buttonStyle}) => {
 const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: 'rgba(230, 43, 133, 1)',
-    fontFamily: 'SFProDisplay-Medium',
+    fontFamily: 'SFProDisplay-Semibold',
     
     position: 'absolute',
     alignItems:"center",
