@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LogBox, SafeAreaView, StyleSheet, Text, Image, View, TextInput} from 'react-native';
 import Button from '../../components/Button'
-import Registration_Input from '../../components/Registration_Input'
 
 // disable really annoying in app warnings
 LogBox.ignoreAllLogs();
