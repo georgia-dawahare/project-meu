@@ -19,7 +19,7 @@ const OnboardingScreen = (props) => {
       <Text style={styles.Subtitle}>MeU connects long-distance couples with{"\n"}various interactions.</Text>
     <Button title="Let's MeU" buttonStyle={{ top: 673, left:45}}/>
     <Image
-        source={require('../../assets/Images/Onboarding-progress-1.png')}
+        source={require('../../assets/Images/progress-1.png')}
         style={styles.Progress}
       />
 

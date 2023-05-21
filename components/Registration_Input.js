@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignSelf:'center',
   },
   inputContainer: {
-    width: 342,
+    width: 300,
     height: 56,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     justifyContent: 'center',
