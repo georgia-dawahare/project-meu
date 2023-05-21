@@ -11,11 +11,15 @@ const SigninPage = (props) => {
   return(
     <SafeAreaView>
       <Image
+        source={require('../../assets/Icons/x-white.png')}
+        style={styles.Icon}
+      />
+      <Image
         source={require('../../assets/signup-vector.png')}
         style={styles.SignupVector}
       />
       <Text style={styles.WelcomeMeU}>Welcome to{"\n"}MeU</Text>
-      <Button title="Sign Up"/>
+      <Button title="Sign Up" buttonStyle={{ top: 517, left:45}}/>
       <Registration_Input 
       placeholder="Enter your email"
       top={340}/>
@@ -47,6 +51,13 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     resizeMode: 'cover',
+  },
+  Icon:{
+    position:'absolute',
+    top:32,
+    left:342,
+    height:24,
+    zIndex:2,
   },
   ForgotPassword: {
     position:'absolute',
