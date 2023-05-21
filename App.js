@@ -4,7 +4,7 @@ import { LogBox, SafeAreaView, TextInput } from 'react-native';
 import * as Font from 'expo-font';
 
 // // import Button from './components/Button';
-import SignupPage7 from './screens/registration/SignupPage-7'
+import Main1Page from './screens/main1/Main1Page-1'
 // import SignupPage1 from './screens/registration/SignupPage-1'
 
 const loadFonts = async () => {
@@ -27,7 +27,7 @@ const App = (props) => {
 
   return(
     <SafeAreaView>
-      <SignupPage7/>
+      <Main1Page/>
       {/* <CustomButton onPress={handleButtonPress} title="Press Me" /> */}
       {/* <Button title="Press Me" /> */}
     </SafeAreaView>
