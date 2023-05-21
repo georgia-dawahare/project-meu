@@ -22,8 +22,6 @@ const OnboardingScreen = (props) => {
         source={require('../../assets/Images/progress-1.png')}
         style={styles.Progress}
       />
-
-
     </SafeAreaView>
   )
 };
@@ -42,7 +40,6 @@ const styles = StyleSheet.create({
         color:'rgba(0,0,0,1)',
         alignSelf:'center',
         lineHeight:30,
-
         top:454,
       },
       Subtitle:{
@@ -58,10 +55,7 @@ const styles = StyleSheet.create({
           position:'absolute',
           top:616,
           alignSelf:'center',
-
       }
-
-
 });
 
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
-const Registration_Input = ({ placeholder,top }) => {
+const Registration_Input = ({ placeholder,top,textAlign, editable = true }) => {
   return (
     <View style={[styles.container, { top }]}>
-      <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholder={ placeholder } />
+      <View style={[styles.inputContainer, { alignItems: textAlign }]}>
+        <TextInput style={styles.input} placeholder={placeholder} editable={editable}/>
       </View>
       <View style={styles.line} />
     </View>
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProDisplay-Regular',
 
     position: 'absolute',
-    alignItems:"center",
+    // alignItems:"center",
     justifyContent:"center",
     alignSelf:'center',
   },
@@ -28,12 +28,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0)',
     justifyContent: 'center',
     paddingHorizontal: 20,
+    // alignItems: 'flex-start',
+    alignItems: 'center',
 
   },
   input: {
     fontSize: 16,
     color: '#828282',
-    alignSelf:'center',
+    textAlign:'center',
   },
   line: {
     width: 300,

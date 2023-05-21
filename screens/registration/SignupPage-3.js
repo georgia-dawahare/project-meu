@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { LogBox, SafeAreaView, StyleSheet, Text, Image, View, TextInput} from 'react-native';
+import React, { useState } from 'react';
+import { LogBox, SafeAreaView, StyleSheet, Text, Image, View, TouchableOpacity} from 'react-native';
 import Button from '../../components/Button'
 import Registration_Input from '../../components/Registration_Input'
+import SignupShareButton from '../../components/SingupShareButton'
 
 // disable really annoying in app warnings
 LogBox.ignoreAllLogs();
@@ -21,21 +22,37 @@ const SignupPage3 = (props) => {
         style={styles.goback}
       />
       <Image
-        source={require('../../assets/Images/progress-1.png')}
+        source={require('../../assets/Images/progress-2.png')}
         style={styles.progress}
       />
 
       <Text style={styles.Title}>Please enter partner's invitaion code and connect!</Text>
+
+      <View style={styles.mycodeContainer}>
+        <Text style={styles.partnerTitle}>
+            My Invitation Code    23:23:23
+        </Text>
+        <Registration_Input 
+        placeholder="3923 3942"
+        top={20}
+        textAlign='flex-start'
+        editable={false}
+        />
+        <SignupShareButton/>
+      </View>  
+
       <View style={styles.parnterContainer}>
         <Text style={styles.partnerTitle}>
             Have you received your partner's code?
         </Text>
         <Registration_Input 
         placeholder="Enter the Code"
-        top={10}/>
+        top={20}
+        textAlign='flex-start'
+        />
       </View>      
       
-      <Button title="Continue" buttonStyle={{ top: 640, left:45}}/>
+      <Button title="Connect" buttonStyle={{ top: 559, left:45}}/>
     </SafeAreaView>
   )
 };
@@ -70,16 +87,21 @@ const styles = StyleSheet.create({
     height: 0,
     opacity: 0,
   },
+  mycodeContainer:{
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    top: 260,
+  },
   parnterContainer:{
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    top: 290,
+    top: 350,
   },
   partnerTitle:{
     fontFamily:'SFProDisplay-Medium',
     fontSize:14,
     color:'rgba(51,51,51,1)',
-
+    left:46,
   },
 });
 
