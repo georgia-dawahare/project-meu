@@ -1,10 +1,28 @@
 /* eslint-disable global-require */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
+import * as Font from 'expo-font';
 
 function SignUpGraphic() {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <SafeAreaView>
       <Image
@@ -36,6 +54,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     letterSpacing: 1,
     alignSelf: 'center',
+    fontFamily: 'SF-Pro-Display-Bold',
   },
 });
 
