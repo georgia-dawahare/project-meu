@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -6,8 +7,27 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import * as Font from 'expo-font';
 
 function CheckinPage({ navigation }) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>
@@ -27,11 +47,6 @@ function CheckinPage({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
           <Text style={styles.buttonText}>
             Check-In History
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>
-            Back
           </Text>
         </TouchableOpacity>
       </View>
