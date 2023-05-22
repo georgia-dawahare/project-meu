@@ -10,7 +10,8 @@ function SigninPage(props) {
   return (
     <SafeAreaView>
       <Image
-        source="../assets/icons/x-white.png"
+        // eslint-disable-next-line global-require
+        source={require('../assets/icons/x-white.png')}
         style={styles.Icon}
       />
       <SignUpGraphic />

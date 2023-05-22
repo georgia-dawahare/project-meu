@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
@@ -8,7 +9,7 @@ function SignupPage7(props) {
   return (
     <SafeAreaView>
       <Image
-        source="../assets/images/Onboarding.png"
+        source={require('../assets/images/Onboarding.png')}
         style={styles.BannerImg}
       />
       <Text style={styles.Title}>Welcome to MeU</Text>
