@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React, { useState } from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image, View, TextInput,
@@ -14,11 +15,11 @@ function SignupPage2() {
   return (
     <SafeAreaView>
       <Image
-        source="../assets/icons/goback-black.png"
+        source={require('../../assets/icons/goback-black.png')}
         style={styles.goback}
       />
       <Image
-        source="../assets/images/progress-1.png"
+        source={require('../../assets/images/progress-1.png')}
         style={styles.progress}
       />
 
@@ -34,7 +35,7 @@ function SignupPage2() {
 
       <View style={styles.timercontainer}>
         <Image
-          source="../assets/icons/clock.png"
+          source={require('../../assets/icons/clock.png')}
           style={styles.timer}
         />
         <Text style={styles.timertext}>07:36</Text>

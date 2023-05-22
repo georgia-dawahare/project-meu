@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image, View,
@@ -14,11 +15,11 @@ function SignupPage4(props) {
   return (
     <SafeAreaView>
       <Image
-        source="../assets/icons/goback-black.png"
+        source={require('../../assets/icons/goback-black.png')}
         style={styles.goback}
       />
       <Image
-        source="../assets/images/progress-2.png"
+        source={require('../../assets/images/progress-2.png')}
         style={styles.progress}
       />
 
