@@ -13,7 +13,6 @@ function PenguinsPage({ navigation }) {
         Penguins Page
       </Text>
       <Button title="Home" onPress={() => navigation.navigate('Home')} />
-      <Button title="Back" onPress={() => navigation.goBack()} />
     </SafeAreaView>
   );
 }
