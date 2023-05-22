@@ -7,7 +7,6 @@ import {
   PenguinsScreenNavigator,
 } from './src/components/CustomNavigation';
 
-// Stack Navigator
 const Tab = createBottomTabNavigator();
 
 function App() {
