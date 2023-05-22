@@ -10,7 +10,7 @@ function SigninForgotPasswordPage2() {
     <SafeAreaView>
       <Image
         // eslint-disable-next-line global-require
-        source={require('../assets/icons/x-white.png')}
+        source={require('../../assets/icons/x-white.png')}
         style={styles.Icon}
       />
       <SignUpGraphic />

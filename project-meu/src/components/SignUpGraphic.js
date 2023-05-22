@@ -8,7 +8,7 @@ function SignUpGraphic() {
   return (
     <SafeAreaView>
       <Image
-        source={require('../assets/signup-vector.png')}
+        source={require('../../assets/signup-vector.png')}
         style={styles.SignupVector}
       />
       <Text style={styles.WelcomeMeU}>

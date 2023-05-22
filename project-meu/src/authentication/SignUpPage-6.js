@@ -11,18 +11,18 @@ function SignupPage6(props) {
   return (
     <SafeAreaView>
       <Image
-        source={require('../assets/icons/goback-black.png')}
+        source={require('../../assets/icons/goback-black.png')}
         style={styles.Icon}
       />
       <Image
-        source={require('../assets/images/progress-3.png')}
+        source={require('../../assets/images/progress-3.png')}
         style={styles.progress}
       />
 
       <Text style={styles.Text}>Customize your Penguin.</Text>
 
       <Image
-        source={require('../assets/images/PenguinCumstomize.png')}
+        source={require('../../assets/images/PenguinCumstomize.png')}
         style={styles.Penguin}
       />
 

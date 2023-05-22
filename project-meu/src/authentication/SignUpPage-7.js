@@ -9,7 +9,7 @@ function SignupPage7(props) {
   return (
     <SafeAreaView>
       <Image
-        source={require('../assets/images/Onboarding.png')}
+        source={require('../../assets/images/Onboarding.png')}
         style={styles.BannerImg}
       />
       <Text style={styles.Title}>Welcome to MeU</Text>

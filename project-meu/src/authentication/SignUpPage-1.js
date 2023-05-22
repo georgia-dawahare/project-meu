@@ -10,11 +10,11 @@ function SignupPage1(props) {
   return (
     <SafeAreaView>
       <Image
-        source={require('../assets/icons/goback-black.png')}
+        source={require('../../assets/icons/goback-black.png')}
         style={styles.Icon}
       />
       <Image
-        source={require('../assets/images/progress-1.png')}
+        source={require('../../assets/images/progress-1.png')}
         style={styles.progress}
       />
 
