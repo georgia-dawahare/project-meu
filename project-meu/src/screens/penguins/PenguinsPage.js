@@ -6,11 +6,11 @@ import {
   StyleSheet,
 } from 'react-native';
 
-function CheckinHistory({ navigation }) {
+function PenguinsPage({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.text}>
-        Check-In History Page
+        Penguins Page
       </Text>
       <Button title="Home" onPress={() => navigation.navigate('Home')} />
       <Button title="Back" onPress={() => navigation.goBack()} />
@@ -29,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckinHistory;
+export default PenguinsPage;
