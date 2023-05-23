@@ -39,6 +39,12 @@ function CheckinPage({ navigation }) {
             Home
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
+          {/**dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            BackgroundChange
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
           <Text style={styles.buttonText}>
             Check-In Submit
