@@ -29,6 +29,7 @@ function PenguinsPage({ navigation }) {
   const [selectedItem, setSelectedItem] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
   const [carouselSpun, setCarouselSpun] = useState(false); // so that we can keep show button only when carousel is spunned
+  const [lastEmotionSent, setLastEmotionSent] = useState(null);
 
   useEffect(() => {
     const updateScreenDimensions = () => {
@@ -59,6 +60,10 @@ function PenguinsPage({ navigation }) {
   const handleCarouselItemChange = (index) => {
     setSelectedItem(index);
     setCarouselSpun(true);
+
+    if (lastEmotionSent !== null && index === lastEmotionSent) {
+      setCarouselSpun(false);
+    }
   };
 
   const calculateItemWidth = () => {
@@ -77,6 +82,7 @@ function PenguinsPage({ navigation }) {
   const handleButtonPress = () => {
     setModalVisible(true);
     setCarouselSpun(false);
+    setLastEmotionSent(selectedItem);
   };
 
   const closeModal = () => {
@@ -107,7 +113,7 @@ function PenguinsPage({ navigation }) {
           lockScrollTimeoutDuration={300}
         />
       </View>
-      {carouselSpun && (
+      {carouselSpun ? (
         <View style={styles.buttonContainer}>
           <Button
             title="Send Emotion"
@@ -115,6 +121,8 @@ function PenguinsPage({ navigation }) {
             color="white"
           />
         </View>
+      ) : (
+        <Text style={styles.swipeText}>Feel free to swipe to set a new emotion :)</Text>
       )}
       <Modal
         animationType="fade"
@@ -203,6 +211,12 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
+  },
+  swipeText: {
+    textAlign: 'center',
+    fontSize: 16,
+    marginTop: 20,
+    color: 'gray',
   },
 });
 
