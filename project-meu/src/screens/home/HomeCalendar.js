@@ -46,7 +46,7 @@ function HomeCalendar({ scrollY }) {
     // <View style={styles.container}>
     <SafeAreaView style={styles.container}>
       <Image
-        source={require('../../../assets/icons/goback-black.png')}
+        source="../../../assets/icons/goback-black.png"
         style={styles.Icon}
       />
       <Animated.View
@@ -86,6 +86,15 @@ function HomeCalendar({ scrollY }) {
           </Animated.Text>
         </Animated.Text>
       </Animated.View>
+
+      {/* <SwipeablePanel
+        fullWidth
+        // isActive={this.state.swipeablePanelActive}
+        // onClose={this.closePanel}
+        // onPressCloseButton={this.closePanel}
+      >
+        <Text>Hi</Text>
+      </SwipeablePanel> */}
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -129,6 +138,7 @@ function HomeCalendar({ scrollY }) {
         <View />
       </Animated.ScrollView>
     </SafeAreaView>
+
   );
 }
 
