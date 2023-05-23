@@ -21,6 +21,7 @@ const BackgroundChange = () => {
     console.log(`Clicked option:, ${option}`)
 
     if (option ==='Remove Widget' ){
+      //need to get this working soon
       setBackgroundColor('white');
     }
     else{
