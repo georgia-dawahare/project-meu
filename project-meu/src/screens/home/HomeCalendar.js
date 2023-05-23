@@ -1,7 +1,7 @@
 // https://github.com/kosaikham/twitter-scrollable-header-clone
 import React, { useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Animated,
+  StyleSheet, Text, SafeAreaView, Animated, Image, View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -43,7 +43,12 @@ function HomeCalendar({ scrollY }) {
   });
 
   return (
-    <View style={styles.container}>
+    // <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Image
+        source={require('../../../assets/icons/goback-black.png')}
+        style={styles.Icon}
+      />
       <Animated.View
         style={[
           styles.headerContainer,
@@ -123,11 +128,18 @@ function HomeCalendar({ scrollY }) {
 
         <View />
       </Animated.ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  Icon: {
+    position: 'absolute',
+    top: 64,
+    left: 24,
+    height: 24,
+    zIndex: 200,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
