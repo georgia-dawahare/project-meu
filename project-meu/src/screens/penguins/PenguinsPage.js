@@ -28,6 +28,7 @@ function PenguinsPage({ navigation }) {
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
   const [selectedItem, setSelectedItem] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [carouselSpun, setCarouselSpun] = useState(false); // so that we can keep show button only when carousel is spunned
 
   useEffect(() => {
     const updateScreenDimensions = () => {
@@ -57,6 +58,7 @@ function PenguinsPage({ navigation }) {
 
   const handleCarouselItemChange = (index) => {
     setSelectedItem(index);
+    setCarouselSpun(true);
   };
 
   const calculateItemWidth = () => {
@@ -74,6 +76,7 @@ function PenguinsPage({ navigation }) {
 
   const handleButtonPress = () => {
     setModalVisible(true);
+    setCarouselSpun(false);
   };
 
   const closeModal = () => {
@@ -104,13 +107,15 @@ function PenguinsPage({ navigation }) {
           lockScrollTimeoutDuration={300}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="Send Emotion"
-          onPress={handleButtonPress}
-          color="white"
-        />
-      </View>
+      {carouselSpun && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Send Emotion"
+            onPress={handleButtonPress}
+            color="white"
+          />
+        </View>
+      )}
       <Modal
         animationType="fade"
         transparent
