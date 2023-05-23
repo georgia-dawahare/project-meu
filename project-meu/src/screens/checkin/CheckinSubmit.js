@@ -51,18 +51,6 @@ const BackgroundChange = () => {
         />
         )}
 
-      {/* <View style ={styles.wordBox}>
-        <TouchableOpacity style={styles.containerText}  onPress={()=>{
-          pickImageAsync();
-          toggleView()}
-          }>
-            {showView && <View style={styles.hiddenView} />}
-          <Text style={styles.buttonText}>
-            Select a Background Photo 
-          </Text>
-        </TouchableOpacity>
-      </View> */}
-
       <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={toggleMenu}>
         <Text>Open Menu</Text>
@@ -122,24 +110,6 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
 
-  // wordBox:{
-  //   flex: 1,
-  //   marginHorizontal: 48.5, // these are in relation to the page and not the components next (reminder)
-  //   marginTop:233,
-  //   marginBottom:315, 
-  //   justifyContent: 'center',
-  //   alignContent: 'center',
-  //   backgroundColor:'D3d3d3',
-  //   borderRadius:20,
-  //   elevation: 2, // Adjust the value to control the shadow depth
-  //       shadowColor: '#000',
-  //       shadowOffset: {
-  //         width: 0,
-  //         height: 4,
-  //       },
-  //       shadowOpacity: 0.25,
-  //       shadowRadius: 4,
-  // },
 
   image : {
     ...StyleSheet.absoluteFillObject,
