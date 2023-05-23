@@ -1,11 +1,17 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import {
+//   HomeScreenNavigator,
+//   CheckinScreenNavigator,
+//   PenguinsScreenNavigator,
+// } from './src/components/CustomNavigation';
 import {
-  HomeScreenNavigator,
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
 } from './src/components/CustomNavigation';
+
+import HomeCalendar from './src/screens/home/HomeCalendar';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,15 +27,16 @@ function App() {
         }}
       >
         <Tab.Screen
-          name="CheckinTab"
+          name="Check-In"
           component={CheckinScreenNavigator}
         />
         <Tab.Screen
-          name="HomeTab"
-          component={HomeScreenNavigator}
+          name="Home"
+          // component={HomeScreenNavigator}
+          component={HomeCalendar}
         />
         <Tab.Screen
-          name="PenguinsTab"
+          name="Penguins"
           component={PenguinsScreenNavigator}
         />
       </Tab.Navigator>

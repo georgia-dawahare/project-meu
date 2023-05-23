@@ -70,11 +70,15 @@
         "react"
     ],
     "parserOptions": {
+        "babelOptions":{
+            "presets":["@babel/preset-react"]
+        },
         "ecmaFeatures": {
             "jsx": true,
             "sourceType": "module"
         },
         "requireConfigFile": false
     }
+
 }
 // yarn add --dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y babel-eslint
