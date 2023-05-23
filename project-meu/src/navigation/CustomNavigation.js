@@ -5,6 +5,7 @@ import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
+import HomeCalendar from '../screens/home/HomeCalendar';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +15,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="Home"
         component={HomePage}
+      />
+      <Stack.Screen
+        name="HomeCalendar"
+        component={HomeCalendar}
       />
     </Stack.Navigator>
   );

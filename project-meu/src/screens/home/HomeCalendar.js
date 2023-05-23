@@ -1,7 +1,7 @@
 // https://github.com/kosaikham/twitter-scrollable-header-clone
 import React, { useEffect } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View,
+  StyleSheet, Text, SafeAreaView, Animated, Image, View, Button,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -16,7 +16,8 @@ function DdayList({ date, title, iconName }) {
   );
 }
 
-function HomeCalendar({ scrollY }) {
+function HomeCalendar({ navigation }) {
+  const scrollY = new Animated.Value(0);
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
   const STICKY_HEADER_HEIGHT = 120;
@@ -45,6 +46,7 @@ function HomeCalendar({ scrollY }) {
   return (
     // <View style={styles.container}>
     <SafeAreaView style={styles.container}>
+      <Button title="Back" onPress={() => navigation.goBack()} />
       <Image
         source="../../../assets/icons/goback-black.png"
         style={styles.Icon}

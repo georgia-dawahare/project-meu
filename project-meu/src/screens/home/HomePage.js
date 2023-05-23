@@ -44,6 +44,11 @@ function HomePage({ navigation }) {
             Penguins
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomeCalendar')}>
+          <Text style={styles.buttonText}>
+            Home Calendar
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}
