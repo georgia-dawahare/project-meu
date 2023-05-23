@@ -6,7 +6,7 @@ import Button from '../components/Button';
 
 function OnboardingPage(props) {
   return (
-  <View>
+    <View>
       <Image
         souce="../assets/images/Onboarding.png"
         style={styles.BannerImg}

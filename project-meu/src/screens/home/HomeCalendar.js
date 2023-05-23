@@ -1,9 +1,10 @@
 // https://github.com/kosaikham/twitter-scrollable-header-clone
-import React, { useRef } from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, View, Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Font from 'expo-font';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -22,6 +23,18 @@ function HomeCalendar({ scrollY }) {
 
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': '../../../assets/fonts/SF-Pro-Display-Bold.otf',
+        'SF-Pro-Display-Semibold': '../../../assets/fonts/SF-Pro-Display-Semibold.otf',
+        'SF-Pro-Display-Medium': '../../../assets/fonts/SF-Pro-Display-Medium.otf',
+      });
+    }
+
+    loadFont();
+  }, []);
 
   const translateY = scrollY.interpolate({
     inputRange,
@@ -55,17 +68,13 @@ function HomeCalendar({ scrollY }) {
         >
           Together for
           <Animated.Text
-            style={{
-              fontSize: 20,
-            }}
+            style={styles.bgtextday}
           >
             {'\n'}
             1252
           </Animated.Text>
           <Animated.Text
-            style={{
-              fontSize: 20,
-            }}
+            style={styles.bgtextdate}
           >
             {'\n'}
             October 20th, 2019
@@ -94,11 +103,8 @@ function HomeCalendar({ scrollY }) {
         />
         <View>
           <View>
-            <Text
-              style={styles.annivtitle}
-            >
+            <Text style={styles.annivtitle}>
               Upcoming Anniversaries
-
             </Text>
             <View>
               <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
@@ -111,10 +117,6 @@ function HomeCalendar({ scrollY }) {
               <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 2" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 4" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 5" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 6" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 7" iconName="ios-calendar" />
             </View>
           </View>
         </View>
@@ -144,7 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: {
-    fontSize: 14,
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -167,6 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 16,
     paddingLeft: 24,
   },
@@ -175,21 +179,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   annivtitle: {
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontSize: 20,
     paddingLeft: 24,
     marginBottom: 32,
   },
+  bgtextday: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontSize: 52,
+  },
+  bgtextdate: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontSize: 18,
+    lineHeight: 36,
+  },
 });
 
-function App() {
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  return (
-    <View style={styles.container}>
-      <HomeCalendar scrollY={scrollY} />
-    </View>
-  );
-}
-
-export default App;
+export default HomeCalendar;

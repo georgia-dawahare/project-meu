@@ -1,21 +1,15 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import {
-//   HomeScreenNavigator,
-//   CheckinScreenNavigator,
-//   PenguinsScreenNavigator,
-// } from './src/components/CustomNavigation';
-import {
-  CheckinScreenNavigator,
-  PenguinsScreenNavigator,
-} from './src/components/CustomNavigation';
-
+import { Animated } from 'react-native';
+import { CheckinScreenNavigator, PenguinsScreenNavigator } from './src/components/CustomNavigation';
 import HomeCalendar from './src/screens/home/HomeCalendar';
 
 const Tab = createBottomTabNavigator();
 
 function App() {
+  const scrollY = new Animated.Value(0);
+
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -32,8 +26,7 @@ function App() {
         />
         <Tab.Screen
           name="Home"
-          // component={HomeScreenNavigator}
-          component={HomeCalendar}
+          component={() => <HomeCalendar scrollY={scrollY} />}
         />
         <Tab.Screen
           name="Penguins"
