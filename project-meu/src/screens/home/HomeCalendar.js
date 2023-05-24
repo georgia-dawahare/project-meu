@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import FloatingButton from '../../components/FloatingButton';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -86,6 +87,8 @@ function HomeCalendar({ navigation }) {
             October 20th, 2019
           </Animated.Text>
         </Animated.Text>
+
+        <FloatingButton/>
       </Animated.View>
 
       <Animated.ScrollView
@@ -129,6 +132,8 @@ function HomeCalendar({ navigation }) {
 
         <View />
       </Animated.ScrollView>
+
+      {/* <FloatingButton/> */}
     </SafeAreaView>
 
   );
@@ -144,7 +149,7 @@ const styles = StyleSheet.create({
   Icon: {
     position: 'relative',
     top: 32,
-    left: 0,
+    left: 24,
     height: 24,
     zIndex: 200,
   },
@@ -161,7 +166,7 @@ const styles = StyleSheet.create({
     right: 0,
     height: 120,
     backgroundColor: 'lightskyblue',
-    zIndex: -1,
+    zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
