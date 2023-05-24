@@ -1,9 +1,12 @@
-# Project Name
+# MeU
 
 ![Team Photo](Insert a Team Photo URL here)
 [*how?*](https://help.github.com/articles/about-readmes/#relative-links-and-image-paths-in-readme-files)
 
 TODO: short project description, some sample screenshots or mockups
+
+## Deployment
+dev url: [MeU Expo](https://expo.dev/@projectmeu/project-meu?serviceType=classic&distribution=expo-go)
 
 ## Architecture
 
