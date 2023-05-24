@@ -1,4 +1,7 @@
-# Project Name
+# MeU
+
+## Deployment
+dev url: [MeU Expo](https://expo.dev/@projectmeu/project-meu?serviceType=classic&distribution=expo-go)
 
 ![Team Photo](Insert a Team Photo URL here)
 [*how?*](https://help.github.com/articles/about-readmes/#relative-links-and-image-paths-in-readme-files)
