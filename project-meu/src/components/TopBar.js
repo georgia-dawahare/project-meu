@@ -10,6 +10,7 @@ import {
 import { Entypo, Feather } from '@expo/vector-icons'; 
 
 function TopBar({ navigation }) {
+  // pass in type to TopBar to render different stuff 
   const daysExample = 1293;
   const [days, setDays] = useState(0);
   const days_text = days + ' days'
