@@ -1,7 +1,7 @@
-// https://github.com/kosaikham/twitter-scrollable-header-clone
-import React, { useEffect } from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View,
+  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -16,6 +16,7 @@ function DdayList({ date, title, iconName }) {
   );
 }
 
+// Modified from: https://github.com/kosaikham/twitter-scrollable-header-clone
 function HomeCalendarComponent({ scrollY }) {
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
@@ -24,17 +25,25 @@ function HomeCalendarComponent({ scrollY }) {
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
 
+  const [fontLoaded, setFontLoaded] = useState(false);
+
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        'SF-Pro-Display-Bold': '../../../assets/fonts/SF-Pro-Display-Bold.otf',
-        'SF-Pro-Display-Semibold': '../../../assets/fonts/SF-Pro-Display-Semibold.otf',
-        'SF-Pro-Display-Medium': '../../../assets/fonts/SF-Pro-Display-Medium.otf',
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
       });
+
+      setFontLoaded(true);
     }
 
     loadFont();
   }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   const translateY = scrollY.interpolate({
     inputRange,
@@ -43,7 +52,6 @@ function HomeCalendarComponent({ scrollY }) {
   });
 
   return (
-    // <View style={styles.container}>
     <SafeAreaView style={styles.container}>
       <Image
         source={require('../../../assets/icons/goback-black.png')}
