@@ -6,6 +6,7 @@ import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import HomeCalendar from '../screens/home/HomeCalendar';
+import BackgroundChange from '../screens/home/BackgroundChange';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="HomeCalendar"
         component={HomeCalendar}
+      />
+      <Stack.Screen
+        name="BackgroundChange"
+        component={BackgroundChange}
       />
     </Stack.Navigator>
   );

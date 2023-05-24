@@ -70,8 +70,13 @@
         "react"
     ],
     "parserOptions": {
+<<<<<<< HEAD
         "babelOptions":{
             "presets":["@babel/preset-react"]
+=======
+        "babelOptions": {
+            "presets": ["@babel/preset-react"]
+>>>>>>> 0094b04a22805ffde40d40d86501d54a730a46aa
         },
         "ecmaFeatures": {
             "jsx": true,

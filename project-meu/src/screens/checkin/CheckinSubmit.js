@@ -1,107 +1,45 @@
-import React, {useState} from 'react';
-import {View,  Text, 
+import React, { useState } from 'react';
+import {
+  Text,
   SafeAreaView,
-  StyleSheet, Image, TouchableOpacity,Modal
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import {
+  Card, Input,
+} from 'react-native-elements';
+import { addDailyQuestionResponse } from '../../services/datastore';
 
+function CheckinSubmit({ navigation }) {
+  const [textAnswer, setTextAnswer] = useState('');
 
-const BackgroundChange = () => {
-
-  const [backgroundImage, setBackgroundImage] = useState(null);
-  const [isMenuVisible,setMenuVisible] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('transparent');
-
-  const toggleMenu = () =>{
-    setMenuVisible(!isMenuVisible)
-  }
-
-   //using expo's now, let's see how it goes
-  const handleMenuOptionClick = async (option) =>{
-    console.log(`Clicked option:, ${option}`)
-
-    if (option ==='Remove Widget' ){
-      //need to get this working soon
-      setBackgroundColor('white');
-    }
-    else{
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setBackgroundImage(result.assets[0].uri);
-
-      console.log(result);
-    } else {
-      console.log('You did not select any image.');
-    }
-  }
-}
+  const handleOnSubmit = () => {
+    navigation.navigate('Checkin');
+    addDailyQuestionResponse(
+      {
+        pair_id: 'example',
+        question_id: 2,
+        response: textAnswer,
+        user_id: 'example',
+      },
+    );
+  };
 
   return (
-    
-    <SafeAreaView style={[styles.container,{backgroundColor}]}>
-      {backgroundImage && (
-        <Image
-          source={{ uri: backgroundImage }}
-          style={styles.image}
-          resizeMode='cover'
-        />
-        )}
-
-      <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={toggleMenu}>
-        <Text>Open Menu</Text>
-      </TouchableOpacity>
-
-      <Modal
-        visible={isMenuVisible}
-        transparent={true}
-        animationType="slide"
-      >
-        <View style={styles.menuContainer}>
-        <TouchableOpacity
-            style={styles.menuOption}
-            onPress={() => handleMenuOptionClick('Edit Partners Widget')}
-          >
-            <Text style={styles.menuOptionText2}>Edit Partner's Widget</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuOption}
-            onPress={() => handleMenuOptionClick('Gallery')}
-          >
-            <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuOption}
-            onPress={() => handleMenuOptionClick('Camera')}
-          >
-            <Text style={styles.menuOptionText}>Camera</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.menuOption}
-            onPress={() => handleMenuOptionClick('Remove Widget')}
-          >
-            <Text style={styles.menuOptionText}>Remove Widget Image </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-            <Text>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
-
+    <SafeAreaView style={styles.container}>
+      <Card containerStyle={styles.cardContainer}>
+        <Text>Daily Question</Text>
+        <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
+        <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
+        <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
+          <Text style={styles.buttonText}>
+            Submit
+          </Text>
+        </TouchableOpacity>
+      </Card>
     </SafeAreaView>
   );
 }
-
-export default BackgroundChange;
 
 const styles = StyleSheet.create({
   container: {
@@ -109,63 +47,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
-
-
-  image : {
-    ...StyleSheet.absoluteFillObject,
-   },
-
-  containerText: {
-    flex:1,
-    justifyContent:'center',
-    alignItems:'center',
+  text: {
     textAlign: 'center',
-    color : '#808080'
+    fontSize: 20,
+    fontFamily: 'SF-Pro-Display-Bold',
+    marginBottom: 20,
   },
-
-  //mainly for testing purposes, this must be replaced with an the edit icon i believe
+  cardContainer: {
+    borderRadius: 15,
+    padding: 20,
+  },
+  question: {
+    textAlign: 'center',
+    fontSize: 28,
+    fontFamily: 'SF-Pro-Display-Bold',
+    margin: 20,
+  },
   button: {
-    marginTop:700,
-    padding: 10,
-    backgroundColor: 'lightblue',
-    borderRadius: 5,
-  },
-
-  menuContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-
-  },
-  
-  menuOption: {
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    backgroundColor: 'lightgray',
-    borderTopWidth: 1,
-    borderColor: 'darkgray',
-    alignItems:'center',
-  },
-
-  closeButton: {
-    paddingVertical: 20,
-    paddingHorizontal: 30,
-    backgroundColor: 'white',
-    marginTop: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'rgb(230, 43, 133)',
     alignItems: 'center',
   },
-
-  menuOptionText:{
-    textAlign:'center',
-    color : '#007AFF',
-    fontWeight: 500,
-    fontSize:18,
-  
+  buttonText: {
+    fontFamily: 'SF-Pro-Display-Bold',
+    color: 'white',
   },
-  menuOptionText2:{
-    textAlign:'center',
-    color : '#000000',
-    fontWeight: 300,
-    fontSize:15,
-  }
 });
+
+export default CheckinSubmit;
