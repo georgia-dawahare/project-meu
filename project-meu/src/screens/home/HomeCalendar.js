@@ -17,7 +17,7 @@ function DdayList({ date, title, iconName }) {
 }
 
 // Modified from: https://github.com/kosaikham/twitter-scrollable-header-clone
-function HomeCalendarComponent({ scrollY }) {
+function HomeCalendarComponent({ scrollY, navigation }) {
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
   const STICKY_HEADER_HEIGHT = 120;
@@ -53,10 +53,11 @@ function HomeCalendarComponent({ scrollY }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        source={require('../../../assets/icons/goback-black.png')}
-        style={styles.Icon}
-      />
+      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
+        <View style={styles.buttonContent}>
+          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+        </View>
+      </TouchableOpacity>
       <Animated.View
         style={[
           styles.headerContainer,
@@ -140,21 +141,27 @@ function HomeCalendarComponent({ scrollY }) {
   );
 }
 
-function HomeCalendar() {
+function HomeCalendar({ navigation }) {
   const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
     <View style={styles.container}>
-      <HomeCalendarComponent scrollY={scrollY} />
+      <HomeCalendarComponent scrollY={scrollY} navigation={navigation} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  Icon: {
+  backButton: {
     position: 'absolute',
-    top: 64,
-    left: 24,
+    top: 32,
+    left: 16,
+    zIndex: 200,
+  },
+  Icon: {
+    position: 'relative',
+    top: 32,
+    left: 0,
     height: 24,
     zIndex: 200,
   },
