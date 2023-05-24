@@ -44,6 +44,12 @@ function HomePage({ navigation }) {
             Penguins
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            BackgroundChange
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}

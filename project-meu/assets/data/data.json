@@ -1,0 +1,108 @@
+{
+  "questions": [
+    {
+      "question": "What is your favorite memory of us together?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite thing about me?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you've always wanted to tell me, but haven't?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite place to go on a date?",
+      "type": "text"
+    },
+    {
+      "question": "What was your first impression of me?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing that makes you smile every time you think about it?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite thing to do with me?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you wish we could do together right now?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite nickname for me?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you admire about me?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite song that reminds you of us?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you would like to change about our relationship?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite thing about our conversations?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you've learned about yourself since being in a long distance relationship?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite moment we've shared together?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing that you are looking forward to doing with me when we are finally together?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite picture of us together?",
+      "type": "image"
+    },
+    {
+      "question": "What is one thing that you would like to tell me about your day, every day?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite thing to do together when we are physically together?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you find challenging about being in a long distance relationship?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite movie that reminds you of us?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing that you've always wanted to do with me, but haven't had the chance yet?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite thing to talk about with me?",
+      "type": "text"
+    },
+    {
+      "question": "What is one thing you would like us to work on together as a couple?",
+      "type": "text"
+    },
+    {
+      "question": "What is your favorite picture that you've taken of us together?",
+      "type": "image"
+    },
+    {
+      "question": "What is one thing that you miss the most about us being physically together?",
+      "type": "text"
+    }
+  ]
+}
