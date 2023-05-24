@@ -10,9 +10,13 @@ import {
   Card,
 } from 'react-native-elements';
 import * as Font from 'expo-font';
+import { getDailyQuestionResponses } from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const handleGetDailyQuestionResponses = () => {
+    getDailyQuestionResponses('example');
+  };
 
   useEffect(() => {
     async function loadFont() {
@@ -41,6 +45,11 @@ function CheckinPage({ navigation }) {
           </Text>
         </TouchableOpacity>
       </Card>
+      <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetDailyQuestionResponses}>
+        <Text style={styles.buttonText}>
+          Get Responses
+        </Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -56,6 +65,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: 'SF-Pro-Display-Bold',
     marginBottom: 20,
+  },
+  buttonSecondary: {
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: 'rgb(230, 43, 133)',
+    alignItems: 'center',
+    margin: 20,
   },
   question: {
     textAlign: 'center',
