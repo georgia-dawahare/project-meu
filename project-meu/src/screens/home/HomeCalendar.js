@@ -1,7 +1,7 @@
 // https://github.com/kosaikham/twitter-scrollable-header-clone
 import React, { useEffect } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View, Button,
+  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity, Button
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
@@ -44,13 +44,12 @@ function HomeCalendar({ navigation }) {
   });
 
   return (
-    // <View style={styles.container}>
     <SafeAreaView style={styles.container}>
-      <Button title="Back" onPress={() => navigation.goBack()} />
-      <Image
-        source="../../../assets/icons/goback-black.png"
-        style={styles.Icon}
-      />
+      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <View style={styles.buttonContent}>
+          <Image source={require("../../../assets/icons/goback-black.png")} style={styles.Icon} />
+        </View>
+      </TouchableOpacity>
       <Animated.View
         style={[
           styles.headerContainer,
@@ -88,15 +87,6 @@ function HomeCalendar({ navigation }) {
           </Animated.Text>
         </Animated.Text>
       </Animated.View>
-
-      {/* <SwipeablePanel
-        fullWidth
-        // isActive={this.state.swipeablePanelActive}
-        // onClose={this.closePanel}
-        // onPressCloseButton={this.closePanel}
-      >
-        <Text>Hi</Text>
-      </SwipeablePanel> */}
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -145,10 +135,16 @@ function HomeCalendar({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  Icon: {
+  backButton: {
     position: 'absolute',
-    top: 64,
-    left: 24,
+    top: 32,
+    left: 16,
+    zIndex: 200,
+  },
+  Icon: {
+    position: 'relative',
+    top: 32,
+    left: 0,
     height: 24,
     zIndex: 200,
   },
