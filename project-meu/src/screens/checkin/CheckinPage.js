@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  View
 } from 'react-native';
 import {
   Card,
@@ -16,7 +15,7 @@ import { getDailyQuestionResponses } from '../../services/datastore';
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const handleGetDailyQuestionResponses = () => {
-    getDailyQuestionResponsegits('example');
+    getDailyQuestionResponses('example');
   };
 
   useEffect(() => {
@@ -37,21 +36,6 @@ function CheckinPage({ navigation }) {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>
-        Check-In Page
-      </Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonText}>
-            Home
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
-          <Text style={styles.buttonText}>
-            BackgroundChange
-          </Text>
-        </TouchableOpacity>
-      </View>
       <Card containerStyle={styles.cardContainer}>
         <Text>Daily Question</Text>
         <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
