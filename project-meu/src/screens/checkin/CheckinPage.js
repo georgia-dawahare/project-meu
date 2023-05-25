@@ -15,7 +15,7 @@ import { getDailyQuestionResponses } from '../../services/datastore';
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const handleGetDailyQuestionResponses = () => {
-    getDailyQuestionResponsegits('example');
+    getDailyQuestionResponses('example');
   };
 
   useEffect(() => {
