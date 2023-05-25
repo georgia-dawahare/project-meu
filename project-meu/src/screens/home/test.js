@@ -136,17 +136,118 @@
 // export default test;
 
 
+// import React, { useState } from 'react';
+// import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
+// import { Ionicons } from '@expo/vector-icons';
+// import Button from '../../components/Button';
+// import { FAB } from 'react-native-elements';
+// import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+
+// // import RegistrationInput from '../../components/RegistrationInput';
+
+// const Test = () => {
+//   const [modalVisible, setModalVisible] = useState(false);
+//   const [date, setDate] = useState('');
+//   const [title, setTitle] = useState('');
+//   const [repeat, setRepeat] = useState('');
+
+//   const handlePress = () => {
+//     setModalVisible(true);
+//   };
+
+//   const closeModal = () => {
+//     setModalVisible(false);
+//   };
+
+//   const handleAddEvent = () => {
+//     // Perform event addition logic here
+//     console.log('Date:', date);
+//     console.log('Title:', title);
+//     console.log('Repeat:', repeat);
+
+//     // Close the modal
+//     setModalVisible(false);
+//   };
+
+//   return (
+//     <View style={styles.container}>
+//       <Modal
+//         animationType="slide"
+//         transparent={true}
+//         visible={modalVisible}
+//         onRequestClose={() => {
+//           Alert.alert('Modal has been closed.');
+//           setModalVisible(!modalVisible);
+//         }}
+//       >
+//         <View style={styles.modalContainer}>
+//           <View style={styles.modalView}>
+//             <View style={styles.modalContent}>
+//               <Text style={styles.title}>Date</Text>
+//               <TextInput
+//                 style={styles.input}
+//                 placeholder="Enter Date"
+//                 value={date}
+//                 onChangeText={setDate}
+//               />
+
+
+//               <Text style={styles.title}>Title</Text>
+//               <TextInput
+//                 style={styles.input}
+//                 placeholder="Enter Date"
+//                 value={date}
+//                 onChangeText={setDate}
+//               />
+//               <View style={styles.line} />
+              
+//               {/* <View style={[styles.container2]}>
+//                 <View style={[styles.inputContainer2]}>
+//                   <TextInput style={styles.input2} placeholder="Enter Title" editable="true" />
+//                 </View>
+//                 <View style={styles.line} />
+//               </View> */}
+
+//               <Text style={styles.title}>Repeat</Text>
+//               <TextInput
+//                 style={styles.input}
+//                 placeholder="Enter Repeat"
+//                 value={repeat}
+//                 onChangeText={setRepeat}
+//               />
+//             </View>
+
+//             <Pressable style={[styles.button, styles.buttonClose]} onPress={closeModal}>
+//               <Ionicons name="ios-close" size={24} color="black" />
+//             </Pressable>
+
+//             <Button title="Add Event" onPress={handleAddEvent} buttonStyle={{ top: 395 }} />
+//           </View>
+//         </View>
+//       </Modal>
+
+//       <FAB
+//         icon={<Ionicons name="ios-add" size={24} color="white" />}
+//         buttonStyle={styles.FAB}
+//         size="large"
+//         placement='right'
+//         onPress={handlePress}
+//     />
+
+//     </View>
+//   );
+// };
+
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Button from '../../components/Button';
 import { FAB } from 'react-native-elements';
-
-import RegistrationInput from '../../components/RegistrationInput';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Test = () => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   const [title, setTitle] = useState('');
   const [repeat, setRepeat] = useState('');
 
@@ -158,13 +259,16 @@ const Test = () => {
     setModalVisible(false);
   };
 
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setDate(currentDate);
+  };
+
   const handleAddEvent = () => {
-    // Perform event addition logic here
     console.log('Date:', date);
     console.log('Title:', title);
     console.log('Repeat:', repeat);
 
-    // Close the modal
     setModalVisible(false);
   };
 
@@ -176,36 +280,27 @@ const Test = () => {
         visible={modalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
+          setModalVisible(false);
         }}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <View style={styles.modalContent}>
               <Text style={styles.title}>Date</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Enter Date"
+              <DateTimePicker
                 value={date}
-                onChangeText={setDate}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
               />
-
 
               <Text style={styles.title}>Title</Text>
               <TextInput
                 style={styles.input}
-                placeholder="Enter Date"
-                value={date}
-                onChangeText={setDate}
+                placeholder="Enter Title"
+                value={title}
+                onChangeText={setTitle}
               />
-              <View style={styles.line} />
-              
-              {/* <View style={[styles.container2]}>
-                <View style={[styles.inputContainer2]}>
-                  <TextInput style={styles.input2} placeholder="Enter Title" editable="true" />
-                </View>
-                <View style={styles.line} />
-              </View> */}
 
               <Text style={styles.title}>Repeat</Text>
               <TextInput
@@ -231,8 +326,7 @@ const Test = () => {
         size="large"
         placement='right'
         onPress={handlePress}
-    />
-
+      />
     </View>
   );
 };
