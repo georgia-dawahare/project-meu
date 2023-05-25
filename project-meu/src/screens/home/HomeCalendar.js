@@ -6,9 +6,8 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
-import FloatingButton from '../../components/FloatingButton';
-
-// import AnniversaryModal from '../../components/AnniversaryModal';
+// import FloatingButton from '../../components/FloatingButton';
+import FabandModal from '../../components/FabandModal'
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -28,12 +27,6 @@ function HomeCalendar({ navigation }) {
 
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
-
-  // const [modalVisible, setModalVisible] = useState(false);
-
-  // const toggleModal = () => {
-  //   setModalVisible(!modalVisible);
-  // };
 
   useEffect(() => {
     async function loadFont() {
@@ -99,7 +92,8 @@ function HomeCalendar({ navigation }) {
           </Animated.Text>
         </Animated.Text>
 
-        <FloatingButton/>
+        {/* <FloatingButton/> */}
+        <FabandModal/>
       </Animated.View>
 
       <Animated.ScrollView

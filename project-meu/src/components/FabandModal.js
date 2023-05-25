@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Button from '../../components/Button';
 import { FAB } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox'
@@ -21,7 +20,7 @@ const K_OPTIONS = [
   },
 ]
 
-const Test = () => {
+const FabandModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
   const [title, setTitle] = useState('');
@@ -128,12 +127,14 @@ const Test = () => {
 
 const styles = StyleSheet.create({
     FAB:{
-      backgroundColor:'rgba(230, 43, 133, 1)',
+        backgroundColor: 'rgba(230, 43, 133, 1)',
+        position:'relative',
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
   },
   modalContainer: {
     flex: 1,
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
     height: 56,
     width: 300,
     borderRadius: 15,
+    marginTop:20,
   },
   buttonText: {
     color: 'white',
@@ -221,4 +223,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default Test;
+export default FabandModal;
