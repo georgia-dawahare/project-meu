@@ -7,6 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import FloatingButton from '../../components/FloatingButton';
+
 // import AnniversaryModal from '../../components/AnniversaryModal';
 
 function DdayList({ date, title, iconName }) {
