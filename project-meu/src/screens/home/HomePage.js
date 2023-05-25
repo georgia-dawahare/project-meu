@@ -56,11 +56,6 @@ function HomePage({ navigation }) {
             BackgroundChange
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('test')}>
-          <Text style={styles.buttonText}>
-            test
-          </Text>
-        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}
