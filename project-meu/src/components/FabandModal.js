@@ -106,7 +106,6 @@ const FabandModal = () => {
               <Ionicons name="ios-close" size={24} color="black" />
             </Pressable>
 
-            {/* <Button title="Add Event" onPress={handleAddEvent} buttonStyle={{ top: 'auto' }} /> */}
             <TouchableOpacity style={[styles.buttonContainer]} onPress={handleAddEvent}>
               <Text style={styles.buttonText}>Add Event</Text>
             </TouchableOpacity>
@@ -163,7 +162,6 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 100,
-    // padding: 10,
     position: 'absolute',
     top:15,
     right:24,
