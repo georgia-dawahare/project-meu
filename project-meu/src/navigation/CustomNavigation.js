@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomePage from '../screens/home/HomePage';
+import HomeCalendar from '../screens/home/HomeCalendar';
 import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
@@ -15,6 +16,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="Home"
         component={HomePage}
+      />
+      <Stack.Screen
+        name="HomeCalendar"
+        component={HomeCalendar}
       />
       <Stack.Screen
         name="BackgroundChange"
