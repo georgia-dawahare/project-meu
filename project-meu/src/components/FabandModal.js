@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity } from 'react-native';
+/* eslint-disable global-require */
+import React, { useState, useEffect } from 'react';
+import {
+  Alert, Modal, StyleSheet, Text, Pressable, View, TextInput, TouchableOpacity,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FAB } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import SelectBox from 'react-native-multi-selectbox'
+import SelectBox from 'react-native-multi-selectbox';
+import * as Font from 'expo-font';
 
 const K_OPTIONS = [
   {
@@ -18,15 +22,31 @@ const K_OPTIONS = [
     item: 'Every Year',
     id: 'EY',
   },
-]
+];
 
-const FabandModal = () => {
+function FabandModal() {
+  const [fontLoaded, setFontLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
   const [title, setTitle] = useState('');
-  const [repeat, setRepeat] = useState('');
-  const [selectedTeam, setSelectedTeam] = useState({})
-  const [selectedTeams, setSelectedTeams] = useState([])
+  const [selectedTeam, setSelectedTeam] = useState({});
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   const handlePress = () => {
     setModalVisible(true);
@@ -55,14 +75,14 @@ const FabandModal = () => {
   };
 
   function onChange() {
-    return (val) => setSelectedTeam(val)
-  };
+    return (val) => setSelectedTeam(val);
+  }
 
   return (
     <View style={styles.container}>
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent
         visible={modalVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
@@ -72,17 +92,16 @@ const FabandModal = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <View style={styles.modalContent}>
-                <Text style={[styles.title]}>Date</Text>
-                <DateTimePicker
-                style={[styles.dateTimePicker,{marginTop:10}]}
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={handleDateChange}
-                />
+              <Text style={[styles.title]}>Date</Text>
+              <DateTimePicker
+                style={[styles.dateTimePicker, { marginTop: 10 }]}
+                value={date}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
 
-
-              <Text style={[styles.title,{ marginTop: 32 }]}>Title</Text>
+              <Text style={[styles.title, { marginTop: 32 }]}>Title</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Enter Title"
@@ -92,14 +111,14 @@ const FabandModal = () => {
               <View style={styles.line} />
               <Text style={[styles.title, { marginTop: 32 }]}>Repeat</Text>
               <View style={styles.selectBox}>
-              <SelectBox
-                label=""
-                options={K_OPTIONS}
-                value={selectedTeam}
-                onChange={onChange()}
-                hideInputFilter={false}
-              />
-            </View>
+                <SelectBox
+                  label=""
+                  options={K_OPTIONS}
+                  value={selectedTeam}
+                  onChange={onChange()}
+                  hideInputFilter={false}
+                />
+              </View>
             </View>
 
             <Pressable style={[styles.button, styles.buttonClose]} onPress={closeModal}>
@@ -117,17 +136,17 @@ const FabandModal = () => {
         icon={<Ionicons name="ios-add" size={24} color="white" />}
         buttonStyle={styles.FAB}
         size="large"
-        placement='right'
+        placement="right"
         onPress={handlePress}
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-    FAB:{
-        backgroundColor: 'rgba(230, 43, 133, 1)',
-        position:'relative',
+  FAB: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    position: 'relative',
   },
   container: {
     flex: 1,
@@ -163,8 +182,8 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 100,
     position: 'absolute',
-    top:15,
-    right:24,
+    top: 15,
+    right: 24,
     elevation: 2,
 
   },
@@ -196,13 +215,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#4f4f4f',
     alignSelf: 'center',
   },
-  selectBox:{
-    width:300,
-    fontSize:14,
+  selectBox: {
+    width: 300,
+    fontSize: 14,
   },
   buttonContainer: {
     backgroundColor: 'rgba(230, 43, 133, 1)',
-    fontFamily: 'SFProDisplay-Semibold',
+    fontFamily: 'SF-Pro-Display-Semibold',
 
     position: 'relative',
     alignItems: 'center',
@@ -212,7 +231,7 @@ const styles = StyleSheet.create({
     height: 56,
     width: 300,
     borderRadius: 15,
-    marginTop:20,
+    marginTop: 20,
   },
   buttonText: {
     color: 'white',
