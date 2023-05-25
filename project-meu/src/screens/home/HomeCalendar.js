@@ -1,4 +1,5 @@
 // https://github.com/kosaikham/twitter-scrollable-header-clone
+// import React, { useEffect, useState } from 'react';
 import React, { useEffect } from 'react';
 import {
   StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity, Button
@@ -6,6 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import FloatingButton from '../../components/FloatingButton';
+// import AnniversaryModal from '../../components/AnniversaryModal';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -25,6 +27,12 @@ function HomeCalendar({ navigation }) {
 
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
+
+  // const [modalVisible, setModalVisible] = useState(false);
+
+  // const toggleModal = () => {
+  //   setModalVisible(!modalVisible);
+  // };
 
   useEffect(() => {
     async function loadFont() {
@@ -51,6 +59,8 @@ function HomeCalendar({ navigation }) {
           <Image source={require("../../../assets/icons/goback-black.png")} style={styles.Icon} />
         </View>
       </TouchableOpacity>
+
+      {/* <Button title="modal" onPress={toggleModal}/> */}
       <Animated.View
         style={[
           styles.headerContainer,
@@ -102,7 +112,6 @@ function HomeCalendar({ navigation }) {
         <Animated.View
           style={{
             width: 390,
-            height: 40,
             borderWidth: 3,
             borderColor: 'white',
             marginTop: HEADER_HEIGHT - 120,
@@ -116,15 +125,15 @@ function HomeCalendar({ navigation }) {
               Upcoming Anniversaries
             </Text>
             <View>
-              <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
+              <DdayList date="05/20" title="Dday 1" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 2" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" />
+              <DdayList date="05/20" title="Dday 3" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 4" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 5" iconName="ios-calendar" />
+              <DdayList date="05/20" title="Dday 5" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 6" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 7" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 2" iconName="ios-calendar" />
+              <DdayList date="05/20" title="Dday 2" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" />
             </View>
           </View>
@@ -132,8 +141,7 @@ function HomeCalendar({ navigation }) {
 
         <View />
       </Animated.ScrollView>
-
-      {/* <FloatingButton/> */}
+      {/* <AnniversaryModal visible={modalVisible} onClose={toggleModal} /> */}
     </SafeAreaView>
 
   );
@@ -207,7 +215,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Semibold',
     fontSize: 20,
     paddingLeft: 24,
-    marginBottom: 32,
+    marginBottom: 36,
   },
   bgtextday: {
     fontFamily: 'SF-Pro-Display-Semibold',
@@ -221,3 +229,4 @@ const styles = StyleSheet.create({
 });
 
 export default HomeCalendar;
+
