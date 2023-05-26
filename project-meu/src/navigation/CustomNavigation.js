@@ -6,6 +6,9 @@ import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
+import SignIn from '../screens/home/SignIn'
+import SignUpSignIn from '../screens/home/SignUpSignIn'
+import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1'
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +22,18 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="BackgroundChange"
         component={BackgroundChange}
+      />
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+      />
+      <Stack.Screen
+        name="SignUpSignIn"
+        component={SignUpSignIn}
+      />
+      <Stack.Screen
+        name="SignInForgotPassword1"
+        component={SignInForgotPasswordPage1}
       />
     </Stack.Navigator>
   );
@@ -50,7 +65,6 @@ export { CheckinScreenNavigator };
 function PenguinsScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
       <Stack.Screen
         name="Penguins"
         component={PenguinsPage}
