@@ -1,5 +1,6 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
+
 import {
   Text,
   TouchableOpacity,
@@ -12,12 +13,13 @@ import {
   Card,
 } from 'react-native-elements';
 import * as Font from 'expo-font';
-import { getResponseGroup, getResponse } from '../../services/datastore';
+import moment from 'moment';
+import { getResponseGroup, getResponse, addResponseGroup } from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [answered, setAnswered] = useState(true);
-  const [partnerAnswered, setPartnerAnswered] = useState(true);
+  const [answered, setAnswered] = useState(false);
+  const [partnerAnswered, setPartnerAnswered] = useState(false);
   const [question, setQuestion] = useState('');
 
   const [partnerResponse, setPartnerResponse] = useState('');
@@ -32,6 +34,7 @@ function CheckinPage({ navigation }) {
   // dumby user data
   const userId = 'user1';
   const partnerId = 'user2';
+  const pairId = 'pair1';
 
   const handleGetResponseGroup = async () => {
     // const data = await getResponseGroup('pair1052623');
@@ -46,36 +49,63 @@ function CheckinPage({ navigation }) {
     // }
   };
 
-  useEffect(() => {
-    async function loadData() {
-      const data = await getResponseGroup('pair1052623');
-      const p1Response = await getResponse(data.p1_response_id);
-      const p2Response = await getResponse(data.p2_response_id);
+  const refreshData = async () => {
+    const groupId = pairId + moment().format('MMDDYY');
+    const data = await getResponseGroup(groupId);
+    // if there is no response group, create a new one!
+    if (data === null) {
+      addResponseGroup(
+        {
+          p1_response_id: null,
+          p2_response_id: null,
+          question_id: Math.random() * 100,
+        },
+        groupId,
+      );
+    }
+    const p1Response = await getResponse(data.p1_response_id);
+    const p2Response = await getResponse(data.p2_response_id);
 
-      const questionData = require('../../../assets/data/questions.json');
-      setQuestion(questionData.questions[data.question_id].question);
+    const questionData = require('../../../assets/data/questions.json');
+    setQuestion(questionData.questions[data.question_id].question);
 
-      // Convert the timestamp to milliseconds
+    if (p1Response !== null) {
       const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
-      const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
-
-      // Create a new Date object from the timestamp
       const p1Date = new Date(p1Timestamp);
-      const p2Date = new Date(p2Timestamp);
-
-      if (p1Response.userId === userId) {
+      if (p1Response.user_id === userId) {
         setUserResponse(p1Response.response);
-        setUserResponseTime(p1Date.getHours() + p1Date.getMinutes());
-        setPartnerResponse(p2Response.response);
-        setPartnerResponseTime(p2Date.getHours() + p2Date.getMinutes());
+        setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+        setAnswered(true);
       } else {
-        setUserResponse(p2Response.response);
         setPartnerResponse(p1Response.response);
-        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
         setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+        setPartnerAnswered(true);
       }
     }
-    loadData();
+    if (p2Response !== null) {
+      const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
+      const p2Date = new Date(p2Timestamp);
+      if (p2Response.user_id === userId) {
+        setUserResponse(p2Response.response);
+        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+        setAnswered(true);
+      } else {
+        setPartnerResponse(p2Response.response);
+        setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+        setPartnerAnswered(true);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', refreshData);
+    // Cleanup function to remove the listener when the component unmounts
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
@@ -148,7 +178,7 @@ function CheckinPage({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
               />
             </View>
-            <Text style={styles.leftText}>{userResponse.response}</Text>
+            <Text style={styles.leftText}>{userResponse}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image style={styles.editButton}

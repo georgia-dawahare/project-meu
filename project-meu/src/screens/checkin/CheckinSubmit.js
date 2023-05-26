@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -8,21 +8,62 @@ import {
 import {
   Card, Input,
 } from 'react-native-elements';
-import { addDailyQuestionResponse } from '../../services/datastore';
+import moment from 'moment';
+import {
+  addResponse, getResponseGroup, getResponse, updateResponse,
+} from '../../services/datastore';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
+  const [newResponse, setNewResponse] = useState(true);
+  const [responseId, setResponseId] = useState('');
+
+  // dumby user data
+  const userId = 'user1';
+  const partnerId = 'user2';
+  const pairId = 'pair1';
+
+  useEffect(() => {
+    async function loadData() {
+      const groupId = pairId + moment().format('MMDDYY');
+      const data = await getResponseGroup(groupId);
+      const p1Response = await getResponse(data.p1_response_id);
+      const p2Response = await getResponse(data.p2_response_id);
+      if (p1Response.user_id === userId) {
+        setTextAnswer(p1Response.response);
+        setResponseId(data.p1_response_id);
+      } else if (p2Response.user_id === userId) {
+        setTextAnswer(p2Response.response);
+        setResponseId(data.p2_response_id);
+      }
+      console.log(textAnswer);
+      if (textAnswer !== null || textAnswer !== '') {
+        setNewResponse(false);
+      }
+    }
+    loadData();
+  }, []);
 
   const handleOnSubmit = () => {
     navigation.navigate('Checkin');
-    addDailyQuestionResponse(
-      {
-        pair_id: 'example',
-        question_id: 2,
-        response: textAnswer,
-        user_id: 'example',
-      },
-    );
+    console.log(textAnswer);
+    console.log(newResponse);
+    if (newResponse) {
+      addResponse(
+        {
+          response: textAnswer,
+          user_id: userId,
+        },
+      );
+    } else {
+      updateResponse(
+        responseId,
+        {
+          response: textAnswer,
+          user_id: userId,
+        },
+      );
+    }
   };
 
   return (

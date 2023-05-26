@@ -16,24 +16,6 @@ firebase.initializeApp(config);
 
 const firestore = firebase.firestore();
 
-// need to modify so it gets all the daily question responses of the user id instead of the response id, but okay until we get auth working
-export function getDailyQuestionResponses(id) {
-  const docRef = firestore.collection('DailyQuestionResponses').doc(id);
-  return docRef.get()
-    .then((doc) => {
-      if (doc.exists) {
-        console.log('doc data:', doc.data());
-        return doc.data();
-      } else {
-        console.log('no doc found');
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.log('error getting doc', error);
-      return null;
-    });
-}
 export function getResponseGroup(id) {
   const docRef = firestore.collection('ResponseGroup').doc(id);
   return docRef.get()
@@ -49,6 +31,16 @@ export function getResponseGroup(id) {
     .catch((error) => {
       console.log('error getting doc', error);
       return null;
+    });
+}
+
+export function addResponseGroup(response, id) {
+  firestore.collection('ResponseGroup').doc(id).set(response)
+    .then((docRef) => {
+      console.log('doc written with id:', docRef.id);
+    })
+    .catch((error) => {
+      console.error('error adding doc', error);
     });
 }
 
@@ -70,8 +62,8 @@ export function getResponse(id) {
     });
 }
 
-export function addDailyQuestionResponse(dailyQuestionResponse) {
-  firestore.collection('DailyQuestionResponses').add({ ...dailyQuestionResponse, timestamp: firebase.firestore.Timestamp.now() })
+export function addResponse(response) {
+  firestore.collection('Responses').add({ ...response, timestamp: firebase.firestore.Timestamp.now() })
     .then((docRef) => {
       console.log('doc written with id:', docRef.id);
     })
@@ -79,6 +71,20 @@ export function addDailyQuestionResponse(dailyQuestionResponse) {
       console.error('error adding doc', error);
     });
 }
+
+export function updateResponse(responseId, updatedResponse) {
+  const docRef = firestore.collection('Responses').doc(responseId);
+  return docRef.update(updatedResponse)
+    .then(() => {
+      console.log('Response updated successfully');
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error updating response:', error);
+      return false;
+    });
+}
+
 
 // export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
 //   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
