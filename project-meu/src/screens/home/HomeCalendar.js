@@ -1,15 +1,12 @@
-// https://github.com/kosaikham/twitter-scrollable-header-clone
-//https://github.com/sauzy34/react-native-multi-selectbox
-
-// import React, { useEffect, useState } from 'react';
-import React, { useEffect } from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity, Button
+  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
-// import FloatingButton from '../../components/FloatingButton';
-import FabandModal from '../../components/FabandModal'
+import FloatingButton from '../../components/FloatingButton';
+import FabandModal from '../../components/FabandModal';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -21,8 +18,8 @@ function DdayList({ date, title, iconName }) {
   );
 }
 
-function HomeCalendar({ navigation }) {
-  const scrollY = new Animated.Value(0);
+// Modified from: https://github.com/kosaikham/twitter-scrollable-header-clone
+function HomeCalendarComponent({ scrollY, navigation }) {
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
   const STICKY_HEADER_HEIGHT = 120;
@@ -30,17 +27,25 @@ function HomeCalendar({ navigation }) {
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
 
+  const [fontLoaded, setFontLoaded] = useState(false);
+
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        'SF-Pro-Display-Bold': '../../../assets/fonts/SF-Pro-Display-Bold.otf',
-        'SF-Pro-Display-Semibold': '../../../assets/fonts/SF-Pro-Display-Semibold.otf',
-        'SF-Pro-Display-Medium': '../../../assets/fonts/SF-Pro-Display-Medium.otf',
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
       });
+
+      setFontLoaded(true);
     }
 
     loadFont();
   }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   const translateY = scrollY.interpolate({
     inputRange,
@@ -50,9 +55,9 @@ function HomeCalendar({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
         <View style={styles.buttonContent}>
-          <Image source={require("../../../assets/icons/goback-black.png")} style={styles.Icon} />
+          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
 
@@ -94,8 +99,9 @@ function HomeCalendar({ navigation }) {
           </Animated.Text>
         </Animated.Text>
 
+        <FloatingButton />
         {/* <FloatingButton/> */}
-        <FabandModal/>
+        <FabandModal />
       </Animated.View>
 
       <Animated.ScrollView
@@ -140,7 +146,16 @@ function HomeCalendar({ navigation }) {
       </Animated.ScrollView>
       {/* <AnniversaryModal visible={modalVisible} onClose={toggleModal} /> */}
     </SafeAreaView>
+  );
+}
 
+function HomeCalendar({ navigation }) {
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  return (
+    <View style={styles.container}>
+      <HomeCalendarComponent scrollY={scrollY} navigation={navigation} />
+    </View>
   );
 }
 

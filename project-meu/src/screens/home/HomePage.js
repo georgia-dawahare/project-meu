@@ -45,9 +45,8 @@ function HomePage({ navigation }) {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomeCalendar')}>
-          {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
-            HomeCalendar
+            Home Calendar
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
