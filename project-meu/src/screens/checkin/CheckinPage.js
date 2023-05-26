@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
   Text,
   TouchableOpacity,
@@ -8,19 +8,23 @@ import {
   StyleSheet,
   Image,
   View,
+  Pressable,
 } from 'react-native';
 import {
   Card,
 } from 'react-native-elements';
 import * as Font from 'expo-font';
 import moment from 'moment';
-import { getResponseGroup, getResponse, addResponseGroup } from '../../services/datastore';
+import {
+  getResponseGroup, getResponse, addResponseGroup, deleteResponse, updateResponseGroup,
+} from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [answered, setAnswered] = useState(false);
   const [partnerAnswered, setPartnerAnswered] = useState(false);
   const [question, setQuestion] = useState('');
+  const [userResponseId, setUserResponseId] = useState('');
 
   const [partnerResponse, setPartnerResponse] = useState('');
   const [userResponse, setUserResponse] = useState('');
@@ -33,20 +37,10 @@ function CheckinPage({ navigation }) {
 
   // dumby user data
   const userId = 'user1';
-  const partnerId = 'user2';
   const pairId = 'pair1';
 
-  const handleGetResponseGroup = async () => {
-    // const data = await getResponseGroup('pair1052623');
-    // const p1_response = await getResponse(data.p1_response_id);
-    // const p2_response = await getResponse(data.p2_response_id);
-    // if (p1esponse.user_id == user_id) {
-    //   setUserResponse(p1_response.response);
-    //   setPartnerResponse(p2_response.response);
-    // } else {
-    //   setUserResponse(p2_response.response);
-    //   setPartnerResponse(p1_response.response);
-    // }
+  const handleDeleteResponse = async () => {
+    deleteResponse(userResponseId);
   };
 
   const refreshData = async () => {
@@ -69,11 +63,12 @@ function CheckinPage({ navigation }) {
     const questionData = require('../../../assets/data/questions.json');
     setQuestion(questionData.questions[data.question_id].question);
 
-    if (p1Response !== null) {
+    if (p1Response !== null && p1Response !== '') {
       const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
       const p1Date = new Date(p1Timestamp);
       if (p1Response.user_id === userId) {
         setUserResponse(p1Response.response);
+        setUserResponseId(data.p1_response_id);
         setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
         setAnswered(true);
       } else {
@@ -82,11 +77,12 @@ function CheckinPage({ navigation }) {
         setPartnerAnswered(true);
       }
     }
-    if (p2Response !== null) {
+    if (p2Response !== null && p2Response !== '') {
       const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
       const p2Date = new Date(p2Timestamp);
       if (p2Response.user_id === userId) {
         setUserResponse(p2Response.response);
+        setUserResponseId(data.p2_response_id);
         setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
         setAnswered(true);
       } else {
@@ -99,7 +95,6 @@ function CheckinPage({ navigation }) {
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', refreshData);
-    // Cleanup function to remove the listener when the component unmounts
     return () => {
       unsubscribe();
     };
@@ -139,6 +134,9 @@ function CheckinPage({ navigation }) {
           </View>
           <View>
             <View style={styles.myResponseHeader}>
+              <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
+                <Icon name="trash-outline" type="ionicon" size={20} />
+              </Pressable>
               <View style={{ marginRight: 10 }}>
                 <Text style={styles.leftText}>{userFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
@@ -149,17 +147,18 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.leftText}>{userResponse}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Image style={styles.editButton}
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Image
+              style={styles.editButtonContainer}
               source={require('../../../assets/images/editButton.png')}
             />
           </TouchableOpacity>
         </Card>
-        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
+        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
           <Text style={styles.buttonText}>
             View More
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </SafeAreaView>
     );
   } else if (answered) {
@@ -186,11 +185,11 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
+        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
           <Text style={styles.buttonText}>
             View More
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </SafeAreaView>
     );
   } else if (partnerAnswered) {
@@ -253,11 +252,18 @@ const styles = StyleSheet.create({
     height: 80,
     alignSelf: 'flex-end',
   },
+  editButtonContainer: {
+    width: 45,
+    height: 45,
+  },
   editButton: {
     marginTop: 20,
     width: 45,
     height: 45,
     alignSelf: 'flex-end',
+    backgroundColor: 'yellow',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonSecondary: {
     paddingVertical: 12,
@@ -318,6 +324,9 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 15,
     padding: 20,
+  },
+  deleteIcon: {
+    marginRight: 10,
   },
 });
 

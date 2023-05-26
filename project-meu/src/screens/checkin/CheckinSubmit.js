@@ -10,17 +10,17 @@ import {
 } from 'react-native-elements';
 import moment from 'moment';
 import {
-  addResponse, getResponseGroup, getResponse, updateResponse,
+  addResponse, getResponseGroup, getResponse, updateResponse, updateResponseGroup,
 } from '../../services/datastore';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
-  const [newResponse, setNewResponse] = useState(true);
+  const [newResponse, setNewResponse] = useState(false);
   const [responseId, setResponseId] = useState('');
+  const [currentPartner, setCurrentPartner] = useState('');
 
   // dumby user data
   const userId = 'user1';
-  const partnerId = 'user2';
   const pairId = 'pair1';
 
   useEffect(() => {
@@ -29,16 +29,17 @@ function CheckinSubmit({ navigation }) {
       const data = await getResponseGroup(groupId);
       const p1Response = await getResponse(data.p1_response_id);
       const p2Response = await getResponse(data.p2_response_id);
-      if (p1Response.user_id === userId) {
+      if (p1Response != null && p1Response.user_id === userId) {
         setTextAnswer(p1Response.response);
         setResponseId(data.p1_response_id);
-      } else if (p2Response.user_id === userId) {
+        setCurrentPartner('p1');
+      } else if (p2Response != null && p2Response.user_id === userId) {
         setTextAnswer(p2Response.response);
         setResponseId(data.p2_response_id);
-      }
-      console.log(textAnswer);
-      if (textAnswer !== null || textAnswer !== '') {
-        setNewResponse(false);
+        setCurrentPartner('p2');
+      } else {
+        setNewResponse(true);
+        setCurrentPartner('p1');
       }
     }
     loadData();
@@ -48,13 +49,35 @@ function CheckinSubmit({ navigation }) {
     navigation.navigate('Checkin');
     console.log(textAnswer);
     console.log(newResponse);
+    let newId = '';
+    const groupId = pairId + moment().format('MMDDYY');
     if (newResponse) {
       addResponse(
         {
           response: textAnswer,
           user_id: userId,
         },
-      );
+      ).then((newResponseId) => {
+        newId = newResponseId;
+        // Perform further operations with the new response ID
+      }).catch((error) => {
+        console.error('Error adding response:', error);
+      });
+      if (currentPartner === 'p1') {
+        updateResponseGroup(
+          groupId,
+          {
+            p1_response_id: newId,
+          },
+        );
+      } else {
+        updateResponseGroup(
+          groupId,
+          {
+            p2_response_id: newId,
+          },
+        );
+      }
     } else {
       updateResponse(
         responseId,

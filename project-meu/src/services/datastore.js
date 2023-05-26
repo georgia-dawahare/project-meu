@@ -33,6 +33,18 @@ export function getResponseGroup(id) {
       return null;
     });
 }
+export function updateResponseGroup(groupId, updatedFields) {
+  const docRef = firestore.collection('ResponseGroup').doc(groupId);
+  return docRef.update(updatedFields)
+    .then(() => {
+      console.log('Response group updated successfully');
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error updating response group:', error);
+      return false;
+    });
+}
 
 export function addResponseGroup(response, id) {
   firestore.collection('ResponseGroup').doc(id).set(response)
@@ -63,12 +75,15 @@ export function getResponse(id) {
 }
 
 export function addResponse(response) {
-  firestore.collection('Responses').add({ ...response, timestamp: firebase.firestore.Timestamp.now() })
+  const responseWithTimestamp = { ...response, timestamp: firebase.firestore.Timestamp.now() };
+  return firestore.collection('Responses').add(responseWithTimestamp)
     .then((docRef) => {
       console.log('doc written with id:', docRef.id);
+      return docRef.id;
     })
     .catch((error) => {
       console.error('error adding doc', error);
+      return null;
     });
 }
 
@@ -84,7 +99,18 @@ export function updateResponse(responseId, updatedResponse) {
       return false;
     });
 }
-
+export function deleteResponse(responseId) {
+  const docRef = firestore.collection('Responses').doc(responseId);
+  return docRef.delete()
+    .then(() => {
+      console.log('Response deleted successfully');
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error deleting response:', error);
+      return false;
+    });
+}
 
 // export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
 //   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
