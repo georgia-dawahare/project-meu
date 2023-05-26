@@ -21,10 +21,8 @@ export function getResponseGroup(id) {
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
-        console.log('doc data:', doc.data());
         return doc.data();
       } else {
-        console.log('no doc found');
         return null;
       }
     })
@@ -37,7 +35,6 @@ export function updateResponseGroup(groupId, updatedFields) {
   const docRef = firestore.collection('ResponseGroup').doc(groupId);
   return docRef.update(updatedFields)
     .then(() => {
-      console.log('Response group updated successfully');
       return true;
     })
     .catch((error) => {
@@ -49,7 +46,6 @@ export function updateResponseGroup(groupId, updatedFields) {
 export function addResponseGroup(response, id) {
   firestore.collection('ResponseGroup').doc(id).set(response)
     .then((docRef) => {
-      console.log('doc written with id:', docRef.id);
     })
     .catch((error) => {
       console.error('error adding doc', error);
@@ -61,15 +57,12 @@ export function getResponse(id) {
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
-        console.log('doc data:', doc.data());
         return doc.data();
       } else {
-        console.log('no doc found');
         return null;
       }
     })
     .catch((error) => {
-      console.log('error getting doc', error);
       return null;
     });
 }
@@ -78,7 +71,6 @@ export function addResponse(response, groupId, currentPartner) {
   const responseWithTimestamp = { ...response, timestamp: firebase.firestore.Timestamp.now() };
   return firestore.collection('Responses').add(responseWithTimestamp)
     .then((docRef) => {
-      console.log('doc written with id:', docRef.id);
       if (currentPartner === 'p1') {
         updateResponseGroup(
           groupId,
@@ -105,7 +97,6 @@ export function updateResponse(responseId, updatedResponse) {
   const docRef = firestore.collection('Responses').doc(responseId);
   return docRef.update(updatedResponse)
     .then(() => {
-      console.log('Response updated successfully');
       return true;
     })
     .catch((error) => {
@@ -117,7 +108,6 @@ export function deleteResponse(responseId) {
   const docRef = firestore.collection('Responses').doc(responseId);
   return docRef.delete()
     .then(() => {
-      console.log('Response deleted successfully');
       return true;
     })
     .catch((error) => {

@@ -31,13 +31,11 @@ function CheckinPage({ navigation }) {
   const [partnerResponseTime, setPartnerResponseTime] = useState('');
   const [userResponseTime, setUserResponseTime] = useState('');
 
-  // using more dumby user data here
-  const userFirstName = 'Kaylie';
-  const partnerFirstName = 'Steve';
-
   // dumby user data
   const userId = 'user1';
   const pairId = 'pair1';
+  const userFirstName = 'Kaylie';
+  const partnerFirstName = 'Steve';
 
   const handleDeleteResponse = async () => {
     await deleteResponse(userResponseId);
@@ -47,29 +45,31 @@ function CheckinPage({ navigation }) {
 
   const handleNewResponse = (textAnswer) => {
     setAnswered(true);
-    console.log('this is ', textAnswer);
     setUserResponse(textAnswer);
-    // refreshData();
   };
 
   const refreshData = async () => {
     const groupId = pairId + moment().format('MMDDYY');
-    const data = await getResponseGroup(groupId);
+    let data = await getResponseGroup(groupId);
     // if there is no response group, create a new one!
     if (data === null) {
+      const questionId = Math.round(Math.random() * 100);
       addResponseGroup(
         {
           p1_response_id: '',
           p2_response_id: '',
-          question_id: Math.random() * 100,
+          question_id: questionId,
         },
         groupId,
       );
+      const questionData = require('../../../assets/data/questions.json');
+      setQuestion(questionData.questions[data.question_id].question);
+      data = await getResponseGroup(groupId);
     }
     let p1Response = null;
     let p2Response = null;
-    p1Response = await getResponse(data.p1_response_id);
-    p2Response = await getResponse(data.p2_response_id);
+    if (data.p2_response_id !== '') p1Response = await getResponse(data.p1_response_id);
+    if (data.p2_response_id !== '') p2Response = await getResponse(data.p2_response_id);
 
     const questionData = require('../../../assets/data/questions.json');
     setQuestion(questionData.questions[data.question_id].question);
@@ -177,7 +177,7 @@ function CheckinPage({ navigation }) {
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
+          <Card.Title style={styles.question}>{question}</Card.Title>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={{ marginRight: 10 }}>
@@ -208,7 +208,7 @@ function CheckinPage({ navigation }) {
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
+          <Card.Title style={styles.question}>{question}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
@@ -234,7 +234,7 @@ function CheckinPage({ navigation }) {
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
+          <Card.Title style={styles.question}>{question}</Card.Title>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
             <Text style={styles.buttonText}>
               Submit a Response
@@ -272,7 +272,6 @@ const styles = StyleSheet.create({
     width: 45,
     height: 45,
     alignSelf: 'flex-end',
-    backgroundColor: 'yellow',
     alignItems: 'center',
     justifyContent: 'center',
   },
