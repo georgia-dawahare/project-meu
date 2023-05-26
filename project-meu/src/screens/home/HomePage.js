@@ -62,6 +62,12 @@ function HomePage({ navigation }) {
             Settings
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            Version-Setting
+          </Text>
+        </TouchableOpacity>
       </View>
     <View />
     </View>

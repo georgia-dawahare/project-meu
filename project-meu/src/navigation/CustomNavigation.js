@@ -8,6 +8,7 @@ import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import HomeCalendar from '../screens/home/HomeCalendar';
 import BackgroundChange from '../screens/home/BackgroundChange';
 import SettingPage from '../screens/settings/SettingPage';
+import VersionPage from '../screens/settings/VersionPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -29,6 +30,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingPage"
         component={SettingPage}
+      />
+      <Stack.Screen
+        name="VersionPage"
+        component={VersionPage}
       />
 
     </Stack.Navigator>

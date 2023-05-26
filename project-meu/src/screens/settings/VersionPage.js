@@ -8,27 +8,16 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import Button from '../../components/Button';
 
 const DATA = [
   {
-    id: '11',
-    title: 'Personal Info',
+    id: 'CV',
+    title: 'Current Versoin',
   },
   {
-    id: '22',
-    title: 'Privacy and Data',
-  },
-  {
-    id: '33',
-    title: 'Notification Preferences',
-  },
-  {
-    id: '44',
-    title: 'Temperature Unit',
-  },
-  {
-    id: '55',
-    title: 'Version',
+    id: 'TLV',
+    title: 'The Lastest Version',
   },
 ];
 
@@ -38,10 +27,9 @@ const Item = ({ title, onPress }) => (
   </TouchableOpacity>
 );
 
-function SettingPage() {
+function VersionPage() {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
-    // 원하는 동작을 수행합니다.
   };
 
   return (
@@ -51,13 +39,19 @@ function SettingPage() {
           source={require('../../../assets/icons/goback-black.png')}
           style={styles.Icon}
         />
-        <Text style={styles.topTitle}>Settings</Text>
+        <Text style={styles.topTitle}>Version</Text>
       </View>
+      <View style={styles.logo}>
+      <Image
+          source={require('../../../assets/images/logo.png')}
+          style={styles.logoIcon}
+        />
+      </View>
+      
       <View style={styles.contents}>
-          <View style={styles.personalInfo}>
-          <Text style={styles.name}>Florian</Text>
-          <Text style={styles.email}>flori@gmail.com</Text>
-      </View>
+        <View style={styles.personalInfo}>
+          <Text style={styles.versionInfo}>Version Info</Text>
+       </View>
 
     <FlatList
       data={DATA}
@@ -67,6 +61,7 @@ function SettingPage() {
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContainer}
     />
+    <Button title="Update the Latest Version" buttonStyle={{ top: 120, left: 45 }} />
         
       </View>
     </SafeAreaView>
@@ -98,22 +93,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 16,
   },
-  name: {
-    fontWeight: '600',
-    fontSize: 22,
-    marginBottom: 4,
-  },
-  email: {
-    fontWeight: '400',
-    fontSize: 14,
-    marginBottom: 16,
-    marginTop:6,
-  },
-  listContainer: {
-    paddingBottom: 16,
-  },
   item: {
-    padding: 16,
     paddingLeft:0,
     marginVertical: 8,
     borderRadius: 8,
@@ -122,8 +102,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   personalInfo:{
-      marginTop:32,
+      marginTop:-50,
+  },
+  logoIcon:{
+      width:306,
+      height:231,
+  },
+  logo:{
+      flex:1,
+      alignSelf:'center',
+  },
+  versionInfo:{
+      marginBottom:16,
+      fontSize:16,
+      color:'#4F4F4F',
   },
 });
 
-export default SettingPage;
+export default VersionPage;
