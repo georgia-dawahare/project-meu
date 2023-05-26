@@ -16,7 +16,7 @@ import {
 import * as Font from 'expo-font';
 import moment from 'moment';
 import {
-  getResponseGroup, getResponse, addResponseGroup, deleteResponse, updateResponseGroup,
+  getResponseGroup, getResponse, addResponseGroup, deleteResponse,
 } from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
@@ -32,15 +32,24 @@ function CheckinPage({ navigation }) {
   const [userResponseTime, setUserResponseTime] = useState('');
 
   // using more dumby user data here
-  const [userFirstName, setUserFirstName] = useState('Kaylie');
-  const [partnerFirstName, setPartnerFirstName] = useState('Steve');
+  const userFirstName = 'Kaylie';
+  const partnerFirstName = 'Steve';
 
   // dumby user data
   const userId = 'user1';
   const pairId = 'pair1';
 
   const handleDeleteResponse = async () => {
-    deleteResponse(userResponseId);
+    await deleteResponse(userResponseId);
+    setUserResponse('');
+    setAnswered(false);
+  };
+
+  const handleNewResponse = (textAnswer) => {
+    setAnswered(true);
+    console.log('this is ', textAnswer);
+    setUserResponse(textAnswer);
+    // refreshData();
   };
 
   const refreshData = async () => {
@@ -50,20 +59,22 @@ function CheckinPage({ navigation }) {
     if (data === null) {
       addResponseGroup(
         {
-          p1_response_id: null,
-          p2_response_id: null,
+          p1_response_id: '',
+          p2_response_id: '',
           question_id: Math.random() * 100,
         },
         groupId,
       );
     }
-    const p1Response = await getResponse(data.p1_response_id);
-    const p2Response = await getResponse(data.p2_response_id);
+    let p1Response = null;
+    let p2Response = null;
+    p1Response = await getResponse(data.p1_response_id);
+    p2Response = await getResponse(data.p2_response_id);
 
     const questionData = require('../../../assets/data/questions.json');
     setQuestion(questionData.questions[data.question_id].question);
 
-    if (p1Response !== null && p1Response !== '') {
+    if (p1Response !== null) {
       const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
       const p1Date = new Date(p1Timestamp);
       if (p1Response.user_id === userId) {
@@ -77,7 +88,7 @@ function CheckinPage({ navigation }) {
         setPartnerAnswered(true);
       }
     }
-    if (p2Response !== null && p2Response !== '') {
+    if (p2Response !== null) {
       const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
       const p2Date = new Date(p2Timestamp);
       if (p2Response.user_id === userId) {
@@ -147,7 +158,7 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.leftText}>{userResponse}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
             <Image
               style={styles.editButtonContainer}
               source={require('../../../assets/images/editButton.png')}
@@ -179,7 +190,7 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.leftText}>{userResponse}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
             <Image style={styles.editButton}
               source={require('../../../assets/images/editButton.png')}
             />
@@ -210,7 +221,7 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.blurText}>{partnerResponse}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
             <Text style={styles.buttonText}>
               Submit a Response
             </Text>
@@ -224,7 +235,7 @@ function CheckinPage({ navigation }) {
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
           <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
             <Text style={styles.buttonText}>
               Submit a Response
             </Text>

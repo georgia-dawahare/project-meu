@@ -74,12 +74,26 @@ export function getResponse(id) {
     });
 }
 
-export function addResponse(response) {
+export function addResponse(response, groupId, currentPartner) {
   const responseWithTimestamp = { ...response, timestamp: firebase.firestore.Timestamp.now() };
   return firestore.collection('Responses').add(responseWithTimestamp)
     .then((docRef) => {
       console.log('doc written with id:', docRef.id);
-      return docRef.id;
+      if (currentPartner === 'p1') {
+        updateResponseGroup(
+          groupId,
+          {
+            p1_response_id: docRef.id,
+          },
+        );
+      } else {
+        updateResponseGroup(
+          groupId,
+          {
+            p2_response_id: docRef.id,
+          },
+        );
+      }
     })
     .catch((error) => {
       console.error('error adding doc', error);
