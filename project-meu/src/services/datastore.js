@@ -16,9 +16,13 @@ const config = {
 firebase.initializeApp(config);
 
 const firestore = firebase.firestore();
-
 const auth = firebase.auth();
 export {auth};
+
+export function getResponseGroup(id) {
+  const docRef = firestore.collection('ResponseGroup').doc(id);
+}
+
 
 // need to modify so it gets all the daily question responses of the user id instead of the response id, but okay until we get auth working
 export function getDailyQuestionResponses(id) {
@@ -26,10 +30,8 @@ export function getDailyQuestionResponses(id) {
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
-        console.log('doc data:', doc.data());
         return doc.data();
       } else {
-        console.log('no doc found');
         return null;
       }
     })
@@ -38,14 +40,88 @@ export function getDailyQuestionResponses(id) {
       return null;
     });
 }
+export function updateResponseGroup(groupId, updatedFields) {
+  const docRef = firestore.collection('ResponseGroup').doc(groupId);
+  return docRef.update(updatedFields)
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error updating response group:', error);
+      return false;
+    });
+}
 
-export function addDailyQuestionResponse(dailyQuestionResponse) {
-  firestore.collection('DailyQuestionResponses').add({ ...dailyQuestionResponse, timestamp: firebase.firestore.Timestamp.now() })
+export function addResponseGroup(response, id) {
+  firestore.collection('ResponseGroup').doc(id).set(response)
     .then((docRef) => {
-      console.log('doc written with id:', docRef.id);
     })
     .catch((error) => {
       console.error('error adding doc', error);
+    });
+}
+
+export function getResponse(id) {
+  const docRef = firestore.collection('Responses').doc(id);
+  return docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+        return doc.data();
+      } else {
+        return null;
+      }
+    })
+    .catch((error) => {
+      return null;
+    });
+}
+
+export function addResponse(response, groupId, currentPartner) {
+  const responseWithTimestamp = { ...response, timestamp: firebase.firestore.Timestamp.now() };
+  return firestore.collection('Responses').add(responseWithTimestamp)
+    .then((docRef) => {
+      if (currentPartner === 'p1') {
+        updateResponseGroup(
+          groupId,
+          {
+            p1_response_id: docRef.id,
+          },
+        );
+      } else {
+        updateResponseGroup(
+          groupId,
+          {
+            p2_response_id: docRef.id,
+          },
+        );
+      }
+    })
+    .catch((error) => {
+      console.error('error adding doc', error);
+      return null;
+    });
+}
+
+export function updateResponse(responseId, updatedResponse) {
+  const docRef = firestore.collection('Responses').doc(responseId);
+  return docRef.update(updatedResponse)
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error updating response:', error);
+      return false;
+    });
+}
+export function deleteResponse(responseId) {
+  const docRef = firestore.collection('Responses').doc(responseId);
+  return docRef.delete()
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.error('Error deleting response:', error);
+      return false;
     });
 }
 

@@ -1,28 +1,79 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
+  LogBox,
 } from 'react-native';
 import {
   Card, Input,
 } from 'react-native-elements';
-import { addDailyQuestionResponse } from '../../services/datastore';
+import moment from 'moment';
+import {
+  addResponse, getResponseGroup, getResponse, updateResponse,
+} from '../../services/datastore';
 
-function CheckinSubmit({ navigation }) {
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
+
+function CheckinSubmit({ navigation, route }) {
+  const { handleNewResponse } = route.params;
   const [textAnswer, setTextAnswer] = useState('');
+  const [newResponse, setNewResponse] = useState(false);
+  const [responseId, setResponseId] = useState('');
+  const [currentPartner, setCurrentPartner] = useState('');
+
+  // dumby user data
+  const userId = 'user1';
+  const pairId = 'pair1';
+
+  const refreshData = async () => {
+    const groupId = pairId + moment().format('MMDDYY');
+    const data = await getResponseGroup(groupId);
+    let p1Response = null;
+    let p2Response = null;
+    if (data.p1_response_id !== '') { p1Response = await getResponse(data.p1_response_id); }
+    if (data.p2_response_id !== '') { p2Response = await getResponse(data.p2_response_id); }
+    if (p1Response != null && p1Response.user_id === userId) {
+      setTextAnswer(p1Response.response);
+      setResponseId(data.p1_response_id);
+      setCurrentPartner('p1');
+    } else if (p2Response != null && p2Response.user_id === userId) {
+      setTextAnswer(p2Response.response);
+      setResponseId(data.p2_response_id);
+      setCurrentPartner('p2');
+    } else {
+      setNewResponse(true);
+      setCurrentPartner('p1');
+    }
+  };
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', refreshData);
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const handleOnSubmit = () => {
     navigation.navigate('Checkin');
-    addDailyQuestionResponse(
-      {
-        pair_id: 'example',
-        question_id: 2,
+    const groupId = pairId + moment().format('MMDDYY');
+    if (newResponse) {
+      addResponse({
         response: textAnswer,
-        user_id: 'example',
-      },
-    );
+        user_id: userId,
+      }, groupId, currentPartner);
+      handleNewResponse(textAnswer);
+    } else {
+      updateResponse(
+        responseId,
+        {
+          response: textAnswer,
+          user_id: userId,
+        },
+      );
+    }
   };
 
   return (
