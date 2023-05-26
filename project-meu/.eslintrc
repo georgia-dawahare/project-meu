@@ -70,24 +70,10 @@
         "react"
     ],
     "parserOptions": {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "babelOptions":{
-            "presets":["@babel/preset-react"]
-=======
         "babelOptions": {
-<<<<<<< HEAD
-            "presets": ["@babel/preset-react"]
->>>>>>> 0094b04a22805ffde40d40d86501d54a730a46aa
-=======
-        "babelOptions": {
-            "presets": ["@babel/preset-react"]
->>>>>>> 0094b04a22805ffde40d40d86501d54a730a46aa
-=======
             "presets": [
                 "@babel/preset-react"
             ]
->>>>>>> 07388c8f6a48a990a909fcad9154c74f5e403d2e
         },
         "ecmaFeatures": {
             "jsx": true,
@@ -95,6 +81,5 @@
         },
         "requireConfigFile": false
     }
-
 }
 // yarn add --dev eslint eslint-config-airbnb eslint-plugin-import eslint-plugin-react eslint-plugin-jsx-a11y babel-eslint
