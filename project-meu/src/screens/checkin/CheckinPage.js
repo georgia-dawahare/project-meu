@@ -12,44 +12,77 @@ import {
   Card,
 } from 'react-native-elements';
 import * as Font from 'expo-font';
-import { getDailyQuestionResponses } from '../../services/datastore';
+import { getResponseGroup, getResponse } from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [answered, setAnswered] = useState(true);
-  const [partnerAnswered, setPartnerAnswered] = useState(false);
+  const [partnerAnswered, setPartnerAnswered] = useState(true);
+  const [question, setQuestion] = useState('');
 
-  // hard-coded data until we figure out backend data
-  const partnerResponse = {
-    response: 'When we went to the ice cream store and danced on the counter',
-    time: '04:05pm',
-  };
-  const partner = {
-    firstName: 'Peter',
-  };
+  const [partnerResponse, setPartnerResponse] = useState('');
+  const [userResponse, setUserResponse] = useState('');
+  const [partnerResponseTime, setPartnerResponseTime] = useState('');
+  const [userResponseTime, setUserResponseTime] = useState('');
 
-  const myResponse = {
-    response: 'When we were dancing in the rain after my cousins wedding',
-    time: '09:47pm',
-  };
-  const user = {
-    firstName: 'Kaylie',
-  };
+  // using more dumby user data here
+  const [userFirstName, setUserFirstName] = useState('Kaylie');
+  const [partnerFirstName, setPartnerFirstName] = useState('Steve');
 
-  const handleGetDailyQuestionResponses = () => {
-    getDailyQuestionResponses('example');
+  // dumby user data
+  const userId = 'user1';
+  const partnerId = 'user2';
+
+  const handleGetResponseGroup = async () => {
+    // const data = await getResponseGroup('pair1052623');
+    // const p1_response = await getResponse(data.p1_response_id);
+    // const p2_response = await getResponse(data.p2_response_id);
+    // if (p1esponse.user_id == user_id) {
+    //   setUserResponse(p1_response.response);
+    //   setPartnerResponse(p2_response.response);
+    // } else {
+    //   setUserResponse(p2_response.response);
+    //   setPartnerResponse(p1_response.response);
+    // }
   };
 
   useEffect(() => {
+    async function loadData() {
+      const data = await getResponseGroup('pair1052623');
+      const p1Response = await getResponse(data.p1_response_id);
+      const p2Response = await getResponse(data.p2_response_id);
+
+      const questionData = require('../../../assets/data/questions.json');
+      setQuestion(questionData.questions[data.question_id].question);
+
+      // Convert the timestamp to milliseconds
+      const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
+      const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
+
+      // Create a new Date object from the timestamp
+      const p1Date = new Date(p1Timestamp);
+      const p2Date = new Date(p2Timestamp);
+
+      if (p1Response.userId === userId) {
+        setUserResponse(p1Response.response);
+        setUserResponseTime(p1Date.getHours() + p1Date.getMinutes());
+        setPartnerResponse(p2Response.response);
+        setPartnerResponseTime(p2Date.getHours() + p2Date.getMinutes());
+      } else {
+        setUserResponse(p2Response.response);
+        setPartnerResponse(p1Response.response);
+        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+        setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+      }
+    }
+    loadData();
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
         'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
       });
-
       setFontLoaded(true);
     }
-
     loadFont();
   }, []);
 
@@ -61,30 +94,30 @@ function CheckinPage({ navigation }) {
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>What is your most treasured memory of us?</Card.Title>
+          <Card.Title style={styles.question}>{question}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
               />
               <View style={{ marginLeft: 10 }}>
-                <Text>{partner.firstName}</Text>
-                <Text>{partnerResponse.time}</Text>
+                <Text>{partnerFirstName}</Text>
+                <Text>{partnerResponseTime}</Text>
               </View>
             </View>
-            <Text>{partnerResponse.response}</Text>
+            <Text>{partnerResponse}</Text>
           </View>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={{ marginRight: 10 }}>
-                <Text style={styles.leftText}>{user.firstName}</Text>
-                <Text style={styles.leftText}>{myResponse.time}</Text>
+                <Text style={styles.leftText}>{userFirstName}</Text>
+                <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
               <Image style={styles.profileImg}
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
               />
             </View>
-            <Text style={styles.leftText}>{myResponse.response}</Text>
+            <Text style={styles.leftText}>{userResponse}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image style={styles.editButton}
@@ -92,7 +125,7 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetDailyQuestionResponses}>
+        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
           <Text style={styles.buttonText}>
             View More
           </Text>
@@ -108,14 +141,14 @@ function CheckinPage({ navigation }) {
           <View>
             <View style={styles.myResponseHeader}>
               <View style={{ marginRight: 10 }}>
-                <Text style={styles.leftText}>{user.firstName}</Text>
-                <Text style={styles.leftText}>{myResponse.time}</Text>
+                <Text style={styles.leftText}>{userFirstName}</Text>
+                <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
               <Image style={styles.profileImg}
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
               />
             </View>
-            <Text style={styles.leftText}>{myResponse.response}</Text>
+            <Text style={styles.leftText}>{userResponse.response}</Text>
           </View>
           <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image style={styles.editButton}
@@ -123,7 +156,7 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetDailyQuestionResponses}>
+        <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
           <Text style={styles.buttonText}>
             View More
           </Text>
@@ -142,11 +175,11 @@ function CheckinPage({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
               />
               <View style={{ marginLeft: 10 }}>
-                <Text>{partner.firstName}</Text>
-                <Text>{partnerResponse.time}</Text>
+                <Text>{partnerFirstName}</Text>
+                <Text>{partnerResponseTime}</Text>
               </View>
             </View>
-            <Text style={styles.blurText}>{partnerResponse.response}</Text>
+            <Text style={styles.blurText}>{partnerResponse}</Text>
           </View>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Text style={styles.buttonText}>

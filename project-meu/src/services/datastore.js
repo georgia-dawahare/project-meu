@@ -34,6 +34,41 @@ export function getDailyQuestionResponses(id) {
       return null;
     });
 }
+export function getResponseGroup(id) {
+  const docRef = firestore.collection('ResponseGroup').doc(id);
+  return docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+        console.log('doc data:', doc.data());
+        return doc.data();
+      } else {
+        console.log('no doc found');
+        return null;
+      }
+    })
+    .catch((error) => {
+      console.log('error getting doc', error);
+      return null;
+    });
+}
+
+export function getResponse(id) {
+  const docRef = firestore.collection('Responses').doc(id);
+  return docRef.get()
+    .then((doc) => {
+      if (doc.exists) {
+        console.log('doc data:', doc.data());
+        return doc.data();
+      } else {
+        console.log('no doc found');
+        return null;
+      }
+    })
+    .catch((error) => {
+      console.log('error getting doc', error);
+      return null;
+    });
+}
 
 export function addDailyQuestionResponse(dailyQuestionResponse) {
   firestore.collection('DailyQuestionResponses').add({ ...dailyQuestionResponse, timestamp: firebase.firestore.Timestamp.now() })
