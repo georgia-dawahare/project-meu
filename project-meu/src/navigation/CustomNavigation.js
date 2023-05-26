@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomePage from '../screens/home/HomePage';
 import HomeCalendar from '../screens/home/HomeCalendar';
+import HomePage from '../screens/home/HomePage';
 import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
@@ -11,8 +11,8 @@ import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
 import SignIn from '../screens/authentication/SignIn';
 import SignUpSignIn from '../screens/authentication/SignUpSignIn';
-import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
+import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
 
 const Stack = createNativeStackNavigator();
 
@@ -85,7 +85,6 @@ export { CheckinScreenNavigator };
 function PenguinsScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
       <Stack.Screen
         name="Penguins"
         component={PenguinsPage}

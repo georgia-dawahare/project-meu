@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
 import {
-  Keyboard, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View,
+  Keyboard,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text, TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SignUpGraphic from '../../components/SignUpGraphic';
