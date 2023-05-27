@@ -20,7 +20,7 @@ Backend: Express and Firebase
 ## Designs
 [Link to the project Figma](https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/Tim_Soo_Kaylie_Final-project?type=design&node-id=2722%3A11215&t=bPEOBP3huvstSb1E-1)
 
-## Deployment
+## Backend Deployment
 Firebase Hosting
 
 Deploy to Firebase using the command: `firebase deploy`
