@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import * as Font from 'expo-font';
 
 const DATA = [
   {
@@ -32,13 +34,33 @@ const DATA = [
   },
 ];
 
-const Item = ({ id,title, navigation, onPress }) => (
-  <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </TouchableOpacity>
-);
+function Item({ title, onPress }) {
+  return (
+    <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
 
-function SettingPage({navigation}) {
+function SettingPage({ navigation }) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
   };
@@ -48,28 +70,28 @@ function SettingPage({navigation}) {
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
+            source={require('../../../assets/icons/goback-black.png')}
+            style={styles.Icon}
           />
         </TouchableOpacity>
-        
+
         <Text style={styles.topTitle}>Settings</Text>
       </View>
       <View style={styles.contents}>
-          <View style={styles.personalInfo}>
+        <View style={styles.personalInfo}>
           <Text style={styles.name}>Florian</Text>
           <Text style={styles.email}>flori@gmail.com</Text>
-      </View>
+        </View>
 
-    <FlatList
-      data={DATA}
-      renderItem={({ item }) => (
-          <Item title={item.title} onPress={handleItemClick} />
-      )}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.listContainer}
-    />
-        
+        <FlatList
+          data={DATA}
+          renderItem={({ item }) => (
+            <Item title={item.title} onPress={handleItemClick} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+
       </View>
     </SafeAreaView>
   );
@@ -90,10 +112,10 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 
-    topTitle:{
-    fontFamily: 'SFProDisplay-Medium',
-    fontSize:20,
-    left:100,
+  topTitle: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 20,
+    left: 100,
   },
   contents: {
     flex: 1,
@@ -109,22 +131,22 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 14,
     marginBottom: 16,
-    marginTop:6,
+    marginTop: 6,
   },
   listContainer: {
     paddingBottom: 16,
   },
   item: {
     padding: 16,
-    paddingLeft:0,
+    paddingLeft: 0,
     marginVertical: 8,
     borderRadius: 8,
   },
   title: {
     fontSize: 14,
   },
-  personalInfo:{
-      marginTop:32,
+  personalInfo: {
+    marginTop: 32,
   },
 });
 

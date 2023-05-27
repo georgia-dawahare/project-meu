@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
 const config = {
@@ -15,6 +16,8 @@ const config = {
 firebase.initializeApp(config);
 
 const firestore = firebase.firestore();
+const auth = firebase.auth();
+export { auth };
 
 export function getResponseGroup(id) {
   const docRef = firestore.collection('ResponseGroup').doc(id);

@@ -9,6 +9,9 @@ import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
+import SignIn from '../screens/home/SignIn';
+import SignUpSignIn from '../screens/home/SignUpSignIn';
+import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +38,18 @@ function HomeScreenNavigator() {
         name="VersionPage"
         component={VersionPage}
       />
-
+      <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+      />
+      <Stack.Screen
+        name="SignUpSignIn"
+        component={SignUpSignIn}
+      />
+      <Stack.Screen
+        name="SignInForgotPassword1"
+        component={SignInForgotPasswordPage1}
+      />
     </Stack.Navigator>
   );
 }
@@ -63,7 +77,6 @@ function CheckinScreenNavigator() {
 
 export { CheckinScreenNavigator };
 
-
 function PenguinsScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -75,19 +88,7 @@ function PenguinsScreenNavigator() {
     </Stack.Navigator>
   );
 }
-export {PenguinsScreenNavigator};
 
-// function SettingsNavigator() {
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-//       <Stack.Screen
-//         name="SettingPage"
-//         component={SettingPage}
-//       />
-//     </Stack.Navigator>
-//   );
-// }
-// export { SettingsNavigator };
+export { PenguinsScreenNavigator };
 
 // Modified code by: https://jaymanyoo.medium.com/combine-bottom-tab-navigator-with-stack-navigator-in-react-native-2020-58804b4afded

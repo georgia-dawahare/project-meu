@@ -31,7 +31,7 @@ function HomePage({ navigation }) {
   }
 
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
       <SignUpGraphic />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Checkin')}>
@@ -67,8 +67,22 @@ function HomePage({ navigation }) {
             Version-Setting
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            SignIn
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUpSignIn')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            SignUpSignIn
+          </Text>
+        </TouchableOpacity>
       </View>
-    <View />
+
+      {/* Empty view to center button */}
+      <View />
     </View>
   );
 }

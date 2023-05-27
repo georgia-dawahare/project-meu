@@ -1,11 +1,31 @@
-import React from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView, StyleSheet, Text,
 } from 'react-native';
+import * as Font from 'expo-font';
 import Button from '../components/Button';
 import SignUpGraphic from '../components/SignUpGraphic';
 
 function SignupSigninPage(props) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Regular': require('../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <SafeAreaView>
       <SignUpGraphic />
@@ -29,12 +49,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   Already: {
-    fontFamily: 'SFProDisplay-Regular',
+    fontFamily: 'SF-Pro-Display-Regular',
     left: 88,
     color: 'rgba(0,0,0,1)',
   },
   SignInText: {
-    fontFamily: 'SFProDisplay-Semibold',
+    fontFamily: 'SF-Pro-Display-Semibold',
     left: 249,
     color: 'rgba(230, 43, 133, 1)',
   },
