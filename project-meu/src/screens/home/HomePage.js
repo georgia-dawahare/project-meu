@@ -55,6 +55,18 @@ function HomePage({ navigation }) {
             BackgroundChange
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingPage')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            Settings
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            Version-Setting
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}
