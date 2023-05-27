@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import * as Font from 'expo-font';
 import Button from '../../components/Button';
 
 const DATA = [
@@ -34,6 +35,23 @@ function VersionPage() {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
   };
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -87,7 +105,7 @@ const styles = StyleSheet.create({
   },
 
   topTitle: {
-    fontFamily: 'SFProDisplay-Medium',
+    fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
     left: 100,
   },
