@@ -1,7 +1,0 @@
-.DS_Store
-node_modules
-.env
-npm-debug.log
-build
-dist
-credentials.json
