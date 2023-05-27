@@ -8,7 +8,6 @@ import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
   HomeScreenNavigator,
-  SettingsNavigator,
 } from './src/navigation/CustomNavigation';
 import store from './src/store';
 

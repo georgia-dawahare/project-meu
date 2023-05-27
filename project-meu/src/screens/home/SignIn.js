@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
-import { auth } from '../../services/datastore';
+import {
+  Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { auth } from '../../services/datastore';
 import SignUpGraphic from '../../components/SignUpGraphic';
 
-const LoginScreen = () => {
+function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -34,10 +36,10 @@ const LoginScreen = () => {
     auth
       .signInWithEmailAndPassword(email, password)
       .then((userCredentials) => {
-        const user = userCredentials.user;
+        const { user } = userCredentials;
         const { email } = user;
 
-        const userRef = firebase.database().ref('users/' + user.uid);
+        const userRef = firebase.database().ref(`users/${user.uid}`);
         userRef.once('value', (snapshot) => {
           const userData = snapshot.val();
           const savedPassword = userData.password; // Access the stored password
@@ -50,7 +52,6 @@ const LoginScreen = () => {
           } else {
             setPasswordError('The Password is incorrect');
             console.log('The Password is incorrect');
-            
           }
         });
 
@@ -58,8 +59,7 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         setPasswordError('The Password is incorrect');
-       // alert(error);
-      
+        // alert(error);
       });
   };
 
@@ -75,68 +75,67 @@ const LoginScreen = () => {
 
   return (
     <TouchableWithoutFeedback onPress={handleScreenPress}>
-    <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null} enabled>
-    <SignUpGraphic />
-    <View style={styles.Container}>
-    <View style={styles.inputContainer}>
-      <TextInput
-        placeholder='Email'
-        placeholderTextColor='gray'
-        textAlign='center'
-        value={email}
-        onChangeText={(text) => setEmail(text)}
-        style={styles.input}
-      />
-      {/* Render the error message if emailError is not empty */}
-      {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+      <View style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null} enabled>
+        <SignUpGraphic />
+        <View style={styles.Container}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor="gray"
+              textAlign="center"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              style={styles.input}
+            />
+            {/* Render the error message if emailError is not empty */}
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-      <TextInput
-        placeholder='Password'
-        placeholderTextColor='gray'
-        textAlign='center'
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        style={styles.input}
-        secureTextEntry
-      />
-      {/* Render the error message if passwordError is not empty */}
-      {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-    </View>
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="gray"
+              textAlign="center"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              style={styles.input}
+              secureTextEntry
+            />
+            {/* Render the error message if passwordError is not empty */}
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+          </View>
 
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={handleSignIn} style={styles.button}>
-        <Text style={styles.buttonText}>Sign In</Text>
-      </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
 
-      <TouchableOpacity style={styles.forgetPass}>
-        <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
-      </TouchableOpacity>
-    </View>
-    </View>
-    <View/>
-    </View>
-    </TouchableWithoutFeedback >
+            <TouchableOpacity style={styles.forgetPass}>
+              <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View />
+      </View>
+    </TouchableWithoutFeedback>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  Container:{
-    justifyContent:'center',
-    alignItems:'center',
-    marginTop:52.5
+  Container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 52.5,
   },
   container: {
     flex: 1,
     justifyContent: 'space-between',
     backgroundColor: 'white',
   },
-  
+
   button: {
     backgroundColor: '#E62B85',
     width: 300,
     height: 56,
     padding: 15,
-    borderRadius: 10,
     alignItems: 'center',
     borderRadius: 15,
   },
@@ -192,10 +191,9 @@ const styles = StyleSheet.create({
   },
   forgetPass: {
     marginTop: 24,
-    fontWeight:400,
+    fontWeight: 400,
   },
- 
+
 });
 
 export default LoginScreen;
-

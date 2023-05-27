@@ -17,7 +17,7 @@ firebase.initializeApp(config);
 
 const firestore = firebase.firestore();
 const auth = firebase.auth();
-export {auth};
+export { auth };
 
 export function getResponseGroup(id) {
   const docRef = firestore.collection('ResponseGroup').doc(id);

@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -8,6 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
+import * as Font from 'expo-font';
 import Button from '../../components/Button';
 
 const DATA = [
@@ -21,16 +23,35 @@ const DATA = [
   },
 ];
 
-const Item = ({ title, onPress }) => (
-  <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
-    <Text style={styles.title}>{title}</Text>
-  </TouchableOpacity>
-);
+function Item({ title, onPress }) {
+  return (
+    <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
 
 function VersionPage() {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
   };
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,27 +63,27 @@ function VersionPage() {
         <Text style={styles.topTitle}>Version</Text>
       </View>
       <View style={styles.logo}>
-      <Image
+        <Image
           source={require('../../../assets/images/logo.png')}
           style={styles.logoIcon}
         />
       </View>
-      
+
       <View style={styles.contents}>
         <View style={styles.personalInfo}>
           <Text style={styles.versionInfo}>Version Info</Text>
-       </View>
+        </View>
 
-    <FlatList
-      data={DATA}
-      renderItem={({ item }) => (
-          <Item title={item.title} onPress={handleItemClick} />
-      )}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={styles.listContainer}
-    />
-    <Button title="Update the Latest Version" buttonStyle={{ top: 120, left: 45 }} />
-        
+        <FlatList
+          data={DATA}
+          renderItem={({ item }) => (
+            <Item title={item.title} onPress={handleItemClick} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+        <Button title="Update the Latest Version" buttonStyle={{ top: 120, left: 45 }} />
+
       </View>
     </SafeAreaView>
   );
@@ -83,10 +104,10 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 
-    topTitle:{
-    fontFamily: 'SFProDisplay-Medium',
-    fontSize:20,
-    left:100,
+  topTitle: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 20,
+    left: 100,
   },
   contents: {
     flex: 1,
@@ -94,28 +115,28 @@ const styles = StyleSheet.create({
     paddingTop: 16,
   },
   item: {
-    paddingLeft:0,
+    paddingLeft: 0,
     marginVertical: 8,
     borderRadius: 8,
   },
   title: {
     fontSize: 14,
   },
-  personalInfo:{
-      marginTop:-50,
+  personalInfo: {
+    marginTop: -50,
   },
-  logoIcon:{
-      width:306,
-      height:231,
+  logoIcon: {
+    width: 306,
+    height: 231,
   },
-  logo:{
-      flex:1,
-      alignSelf:'center',
+  logo: {
+    flex: 1,
+    alignSelf: 'center',
   },
-  versionInfo:{
-      marginBottom:16,
-      fontSize:16,
-      color:'#4F4F4F',
+  versionInfo: {
+    marginBottom: 16,
+    fontSize: 16,
+    color: '#4F4F4F',
   },
 });
 
