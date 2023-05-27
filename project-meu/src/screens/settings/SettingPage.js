@@ -32,25 +32,27 @@ const DATA = [
   },
 ];
 
-const Item = ({ title, onPress }) => (
+const Item = ({ id,title, navigation, onPress }) => (
   <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
     <Text style={styles.title}>{title}</Text>
   </TouchableOpacity>
 );
 
-function SettingPage() {
+function SettingPage({navigation}) {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
-    // 원하는 동작을 수행합니다.
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Image
           source={require('../../../assets/icons/goback-black.png')}
           style={styles.Icon}
-        />
+          />
+        </TouchableOpacity>
+        
         <Text style={styles.topTitle}>Settings</Text>
       </View>
       <View style={styles.contents}>

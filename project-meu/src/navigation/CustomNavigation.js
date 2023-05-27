@@ -6,7 +6,6 @@ import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
-import HomeCalendar from '../screens/home/HomeCalendar';
 import BackgroundChange from '../screens/home/BackgroundChange';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';

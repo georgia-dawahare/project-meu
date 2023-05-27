@@ -27,7 +27,7 @@ const Item = ({ title, onPress }) => (
   </TouchableOpacity>
 );
 
-function VersionPage() {
+function VersionPage({navigation}) {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
   };
@@ -35,10 +35,12 @@ function VersionPage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
-        />
+        source={require('../../../assets/icons/goback-black.png')}
+        style={styles.Icon}
+      />
+        </TouchableOpacity>
         <Text style={styles.topTitle}>Version</Text>
       </View>
       <View style={styles.logo}>
