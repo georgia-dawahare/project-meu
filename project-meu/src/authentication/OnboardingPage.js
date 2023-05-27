@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image,
+  View, StyleSheet, Text, Image,
 } from 'react-native';
 import Button from '../components/Button';
 
 function OnboardingPage(props) {
   return (
-    <SafeAreaView>
+    <View>
       <Image
         souce="../assets/images/Onboarding.png"
         style={styles.BannerImg}
@@ -26,7 +26,7 @@ function OnboardingPage(props) {
         souce="../assets/images/progress-1.png"
         style={styles.Progress}
       />
-    </SafeAreaView>
+    </View>
   );
 }
 
