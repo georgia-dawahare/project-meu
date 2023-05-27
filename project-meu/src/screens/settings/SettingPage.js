@@ -63,7 +63,6 @@ function SettingPage({ navigation }) {
 
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
-    // 원하는 동작을 수행합니다.
   };
 
   return (
@@ -92,7 +91,6 @@ function SettingPage({ navigation }) {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
-
       </View>
     </SafeAreaView>
   );

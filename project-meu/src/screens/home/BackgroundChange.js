@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, Dimensions,
+  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';

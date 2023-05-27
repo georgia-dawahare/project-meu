@@ -30,7 +30,7 @@ function LoginScreen() {
       <KeyboardAvoidingView KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null} enabled>
         <SignUpGraphic />
         <View>
-          <Text style={styles.forgetText} >Forgot Password?</Text>
+          <Text style={styles.forgetText}>Forgot Password?</Text>
           <Text style={styles.textT}>We need to confirm your email to send you instructions to reset the password</Text>
           <View style={styles.Container}>
             <View style={styles.buttonContainer}>
@@ -56,11 +56,11 @@ function LoginScreen() {
             </View>
           </View>
         </View>
-        <View/>
-        <View/>
-        <View/>
-        <View/>
-        <View/>
+        <View />
+        <View />
+        <View />
+        <View />
+        <View />
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -117,9 +117,9 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontWeight: '400',
     fontSize: 12,
-    marginTop:36,
-    width:106,
-    height: 21
+    marginTop: 36,
+    width: 106,
+    height: 21,
   },
 
   buttonOutLine: {
@@ -152,25 +152,23 @@ const styles = StyleSheet.create({
   forgetText: {
     width: 300,
     height: 27,
-    marginLeft:39,
+    marginLeft: 39,
     marginRight: 51,
-    marginTop:200,
+    marginTop: 200,
     fontWeight: '700',
     fontSize: 18,
     marginBottom: 10,
     textAlign: 'center',
   },
-  
+
   textT: {
-    marginLeft:40,
-    marginRight:50,
+    marginLeft: 40,
+    marginRight: 50,
     width: 300,
     height: 42,
     textAlign: 'center',
     color: 'gray',
   },
 });
-
-
 
 export default LoginScreen;
