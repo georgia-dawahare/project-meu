@@ -163,6 +163,24 @@ export function getEvents() {
     });
 }
 
+export function deleteEvent(eventTitle) {
+  firestore.collection('Events').where('title', '==', eventTitle).get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete()
+          .then(() => {
+            console.log('Event deleted:', doc.id);
+          })
+          .catch((error) => {
+            console.error('Error deleting event:', error);
+          });
+      });
+    })
+    .catch((error) => {
+      console.error('Error getting event:', error);
+    });
+}
+
 // export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
 //   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
 // }

@@ -1,21 +1,63 @@
 /* eslint-disable global-require */
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity,
+  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
-import { getEvents } from '../../services/datastore';
+import { getEvents, deleteEvent } from '../../services/datastore';
 
-function DdayList({ date, title, iconName }) {
+function DdayList({
+  date, title, iconName,
+}) {
+  const [icon, setIcon] = useState(iconName);
+  const [previousIcon, setPreviousIcon] = useState('');
+
+  const handlePress = () => {
+    if (icon === 'ios-trash') {
+      Alert.alert(
+        'Confirmation',
+        'Are you sure you want to delete this anniversary?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: () => {
+              setIcon(previousIcon);
+            },
+          },
+          {
+            text: 'Delete',
+            onPress: deleteEventConfirmation,
+            style: 'destructive',
+          },
+        ],
+      );
+    } else {
+      setPreviousIcon(icon);
+      setIcon('ios-trash');
+    }
+  };
+
+  const deleteEventConfirmation = () => {
+    deleteEvent(title);
+    // deleteEvent(title)
+    //   .then(() => {
+    //     onDelete(); // Update event data after deleting the event
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error deleting event:', error);
+    // });
+  };
+
   return (
-    <View style={styles.ddayItem}>
+    <TouchableOpacity onPress={handlePress} style={styles.ddayItem}>
       <Text style={styles.ddaydate}>{date}</Text>
       <Text style={styles.ddayTitle}>{title}</Text>
-      <Ionicons name={iconName} size={24} color="black" style={styles.icon} />
-    </View>
+      <Ionicons name={icon} size={24} color="black" style={styles.icon} />
+    </TouchableOpacity>
   );
 }
 
@@ -83,16 +125,16 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
-        <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
-        </View>
-      </TouchableOpacity> */}
-      <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
         <View style={styles.buttonContent}>
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
+      {/* <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
+        <View style={styles.buttonContent}>
+          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+        </View>
+      </TouchableOpacity> */}
       <Animated.View
         style={[
           styles.headerContainer,
@@ -159,14 +201,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
             </Text>
             <View>
               {/* <DdayList date="05/20" title="Dday 1" iconName="ios-heart" />
-              <DdayList date="05/20" title="Dday 2" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 3" iconName="ios-heart" />
-              <DdayList date="05/20" title="Dday 4" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 5" iconName="ios-heart" />
-              <DdayList date="05/20" title="Dday 6" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 7" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
-              <DdayList date="05/20" title="Dday 2" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" /> */}
               <View>{eventData}</View>
             </View>
