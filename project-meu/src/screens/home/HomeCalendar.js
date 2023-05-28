@@ -43,13 +43,6 @@ function DdayList({
 
   const deleteEventConfirmation = () => {
     deleteEvent(title);
-    // deleteEvent(title)
-    //   .then(() => {
-    //     onDelete(); // Update event data after deleting the event
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error deleting event:', error);
-    // });
   };
 
   return (
