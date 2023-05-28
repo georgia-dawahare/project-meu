@@ -8,6 +8,7 @@ import { FAB } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
+import { addEvents } from '../services/datastore';
 
 const K_OPTIONS = [
   {
@@ -30,6 +31,7 @@ function FabandModal() {
   const [date, setDate] = useState(new Date());
   const [title, setTitle] = useState('');
   const [selectedTeam, setSelectedTeam] = useState({});
+  const [anniversaries, setAnniversaries] = useState([]);
 
   useEffect(() => {
     async function loadFont() {
@@ -65,6 +67,9 @@ function FabandModal() {
     console.log('Date:', date);
     console.log('Title:', title);
     console.log('Repeat:', selectedTeam);
+
+    addEvents(date, title, selectedTeam.item);
+    setAnniversaries([...anniversaries, { date, title, repeat: selectedTeam.item }]);
 
     setModalVisible(false);
 
