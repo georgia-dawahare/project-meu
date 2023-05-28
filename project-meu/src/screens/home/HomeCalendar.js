@@ -121,16 +121,16 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
-        <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
-        </View>
-      </TouchableOpacity> */}
-      <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
         <View style={styles.buttonContent}>
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
+      {/* <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
+        <View style={styles.buttonContent}>
+          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+        </View>
+      </TouchableOpacity> */}
       <Animated.View
         style={[
           styles.headerContainer,
