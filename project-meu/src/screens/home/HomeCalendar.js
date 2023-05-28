@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
+// import { getEvents } from '../../services/datastore';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -17,6 +18,30 @@ function DdayList({ date, title, iconName }) {
     </View>
   );
 }
+
+// const printEventTitlesAndDates = () => {
+//   getEvents()
+//     .then((events) => {
+//       const ddayList = events.map((event) => {
+//         const { title, date } = event;
+//         return (
+//           <DdayList
+//             key={event.id} // 적절한 key 값을 제공해야 합니다.
+//             date={date}
+//             title={title}
+//             iconName="yourIconName" // 필요한 아이콘 이름을 제공해야 합니다.
+//           />
+//         );
+//       });
+
+//       // ddayList 변수에는 각 이벤트에 대한 DdayList 컴포넌트들이 저장되어 있습니다.
+//       // 이제 이 변수를 화면에 렌더링하거나 필요한 곳에서 사용할 수 있습니다.
+//       console.log('Dday List:', ddayList);
+//     })
+//     .catch((error) => {
+//       console.error('Error getting events:', error);
+//     });
+// };
 
 // Modified from: https://github.com/kosaikham/twitter-scrollable-header-clone
 function HomeCalendarComponent({ scrollY, navigation }) {
@@ -96,7 +121,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
             October 20th, 2019
           </Animated.Text>
         </Animated.Text>
-
         <FloatingButton />
         {/* <FloatingButton/> */}
         <FabandModal />

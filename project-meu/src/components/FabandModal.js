@@ -9,7 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
 import {
-  addEvents, getEvents,
+  addEvents,
 } from '../services/datastore';
 
 const K_OPTIONS = [
@@ -78,12 +78,6 @@ function FabandModal() {
     setTitle('');
     setSelectedTeam('Never');
   };
-
-  // getEvents()
-  //   .then((events) => {
-  //     const titles = events.map((event) => event.title);
-  //     console.log('Event Titles:', titles);
-  //   });
 
   function onChange() {
     return (val) => setSelectedTeam(val);
