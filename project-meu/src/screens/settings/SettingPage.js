@@ -42,7 +42,7 @@ function Item({ title, onPress }) {
   );
 }
 
-function SettingPage() {
+function SettingPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -69,10 +69,13 @@ function SettingPage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Image
+            source={require('../../../assets/icons/goback-black.png')}
+            style={styles.Icon}
+          />
+        </TouchableOpacity>
+
         <Text style={styles.topTitle}>Settings</Text>
       </View>
       <View style={styles.contents}>
