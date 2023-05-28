@@ -8,8 +8,9 @@ Backend: Express and Firebase
 
 ## Setup Backend
 1. Clone repo by running `git clone https://github.com/dartmouth-cs52-23s/project-meu.git` in your terminal and `cd project-meu-backend`
-2. Run `npm install` to install all of the necessary dependencies.
+2. Run `npm install`, `npm install babel`, and `npm run build` to install/build all of the necessary dependencies.
 3. Install the [Firebase CLI](https://firebase.google.com/docs/cli) by running `npm install -g firebase-tools`.
+4. Install firebase by running `npm install firebase`
     - Then, login to the `meu.project.52@gmail.com` account by running `firebase login`.
 4. Running this application locally requires to run the Firebase Admin SDK. Follow [the docs](https://firebase.google.com/docs/admin/setup) here to generate a JSON file containing a service account private key, and save that JSON file as `credentials.json` to the root directory of this project.
     - Note that for security purposes, this file should never be checked into Git.
