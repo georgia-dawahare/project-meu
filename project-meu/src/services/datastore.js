@@ -119,6 +119,50 @@ export function deleteResponse(responseId) {
     });
 }
 
+// homeCalendar
+// add, delete, get
+export function addEvents(date, title, repeat) {
+  const eventData = {
+    date,
+    title,
+    repeat,
+  };
+
+  if (!eventData.title) {
+    console.error('Title is undefined or empty.');
+    return;
+  }
+  firestore.collection('Events').add(eventData)
+    .then((docRef) => {
+      console.log('Event added with ID:', docRef.id);
+      return docRef;
+    })
+    .catch((error) => {
+      console.error('Error adding event:', error);
+    });
+}
+
+export function getEvents() {
+  return firestore.collection('Events').get()
+    .then((querySnapshot) => {
+      const events = [];
+      querySnapshot.forEach((doc) => {
+        const eventData = doc.data();
+        events.push({
+          id: doc.id,
+          date: eventData.date,
+          title: eventData.title,
+          repeat: eventData.repeat,
+        });
+      });
+      return events;
+    })
+    .catch((error) => {
+      console.error('error getting Events', error);
+      return [];
+    });
+}
+
 // export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
 //   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
 // }

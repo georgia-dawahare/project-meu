@@ -60,8 +60,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
-
-      {/* <Button title="modal" onPress={toggleModal}/> */}
       <Animated.View
         style={[
           styles.headerContainer,
