@@ -33,6 +33,7 @@ function FabandModal() {
   const [date, setDate] = useState(new Date());
   const [title, setTitle] = useState('');
   const [selectedTeam, setSelectedTeam] = useState({});
+  const [anniversaries, setAnniversaries] = useState([]);
 
   useEffect(() => {
     async function loadFont() {
@@ -70,6 +71,7 @@ function FabandModal() {
     console.log('Repeat:', selectedTeam);
 
     addEvents(date, title, selectedTeam.item);
+    setAnniversaries([...anniversaries, { date, title, repeat: selectedTeam.item }]);
 
     setModalVisible(false);
 

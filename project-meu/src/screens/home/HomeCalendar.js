@@ -165,7 +165,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           </Animated.Text>
         </Animated.Text>
         <FloatingButton />
-        {/* <FloatingButton/> */}
         <FabandModal />
       </Animated.View>
 
