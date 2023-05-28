@@ -3,7 +3,7 @@ import {
   Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import auth from '../../services/datastore';
+import { auth } from '../../services/datastore';
 import SignUpGraphic from '../../components/SignUpGraphic';
 
 function LoginScreen() {
