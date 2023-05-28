@@ -7,7 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
-// import { getEvents } from '../../services/datastore';
+import { getEvents } from '../../services/datastore';
 
 function DdayList({ date, title, iconName }) {
   return (
@@ -19,30 +19,6 @@ function DdayList({ date, title, iconName }) {
   );
 }
 
-// const printEventTitlesAndDates = () => {
-//   getEvents()
-//     .then((events) => {
-//       const ddayList = events.map((event) => {
-//         const { title, date } = event;
-//         return (
-//           <DdayList
-//             key={event.id} // 적절한 key 값을 제공해야 합니다.
-//             date={date}
-//             title={title}
-//             iconName="yourIconName" // 필요한 아이콘 이름을 제공해야 합니다.
-//           />
-//         );
-//       });
-
-//       // ddayList 변수에는 각 이벤트에 대한 DdayList 컴포넌트들이 저장되어 있습니다.
-//       // 이제 이 변수를 화면에 렌더링하거나 필요한 곳에서 사용할 수 있습니다.
-//       console.log('Dday List:', ddayList);
-//     })
-//     .catch((error) => {
-//       console.error('Error getting events:', error);
-//     });
-// };
-
 // Modified from: https://github.com/kosaikham/twitter-scrollable-header-clone
 function HomeCalendarComponent({ scrollY, navigation }) {
   const THRESHOLD = 480;
@@ -53,6 +29,31 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
 
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [eventData, setEventData] = useState([]);
+
+  const printEventTitlesAndDates = () => {
+    getEvents()
+      .then((events) => {
+        const ddayList = events.map((event) => {
+          // const { title, date, repeat } = event;
+          const { title, repeat } = event;
+          return (
+            <DdayList
+              key={event.id}
+              // date={date}
+              title={title}
+              repeat={repeat}
+              iconName="ios-heart"
+            />
+          );
+        });
+
+        setEventData(ddayList);
+      })
+      .catch((error) => {
+        console.error('Error getting events:', error);
+      });
+  };
 
   useEffect(() => {
     async function loadFont() {
@@ -66,6 +67,8 @@ function HomeCalendarComponent({ scrollY, navigation }) {
     }
 
     loadFont();
+
+    printEventTitlesAndDates();
   }, []);
 
   if (!fontLoaded) {
@@ -80,7 +83,12 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
+      {/* <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
+        <View style={styles.buttonContent}>
+          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+        </View>
+      </TouchableOpacity> */}
+      <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
         <View style={styles.buttonContent}>
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
@@ -150,7 +158,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
               Upcoming Anniversaries
             </Text>
             <View>
-              <DdayList date="05/20" title="Dday 1" iconName="ios-heart" />
+              {/* <DdayList date="05/20" title="Dday 1" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 2" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 3" iconName="ios-heart" />
               <DdayList date="05/20" title="Dday 4" iconName="ios-calendar" />
@@ -159,7 +167,8 @@ function HomeCalendarComponent({ scrollY, navigation }) {
               <DdayList date="05/20" title="Dday 7" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 1" iconName="ios-calendar" />
               <DdayList date="05/20" title="Dday 2" iconName="ios-heart" />
-              <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" />
+              <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" /> */}
+              <View>{eventData}</View>
             </View>
           </View>
         </View>
