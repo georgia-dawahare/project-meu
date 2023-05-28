@@ -91,6 +91,12 @@ function FabandModal() {
     setSelectedTeam('Never');
   };
 
+  // getEvents()
+  //   .then((events) => {
+  //     const titles = events.map((event) => event.title);
+  //     console.log('Event Titles:', titles);
+  //   });
+
   function onChange() {
     return (val) => setSelectedTeam(val);
   }
