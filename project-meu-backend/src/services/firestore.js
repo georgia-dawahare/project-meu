@@ -31,13 +31,13 @@ const getName = async (uid) => {
   }
   return name;
 };
-// === End of User Functions ===
 
 const updateUser = async (uid, updatedData) => {
   const user = firestore.collection('Users').doc(uid);
   await user.update(updatedData);
   return uid;
 };
+// === End of User Functions ===
 
 // === Daily Response Functions ===
 const getResponseGroup = async (id) => {

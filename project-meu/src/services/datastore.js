@@ -1,18 +1,18 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-const config = {
-  apiKey: 'AIzaSyCfm6Jyi-tbKDlq_ugvKL749rb5DwMXlnk',
-  authDomain: 'project-meu-b7f6c.firebaseapp.com',
-  projectId: 'project-meu-b7f6c',
-  storageBucket: 'project-meu-b7f6c.appspot.com',
-  messagingSenderId: '329302375805',
-  appId: '1:329302375805:web:f2f98d9d87f3257b9a2014',
-  measurementId: 'G-GGPP83TZWD',
+const firebaseConfig = {
+  apiKey: 'AIzaSyBhEuKwM4tsvp3hQJ6nnh_01f6yGi7YABI',
+  authDomain: 'project-meu-11610.firebaseapp.com',
+  projectId: 'project-meu-11610',
+  storageBucket: 'project-meu-11610.appspot.com',
+  messagingSenderId: '245464727418',
+  appId: '1:245464727418:web:d547f2962120dceec360c3',
+  measurementId: 'G-7FTRQF090W',
 };
 
 // Initialize firebase
-const app = initializeApp(config);
+const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 export default auth;

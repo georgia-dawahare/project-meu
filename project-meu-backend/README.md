@@ -26,8 +26,8 @@ Firebase Hosting
 
 Deploy to Firebase using the command: `firebase deploy`
 
-**Project Console**: https://console.firebase.google.com/project/project-meu-b7f6c/overview
-**Hosting URL**: https://project-meu-b7f6c.web.app
+Project Console: https://console.firebase.google.com/project/project-meu-11610/overview
+Hosting URL: https://project-meu-11610.web.app
 
 ## Authors
 * Chipo Chibbamulilo '26
