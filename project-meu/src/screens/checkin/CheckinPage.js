@@ -48,7 +48,7 @@ function CheckinPage({ navigation }) {
     setUserResponse(textAnswer);
   };
 
-  const refreshData = async () => {
+  const getData = async () => {
     const groupId = pairId + moment().format('MMDDYY');
     let data = await getResponseGroup(groupId);
     // if there is no response group, create a new one!
@@ -66,11 +66,20 @@ function CheckinPage({ navigation }) {
       setQuestion(questionData.questions[data.question_id].question);
       data = await getResponseGroup(groupId);
     }
+    return data;
+  };
+
+  const refreshData = async () => {
+    // get the response group data
+    const data = getData();
+
+    // get the re
     let p1Response = null;
     let p2Response = null;
     if (data.p2_response_id !== '') p1Response = await getResponse(data.p1_response_id);
     if (data.p2_response_id !== '') p2Response = await getResponse(data.p2_response_id);
 
+    // get the question from the data file
     const questionData = require('../../../assets/data/questions.json');
     setQuestion(questionData.questions[data.question_id].question);
 
@@ -165,11 +174,6 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
-          <Text style={styles.buttonText}>
-            View More
-          </Text>
-        </TouchableOpacity> */}
       </SafeAreaView>
     );
   } else if (answered) {
@@ -196,11 +200,6 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
-          <Text style={styles.buttonText}>
-            View More
-          </Text>
-        </TouchableOpacity> */}
       </SafeAreaView>
     );
   } else if (partnerAnswered) {

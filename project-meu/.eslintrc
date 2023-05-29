@@ -64,7 +64,8 @@
                 "variables": false
             }
         ],
-        "import/no-extraneous-dependencies": 0
+        "import/no-extraneous-dependencies": 0,
+        "requireConfigFile": false
     },
     "plugins": [
         "react"
