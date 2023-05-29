@@ -2,15 +2,12 @@ import React, { useEffect, useState } from 'react';
 import {
   Text,
   TouchableOpacity,
-  SafeAreaView,
   StyleSheet,
   View,
-  ImageBackground,
 } from 'react-native';
 import { Entypo, Feather } from '@expo/vector-icons'; 
 
 function TopBar({ navigation }) {
-  // pass in type to TopBar to render different stuff 
   const daysExample = 1293;
   const [days, setDays] = useState(0);
   const days_text = days + ' days'
@@ -25,13 +22,13 @@ function TopBar({ navigation }) {
 
   return (
     <View style={styles.topbar}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('HomeCalendar')}>
             <Feather name="calendar" size={28} color="black" style={{paddingLeft:10}}/>
         </TouchableOpacity>
         <Text style={styles.header}>
           {days_text}
         </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
             <Entypo name="dots-three-vertical" size={28} color="black" style={{paddingRight:7}} />
         </TouchableOpacity>
       </View>
