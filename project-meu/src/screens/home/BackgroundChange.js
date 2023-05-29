@@ -6,7 +6,6 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
-import ClockAndLocation from '../../components/ClockAndLocation';
 
 function BackgroundChange() {
   const [backgroundImage, setBackgroundImage] = useState(null);
@@ -96,9 +95,6 @@ function BackgroundChange() {
             </TouchableOpacity>
           </View>
         </Modal>
-      </View>
-      <View>
-        <ClockAndLocation></ClockAndLocation>
       </View>
     </SafeAreaView>
   );
