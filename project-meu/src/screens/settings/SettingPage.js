@@ -8,10 +8,11 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
 
-const DATA = [
+const SettingContents = [
   {
     id: '11',
     title: 'Personal Info',
@@ -34,6 +35,17 @@ const DATA = [
   },
 ];
 
+const SignOutContent = [
+  {
+    id: 'SO',
+    title: 'Sign Out',
+  },
+  {
+    id: 'UP',
+    title: 'Unpair with Partner',
+  },
+];
+
 function Item({ title, onPress }) {
   return (
     <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
@@ -42,7 +54,20 @@ function Item({ title, onPress }) {
   );
 }
 
+function ItemSignout({ title, onPress }) {
+  const handleItemClick = () => {
+    onPress(title);
+  };
+
+  return (
+    <TouchableOpacity onPress={handleItemClick} style={styles.itemSignout}>
+      <Text style={[styles.title, styles.signoutTitle]}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
 function SettingPage({ navigation }) {
+  // const { navigation } = route.params;
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -63,6 +88,49 @@ function SettingPage({ navigation }) {
 
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
+    if (title === 'Sign Out') {
+      Alert.alert(
+        'Confirmation',
+        'Are you sure you want to Sign Out?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'SignOut',
+            // onPress: deleteEventConfirmation,
+            style: 'destructive',
+          },
+        ],
+      );
+    } else if (title === 'Unpair with Partner') {
+      Alert.alert(
+        'Confirmation',
+        'Are you sure you want to unpair?',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'SignOut',
+            // onPress: deleteEventConfirmation,
+            style: 'destructive',
+          },
+        ],
+      );
+    } else if (title === 'Personal Info') {
+      // navigation.navigate('SettingPersonalInfo');
+      navigation.navigate('SettingNotificationPage');
+    } else if (title === 'Version') {
+      navigation.navigate('VersionPage');
+    } else if (title === 'Privacy and Data') {
+      navigation.navigate('VersionPage');
+    } else if (title === 'Notification Preferences') {
+      // navigation.navigate('SettingNotificationPage');
+      navigation.navigate('SettingPersonalInfo');
+    }
   };
 
   return (
@@ -84,10 +152,17 @@ function SettingPage({ navigation }) {
         </View>
 
         <FlatList
-          data={DATA}
+          data={SettingContents}
           renderItem={({ item }) => (
             <Item title={item.title} onPress={handleItemClick} />
           )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+
+        <FlatList
+          data={SignOutContent}
+          renderItem={({ item }) => item && <ItemSignout title={item.title} style={styles.signoutTitle} onPress={handleItemClick} />}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
@@ -147,6 +222,12 @@ const styles = StyleSheet.create({
   },
   personalInfo: {
     marginTop: 32,
+  },
+  signoutTitle: {
+    color: 'rgb(230, 43, 133)',
+    fontWeight: 500,
+    marginBottom: 30,
+    fontSize: 15,
   },
 });
 

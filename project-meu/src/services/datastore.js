@@ -3,17 +3,17 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-const config = {
-  apiKey: 'AIzaSyCfm6Jyi-tbKDlq_ugvKL749rb5DwMXlnk',
-  authDomain: 'project-meu-b7f6c.firebaseapp.com',
-  projectId: 'project-meu-b7f6c',
-  storageBucket: 'project-meu-b7f6c.appspot.com',
-  messagingSenderId: '329302375805',
-  appId: '1:329302375805:web:f2f98d9d87f3257b9a2014',
-  measurementId: 'G-GGPP83TZWD',
+const firebaseConfig = {
+  apiKey: 'AIzaSyBhEuKwM4tsvp3hQJ6nnh_01f6yGi7YABI',
+  authDomain: 'project-meu-11610.firebaseapp.com',
+  projectId: 'project-meu-11610',
+  storageBucket: 'project-meu-11610.appspot.com',
+  messagingSenderId: '245464727418',
+  appId: '1:245464727418:web:d547f2962120dceec360c3',
+  measurementId: 'G-7FTRQF090W',
 };
 
-firebase.initializeApp(config);
+firebase.initializeApp(firebaseConfig);
 
 const firestore = firebase.firestore();
 const auth = firebase.auth();
@@ -119,8 +119,6 @@ export function deleteResponse(responseId) {
     });
 }
 
-// homeCalendar
-// add, delete, get
 export function addEvents(date, title, repeat) {
   const eventData = {
     date,
@@ -180,39 +178,3 @@ export function deleteEvent(eventTitle) {
       console.error('Error getting event:', error);
     });
 }
-
-// export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
-//   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
-// }
-
-// export function deleteDailyQuestionResponse(id) {
-//   database.ref('DailyQuestionResponses').child(id).remove();
-// }
-
-// export function addUser(user) {
-//   database.ref('Users').push(user);
-// }
-
-// export function getUser(id) {
-//   database.ref('Users').get(id);
-// }
-
-// export function addPair(pair) {
-//   database.ref('Pairs').push(pair);
-// }
-
-// export function addEvent(event) {
-//   database.ref('Events').push(event);
-// }
-
-// export function deleteEvent(id) {
-//   database.ref('Events').child(id).remove();
-// }
-
-// export function updateEvent(id, event) {
-//   database.ref(`Events/${id}`).set(event);
-// }
-
-// export function addEmotion(emotion) {
-//   database.ref('Emotions').push(emotion);
-// }

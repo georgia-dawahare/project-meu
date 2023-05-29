@@ -10,16 +10,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as Font from 'expo-font';
-import Button from '../../components/Button';
 
-const DATA = [
+const SettingContents = [
   {
-    id: 'CV',
-    title: 'Current Versoin',
+    id: 'BD',
+    title: 'Birthday',
   },
   {
-    id: 'TLV',
-    title: 'The Lastest Version',
+    id: 'AV',
+    title: 'Anniversary',
   },
 ];
 
@@ -31,10 +30,7 @@ function Item({ title, onPress }) {
   );
 }
 
-function VersionPage({ navigation }) {
-  const handleItemClick = (title) => {
-    console.log('Clicked item:', title);
-  };
+function SettingPersonalInfo({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -53,8 +49,13 @@ function VersionPage({ navigation }) {
     return <Text>Loading...</Text>;
   }
 
+  const handleItemClick = (title) => {
+    console.log('Clicked item:', title);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
           <Image
@@ -63,30 +64,22 @@ function VersionPage({ navigation }) {
           />
         </TouchableOpacity>
 
-        <Text style={styles.topTitle}>Version</Text>
+        <Text style={styles.topTitle}>Personal Info</Text>
       </View>
-      <View style={styles.logo}>
-        <Image
-          source={require('../../../assets/images/logo.png')}
-          style={styles.logoIcon}
-        />
-      </View>
-
       <View style={styles.contents}>
         <View style={styles.personalInfo}>
-          <Text style={styles.versionInfo}>Version Info</Text>
+          <Text style={styles.name}>Florian</Text>
+          <Text style={styles.email}>flori@gmail.com</Text>
         </View>
 
         <FlatList
-          data={DATA}
+          data={SettingContents}
           renderItem={({ item }) => (
             <Item title={item.title} onPress={handleItemClick} />
           )}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
-        <Button title="Update the Latest Version" buttonStyle={{ top: 120, left: 45 }} />
-
       </View>
     </SafeAreaView>
   );
@@ -110,14 +103,29 @@ const styles = StyleSheet.create({
   topTitle: {
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
-    left: 100,
+    left: 82,
   },
   contents: {
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 16,
   },
+  name: {
+    fontWeight: '600',
+    fontSize: 22,
+    marginBottom: 4,
+  },
+  email: {
+    fontWeight: '400',
+    fontSize: 14,
+    marginBottom: 16,
+    marginTop: 6,
+  },
+  listContainer: {
+    paddingBottom: 16,
+  },
   item: {
+    padding: 16,
     paddingLeft: 0,
     marginVertical: 8,
     borderRadius: 8,
@@ -126,21 +134,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   personalInfo: {
-    marginTop: -50,
-  },
-  logoIcon: {
-    width: 306,
-    height: 231,
-  },
-  logo: {
-    flex: 1,
-    alignSelf: 'center',
-  },
-  versionInfo: {
-    marginBottom: 16,
-    fontSize: 16,
-    color: '#4F4F4F',
+    marginTop: 32,
   },
 });
 
-export default VersionPage;
+export default SettingPersonalInfo;

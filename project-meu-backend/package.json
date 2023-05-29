@@ -9,7 +9,8 @@
     "start": "nodemon src/server.js --exec babel-node",
     "babel-start": "babel-node src/server.js",
     "build": "babel src -d dist",
-    "prod": "node dist/server.js"
+    "prod": "node dist/server.js",
+    "db": "firebase emulators:start --import=./dir --export-on-exit"
   },
   "license": "ISC",
   "engines": {
@@ -24,10 +25,13 @@
     "@babel/core": "^7.21.8",
     "@babel/node": "^7.20.7",
     "@babel/preset-env": "^7.21.5",
+    "@firebase/app-compat": "^0.2.11",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "firebase": "^9.22.1",
+    "firebase-admin": "^11.8.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

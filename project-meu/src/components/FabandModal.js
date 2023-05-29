@@ -8,9 +8,7 @@ import { FAB } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
-import {
-  addEvents,
-} from '../services/datastore';
+import { addEvents } from '../services/datastore';
 
 const K_OPTIONS = [
   {
