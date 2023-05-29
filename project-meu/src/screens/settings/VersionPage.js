@@ -31,7 +31,7 @@ function Item({ title, onPress }) {
   );
 }
 
-function VersionPage() {
+function VersionPage({ navigation }) {
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
   };
@@ -56,10 +56,13 @@ function VersionPage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
-        />
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Image
+            source={require('../../../assets/icons/goback-black.png')}
+            style={styles.Icon}
+          />
+        </TouchableOpacity>
+
         <Text style={styles.topTitle}>Version</Text>
       </View>
       <View style={styles.logo}>
