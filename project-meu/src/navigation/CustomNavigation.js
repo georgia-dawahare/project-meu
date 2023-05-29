@@ -12,7 +12,8 @@ import VersionPage from '../screens/settings/VersionPage';
 import SignIn from '../screens/authentication/SignIn';
 import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
-import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
+import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
+import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -48,8 +49,12 @@ function HomeScreenNavigator() {
         component={SignUpSignIn}
       />
       <Stack.Screen
-        name="SignInForgotPassword1"
-        component={SignInForgotPasswordPage1}
+        name="SettingNotificationPage"
+        component={SettingPersonalInfo}
+      />
+      <Stack.Screen
+        name="SettingPersonalInfo"
+        component={SettingNotificationPage}
       />
       <Stack.Screen
         name="Onboarding"
@@ -94,5 +99,30 @@ function PenguinsScreenNavigator() {
 }
 
 export { PenguinsScreenNavigator };
+
+function SettingScreenNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="SettingPage"
+        component={SettingPage}
+      />
+      <Stack.Screen
+        name="SettingPersonalInfo"
+        component={SettingPersonalInfo}
+      />
+      <Stack.Screen
+        name="VersionPage"
+        component={VersionPage}
+      />
+      <Stack.Screen
+        name="SettingNotificationPage"
+        component={SettingNotificationPage}
+      />
+
+    </Stack.Navigator>
+  );
+}
+export { SettingScreenNavigator };
 
 // Modified code by: https://jaymanyoo.medium.com/combine-bottom-tab-navigator-with-stack-navigator-in-react-native-2020-58804b4afded
