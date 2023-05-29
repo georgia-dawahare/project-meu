@@ -70,7 +70,6 @@ function BackgroundChange() {
   };
 
   return (
-
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <TopBar />
       {backgroundImage && (
@@ -247,9 +246,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#007AFF',
     fontWeight: '500',
-  },
-
-  calendarModal: {
-
   },
 });
