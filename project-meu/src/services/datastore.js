@@ -119,11 +119,12 @@ export function deleteResponse(responseId) {
     });
 }
 
-export function addEvents(date, title, repeat) {
+export function addEvents(date, title, repeat, pairId) {
   const eventData = {
     date,
     title,
     repeat,
+    pairId,
   };
 
   if (!eventData.title) {

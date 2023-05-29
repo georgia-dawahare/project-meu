@@ -68,6 +68,7 @@ function FabandModal() {
     console.log('Title:', title);
     console.log('Repeat:', selectedTeam);
 
+    // TODO: retrieve pairId
     addEvents(date, title, selectedTeam.item);
     setAnniversaries([...anniversaries, { date, title, repeat: selectedTeam.item }]);
 

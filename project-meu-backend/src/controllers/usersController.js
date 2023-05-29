@@ -1,13 +1,13 @@
 import firestoreService from '../services/firestore';
 
-const getName = async (uid) => {
-  const name = await firestoreService.getName(uid);
-  return name;
-};
-
 const createUser = async (userData) => {
   const uid = await firestoreService.createUser(userData);
   return uid;
+};
+
+const getName = async (uid) => {
+  const name = await firestoreService.getName(uid);
+  return name;
 };
 
 const updateUser = async (id, updatedData) => {

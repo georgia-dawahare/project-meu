@@ -1,5 +1,6 @@
+// eslint-disable-next-line import/no-unresolved
+import { Timestamp } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
-import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import serviceAccount from '../../credentials.json';
@@ -16,7 +17,17 @@ const firestore = admin.firestore();
 
 // === User Functions ===
 const createUser = async (userData) => {
-  const res = await firestore.collection('Users').add(userData);
+  const user = {
+    pair_id: userData.pairId,
+    first_name: userData.firstName,
+    last_name: userData.lastName,
+    email: userData.email,
+    penguin_color: userData.penguinColor,
+    background_photo: userData.backgroundPhoto,
+    birthday: userData.birthday,
+    timezone: userData.timezone,
+  };
+  const res = await firestore.collection('Users').add(user);
   return res.id;
 };
 
@@ -39,12 +50,126 @@ const updateUser = async (uid, updatedData) => {
 };
 // === End of User Functions ===
 
+// === Emotion Functions ===
+const sendEmotion = async (emotionData) => {
+  const emotion = {
+    pair_id: emotionData.pairId,
+    receiver_id: emotionData.receiverId,
+    sender_id: emotionData.senderId,
+    type: emotionData.type,
+    timestamp: Timestamp.now(),
+  };
+  console.log(emotion);
+  const res = await firestore.collection('Emotions').add(emotion);
+  return res.id;
+};
+// === End of Emotion Functions ===
+
+// === Pair Functions ===
+const createPair = async (pairData) => {
+  const pair = {
+    user1_id: pairData.user1Id,
+    user2_id: pairData.user2Id,
+    relationship_start: pairData.relationshipStart,
+    pair_creator_id: pairData.pairCreatorId,
+  };
+  const res = await firestore.collection('Pairs').add(pair);
+  return res.id;
+};
+
+const deletePair = async (pairId) => {
+  firestore.collection('Pairs').doc(pairId.pid).delete().then(() => {
+    console.log('Pair successfully deleted');
+    return true;
+  })
+    .catch((error) => {
+      console.error('Error removing document: ', error);
+      return false;
+    });
+};
+
+const getPairCreatorId = async (pairId) => {
+  const doc = await firestore.collection('Pairs').doc(pairId).get();
+  let pairCreatorId;
+  if (!doc.exists) {
+    console.log('Pair does not exist');
+  } else {
+    const data = doc.data();
+    pairCreatorId = data.pair_creator_id;
+  }
+  return pairCreatorId;
+};
+// === End of Pair Functions ===
+
+// === Events Functions ===
+const createEvent = async (eventData) => {
+  const event = {
+    pair_id: eventData.pairId,
+    date: eventData.date,
+    title: eventData.title,
+    repeat: eventData.repeat,
+  };
+
+  if (!event.pair_id || !event.date || !event.title || !event.repeat) {
+    console.error('Missing fields');
+    return null;
+  }
+
+  const res = await firestore.collection('Events').add(event);
+  return res.id;
+};
+
+const getEvents = async () => {
+  return firestore.collection('Events').get()
+    .then((querySnapshot) => {
+      const events = [];
+      querySnapshot.forEach((doc) => {
+        const eventData = doc.data();
+        events.push({
+          id: doc.id,
+          date: eventData.date,
+          title: eventData.title,
+          repeat: eventData.repeat,
+          pairId: eventData.pair_id,
+        });
+      });
+      return events;
+    })
+    .catch((error) => {
+      console.error('error getting Events', error);
+      return [];
+    });
+};
+
+const deleteEvent = async (eventId) => {
+  firestore.collection('Events').doc(eventId.id).delete().then(() => {
+    console.log('Event successfully deleted');
+    return true;
+  })
+    .catch((error) => {
+      console.error('Error removing document: ', error);
+      return false;
+    });
+};
+// === End of Event Functions ===
+
 // === Daily Response Functions ===
+const addResponseGroup = async (groupData, id) => {
+  const group = {
+    p1_response_id: groupData.p1_response_id,
+    p2_response_id: groupData.p2_response_id,
+    question_id: groupData.question_id,
+  };
+  await firestore.collection('ResponseGroups').doc(id).set(group);
+  return id;
+};
+
 const getResponseGroup = async (id) => {
-  const docRef = firestore.collection('ResponseGroup').doc(id);
+  const docRef = firestore.collection('ResponseGroups').doc(id);
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
+        console.log('Successfully fetched response group');
         return doc.data();
       } else {
         return null;
@@ -57,9 +182,10 @@ const getResponseGroup = async (id) => {
 };
 
 const updateResponseGroup = async (groupId, updatedFields) => {
-  const docRef = firestore.collection('ResponseGroup').doc(groupId);
+  const docRef = firestore.collection('ResponseGroups').doc(groupId);
   return docRef.update(updatedFields)
     .then(() => {
+      console.log('Successfully updated response group');
       return true;
     })
     .catch((error) => {
@@ -68,13 +194,36 @@ const updateResponseGroup = async (groupId, updatedFields) => {
     });
 };
 
-const addResponseGroup = async (response, id) => {
-  firestore.collection('ResponseGroup').doc(id).set(response)
+const addResponse = async (responseData, pairId, groupId) => {
+  const responseObj = {
+    response: responseData.response,
+    timestamp: Timestamp.now(),
+    user_id: responseData.user_id,
+  };
+
+  let responseId;
+
+  // Add response to Responses collection
+  return firestore.collection('Responses').add(responseObj)
+    // Find pair creator (P1)
     .then((docRef) => {
-      return id;
+      responseId = docRef.id;
+      return getPairCreatorId(pairId);
+    })
+    //  Add response ID to Response Group
+    .then((pairCreator) => {
+      console.log(responseData.user_id);
+      console.log(pairCreator);
+      if (responseData.user_id === pairCreator) {
+        updateResponseGroup(groupId, { p1_response_id: responseId });
+      } else {
+        updateResponseGroup(groupId, { p2_response_id: responseId });
+      }
+      return responseId;
     })
     .catch((error) => {
-      console.error('error adding doc', error);
+      console.error('Error adding response: ', error);
+      return null;
     });
 };
 
@@ -89,32 +238,6 @@ const getResponse = async (id) => {
       }
     })
     .catch((error) => {
-      return null;
-    });
-};
-
-const addResponse = async (response, groupId, currentPartner) => {
-  const responseWithTimestamp = { ...response, timestamp: firebase.firestore.Timestamp.now() };
-  return firestore.collection('Responses').add(responseWithTimestamp)
-    .then((docRef) => {
-      if (currentPartner === 'p1') {
-        updateResponseGroup(
-          groupId,
-          {
-            p1_response_id: docRef.id,
-          },
-        );
-      } else {
-        updateResponseGroup(
-          groupId,
-          {
-            p2_response_id: docRef.id,
-          },
-        );
-      }
-      return groupId;
-    })
-    .catch((error) => {
       console.error('error adding doc', error);
       return null;
     });
@@ -124,6 +247,7 @@ const updateResponse = async (responseId, updatedResponse) => {
   const docRef = firestore.collection('Responses').doc(responseId);
   return docRef.update(updatedResponse)
     .then(() => {
+      console.log('Successfully updated response');
       return true;
     })
     .catch((error) => {
@@ -136,6 +260,7 @@ const deleteResponse = async (responseId) => {
   const docRef = firestore.collection('Responses').doc(responseId);
   return docRef.delete()
     .then(() => {
+      console.log('Successfully deleted response');
       return true;
     })
     .catch((error) => {
@@ -144,92 +269,6 @@ const deleteResponse = async (responseId) => {
     });
 };
 // === End of Daily Response Functions ===
-
-// === Events Functions ===
-export function addEvents(date, title, repeat) {
-  const eventData = {
-    date,
-    title,
-    repeat,
-  };
-
-  if (!eventData.title) {
-    console.error('Title is undefined or empty.');
-    return;
-  }
-  firestore.collection('Events').add(eventData)
-    .then((docRef) => {
-      console.log('Event added with ID:', docRef.id);
-      return docRef;
-    })
-    .catch((error) => {
-      console.error('Error adding event:', error);
-    });
-}
-
-export function getEvents() {
-  return firestore.collection('Events').get()
-    .then((querySnapshot) => {
-      const events = [];
-      querySnapshot.forEach((doc) => {
-        const eventData = doc.data();
-        events.push({
-          id: doc.id,
-          date: eventData.date,
-          title: eventData.title,
-          repeat: eventData.repeat,
-        });
-      });
-      return events;
-    })
-    .catch((error) => {
-      console.error('error getting Events', error);
-      return [];
-    });
-}
-
-export function deleteEvent(eventTitle) {
-  firestore.collection('Events').where('title', '==', eventTitle).get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        doc.ref.delete()
-          .then(() => {
-            console.log('Event deleted:', doc.id);
-          })
-          .catch((error) => {
-            console.error('Error deleting event:', error);
-          });
-      });
-    })
-    .catch((error) => {
-      console.error('Error getting event:', error);
-    });
-}
-// === End of Event Functions ===
-
-// export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
-//   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
-// }
-
-// export function deleteDailyQuestionResponse(id) {
-//   database.ref('DailyQuestionResponses').child(id).remove();
-// }
-
-// export function addUser(user) {
-//   database.ref('Users').push(user);
-// }
-
-// export function getUser(id) {
-//   database.ref('Users').get(id);
-// }
-
-// export function updateEvent(id, event) {
-//   database.ref(`Events/${id}`).set(event);
-// }
-
-// export function addEmotion(emotion) {
-//   database.ref('Emotions').push(emotion);
-// }
 
 const firestoreService = {
   createUser,
@@ -242,6 +281,13 @@ const firestoreService = {
   addResponse,
   updateResponse,
   deleteResponse,
+  createEvent,
+  getEvents,
+  deleteEvent,
+  sendEmotion,
+  createPair,
+  deletePair,
+  getPairCreatorId,
 };
 
 export default firestoreService;

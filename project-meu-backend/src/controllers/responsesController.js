@@ -1,8 +1,13 @@
 import firestoreService from '../services/firestore';
 
+const addResponseGroup = async (response, responseId) => {
+  const groupId = await firestoreService.addResponseGroup(response, responseId);
+  return groupId;
+};
+
 const getResponseGroup = async (id) => {
-  const responseGroupData = await firestoreService.getResponseGroup(id);
-  return responseGroupData;
+  const responseGroup = await firestoreService.getResponseGroup(id);
+  return responseGroup;
 };
 
 const updateResponseGroup = async (groupId, updatedFields) => {
@@ -10,9 +15,9 @@ const updateResponseGroup = async (groupId, updatedFields) => {
   return resultBool;
 };
 
-const addResponseGroup = async (response, pairId) => {
-  const groupId = await firestoreService.addResponseGroup(response, pairId);
-  return groupId;
+const addResponse = async (response, pairId, groupId) => {
+  const id = await firestoreService.addResponse(response, pairId, groupId);
+  return id;
 };
 
 const getResponse = async (id) => {
@@ -20,12 +25,7 @@ const getResponse = async (id) => {
   return responseData;
 };
 
-const addResponse = async (response, groupIdName, currentPartner) => {
-  const groupId = await firestoreService.addResponse(response, groupIdName, currentPartner);
-  return groupId;
-};
-
-const updateResopnse = async (responseId, updatedResponse) => {
+const updateResponse = async (responseId, updatedResponse) => {
   const resultBool = await firestoreService.updateResponse(responseId, updatedResponse);
   return resultBool;
 };
@@ -41,7 +41,7 @@ const responseController = {
   updateResponseGroup,
   addResponse,
   addResponseGroup,
-  updateResopnse,
+  updateResponse,
   deleteResponse,
 };
 

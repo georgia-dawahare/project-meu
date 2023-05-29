@@ -46,21 +46,16 @@ function SignIn({ navigation }) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        const errorMessage = error.message;
-
-        if (errorCode === 'INVALID_EMAIL') {
+        if (errorCode === 'auth/invalid-email') {
           setEmailError('Invalid email');
         } else {
           setEmailError('');
         }
-
-        if (errorCode === 'INVALID_PASSWORD') {
+        if (errorCode === 'auth/missing-password' || errorCode === 'auth/wrong-password') {
           setPasswordError('Invalid password');
         } else {
           setPasswordError('');
         }
-
-        console.log(errorMessage);
       });
   };
 
@@ -73,7 +68,7 @@ function SignIn({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss()}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
 
           {/* Header */}
