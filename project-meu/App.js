@@ -18,8 +18,8 @@ import SignIn from './src/screens/authentication/SignIn';
 import store from './src/store';
 
 function App() {
-  // CHANGE BACK TO FALSE LATER (FOR DEV PURPOSES ONLY)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  // CHANGE TO TRUE FOR DEV PURPOSES ONLY
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
@@ -34,7 +34,7 @@ function App() {
         setIsLoggedIn(true);
       } else {
         // User is signed out
-        // setIsLoggedIn(false); // UNCOMMENT LATER (FOR DEV PURPOSES ONLY)
+        setIsLoggedIn(false); // UNCOMMENT FOR DEV PURPOSES ONLY
       }
     });
   }, []);
