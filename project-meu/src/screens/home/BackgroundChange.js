@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-
+import TopBar from '../../components/TopBar';
 const { width, height } = Dimensions.get('window');
 
 function BackgroundChange() {
@@ -68,7 +68,9 @@ function BackgroundChange() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]} >
+
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <TopBar></TopBar>
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -242,5 +244,8 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '500',
   },
-  
+
+  calendarModal: {
+    
+  }
 });
