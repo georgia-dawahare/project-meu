@@ -102,8 +102,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
     }
 
     loadFont();
-
-    printEventTitlesAndDates();
   }, []);
 
   useEffect(() => {
