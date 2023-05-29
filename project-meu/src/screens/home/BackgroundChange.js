@@ -5,6 +5,7 @@ import {
   StyleSheet, Image, TouchableOpacity, Modal,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import TopBar from '../../components/TopBar';
 
 function BackgroundChange() {
   const [backgroundImage, setBackgroundImage] = useState(null);
@@ -41,6 +42,7 @@ function BackgroundChange() {
   return (
 
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <TopBar></TopBar>
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -94,7 +96,6 @@ function BackgroundChange() {
           </View>
         </Modal>
       </View>
-
     </SafeAreaView>
   );
 }
@@ -165,4 +166,8 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     fontSize: 15,
   },
+
+  calendarModal: {
+    
+  }
 });
