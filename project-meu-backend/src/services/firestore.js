@@ -145,6 +145,68 @@ const deleteResponse = async (responseId) => {
 };
 // === End of Daily Response Functions ===
 
+// === Events Functions ===
+export function addEvents(date, title, repeat) {
+  const eventData = {
+    date,
+    title,
+    repeat,
+  };
+
+  if (!eventData.title) {
+    console.error('Title is undefined or empty.');
+    return;
+  }
+  firestore.collection('Events').add(eventData)
+    .then((docRef) => {
+      console.log('Event added with ID:', docRef.id);
+      return docRef;
+    })
+    .catch((error) => {
+      console.error('Error adding event:', error);
+    });
+}
+
+export function getEvents() {
+  return firestore.collection('Events').get()
+    .then((querySnapshot) => {
+      const events = [];
+      querySnapshot.forEach((doc) => {
+        const eventData = doc.data();
+        events.push({
+          id: doc.id,
+          date: eventData.date,
+          title: eventData.title,
+          repeat: eventData.repeat,
+        });
+      });
+      return events;
+    })
+    .catch((error) => {
+      console.error('error getting Events', error);
+      return [];
+    });
+}
+
+export function deleteEvent(eventTitle) {
+  firestore.collection('Events').where('title', '==', eventTitle).get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete()
+          .then(() => {
+            console.log('Event deleted:', doc.id);
+          })
+          .catch((error) => {
+            console.error('Error deleting event:', error);
+          });
+      });
+    })
+    .catch((error) => {
+      console.error('Error getting event:', error);
+    });
+}
+// === End of Event Functions ===
+
 // export function updateDailyQuestionResponse(id, dailyQuestionResponse) {
 //   database.ref(`DailyQuestionResponses/${id}`).set(dailyQuestionResponse);
 // }
@@ -159,14 +221,6 @@ const deleteResponse = async (responseId) => {
 
 // export function getUser(id) {
 //   database.ref('Users').get(id);
-// }
-
-// export function addEvent(event) {
-//   database.ref('Events').push(event);
-// }
-
-// export function deleteEvent(id) {
-//   database.ref('Events').child(id).remove();
 // }
 
 // export function updateEvent(id, event) {

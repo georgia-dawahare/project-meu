@@ -2,11 +2,11 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
-import Button from '../components/Button';
-import RegistrationInput from '../components/RegistrationInput';
-import SignUpGraphic from '../components/SignUpGraphic';
+import Button from '../../components/Button';
+import RegistrationInput from '../../components/RegistrationInput';
+import SignUpGraphic from '../../components/SignUpGraphic';
 
-function SigninForgotPasswordPage1(props) {
+function SigninForgotPasswordPage1() {
   return (
     <SafeAreaView>
       <Image

@@ -9,9 +9,10 @@ import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
-import SignIn from '../screens/home/SignIn';
-import SignUpSignIn from '../screens/home/SignUpSignIn';
+import SignIn from '../screens/authentication/SignIn';
+import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
+import OnboardingPage from '../screens/authentication/OnboardingPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SignInForgotPassword1"
         component={SignInForgotPasswordPage1}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingPage}
       />
     </Stack.Navigator>
   );

@@ -2,16 +2,16 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
-import Button from '../components/Button';
-import RegistrationInput from '../components/RegistrationInput';
-import SignUpGraphic from '../components/SignUpGraphic';
+import Button from '../../components/Button';
+import RegistrationInput from '../../components/RegistrationInput';
+import SignUpGraphic from '../../components/SignUpGraphic';
 
 function SigninPage(props) {
   return (
     <SafeAreaView>
       <Image
         // eslint-disable-next-line global-require
-        source={require('../../assets/icons/x-white.png')}
+        source={require('../../../assets/icons/x-white.png')}
         style={styles.Icon}
       />
       <SignUpGraphic />
