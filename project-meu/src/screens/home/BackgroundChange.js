@@ -42,7 +42,7 @@ function BackgroundChange() {
   return (
 
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <TopBar></TopBar>
+      <TopBar />
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -168,6 +168,6 @@ const styles = StyleSheet.create({
   },
 
   calendarModal: {
-    
-  }
+
+  },
 });
