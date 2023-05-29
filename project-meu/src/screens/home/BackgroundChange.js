@@ -68,7 +68,6 @@ function BackgroundChange() {
   };
 
   return (
-
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <TopBar></TopBar>
       {backgroundImage && (
@@ -246,6 +245,5 @@ const styles = StyleSheet.create({
   },
 
   calendarModal: {
-    
   }
 });
