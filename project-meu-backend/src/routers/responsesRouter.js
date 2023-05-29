@@ -5,11 +5,11 @@ const router = Router();
 
 // Create a response group
 router.post('/group', async (req, res) => {
-  const response = req.body.groupData[0];
-  const responseId = req.body.groupId;
+  const response = req.body.groupData;
+  const { groupId } = req.body;
   try {
-    const groupId = await responsesController.addResponseGroup(response, responseId);
-    res.status(200).send(`Successfully created response group: ${groupId}`);
+    const id = await responsesController.addResponseGroup(response, groupId);
+    res.status(200).send(`Successfully created response group: ${id}`);
   } catch (e) {
     console.log('Tried to create response group: ', e);
     res.status(500).send(e.message);
@@ -21,7 +21,11 @@ router.get('/group/:id', async (req, res) => {
   const groupId = req.params.id;
   try {
     const data = await responsesController.getResponseGroup(groupId);
-    res.status(200).send(data);
+    if (!data) {
+      res.status(202).send(data);
+    } else {
+      res.status(200).send(data);
+    }
   } catch (e) {
     console.log('Tried to fetch response group: ', e);
     res.status(500).send(e.message);
@@ -61,7 +65,11 @@ router.get('/:id', async (req, res) => {
   const responseId = req.params.id;
   try {
     const data = await responsesController.getResponse(responseId);
-    res.status(200).send(data);
+    if (!data) {
+      res.status(202).send(data);
+    } else {
+      res.status(200).send(data);
+    }
   } catch (e) {
     console.log('Tried to fetch response: ', e);
     res.status(500).send(e.message);

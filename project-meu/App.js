@@ -18,7 +18,8 @@ import SignIn from './src/screens/authentication/SignIn';
 import store from './src/store';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // CHANGE BACK TO FALSE LATER (FOR DEV PURPOSES ONLY)
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
@@ -33,7 +34,7 @@ function App() {
         setIsLoggedIn(true);
       } else {
         // User is signed out
-        setIsLoggedIn(false); // redundant
+        // setIsLoggedIn(false); // UNCOMMENT LATER (FOR DEV PURPOSES ONLY)
       }
     });
   }, []);

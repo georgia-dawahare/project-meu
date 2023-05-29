@@ -16,10 +16,21 @@ router.post('/', async (req, res) => {
 });
 
 // Get user's name
-router.get('/:uid', async (req, res) => {
+router.get('/name/:uid', async (req, res) => {
   const user = req.params;
   try {
     const data = await usersController.getName(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+// Get user
+router.get('/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getUser(user.uid);
     res.status(200).send(data);
   } catch (e) {
     res.status(500).send(e.message);

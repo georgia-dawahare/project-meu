@@ -43,6 +43,17 @@ const getName = async (uid) => {
   return name;
 };
 
+const getUser = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let user;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    user = doc.data();
+  }
+  return user;
+};
+
 const updateUser = async (uid, updatedData) => {
   const user = firestore.collection('Users').doc(uid);
   await user.update(updatedData);
@@ -172,6 +183,7 @@ const getResponseGroup = async (id) => {
         console.log('Successfully fetched response group');
         return doc.data();
       } else {
+        console.log('Response group does not exist');
         return null;
       }
     })
@@ -232,8 +244,10 @@ const getResponse = async (id) => {
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
+        console.log('Successfully fetched response');
         return doc.data();
       } else {
+        console.log('Response does not exist');
         return null;
       }
     })
@@ -273,6 +287,7 @@ const deleteResponse = async (responseId) => {
 const firestoreService = {
   createUser,
   getName,
+  getUser,
   updateUser,
   getResponseGroup,
   updateResponseGroup,

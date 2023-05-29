@@ -46,12 +46,12 @@ function SignIn({ navigation }) {
       })
       .catch((error) => {
         const errorCode = error.code;
-        if (errorCode === 'auth/invalid-email') {
+        if (errorCode.includes('email') || errorCode.includes('user')) {
           setEmailError('Invalid email');
         } else {
           setEmailError('');
         }
-        if (errorCode === 'auth/missing-password' || errorCode === 'auth/wrong-password') {
+        if (errorCode.includes('password')) {
           setPasswordError('Invalid password');
         } else {
           setPasswordError('');
