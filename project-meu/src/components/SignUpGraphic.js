@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image,
+  View, StyleSheet, Text, Image,
 } from 'react-native';
 import * as Font from 'expo-font';
 
@@ -24,21 +24,21 @@ function SignUpGraphic() {
     return <Text>Loading...</Text>;
   }
   return (
-    <SafeAreaView>
+    <View>
       <Image
         source={require('../../assets/signup-vector.png')}
-        style={styles.SignupVector}
+        style={styles.signUpVector}
       />
-      <Text style={styles.WelcomeMeU}>
+      <Text style={styles.welcomeTxt}>
         Welcome to
         {'\n'}
         MeU
       </Text>
-    </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({
-  SignupVector: {
+  signUpVector: {
     position: 'absolute',
     top: 0,
     left: 0,
@@ -46,14 +46,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     resizeMode: 'cover',
   },
-  WelcomeMeU: {
-    position: 'absolute',
-    top: 60,
-    left: 27,
+  welcomeTxt: {
+    textAlign: 'left',
     color: '#ffffff',
-    fontSize: 32,
+    fontSize: 28,
     letterSpacing: 1,
-    alignSelf: 'center',
+    marginLeft: 27,
+    marginTop: 100,
     fontFamily: 'SF-Pro-Display-Bold',
   },
 });

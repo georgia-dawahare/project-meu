@@ -6,7 +6,7 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
-// import PictureThumbnail from '../../components/PictureThumbnail';
+import PictureThumbnail from '../../components/PictureThumbnail';
 
 const { width, height } = Dimensions.get('window');
 
