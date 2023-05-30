@@ -15,6 +15,9 @@ function ClockAndLocation() {
   // https://youtu.be/NiNLPZsRruY -- tutorial found on medium.com
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db'
   const starterUrl = 'https://api.openweathermap.org/data/2.5/weather?'
+  
+  // user and partner data below: 
+  
   const [userCity, setUserCity] = useState('');
   const [userTemp, setUserTemp] = useState();
 
@@ -28,7 +31,7 @@ function ClockAndLocation() {
   const [units, setUnits] = useState('imperial');
   const [refreshing, setRefreshing] = useState(false);
 
-  // load in user data and partner's data 
+
   const loadForecast = async () => {
     setRefreshing(true);
     
@@ -47,6 +50,7 @@ function ClockAndLocation() {
     .then((response) => response.json()).then((data) => {
       // setForecast(data)
       console.log(data)
+
       setUserCity(data.name)
       setUserTemp(data.main.temp.toFixed(0))
       setRefreshing(false)
@@ -64,7 +68,6 @@ function ClockAndLocation() {
     .catch((error) => {
         console.error(error);
     })
-    
 
   }
 

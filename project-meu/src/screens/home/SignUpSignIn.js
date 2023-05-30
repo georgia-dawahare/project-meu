@@ -12,10 +12,6 @@ function LoginScreen() {
     navigation.replace('SignIn');
   };
 
-  const handleForgotPassword = () => {
-    navigation.replace('SignInForgotPassword1');
-  };
-
   const handleScreenPress = () => {
     Keyboard.dismiss();
   };
@@ -26,11 +22,11 @@ function LoginScreen() {
         <SignUpGraphic />
         <View style={styles.Container}>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={handleForgotPassword} style={styles.button}>
+            <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Sign Up</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.forgetPass}>
+            <TouchableOpacity style={styles.forgetPass} >
               <Text style={styles.buttonOutLineText}>
                 Already have an ID?
                 <Text style={styles.signInText} onPress={handleSignIn}>  Sign In</Text>

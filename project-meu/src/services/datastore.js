@@ -21,6 +21,11 @@ export { auth };
 
 export function getResponseGroup(id) {
   const docRef = firestore.collection('ResponseGroup').doc(id);
+}
+
+// need to modify so it gets all the daily question responses of the user id instead of the response id, but okay until we get auth working
+export function getDailyQuestionResponses(id) {
+  const docRef = firestore.collection('DailyQuestionResponses').doc(id);
   return docRef.get()
     .then((doc) => {
       if (doc.exists) {
