@@ -11,7 +11,6 @@ import FabandModal from '../../components/FabandModal';
 import { apiUrl } from '../../constants/constants';
 
 function DdayList({
-  // date, title, iconName, fetchData, /* onDelete */
   date, title, iconName, eventId, fetchData,
 }) {
   const [icon, setIcon] = useState(iconName);
@@ -33,7 +32,6 @@ function DdayList({
           {
             text: 'Delete',
             onPress: deleteEventConfirmation,
-            // onPress: () => deleteEventConfirmation(),
             style: 'destructive',
           },
         ],
@@ -73,17 +71,28 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   // TODO: Need to filter by pairId
   const printEventTitlesAndDates = async () => {
     const events = await axios.get(`${apiUrl}/events/`);
-    console.log(events.data);
+    // console.log(events.data);
+
+    const extractDate = (dateString) => {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      // const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      // const day = date.getDate().toString().padStart(2, '0');
+      // return `${year}-${month}-${day}`;
+      return year;
+    };
 
     const ddayList = events.data.map((event) => {
       const {
         title, repeat, date, id,
       } = event;
-      // const formattedDate = date.slice(0, 5);_
+
+      const extractedDate = extractDate(date);
+
       return (
         <DdayList
           key={event.id}
-          date={date._seconds}
+          date={extractedDate}
           title={title}
           repeat={repeat}
           eventId={id}
