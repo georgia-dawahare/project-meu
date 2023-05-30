@@ -1,7 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import userRouter from './routers/userRouter';
+import usersRouter from './routers/usersRouter';
+import emotionsRouter from './routers/emotionsRouter';
+import pairsRouter from './routers/pairsRouter';
+import eventsRouter from './routers/eventsRouter';
+import responsesRouter from './routers/responsesRouter';
 
 // initialize
 const app = express();
@@ -26,7 +30,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
-app.use('/user', userRouter);
+app.use('/users', usersRouter);
+app.use('/emotions', emotionsRouter);
+app.use('/pairs', pairsRouter);
+app.use('/events', eventsRouter);
+app.use('/responses', responsesRouter);
 
 // default index route
 app.get('/', (req, res) => {

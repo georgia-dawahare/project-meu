@@ -6,13 +6,13 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
 const { width, height } = Dimensions.get('window');
-import ClockAndLocation from '../../components/ClockAndLocation';
-import PictureThumbnail from '../../components/PictureThumbnail'; 
+import { FontAwesome5 } from "@expo/vector-icons";
+
 
 function BackgroundChange({navigation}) {
-  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');
+  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('transparent');
+  const [backgroundColor, setBackgroundColor] = useState('rgba(83, 83, 83, 0.8');
 
   useEffect(() => {
     (async () => {
@@ -70,8 +70,7 @@ function BackgroundChange({navigation}) {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <TopBar />
+    <View style={[styles.container, { backgroundColor }]}>
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -79,14 +78,10 @@ function BackgroundChange({navigation}) {
           resizeMode="cover"
         />
       )}
-      <View>
-        <TopBar navigation={navigation}/>
-        <PictureThumbnail/>
-      </View>
       <View style={styles.container}>
-         
+
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <Text>Menu Icon</Text>
+          <FontAwesome5 name="edit" size={22} color="white" />
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
@@ -95,46 +90,43 @@ function BackgroundChange({navigation}) {
         >
           <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
             <View style={styles.menuContainer}>
-            <View style={styles.menuMask}>
-              <TouchableOpacity
-                style={styles.menuOption1}
-                onPress={() => handleMenuOptionClick('Gallery')}
-              >
-                <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.menuOption}
-                onPress={() => handleMenuOptionClick('Gallery')}
-              >
-                <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-              </TouchableOpacity>
+              <View style={styles.menuMask}>
+                <TouchableOpacity
+                  style={styles.menuOption1}
+                  onPress={() => handleMenuOptionClick('Gallery')}
+                >
+                  <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption}
+                  onPress={() => handleMenuOptionClick('Gallery')}
+                >
+                  <Text style={styles.menuOptionText}>Choose From Gallery</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.menuOption}
-                onPress={() => handleMenuOptionClick('Camera')}
-              >
-                <Text style={styles.menuOptionText}>Camera</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption}
+                  onPress={() => handleMenuOptionClick('Camera')}
+                >
+                  <Text style={styles.menuOptionText}>Camera</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.menuOption2}
-                onPress={() => handleMenuOptionClick('Remove Widget')}
-              >
-                <Text style={styles.menuOptionText}>Remove Widget Image</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption2}
+                  onPress={() => handleMenuOptionClick('Remove Widget')}
+                >
+                  <Text style={styles.menuOptionText}>Remove Widget Image</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-                <Text style={styles.closeButtonText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
+                  <Text style={styles.closeButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
         </Modal>
       </View>
-      <View>
-        <ClockAndLocation/>
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -142,20 +134,24 @@ export default BackgroundChange;
 
 const styles = StyleSheet.create({
   container: {
+    borderRadius: 20,
+    height: 120,
+    width: 120,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
 
   image: {
     ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    backgroundColor: 'rgba(175, 175, 175, 0.8)',
   },
 
   iconButton: {
-    marginTop: 700,
+    marginTop: 0,
+    marginLeft: 0,
     padding: 10,
-    backgroundColor: 'lightblue',
-    borderRadius: 5,
   },
 
   overlay: {
@@ -167,7 +163,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     justifyContent: 'flex-end',
-    borderRadius:15,
+    borderRadius: 15,
   },
 
   menuContainer: {
@@ -181,7 +177,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  
+
   menuMask: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -203,8 +199,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'lightgray',
-    borderTopLeftRadius:18,
-    borderTopRightRadius:18,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     borderTopWidth: 1,
     borderColor: 'darkgray',
     alignItems: 'center',
@@ -214,8 +210,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'lightgray',
-    borderBottomLeftRadius:18,
-    borderBottomRightRadius:18,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
     borderTopWidth: 1,
     borderColor: 'darkgray',
     alignItems: 'center',
@@ -226,7 +222,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     backgroundColor: 'white',
     marginTop: 10,
-    borderRadius:15,
+    borderRadius: 15,
     alignItems: 'center',
   },
 
