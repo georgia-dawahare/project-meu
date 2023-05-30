@@ -14,6 +14,7 @@ import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
+import TempHome from '../screens/home/TempHome';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="Onboarding"
         component={OnboardingPage}
+      />
+      <Stack.Screen
+        name="TempHome"
+        component={TempHome}
       />
     </Stack.Navigator>
   );

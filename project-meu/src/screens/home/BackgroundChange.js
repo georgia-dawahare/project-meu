@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal,
+  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, Dimensions,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import PictureThumbnail from '../../components/PictureThumbnail';
+
+const { width, height } = Dimensions.get('window');
 
 function BackgroundChange({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');

@@ -74,6 +74,12 @@ function HomePage({ navigation }) {
             SignUpSignIn
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TempHome')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            TempHome
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
           <Text style={styles.buttonText}>
             Onboarding
