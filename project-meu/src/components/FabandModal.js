@@ -8,7 +8,8 @@ import { FAB } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
-import { addEvents } from '../services/datastore';
+import axios from 'axios';
+import { apiUrl } from '../constants/constants';
 
 const K_OPTIONS = [
   {
@@ -63,15 +64,25 @@ function FabandModal() {
     setDate(currentDate);
   };
 
-  const handleAddEvent = () => {
+  const handleAddEvent = async () => {
     console.log('Date:', date);
     console.log('Title:', title);
     console.log('Repeat:', selectedTeam);
 
-    addEvents(date, title, selectedTeam.item);
-    setAnniversaries([...anniversaries, { date, title, repeat: selectedTeam.item }]);
+    // Need to pull pair id
+    const eventData = {
+      date,
+      title,
+      repeat: selectedTeam.item,
+      pairId: '1',
+    };
 
-    setModalVisible(false);
+    // Push to db
+    const eventId = await axios.post(`${apiUrl}/events/`, eventData);
+
+    setAnniversaries([...anniversaries, {
+      date, title, eventId, repeat: selectedTeam.item, pairId: '1',
+    }]);
 
     setModalVisible(false);
     setDate(new Date());

@@ -50,25 +50,26 @@ function HomePage({ navigation }) {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
-          {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             BackgroundChange
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingPage')}>
-          {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             Settings
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
+          <Text style={styles.buttonText}>
+            Version-Setting
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
-          {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             SignIn
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUpSignIn')}>
-          {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             SignUpSignIn
           </Text>
@@ -77,6 +78,11 @@ function HomePage({ navigation }) {
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             TempHome
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
+          <Text style={styles.buttonText}>
+            Onboarding
           </Text>
         </TouchableOpacity>
       </View>

@@ -1,16 +1,17 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomePage from '../screens/home/HomePage';
 import HomeCalendar from '../screens/home/HomeCalendar';
+import HomePage from '../screens/home/HomePage';
 import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
-import SignIn from '../screens/home/SignIn'
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
-import SignUpSignIn from '../screens/home/SignUpSignIn';
+import SignIn from '../screens/authentication/SignIn';
+import SignUpSignIn from '../screens/authentication/SignUpSignIn';
+import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import TempHome from '../screens/home/TempHome';
@@ -55,6 +56,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingPersonalInfo"
         component={SettingNotificationPage}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingPage}
       />
       <Stack.Screen
         name="TempHome"
