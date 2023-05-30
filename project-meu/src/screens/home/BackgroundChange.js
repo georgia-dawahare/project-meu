@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, Dimensions,
+  View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import TopBar from '../../components/TopBar';
+import { FontAwesome5 } from '@expo/vector-icons';
+
 const { width, height } = Dimensions.get('window');
-import { FontAwesome5 } from "@expo/vector-icons";
 
-
-function BackgroundChange({navigation}) {
+function BackgroundChange({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('rgba(83, 83, 83, 0.8');
@@ -18,12 +17,12 @@ function BackgroundChange({navigation}) {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       if (status !== 'granted') {
-        alert('Permission to access camera was denied');
+        Alert.alert('Permission Denied', 'Permission to access camera was denied');
       }
 
       const { status: rollStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (rollStatus !== 'granted') {
-        alert('Permission to access camera roll was denied');
+        Alert.alert('Permission Denied', 'Permission to access camera roll was denied');
       }
     })();
   }, []);
@@ -45,7 +44,7 @@ function BackgroundChange({navigation}) {
           setBackgroundImage(result.uri);
         }
       } else {
-        alert('Permission to access camera was denied');
+        Alert.alert('Permission to access camera was denied');
       }
     } else if (option === 'Gallery') {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -58,7 +57,7 @@ function BackgroundChange({navigation}) {
           setBackgroundImage(result.uri);
         }
       } else {
-        alert('Permission to access camera roll was denied');
+        Alert.alert('Permission to access camera roll was denied');
       }
     } else if (option === 'Remove Widget') {
       setBackgroundImage(null);
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
 
   image: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 20,
+    borderRadius: 15,
     backgroundColor: 'rgba(175, 175, 175, 0.8)',
   },
 
