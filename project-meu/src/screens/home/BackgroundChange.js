@@ -5,11 +5,12 @@ import {
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
-const { width, height } = Dimensions.get('window');
 import ClockAndLocation from '../../components/ClockAndLocation';
-import PictureThumbnail from '../../components/PictureThumbnail'; 
+import PictureThumbnail from '../../components/PictureThumbnail';
 
-function BackgroundChange({navigation}) {
+const { width, height } = Dimensions.get('window');
+
+function BackgroundChange({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('transparent');
@@ -80,11 +81,11 @@ function BackgroundChange({navigation}) {
         />
       )}
       <View>
-        <TopBar navigation={navigation}/>
-        <PictureThumbnail/>
+        <TopBar navigation={navigation} />
+        <PictureThumbnail />
       </View>
       <View style={styles.container}>
-         
+
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
           <Text>Menu Icon</Text>
         </TouchableOpacity>
@@ -95,44 +96,44 @@ function BackgroundChange({navigation}) {
         >
           <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
             <View style={styles.menuContainer}>
-            <View style={styles.menuMask}>
-              <TouchableOpacity
-                style={styles.menuOption1}
-                onPress={() => handleMenuOptionClick('Gallery')}
-              >
-                <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.menuOption}
-                onPress={() => handleMenuOptionClick('Gallery')}
-              >
-                <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-              </TouchableOpacity>
+              <View style={styles.menuMask}>
+                <TouchableOpacity
+                  style={styles.menuOption1}
+                  onPress={() => handleMenuOptionClick('Gallery')}
+                >
+                  <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption}
+                  onPress={() => handleMenuOptionClick('Gallery')}
+                >
+                  <Text style={styles.menuOptionText}>Choose From Gallery</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.menuOption}
-                onPress={() => handleMenuOptionClick('Camera')}
-              >
-                <Text style={styles.menuOptionText}>Camera</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption}
+                  onPress={() => handleMenuOptionClick('Camera')}
+                >
+                  <Text style={styles.menuOptionText}>Camera</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.menuOption2}
-                onPress={() => handleMenuOptionClick('Remove Widget')}
-              >
-                <Text style={styles.menuOptionText}>Remove Widget Image</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuOption2}
+                  onPress={() => handleMenuOptionClick('Remove Widget')}
+                >
+                  <Text style={styles.menuOptionText}>Remove Widget Image</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-                <Text style={styles.closeButtonText}>Cancel</Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
+                  <Text style={styles.closeButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </TouchableOpacity>
         </Modal>
       </View>
       <View>
-        <ClockAndLocation/>
+        <ClockAndLocation />
       </View>
     </SafeAreaView>
   );
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     justifyContent: 'flex-end',
-    borderRadius:15,
+    borderRadius: 15,
   },
 
   menuContainer: {
@@ -181,7 +182,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
-  
+
   menuMask: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -203,8 +204,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'lightgray',
-    borderTopLeftRadius:18,
-    borderTopRightRadius:18,
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
     borderTopWidth: 1,
     borderColor: 'darkgray',
     alignItems: 'center',
@@ -214,20 +215,19 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'lightgray',
-    borderBottomLeftRadius:18,
-    borderBottomRightRadius:18,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
     borderTopWidth: 1,
     borderColor: 'darkgray',
     alignItems: 'center',
   },
-
 
   closeButton: {
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'white',
     marginTop: 10,
-    borderRadius:15,
+    borderRadius: 15,
     alignItems: 'center',
   },
 
