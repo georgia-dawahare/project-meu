@@ -10,7 +10,7 @@ import { Entypo, Feather } from '@expo/vector-icons';
 function TopBar({ navigation }) {
   const daysExample = 1293;
   const [days, setDays] = useState(0);
-  const days_text = `${days} days`;
+  const daysText = `${days} days`;
 
   useEffect(() => {
     async function loadData() {
@@ -26,7 +26,7 @@ function TopBar({ navigation }) {
         <Feather name="calendar" size={28} color="black" style={{ paddingLeft: 10 }} />
       </TouchableOpacity>
       <Text style={styles.header}>
-        {days_text}
+        {daysText}
       </Text>
       <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
         <Entypo name="dots-three-vertical" size={28} color="black" style={{ paddingRight: 7 }} />

@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { auth } from '../../services/datastore';
 import SignUpGraphic from '../../components/SignUpGraphic';
 
-
 function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,6 +23,7 @@ function LoginScreen() {
   }, []);
 
   const handleSignIn = () => {
+    // Clear previous email error
     setEmailError('');
     setPasswordError('');
 
@@ -42,11 +42,13 @@ function LoginScreen() {
         const userRef = firebase.database().ref(`users/${user.uid}`);
         userRef.once('value', (snapshot) => {
           const userData = snapshot.val();
-          const savedPassword = userData.password; 
+          const savedPassword = userData.password; // Access the stored password
           console.log(savedPassword);
 
+          // Compare the entered password with the stored password
           if (password === savedPassword) {
             console.log(`Logged in as ${email}`);
+            // Proceed with the login process
           } else {
             setPasswordError('The Password is incorrect');
             console.log('The Password is incorrect');
@@ -57,20 +59,18 @@ function LoginScreen() {
       })
       .catch((error) => {
         setPasswordError('The Password is incorrect');
+        // alert(error);
       });
   };
 
   const isValidEmail = (email) => {
+    // Use a regular expression to check if the email format is valid
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
   const handleScreenPress = () => {
     Keyboard.dismiss();
-  };
-
-  const handleForgotPassword = () => {
-    navigation.replace('SignInForgotPassword1');
   };
 
   return (
@@ -108,7 +108,7 @@ function LoginScreen() {
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.forgetPass} onPress={handleForgotPassword}>
+            <TouchableOpacity style={styles.forgetPass}>
               <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View>

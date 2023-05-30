@@ -136,7 +136,6 @@ function CheckinPage({ navigation }) {
   if (answered && partnerAnswered) {
     return (
       <SafeAreaView style={styles.container}>
-        <TopBar />
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
           <Card.Title style={styles.question}>{question}</Card.Title>
@@ -231,6 +230,7 @@ function CheckinPage({ navigation }) {
   } else {
     return (
       <SafeAreaView style={styles.container}>
+        <TopBar />
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
           <Card.Title style={styles.question}>{question}</Card.Title>
@@ -248,8 +248,7 @@ function CheckinPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
+
   },
   text: {
     textAlign: 'center',

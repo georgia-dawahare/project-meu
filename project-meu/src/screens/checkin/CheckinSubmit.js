@@ -94,27 +94,32 @@ function CheckinSubmit({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
   },
+
   text: {
     textAlign: 'center',
     fontSize: 20,
     fontFamily: 'SF-Pro-Display-Bold',
     marginBottom: 20,
   },
+
   cardContainer: {
     borderRadius: 15,
     padding: 20,
   },
+
   question: {
     textAlign: 'center',
     fontSize: 28,
     fontFamily: 'SF-Pro-Display-Bold',
     margin: 20,
   },
+
   button: {
     paddingVertical: 12,
     paddingHorizontal: 32,
@@ -123,6 +128,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(230, 43, 133)',
     alignItems: 'center',
   },
+
   buttonText: {
     fontFamily: 'SF-Pro-Display-Bold',
     color: 'white',

@@ -61,12 +61,6 @@ function HomePage({ navigation }) {
             Settings
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
-          {/** dont forget you added the above  */}
-          <Text style={styles.buttonText}>
-            Version-Setting
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
@@ -77,6 +71,12 @@ function HomePage({ navigation }) {
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             SignUpSignIn
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TempHome')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            TempHome
           </Text>
         </TouchableOpacity>
       </View>
