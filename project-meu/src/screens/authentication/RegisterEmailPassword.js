@@ -3,18 +3,18 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
-import Button from '../components/Button';
-import RegistrationInput from '../components/RegistrationInput';
+import Button from '../../components/Button';
+import RegistrationInput from '../../components/RegistrationInput';
 
-function SignupPage1(props) {
+function RegisterEmailPassword(props) {
   return (
     <SafeAreaView>
       <Image
-        source={require('../../assets/icons/goback-black.png')}
+        source={require('../../../assets/icons/goback-black.png')}
         style={styles.Icon}
       />
       <Image
-        source={require('../../assets/images/progress-1.png')}
+        source={require('../../../assets/images/progress-1.png')}
         style={styles.progress}
       />
 
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupPage1;
+export default RegisterEmailPassword;

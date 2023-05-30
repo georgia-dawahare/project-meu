@@ -15,45 +15,61 @@ import {
 } from 'react-native-elements';
 import * as Font from 'expo-font';
 import moment from 'moment';
-import {
-  getResponseGroup, getResponse, addResponseGroup, deleteResponse,
-} from '../../services/datastore';
+import axios from 'axios';
+import { apiUrl } from '../../constants/constants';
+import auth from '../../services/datastore';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [answered, setAnswered] = useState(false);
-  const [partnerAnswered, setPartnerAnswered] = useState(false);
-  const [question, setQuestion] = useState('');
-  const [userResponseId, setUserResponseId] = useState('');
 
-  const [partnerResponse, setPartnerResponse] = useState('');
-  const [userResponse, setUserResponse] = useState('');
-  const [partnerResponseTime, setPartnerResponseTime] = useState('');
+  const [question, setQuestion] = useState('');
   const [userResponseTime, setUserResponseTime] = useState('');
+  const [partnerResponseTime, setPartnerResponseTime] = useState('');
+  const [userResponse, setUserResponse] = useState('');
+  const [partnerResponse, setPartnerResponse] = useState('');
+  const [responseId, setResponseId] = useState('');
 
   // dumby user data
-  const userId = 'user1';
-  const pairId = 'pair1';
   const userFirstName = 'Kaylie';
   const partnerFirstName = 'Steve';
+  const tempUserId = 'user1';
+  const tempPairId = 'pair1';
+
+  const getUser = async (uid) => {
+    const userResult = await axios.get(`${apiUrl}/users/${uid}`);
+    return userResult;
+  };
+
+  const addResponseGroup = async (groupData, groupId) => {
+    const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
+    return id;
+  };
+
+  const getResponse = async (currResponseId) => {
+    const response = await axios.get(`${apiUrl}/responses/${currResponseId}`);
+    return response;
+  };
 
   const handleDeleteResponse = async () => {
-    await deleteResponse(userResponseId);
+    await axios.delete(`${apiUrl}/responses/${responseId}`);
     setUserResponse('');
-    setAnswered(false);
   };
 
   const handleNewResponse = (textAnswer) => {
-    setAnswered(true);
     setUserResponse(textAnswer);
   };
 
   const refreshData = async () => {
-    const groupId = pairId + moment().format('MMDDYY');
-    let data = await getResponseGroup(groupId);
+    // Fetch user ID & user doc
+    const userId = auth.currentUser?.uid;
+    getUser(userId);
+
+    const groupId = tempPairId + moment().format('MMDDYY');
+    let responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+
     // if there is no response group, create a new one!
-    if (data === null) {
-      const questionId = Math.round(Math.random() * 100);
+    if (responseGroup.status === 202) {
+      const questionId = Math.round(Math.random() * 26);
       addResponseGroup(
         {
           p1_response_id: '',
@@ -62,46 +78,80 @@ function CheckinPage({ navigation }) {
         },
         groupId,
       );
-      const questionData = require('../../../assets/data/questions.json');
-      setQuestion(questionData.questions[data.question_id].question);
-      data = await getResponseGroup(groupId);
+      // Set responseGroup to newly created response group
+      responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
     }
+
+    const responseGroupData = responseGroup.data;
+
+    // Set daily question
+    const questionData = require('../../../assets/data/questions.json');
+    setQuestion(questionData.questions[responseGroupData.question_id].question);
+
+    // Populate partner responses if they exist
     let p1Response = null;
     let p2Response = null;
-    if (data.p2_response_id !== '') p1Response = await getResponse(data.p1_response_id);
-    if (data.p2_response_id !== '') p2Response = await getResponse(data.p2_response_id);
+    if (responseGroupData.p1_response_id) p1Response = getResponse(responseGroupData.p1_response_id);
+    if (responseGroupData.p2_response_id) p2Response = getResponse(responseGroupData.p2_response_id);
 
-    const questionData = require('../../../assets/data/questions.json');
-    setQuestion(questionData.questions[data.question_id].question);
-
-    if (p1Response !== null) {
+    // Find out if P1 or P2 is user/partner
+    if (p1Response.status === 200) {
       const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
       const p1Date = new Date(p1Timestamp);
-      if (p1Response.user_id === userId) {
-        setUserResponse(p1Response.response);
-        setUserResponseId(data.p1_response_id);
+      // If P1 is user, then store P1 as user and P2 as partner
+      if (p1Response.data.user_id === userId) {
+        setUserResponse(p1Response.data.response);
+        setResponseId(responseGroupData.p1_response_id);
         setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setAnswered(true);
+        setPartnerResponse(p2Response.data.response);
       } else {
-        setPartnerResponse(p1Response.response);
+        // If P1 is not user, then user must be P2 and P1 will be assigned partner response time
         setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setPartnerAnswered(true);
       }
     }
-    if (p2Response !== null) {
+    if (p2Response.status === 200) {
       const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
       const p2Date = new Date(p2Timestamp);
-      if (p2Response.user_id === userId) {
-        setUserResponse(p2Response.response);
-        setUserResponseId(data.p2_response_id);
+      // If P2 is the user, then store P2 as user and P1 as partner
+      if (p2Response.data.user_id === userId) {
+        setUserResponse(p2Response.data.response);
+        setResponseId(responseGroupData.p2_response_id);
         setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-        setAnswered(true);
+        setPartnerResponse(p1Response.data.response);
       } else {
-        setPartnerResponse(p2Response.response);
         setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-        setPartnerAnswered(true);
       }
     }
+
+    // if (p1Response !== null) {
+    //   // const pairCreatorId = getPairCreatorId(pairId);
+    //   const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
+    //   const p1Date = new Date(p1Timestamp);
+    //   if (p1Response.user_id === userId) {
+    //     setUserResponse(p1Response.response);
+    //     setUserResponseId(responseGroup.p1_response_id);
+    //     setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+    //     setAnswered(true);
+    //   } else {
+    //     setPartnerResponse(p1Response.response);
+    //     setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+    //     setPartnerAnswered(true);
+    //   }
+    // }
+    // if (p2Response !== null) {
+    //   const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
+    //   const p2Date = new Date(p2Timestamp);
+    //   if (p2Response.user_id === userId) {
+    //     setUserResponse(p2Response.response);
+    //     setUserResponseId(responseGroup.p2_response_id);
+    //     setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+    //     setAnswered(true);
+    //   } else {
+    //     setPartnerResponse(p2Response.response);
+    //     setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+    //     setPartnerAnswered(true);
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -125,7 +175,8 @@ function CheckinPage({ navigation }) {
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
-  if (answered && partnerAnswered) {
+
+  if (userResponse && partnerResponse) {
     return (
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
@@ -165,14 +216,9 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
-          <Text style={styles.buttonText}>
-            View More
-          </Text>
-        </TouchableOpacity> */}
       </SafeAreaView>
     );
-  } else if (answered) {
+  } else if (userResponse) {
     return (
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>
@@ -196,14 +242,9 @@ function CheckinPage({ navigation }) {
             />
           </TouchableOpacity>
         </Card>
-        {/* <TouchableOpacity style={styles.buttonSecondary} onPress={handleGetResponseGroup}>
-          <Text style={styles.buttonText}>
-            View More
-          </Text>
-        </TouchableOpacity> */}
       </SafeAreaView>
     );
-  } else if (partnerAnswered) {
+  } else if (partnerResponse) {
     return (
       <SafeAreaView style={styles.container}>
         <Card containerStyle={styles.cardContainer}>

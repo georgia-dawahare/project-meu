@@ -5,12 +5,14 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
+import axios from 'axios';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
-import { getEvents, deleteEvent } from '../../services/datastore';
+import { apiUrl } from '../../constants/constants';
 
 function DdayList({
-  date, title, iconName, fetchData, /* onDelete */
+  // date, title, iconName, fetchData, /* onDelete */
+  date, title, iconName, eventId,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -41,10 +43,8 @@ function DdayList({
     }
   };
 
-  const deleteEventConfirmation = () => {
-    // deleteEvent(title);
-    deleteEvent(title);
-    // fetchData();
+  const deleteEventConfirmation = async () => {
+    await axios.delete(`${apiUrl}/events/${eventId}`);
   };
 
   return (
@@ -68,34 +68,27 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [eventData, setEventData] = useState([]);
 
-  const fetchData = () => {
-    setEventData([]);
+  // TODO: Need to filter by pairId
+  const printEventTitlesAndDates = async () => {
+    const events = await axios.get(`${apiUrl}/events/`);
+    const ddayList = events.data.map((event) => {
+      const {
+        title, repeat, date, id,
+      } = event;
+      const formattedDate = date.slice(0, 5);
+      return (
+        <DdayList
+          key={event.id}
+          date={formattedDate}
+          title={title}
+          repeat={repeat}
+          eventId={id}
+          iconName="ios-heart"
+        />
+      );
+    });
 
-    getEvents()
-      .then((events) => {
-        // tim: refactor this so that fetchData puts events into eventData state not components into state
-        // take the below map and put it in separate renderEvents function that returns components like you have
-        const ddayList = events.map((event) => {
-          // const { date, title, repeat } = event;
-          const { title, repeat } = event;
-          return (
-            <DdayList
-              onDelete={deleteEvent}
-              key={event.id}
-              // date={date}
-              title={title}
-              repeat={repeat}
-              iconName="ios-heart"
-              fetchData={fetchData}
-            />
-          );
-        });
-
-        setEventData(ddayList);
-      })
-      .catch((error) => {
-        console.error('Error getting events:', error);
-      });
+    setEventData(ddayList);
   };
 
   useEffect(() => {
@@ -111,7 +104,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    printEventTitlesAndDates();
   }, []);
 
   if (!fontLoaded) {
