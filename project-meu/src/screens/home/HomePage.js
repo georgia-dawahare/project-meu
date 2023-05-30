@@ -62,6 +62,12 @@ function HomePage({ navigation }) {
             Homeplaceholder
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('testAnniv')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            testAnniv
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}

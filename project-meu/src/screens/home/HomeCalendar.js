@@ -10,7 +10,7 @@ import FabandModal from '../../components/FabandModal';
 import { getEvents, deleteEvent } from '../../services/datastore';
 
 function DdayList({
-  date, title, iconName, fetchData,
+  date, title, iconName, fetchData, /* onDelete */
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -44,6 +44,7 @@ function DdayList({
   const deleteEventConfirmation = () => {
     // deleteEvent(title);
     deleteEvent(title);
+    // fetchData();
   };
 
   return (
@@ -72,11 +73,14 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     getEvents()
       .then((events) => {
+        // tim: refactor this so that fetchData puts events into eventData state not components into state
+        // take the below map and put it in separate renderEvents function that returns components like you have
         const ddayList = events.map((event) => {
           // const { date, title, repeat } = event;
           const { title, repeat } = event;
           return (
             <DdayList
+              onDelete={deleteEvent}
               key={event.id}
               // date={date}
               title={title}

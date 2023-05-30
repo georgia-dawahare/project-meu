@@ -14,6 +14,7 @@ import SignUpSignIn from '../screens/home/SignUpSignIn';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import Homeplaceholder from '../screens/home/homeplaceholder';
+// import testAnniv from '../screens/home/testAnniv';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,10 @@ function HomeScreenNavigator() {
         name="Homeplaceholder"
         component={Homeplaceholder}
       />
+      {/* <Stack.Screen
+        name="testAnniv"
+        component={testAnniv}
+      /> */}
     </Stack.Navigator>
   );
 }
