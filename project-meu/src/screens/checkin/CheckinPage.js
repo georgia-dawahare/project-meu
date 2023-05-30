@@ -18,7 +18,7 @@ import moment from 'moment';
 import {
   getResponseGroup, getResponse, addResponseGroup, deleteResponse,
 } from '../../services/datastore';
-import TopBar from '../../components/TopBar';
+import TopBarCheckin from '../../components/TopBarCheckin';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -52,8 +52,9 @@ function CheckinPage({ navigation }) {
   const getData = async () => {
     const groupId = pairId + moment().format('MMDDYY');
     let data = await getResponseGroup(groupId);
+    console.log(data);
     // if there is no response group, create a new one!
-    if (data === null) {
+    if (typeof data === 'undefined') {
       const questionId = Math.round(Math.random() * 26);
       await addResponseGroup(
         {
@@ -230,16 +231,19 @@ function CheckinPage({ navigation }) {
   } else {
     return (
       <SafeAreaView style={styles.container}>
-        <TopBar />
-        <Card containerStyle={styles.cardContainer}>
-          <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-            <Text style={styles.buttonText}>
-              Submit a Response
-            </Text>
-          </TouchableOpacity>
-        </Card>
+        <TopBarCheckin />
+        <View style={{ marginTop: '50%' }}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text>Daily Question</Text>
+            <Card.Title style={styles.question}>{question}</Card.Title>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+              <Text style={styles.buttonText}>
+                Submit a Response
+              </Text>
+            </TouchableOpacity>
+          </Card>
+        </View>
+
       </SafeAreaView>
     );
   }
