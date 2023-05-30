@@ -15,10 +15,22 @@ function ClockAndLocation() {
   // https://youtu.be/NiNLPZsRruY -- tutorial found on medium.com
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db'
   const starterUrl = 'https://api.openweathermap.org/data/2.5/weather?'
-  // const [forecast, setForecast] = useState({});
+  
+  // user and partner data below: 
+  
   const [userCity, setUserCity] = useState('');
   const [userTemp, setUserTemp] = useState();
+
+  // replace this stuff with the firebase stuff -- city should be a stored parameter
+  const [partnerCity, setPartnerCity] = useState('New York City')
+
+  // find from city 
+  const [partnerTemp, setPartnerTemp] = useState();
+
+  // find this in redux
+  const [units, setUnits] = useState('imperial');
   const [refreshing, setRefreshing] = useState(false);
+
 
   const loadForecast = async () => {
     setRefreshing(true);
@@ -34,9 +46,11 @@ function ClockAndLocation() {
 
     // refresher for .then and catching errors: https://www.geeksforgeeks.org/find-what-caused-possible-unhandled-promise-rejection-in-react-native/#
     // make an api call to get the weather 
-    fetch(`${starterUrl}units=imperial&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
+    fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
     .then((response) => response.json()).then((data) => {
       // setForecast(data)
+      console.log(data)
+
       setUserCity(data.name)
       setUserTemp(data.main.temp.toFixed(0))
       setRefreshing(false)
@@ -45,17 +59,28 @@ function ClockAndLocation() {
       console.error(error);
     })
 
+    // now, moving onto the partner's data -- make an API call based on the city name 
+    fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
+    .then((response) => response.json()).then((data) => {
+        console.log(data)
+        setPartnerTemp(data.main.temp.toFixed(0))
+    })
+    .catch((error) => {
+        console.error(error);
+    })
+
   }
 
   useEffect(() => {
     loadForecast();
   }, [])
 
-  // to be changed with backend 
+  // this will be replaced with firebase 
   const [name1, setName1] = useState('Florian')
   const [name2, setName2] = useState('Catherine')
 
   // used documentation from react-native-analog-clock to set up timer 
+  // should replace partner's time with timezone of partner
   // basically updates seconds minutes and hours using the nowDate
   // could not get the package with the analog clock to work, so using live clock as it is
   // found here: https://github.com/gaetanozappi/react-native-clock-analog
@@ -103,8 +128,8 @@ function ClockAndLocation() {
         <View style={styles.subSection}>
             <View style={styles.list}>
                 <Text style={{textAlign: 'right'}}>{name2}</Text>
-                <Text style={{textAlign: 'right'}}>{userCity}</Text>
-                <Text style={{textAlign: 'right'}}>{userTemp}{'\u00b0'}F</Text>
+                <Text style={{textAlign: 'right'}}>{partnerCity}</Text>
+                <Text style={{textAlign: 'right'}}>{partnerTemp}{'\u00b0'}F</Text>
             </View>
             <View style={styles.clock}>
                 <Text style={styles.clocktext}>{hour}</Text>
@@ -146,14 +171,14 @@ const styles = StyleSheet.create({
         height: 80,
         marginLeft: -0.5,
         top: 20,
-        borderColor: '#D9D9D9',
+        borderColor: '#676767',
     },
 
     calendar: {
       width: '95%',
       height: 120,
       borderRadius: 20,
-      backgroundColor: 'white',
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
       position: 'fixed',
       top: 0,
       left: 10,
