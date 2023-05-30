@@ -46,7 +46,7 @@ function App() {
           <Tab.Navigator
             initialRouteName="HomeTab"
             screenOptions={{
-              // headerShown: false,
+              headerShown: false,
               labelStyle: { fontSize: 18 },
               tabBarActiveTintColor: '#E62B85',
               tabBarInactiveTintColor: '#111827',
@@ -55,11 +55,14 @@ function App() {
             <Tab.Screen
               name="CheckinTab"
               component={CheckinScreenNavigator}
+              headerTitle=""
+              headerColor="#fff"
               options={{
                 tabBarLabel: 'Check-In',
                 tabBarIcon: ({ color, size }) => (
                   <Icon name="create-outline" type="ionicon" color={color} size={size} />
                 ),
+
               }}
             />
             <Tab.Screen

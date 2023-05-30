@@ -33,7 +33,6 @@ function CheckinPage({ navigation }) {
   // dumby user data
   const userFirstName = 'Kaylie';
   const partnerFirstName = 'Steve';
-  // const tempUserId = 'user1';
   const tempPairId = 'pair1';
 
   const getUser = async (uid) => {
@@ -46,8 +45,8 @@ function CheckinPage({ navigation }) {
     return id;
   };
 
-  const getResponse = async (currResponseId) => {
-    const response = await axios.get(`${apiUrl}/responses/${currResponseId}`);
+  const getResponse = async (id) => {
+    const response = await axios.get(`${apiUrl}/responses/${id}`);
     return response;
   };
 
@@ -61,67 +60,78 @@ function CheckinPage({ navigation }) {
   };
 
   const refreshData = async () => {
+    try {
     // Fetch user ID & user doc
-    const userId = auth.currentUser?.uid;
-    getUser(userId);
+      const userId = auth.currentUser?.uid;
+      getUser(userId);
 
-    const groupId = tempPairId + moment().format('MMDDYY');
-    let responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+      const groupId = tempPairId + moment().format('MMDDYY');
+      let responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+      const questionData = require('../../../assets/data/questions.json');
+      // if there is no response group, create a new one!
+      if (responseGroup.status === 202) {
+        let questionId = Math.round(Math.random() * 100);
+        // Ignore all image questions until we have a way to display them
+        while (questionData.questions[questionId].type === 'image') {
+          questionId = Math.round(Math.random() * 100);
+        }
+        await addResponseGroup(
+          {
+            p1_response_id: '',
+            p2_response_id: '',
+            question_id: questionId,
+          },
+          groupId,
+        );
+        // Set responseGroup to newly created response group
+        responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+      }
 
-    // if there is no response group, create a new one!
-    if (responseGroup.status === 202) {
-      const questionId = Math.round(Math.random() * 26);
-      addResponseGroup(
-        {
-          p1_response_id: '',
-          p2_response_id: '',
-          question_id: questionId,
-        },
-        groupId,
-      );
-      // Set responseGroup to newly created response group
-      responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-    }
+      const responseGroupData = responseGroup.data;
+      // Set daily question
+      setQuestion(questionData.questions[responseGroupData.question_id].question);
 
-    const responseGroupData = responseGroup.data;
+      // Populate partner responses if they exist
+      let p1Response = null;
+      let p2Response = null;
+      if (responseGroupData.p1_response_id) {
+        p1Response = await getResponse(responseGroupData.p1_response_id);
+      }
+      if (responseGroupData.p2_response_id) {
+        p2Response = await getResponse(responseGroupData.p2_response_id);
+      }
 
-    // Set daily question
-    const questionData = require('../../../assets/data/questions.json');
-    setQuestion(questionData.questions[responseGroupData.question_id].question);
-
-    // Populate partner responses if they exist
-    let p1Response = null;
-    let p2Response = null;
-    if (responseGroupData.p1_response_id) p1Response = getResponse(responseGroupData.p1_response_id);
-    if (responseGroupData.p2_response_id) p2Response = getResponse(responseGroupData.p2_response_id);
-
-    // Find out if P1 or P2 is user/partner
-    if (p1Response.status === 200) {
-      const p1Timestamp = p1Response.timestamp.seconds * 1000 + Math.floor(p1Response.timestamp.nanoseconds / 1000000);
-      const p1Date = new Date(p1Timestamp);
-      // If P1 is user, then store P1 as user and P2 as partner
-      if (p1Response.data.user_id === userId) {
-        setUserResponse(p1Response.data.response);
-        setResponseId(responseGroupData.p1_response_id);
-        setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setPartnerResponse(p2Response.data.response);
-      } else {
+      // Find out if P1 or P2 is user/partner
+      if (p1Response && p1Response.status === 200) {
+        const p1Timestamp = p1Response.data.timestamp._seconds * 1000 + Math.floor(p1Response.data.timestamp._nanoseconds / 1000000);
+        const p1Date = new Date(p1Timestamp);
+        // If P1 is user, then store P1 as user and P2 as partner
+        if (p1Response.data.user_id === userId) {
+          setUserResponse(p1Response.data.response);
+          setResponseId(responseGroupData.p1_response_id);
+          setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+        } else {
         // If P1 is not user, then user must be P2 and P1 will be assigned partner response time
-        setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+          const minutes = ((p1Date.getMinutes() < 10 ? '0' : '') + p1Date.getMinutes()).toString();
+          setPartnerResponseTime(`${p1Date.getHours().toString()}:${minutes}`);
+          setPartnerResponse(p1Response.data.response);
+        }
       }
-    }
-    if (p2Response.status === 200) {
-      const p2Timestamp = p2Response.timestamp.seconds * 1000 + Math.floor(p2Response.timestamp.nanoseconds / 1000000);
-      const p2Date = new Date(p2Timestamp);
-      // If P2 is the user, then store P2 as user and P1 as partner
-      if (p2Response.data.user_id === userId) {
-        setUserResponse(p2Response.data.response);
-        setResponseId(responseGroupData.p2_response_id);
-        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-        setPartnerResponse(p1Response.data.response);
-      } else {
-        setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+      if (p2Response && p2Response.status === 200) {
+        const p2Timestamp = p2Response.data.timestamp._seconds * 1000 + Math.floor(p2Response.data.timestamp._nanoseconds / 1000000);
+        const p2Date = new Date(p2Timestamp);
+        // If P2 is the user, then store P2 as user and P1 as partner
+        if (p2Response.data.user_id === userId) {
+          setUserResponse(p2Response.data.response);
+          setResponseId(responseGroupData.p2_response_id);
+          setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+        } else {
+          setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+          setPartnerResponse(p2Response.data.response);
+        }
       }
+    } catch (error) {
+      console.error('Error occurred during data refresh:', error);
     }
   };
 
@@ -146,106 +156,114 @@ function CheckinPage({ navigation }) {
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
-
   if (userResponse && partnerResponse) {
     return (
       <SafeAreaView style={styles.container}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={{ marginLeft: 10 }}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
+        <TopBarCheckin />
+        <View style={{ marginTop: '10%' }}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text>Daily Question</Text>
+            <Card.Title style={styles.question}>{question}</Card.Title>
+            <View>
+              <View style={styles.responseHeader}>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <Text>{partnerFirstName}</Text>
+                  <Text>{partnerResponseTime}</Text>
+                </View>
               </View>
+              <Text>{partnerResponse}</Text>
             </View>
-            <Text>{partnerResponse}</Text>
-          </View>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
-                <Icon name="trash-outline" type="ionicon" size={20} />
-              </Pressable>
-              <View style={{ marginRight: 10 }}>
-                <Text style={styles.leftText}>{userFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
+            <View>
+              <View style={styles.myResponseHeader}>
+                <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
+                  <Icon name="trash-outline" type="ionicon" size={20} />
+                </Pressable>
+                <View style={{ marginRight: 10 }}>
+                  <Text style={styles.leftText}>{userFirstName}</Text>
+                  <Text style={styles.leftText}>{userResponseTime}</Text>
+                </View>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+                />
               </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
+              <Text style={styles.leftText}>{userResponse}</Text>
             </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-            <Image
-              style={styles.editButtonContainer}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
-        </Card>
+            <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+              <Image
+                style={styles.editButtonContainer}
+                source={require('../../../assets/images/editButton.png')}
+              />
+            </TouchableOpacity>
+          </Card>
+        </View>
       </SafeAreaView>
     );
   } else if (userResponse) {
     return (
       <SafeAreaView style={styles.container}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={{ marginRight: 10 }}>
-                <Text style={styles.leftText}>{userFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
+        <TopBarCheckin />
+        <View style={{ marginTop: '15%' }}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text>Daily Question</Text>
+            <Card.Title style={styles.question}>{question}</Card.Title>
+            <View>
+              <View style={styles.myResponseHeader}>
+                <View style={{ marginRight: 10 }}>
+                  <Text style={styles.leftText}>{userFirstName}</Text>
+                  <Text style={styles.leftText}>{userResponseTime}</Text>
+                </View>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+                />
               </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
+              <Text style={styles.leftText}>{userResponse}</Text>
             </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-            <Image style={styles.editButton}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
-        </Card>
+            <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+              <Image style={styles.editButton}
+                source={require('../../../assets/images/editButton.png')}
+              />
+            </TouchableOpacity>
+          </Card>
+        </View>
       </SafeAreaView>
     );
   } else if (partnerResponse) {
     return (
       <SafeAreaView style={styles.container}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={{ marginLeft: 10 }}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
+        <TopBarCheckin />
+        <View style={{ marginTop: '15%' }}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text>Daily Question</Text>
+            <Card.Title style={styles.question}>{question}</Card.Title>
+            <View>
+              <View style={styles.responseHeader}>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <Text>{partnerFirstName}</Text>
+                  <Text>{partnerResponseTime}</Text>
+                </View>
               </View>
+              <Text style={styles.blurText}>{partnerResponse}</Text>
             </View>
-            <Text style={styles.blurText}>{partnerResponse}</Text>
-          </View>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-            <Text style={styles.buttonText}>
-              Submit a Response
-            </Text>
-          </TouchableOpacity>
-        </Card>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+              <Text style={styles.buttonText}>
+                Submit a Response
+              </Text>
+            </TouchableOpacity>
+          </Card>
+        </View>
       </SafeAreaView>
     );
   } else {
     return (
       <SafeAreaView style={styles.container}>
         <TopBarCheckin />
-        <View style={{ marginTop: '50%' }}>
+        <View style={{ marginTop: '40%' }}>
           <Card containerStyle={styles.cardContainer}>
             <Text>Daily Question</Text>
             <Card.Title style={styles.question}>{question}</Card.Title>
@@ -350,9 +368,9 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 20,
   },
-  deleteIcon: {
-    marginRight: 10,
-  },
+  // deleteIcon: {
+  //   marginRight: 10,
+  // },
 });
 
 export default CheckinPage;

@@ -150,66 +150,66 @@ function ClockAndLocation() {
 }
 
 const styles = StyleSheet.create({
-  list: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-  },
+    list: {
+      flexDirection: 'column',
+      flexWrap: 'wrap',
+    },
 
-  clock: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F96EB0',
-    height: 100,
-    width: 70,
-    borderRadius: 15,
-  },
+    clock: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#F96EB0',
+        height: 100,
+        width: 70,
+        borderRadius: 15,
+    },
 
-  clocktext: {
-    fontSize: 35,
-    color: 'white',
-    margin: 0,
-    paddingBottom: 0,
-  },
+    clocktext: {
+        fontSize: 35,
+        color: 'white',
+        margin: 0,
+        paddingBottom: 0,
+    },
 
-  // documentation to set and center divider
-  // https://www.w3schools.com/howto/howto_css_vertical_line.asp
-  divider: {
-    borderLeftWidth: 1,
-    height: 80,
-    marginLeft: -0.5,
-    top: 20,
-    borderColor: '#676767',
-  },
+    // documentation to set and center divider 
+    // https://www.w3schools.com/howto/howto_css_vertical_line.asp
+    divider: {
+        borderLeftWidth: 1,
+        height: 80,
+        marginLeft: -0.5,
+        top: 20,
+        borderColor: '#676767',
+    },
 
-  calendar: {
-    width: '95%',
-    height: 120,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    position: 'fixed',
-    top: 0,
-    left: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
-  },
+    calendar: {
+      width: '95%',
+      height: 120,
+      borderRadius: 20,
+      backgroundColor: 'rgba(255, 255, 255, 0.8)',
+      position: 'fixed',
+      top: 0,
+      left: 10,
+      flexDirection: 'row', 
+      justifyContent: 'space-around',
+      marginBottom: 20,
+    },
 
-  subSection: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    justifyContent: 'space-evenly',
-  },
+    subSection: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        justifyContent: 'space-evenly',
+    },
 
-  header: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontFamily: 'SF-Pro-Display',
-    flex: 1,
-    flexWrap: 'wrap',
-  },
-});
+    header: {
+        textAlign: 'center',
+        fontSize: 20,
+        fontFamily: 'SF-Pro-Display',
+        flex: 1,
+        flexWrap: 'wrap',
+      },
+    });
 
 export default ClockAndLocation;

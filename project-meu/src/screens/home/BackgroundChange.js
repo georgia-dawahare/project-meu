@@ -5,15 +5,14 @@ import {
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
-import ClockAndLocation from '../../components/ClockAndLocation';
-import PictureThumbnail from '../../components/PictureThumbnail';
-
 const { width, height } = Dimensions.get('window');
+import { FontAwesome5 } from "@expo/vector-icons";
 
-function BackgroundChange({ navigation }) {
-  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');
+
+function BackgroundChange({navigation}) {
+  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('transparent');
+  const [backgroundColor, setBackgroundColor] = useState('rgba(83, 83, 83, 0.8');
 
   useEffect(() => {
     (async () => {
@@ -71,8 +70,7 @@ function BackgroundChange({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <TopBar />
+    <View style={[styles.container, { backgroundColor }]}>
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -80,14 +78,10 @@ function BackgroundChange({ navigation }) {
           resizeMode="cover"
         />
       )}
-      <View>
-        <TopBar navigation={navigation} />
-        <PictureThumbnail />
-      </View>
       <View style={styles.container}>
 
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <Text>Menu Icon</Text>
+          <FontAwesome5 name="edit" size={22} color="white" />
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
@@ -132,10 +126,7 @@ function BackgroundChange({ navigation }) {
           </TouchableOpacity>
         </Modal>
       </View>
-      <View>
-        <ClockAndLocation />
-      </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -143,13 +134,18 @@ export default BackgroundChange;
 
 const styles = StyleSheet.create({
   container: {
+    borderRadius: 20,
+    height: 120,
+    width: 120,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
 
   image: {
     ...StyleSheet.absoluteFillObject,
+    borderRadius: 20,
+    backgroundColor: 'rgba(175, 175, 175, 0.8)',
   },
 
   containerText: {
@@ -161,10 +157,9 @@ const styles = StyleSheet.create({
   },
 
   iconButton: {
-    marginTop: 700,
+    marginTop: 0,
+    marginLeft: 0,
     padding: 10,
-    backgroundColor: 'lightblue',
-    borderRadius: 5,
   },
 
   overlay: {

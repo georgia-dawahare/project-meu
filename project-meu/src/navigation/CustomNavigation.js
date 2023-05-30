@@ -77,12 +77,6 @@ function CheckinScreenNavigator() {
       <Stack.Screen
         name="Checkin"
         component={CheckinPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'pink',
-            height: 120,
-          },
-        }}
       />
       <Stack.Screen
         name="CheckinSubmit"
