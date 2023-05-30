@@ -101,8 +101,8 @@ function ClockAndLocation() {
 
     useEffect(() => {
       setInterval(() => {
-        const { secondsNow, minuteNow, hourNow } = nowDate();
-        setState({ secondsNow, minuteNow, hourNow });
+        const { second, minute, hour } = nowDate();
+        setState({ second, minute, hour });
       }, 1000);
     }, [useState]);
     return state;
