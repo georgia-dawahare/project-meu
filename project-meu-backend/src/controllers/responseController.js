@@ -20,8 +20,8 @@ const getResponse = async (id) => {
   return responseData;
 };
 
-const addResponse = async (response, groupIdName, currentPartner) => {
-  const groupId = await firestoreService.addResponse(response, groupIdName, currentPartner);
+const addResponse = async (response, pairId, groupId) => {
+  const groupId = await firestoreService.addResponse(response, pairId, groupId);
   return groupId;
 };
 
