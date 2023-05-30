@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-
   closeButton: {
     paddingVertical: 20,
     paddingHorizontal: 30,
