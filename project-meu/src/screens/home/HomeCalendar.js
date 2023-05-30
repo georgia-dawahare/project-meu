@@ -11,7 +11,7 @@ import FabandModal from '../../components/FabandModal';
 import { apiUrl } from '../../constants/constants';
 
 function DdayList({
-  date, title, iconName, eventId, fetchData,
+  date, title, iconName, eventId, fetchData, dday,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -73,34 +73,55 @@ function HomeCalendarComponent({ scrollY, navigation }) {
     const events = await axios.get(`${apiUrl}/events/`);
     // console.log(events.data);
 
-    const extractDate = (dateString) => {
+    // const extractDate = (dateString) => {
+    //   const date = new Date(dateString);
+    //   const year = date.getFullYear();
+    //   // const year = date.getFullYear().toString().slice(2);
+    //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    //   const day = date.getDate().toString().padStart(2, '0');
+    //   return `${month}/${day}/${year}`;
+    // };
+
+    const extractDday = (dateString) => {
       const date = new Date(dateString);
-      const year = date.getFullYear();
-      // const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      // const day = date.getDate().toString().padStart(2, '0');
-      // return `${year}-${month}-${day}`;
-      return year;
+      const today = new Date();
+      const timeDiff = date.getTime() - today.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
     };
 
-    const ddayList = events.data.map((event) => {
-      const {
-        title, repeat, date, id,
-      } = event;
+    const ddayList = events.data
+      .map((event) => {
+        const {
+          title, repeat, date, id,
+        } = event;
 
-      const extractedDate = extractDate(date);
+        const extractedDate = extractDday(date);
 
-      return (
+        return {
+          date: extractedDate,
+          title,
+          repeat,
+          eventId: id,
+          iconName: 'ios-heart',
+        };
+      })
+      .sort((a, b) => {
+        const ddayA = parseInt(a.date.slice(2), 10); // 디데이 값을 숫자로 변환하여 비교
+        const ddayB = parseInt(b.date.slice(2), 10);
+        return ddayA - ddayB;
+      })
+      .map((event) => (
         <DdayList
-          key={event.id}
-          date={extractedDate}
-          title={title}
-          repeat={repeat}
-          eventId={id}
-          iconName="ios-heart"
+          key={event.eventId}
+          date={event.date}
+          title={event.title}
+          repeat={event.repeat}
+          eventId={event.eventId}
+          iconName={event.iconName}
           fetchData={printEventTitlesAndDates}
         />
-      );
-    });
+      ));
 
     setEventData(ddayList);
   };
