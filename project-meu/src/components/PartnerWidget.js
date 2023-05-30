@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, StyleSheet, View, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-function PictureThumbnail() {
+function PartnerWidget() {
 	const [img, setImg] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
 
 	const pickImageAsync = async () => {
@@ -53,4 +53,4 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default PictureThumbnail;
+export default PartnerWidget;

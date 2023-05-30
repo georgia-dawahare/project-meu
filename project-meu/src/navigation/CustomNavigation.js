@@ -13,6 +13,7 @@ import VersionPage from '../screens/settings/VersionPage';
 import SignUpSignIn from '../screens/home/SignUpSignIn';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
+import TempHome from '../screens/home/TempHome';
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +55,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingPersonalInfo"
         component={SettingNotificationPage}
+      />
+      <Stack.Screen
+        name="TempHome"
+        component={TempHome}
       />
     </Stack.Navigator>
   );
