@@ -32,7 +32,8 @@ function DdayList({
           },
           {
             text: 'Delete',
-            onPress: deleteEventConfirmation(),
+            onPress: deleteEventConfirmation,
+            // onPress: () => deleteEventConfirmation(),
             style: 'destructive',
           },
         ],
@@ -73,7 +74,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   const printEventTitlesAndDates = async () => {
     const events = await axios.get(`${apiUrl}/events/`);
     console.log(events.data);
-    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
 
     const ddayList = events.data.map((event) => {
       const {
@@ -95,42 +95,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     setEventData(ddayList);
   };
-
-  // const printEventTitlesAndDates = async () => {
-  //   try {
-  //     const eventsPromise = axios.get(`${apiUrl}/events/`);
-  //     const defaultEventsPromise = axios.get(`${apiUrl}/events/anniversaries`);
-
-  //     const [eventsResponse, defaultEventsResponse] = await Promise.all([
-  //       eventsPromise,
-  //       defaultEventsPromise,
-  //     ]);
-
-  //     const events = eventsResponse.data;
-  //     // const defaultEvents = defaultEventsResponse.data;
-
-  //     const ddayList = events.map((event) => {
-  //       const {
-  //         title, repeat, date, id,
-  //       } = event;
-  //       const formattedDate = date.slice(0, 5);
-  //       return (
-  //         <DdayList
-  //           key={id}
-  //           date={formattedDate}
-  //           title={title}
-  //           repeat={repeat}
-  //           eventId={id}
-  //           iconName="ios-heart"
-  //         />
-  //       );
-  //     });
-
-  //     setEventData(ddayList);
-  //   } catch (error) {
-  //     console.error('Error retrieving event data:', error);
-  //   }
-  // };
 
   useEffect(() => {
     async function loadFont() {
