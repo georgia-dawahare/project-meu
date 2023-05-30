@@ -108,13 +108,11 @@ function ClockAndLocation() {
     return state;
   };
 
-  const { second, minute, hour } = nowTimer();
-  console.log(second, minute, hour);
+  const { minute, hour } = nowTimer();
 
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        'SF-Pro-Display-Medium': require('../../assets/fonts/SF-Pro-Display-Medium.otf'),
         'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
       });
       setFontLoaded(true);
