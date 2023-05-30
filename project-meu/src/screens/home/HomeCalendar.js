@@ -71,15 +71,18 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   // TODO: Need to filter by pairId
   const printEventTitlesAndDates = async () => {
     const events = await axios.get(`${apiUrl}/events/`);
+    console.log(events.data);
+    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
+
     const ddayList = events.data.map((event) => {
       const {
         title, repeat, date, id,
       } = event;
-      const formattedDate = date.slice(0, 5);
+      // const formattedDate = date.slice(0, 5);_
       return (
         <DdayList
           key={event.id}
-          date={formattedDate}
+          date={date._seconds}
           title={title}
           repeat={repeat}
           eventId={id}
@@ -90,6 +93,42 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     setEventData(ddayList);
   };
+
+  // const printEventTitlesAndDates = async () => {
+  //   try {
+  //     const eventsPromise = axios.get(`${apiUrl}/events/`);
+  //     const defaultEventsPromise = axios.get(`${apiUrl}/events/anniversaries`);
+
+  //     const [eventsResponse, defaultEventsResponse] = await Promise.all([
+  //       eventsPromise,
+  //       defaultEventsPromise,
+  //     ]);
+
+  //     const events = eventsResponse.data;
+  //     // const defaultEvents = defaultEventsResponse.data;
+
+  //     const ddayList = events.map((event) => {
+  //       const {
+  //         title, repeat, date, id,
+  //       } = event;
+  //       const formattedDate = date.slice(0, 5);
+  //       return (
+  //         <DdayList
+  //           key={id}
+  //           date={formattedDate}
+  //           title={title}
+  //           repeat={repeat}
+  //           eventId={id}
+  //           iconName="ios-heart"
+  //         />
+  //       );
+  //     });
+
+  //     setEventData(ddayList);
+  //   } catch (error) {
+  //     console.error('Error retrieving event data:', error);
+  //   }
+  // };
 
   useEffect(() => {
     async function loadFont() {
