@@ -10,7 +10,7 @@ import FabandModal from '../../components/FabandModal';
 import { getEvents, deleteEvent } from '../../services/datastore';
 
 function DdayList({
-  date, title, iconName,
+  date, title, iconName, fetchData,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -42,6 +42,7 @@ function DdayList({
   };
 
   const deleteEventConfirmation = () => {
+    // deleteEvent(title);
     deleteEvent(title);
   };
 
@@ -66,11 +67,13 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [eventData, setEventData] = useState([]);
 
-  const printEventTitlesAndDates = () => {
+  const fetchData = () => {
+    setEventData([]);
+
     getEvents()
       .then((events) => {
         const ddayList = events.map((event) => {
-          // const { title, date, repeat } = event;
+          // const { date, title, repeat } = event;
           const { title, repeat } = event;
           return (
             <DdayList
@@ -79,6 +82,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
               title={title}
               repeat={repeat}
               iconName="ios-heart"
+              fetchData={fetchData}
             />
           );
         });
@@ -97,21 +101,10 @@ function HomeCalendarComponent({ scrollY, navigation }) {
         'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
         'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
       });
-
       setFontLoaded(true);
     }
-
     loadFont();
-
-    printEventTitlesAndDates();
-  }, []);
-
-  useEffect(() => {
-    printEventTitlesAndDates();
-  }, []);
-
-  useEffect(() => {
-    printEventTitlesAndDates();
+    fetchData();
   }, []);
 
   if (!fontLoaded) {
@@ -126,16 +119,11 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('Homeplaceholder')} style={styles.backButton}>
         <View style={styles.buttonContent}>
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
-      {/* <TouchableOpacity onPress={printEventTitlesAndDates} style={styles.backButton}>
-        <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
-        </View>
-      </TouchableOpacity> */}
       <Animated.View
         style={[
           styles.headerContainer,
@@ -200,8 +188,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
               Upcoming Anniversaries
             </Text>
             <View>
-              {/* <DdayList date="05/20" title="Dday 1" iconName="ios-heart" />
-              <DdayList date="05/20" title="Dday 3" iconName="ios-calendar" /> */}
               <View>{eventData}</View>
             </View>
           </View>
@@ -209,7 +195,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
         <View />
       </Animated.ScrollView>
-      {/* <AnniversaryModal visible={modalVisible} onClose={toggleModal} /> */}
     </SafeAreaView>
   );
 }

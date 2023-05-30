@@ -44,27 +44,22 @@ function HomePage({ navigation }) {
             Penguins
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomeCalendar')}>
-          <Text style={styles.buttonText}>
-            Home Calendar
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             BackgroundChange
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingPage')}>
-          {/** dont forget you added the above  */}
-          <Text style={styles.buttonText}>
-            Settings
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             SignIn
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Homeplaceholder')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            Homeplaceholder
           </Text>
         </TouchableOpacity>
       </View>
