@@ -119,7 +119,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('Homeplaceholder')} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('TempHome')} style={styles.backButton}>
         <View style={styles.buttonContent}>
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>

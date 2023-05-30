@@ -4,8 +4,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   View,
+  Image,
 } from 'react-native';
-import { Entypo, Feather } from '@expo/vector-icons';
 
 function TopBar({ navigation }) {
   const daysExample = 1293;
@@ -23,13 +23,19 @@ function TopBar({ navigation }) {
   return (
     <View style={styles.topbar}>
       <TouchableOpacity onPress={() => navigation.navigate('HomeCalendar')}>
-        <Feather name="calendar" size={28} color="black" style={{ paddingLeft: 10 }} />
+        <Image
+          source={require('../../assets/icons/Calendar.png')}
+          style={styles.Icon}
+        />
       </TouchableOpacity>
-      <Text style={styles.header}>
-        {daysText}
-      </Text>
+
+      <Text style={styles.header}>{daysText}</Text>
+
       <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
-        <Entypo name="dots-three-vertical" size={28} color="black" style={{ paddingRight: 7 }} />
+        <Image
+          source={require('../../assets/icons/Cog.png')}
+          style={styles.Icon}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -37,13 +43,17 @@ function TopBar({ navigation }) {
 
 const styles = StyleSheet.create({
   topbar: {
-    width: '100%',
-    height: 60,
-    backgroundColor: 'white',
-    position: 'fixed',
-    top: 0,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 32,
+    backgroundColor: 'white',
+    paddingBottom: 16,
+  },
+  Icon: {
+    height: 24,
+    marginRight: 8,
+    zIndex: 10,
   },
   header: {
     textAlign: 'center',

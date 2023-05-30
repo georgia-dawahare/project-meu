@@ -7,10 +7,6 @@ import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
-<<<<<<< HEAD
-import SignIn from '../screens/home/SignIn';
-=======
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
 import SignIn from '../screens/authentication/SignIn';
@@ -18,12 +14,7 @@ import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
-<<<<<<< HEAD
-import Homeplaceholder from '../screens/home/homeplaceholder';
-// import testAnniv from '../screens/home/testAnniv';
-=======
 import TempHome from '../screens/home/TempHome';
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
 
 const Stack = createNativeStackNavigator();
 
@@ -67,15 +58,6 @@ function HomeScreenNavigator() {
         component={SettingNotificationPage}
       />
       <Stack.Screen
-<<<<<<< HEAD
-        name="Homeplaceholder"
-        component={Homeplaceholder}
-      />
-      {/* <Stack.Screen
-        name="testAnniv"
-        component={testAnniv}
-      /> */}
-=======
         name="Onboarding"
         component={OnboardingPage}
       />
@@ -83,7 +65,6 @@ function HomeScreenNavigator() {
         name="TempHome"
         component={TempHome}
       />
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
     </Stack.Navigator>
   );
 }

@@ -50,37 +50,22 @@ function HomePage({ navigation }) {
             BackgroundChange
           </Text>
         </TouchableOpacity>
-<<<<<<< HEAD
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
-          {/** dont forget you added the above  */}
-=======
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
           <Text style={styles.buttonText}>
             SignIn
           </Text>
         </TouchableOpacity>
-<<<<<<< HEAD
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Homeplaceholder')}>
-          {/** dont forget you added the above  */}
-=======
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingPage')}>
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
           <Text style={styles.buttonText}>
             Homeplaceholder
           </Text>
         </TouchableOpacity>
-<<<<<<< HEAD
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('testAnniv')}>
-          {/** dont forget you added the above  */}
-=======
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
           <Text style={styles.buttonText}>
             Version-Setting
           </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
->>>>>>> bc0c406f2e7588b8f62e6dc4638632e733216cc9
           <Text style={styles.buttonText}>
             testAnniv
           </Text>
