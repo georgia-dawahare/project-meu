@@ -144,7 +144,7 @@ function ClockAndLocation() {
 const styles = StyleSheet.create({
     list: {
       flexDirection: 'column',
-      flexWrap: 'wrap'
+      flexWrap: 'wrap',
     },
 
     clock: {
