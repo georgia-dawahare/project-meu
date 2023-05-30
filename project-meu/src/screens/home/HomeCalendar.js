@@ -12,7 +12,7 @@ import { apiUrl } from '../../constants/constants';
 
 function DdayList({
   // date, title, iconName, fetchData, /* onDelete */
-  date, title, iconName, eventId,
+  date, title, iconName, eventId, fetchData,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -32,7 +32,7 @@ function DdayList({
           },
           {
             text: 'Delete',
-            onPress: deleteEventConfirmation,
+            onPress: deleteEventConfirmation(),
             style: 'destructive',
           },
         ],
@@ -45,6 +45,7 @@ function DdayList({
 
   const deleteEventConfirmation = async () => {
     await axios.delete(`${apiUrl}/events/${eventId}`);
+    await fetchData();
   };
 
   return (
@@ -87,6 +88,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           repeat={repeat}
           eventId={id}
           iconName="ios-heart"
+          fetchData={printEventTitlesAndDates}
         />
       );
     });
@@ -200,7 +202,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           </Animated.Text>
         </Animated.Text>
         <FloatingButton />
-        <FabandModal />
+        <FabandModal fetchData={printEventTitlesAndDates} />
       </Animated.View>
 
       <Animated.ScrollView
