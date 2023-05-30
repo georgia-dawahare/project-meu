@@ -70,17 +70,21 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   // TODO: Need to filter by pairId
   const printEventTitlesAndDates = async () => {
-    const events = await axios.get(`${apiUrl}/events/`);
-    // console.log(events.data);
+    const addDefaultEvents = async () => {
+      try {
+        const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
+        console.log('Default events added:', response.data);
+      } catch (error) {
+        console.error('Failed to add default events:', error);
+      }
+    };
 
-    // const extractDate = (dateString) => {
-    //   const date = new Date(dateString);
-    //   const year = date.getFullYear();
-    //   // const year = date.getFullYear().toString().slice(2);
-    //   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    //   const day = date.getDate().toString().padStart(2, '0');
-    //   return `${month}/${day}/${year}`;
-    // };
+    await addDefaultEvents();
+
+    const events = await axios.get(`${apiUrl}/events/`);
+
+    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
+    // console.log(events.data);
 
     const extractDday = (dateString) => {
       const date = new Date(dateString);
@@ -90,7 +94,11 @@ function HomeCalendarComponent({ scrollY, navigation }) {
       return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
     };
 
+    // const mergeEvents = [...events.data, ...defaultEvents.data];
+    // console.log('MergeEvents :   ', mergeEvents);
+
     const ddayList = events.data
+    // const ddayList = mergeEvents
       .map((event) => {
         const {
           title, repeat, date, id,
@@ -125,6 +133,9 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     setEventData(ddayList);
   };
+
+  // 초기 로딩 시 이벤트 목록을 가져옴
+  // printEventTitlesAndDates();
 
   useEffect(() => {
     async function loadFont() {
