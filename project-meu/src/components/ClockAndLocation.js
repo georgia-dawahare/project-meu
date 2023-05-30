@@ -20,6 +20,7 @@ function ClockAndLocation() {
   const [userTemp, setUserTemp] = useState();
 
   // replace this stuff with the firebase stuff -- city should be a stored parameter
+  // const [partnerCity, setPartnerCity] = useState('New York City');
   const [partnerCity, setPartnerCity] = useState('New York City');
 
   // find from city
