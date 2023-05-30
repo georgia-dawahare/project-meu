@@ -7,12 +7,11 @@ import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import BackgroundChange from '../screens/home/BackgroundChange';
+import SignIn from '../screens/home/SignIn';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
-import SignIn from '../screens/home/SignIn';
 import SignUpSignIn from '../screens/home/SignUpSignIn';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
-// import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import Homeplaceholder from '../screens/home/homeplaceholder';
 
@@ -91,7 +90,6 @@ export { CheckinScreenNavigator };
 function PenguinsScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-
       <Stack.Screen
         name="Penguins"
         component={PenguinsPage}

@@ -104,6 +104,9 @@ function HomeCalendarComponent({ scrollY, navigation }) {
       setFontLoaded(true);
     }
     loadFont();
+  }, []);
+
+  useEffect(() => {
     fetchData();
   }, []);
 
