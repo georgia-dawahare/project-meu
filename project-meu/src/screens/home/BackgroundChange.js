@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
 
-  // mainly for testing purposes, this must be replaced with an the edit icon i believe
   button: {
     marginTop: 700,
     padding: 10,

@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  LogBox,
 } from 'react-native';
 import {
   Card, Input,
@@ -13,10 +12,6 @@ import moment from 'moment';
 import {
   addResponse, getResponseGroup, getResponse, updateResponse,
 } from '../../services/datastore';
-
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-]);
 
 function CheckinSubmit({ navigation, route }) {
   const { handleNewResponse } = route.params;
@@ -54,6 +49,12 @@ function CheckinSubmit({ navigation, route }) {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      handleNewResponse,
+    });
   }, []);
 
   const handleOnSubmit = () => {

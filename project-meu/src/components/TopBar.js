@@ -5,12 +5,12 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { Entypo, Feather } from '@expo/vector-icons'; 
+import { Entypo, Feather } from '@expo/vector-icons';
 
 function TopBar({ navigation }) {
   const daysExample = 1293;
   const [days, setDays] = useState(0);
-  const days_text = days + ' days'
+  const days_text = `${days} days`;
 
   useEffect(() => {
     async function loadData() {
@@ -22,38 +22,36 @@ function TopBar({ navigation }) {
 
   return (
     <View style={styles.topbar}>
-        <TouchableOpacity onPress={() => navigation.navigate('HomeCalendar')}>
-            <Feather name="calendar" size={28} color="black" style={{paddingLeft:10}}/>
-        </TouchableOpacity>
-        <Text style={styles.header}>
-          {days_text}
-        </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
-            <Entypo name="dots-three-vertical" size={28} color="black" style={{paddingRight:7}} />
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={() => navigation.navigate('HomeCalendar')}>
+        <Feather name="calendar" size={28} color="black" style={{ paddingLeft: 10 }} />
+      </TouchableOpacity>
+      <Text style={styles.header}>
+        {days_text}
+      </Text>
+      <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
+        <Entypo name="dots-three-vertical" size={28} color="black" style={{ paddingRight: 7 }} />
+      </TouchableOpacity>
+    </View>
   );
-
 }
 
 const styles = StyleSheet.create({
-    topbar: {
-      width: '100%',
-      height: 60,
-      backgroundColor: 'white',
-      position: 'fixed',
-      top: 0,
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    header: {
-        textAlign: 'center',
-        fontSize: 20,
-        fontFamily: 'SF-Pro-Display',
-        flex: 1,
-        flexWrap: 'wrap',
-      },
-    });
-
+  topbar: {
+    width: '100%',
+    height: 60,
+    backgroundColor: 'white',
+    position: 'fixed',
+    top: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  header: {
+    textAlign: 'center',
+    fontSize: 20,
+    fontFamily: 'SF-Pro-Display',
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+});
 
 export default TopBar;

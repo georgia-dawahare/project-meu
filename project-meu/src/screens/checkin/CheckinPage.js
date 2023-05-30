@@ -18,6 +18,7 @@ import moment from 'moment';
 import {
   getResponseGroup, getResponse, addResponseGroup, deleteResponse,
 } from '../../services/datastore';
+import TopBar from '../../components/TopBar';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -53,8 +54,8 @@ function CheckinPage({ navigation }) {
     let data = await getResponseGroup(groupId);
     // if there is no response group, create a new one!
     if (data === null) {
-      const questionId = Math.round(Math.random() * 100);
-      addResponseGroup(
+      const questionId = Math.round(Math.random() * 26);
+      await addResponseGroup(
         {
           p1_response_id: '',
           p2_response_id: '',
@@ -62,8 +63,6 @@ function CheckinPage({ navigation }) {
         },
         groupId,
       );
-      const questionData = require('../../../assets/data/questions.json');
-      setQuestion(questionData.questions[data.question_id].question);
       data = await getResponseGroup(groupId);
     }
     return data;
@@ -71,9 +70,9 @@ function CheckinPage({ navigation }) {
 
   const refreshData = async () => {
     // get the response group data
-    const data = getData();
+    const data = await getData();
 
-    // get the re
+    // get the responses
     let p1Response = null;
     let p2Response = null;
     if (data.p2_response_id !== '') p1Response = await getResponse(data.p1_response_id);
@@ -137,6 +136,7 @@ function CheckinPage({ navigation }) {
   if (answered && partnerAnswered) {
     return (
       <SafeAreaView style={styles.container}>
+        <TopBar />
         <Card containerStyle={styles.cardContainer}>
           <Text>Daily Question</Text>
           <Card.Title style={styles.question}>{question}</Card.Title>
