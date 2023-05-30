@@ -108,10 +108,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
     printEventTitlesAndDates();
   }, []);
 
-  useEffect(() => {
-    printEventTitlesAndDates();
-  }, []);
-
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
