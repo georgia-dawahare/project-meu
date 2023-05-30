@@ -47,12 +47,12 @@ router.patch('/group/:id', async (req, res) => {
 
 // Create a response
 router.post('/', async (req, res) => {
-  const response = req.body.responseData[0];
-  const { pairId } = req.body;
-  const { groupId } = req.body;
+  const response = req.body.responseData;
+  const pair = req.body.currPairId;
+  const responseGroup = req.body.groupId;
 
   try {
-    const id = await responsesController.addResponse(response, pairId, groupId);
+    const id = await responsesController.addResponse(response, pair, responseGroup);
     res.status(200).send(`Successfully created response: ${id}`);
   } catch (e) {
     console.log('Tried to create a response: ', e);
@@ -63,6 +63,7 @@ router.post('/', async (req, res) => {
 // Fetch a response
 router.get('/:id', async (req, res) => {
   const responseId = req.params.id;
+
   try {
     const data = await responsesController.getResponse(responseId);
     if (!data) {
@@ -77,9 +78,9 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a response
-router.patch('/:id', async (req, res) => {
-  const responseId = req.params.id;
-  const updatedFields = req.body;
+router.put('/:id', async (req, res) => {
+  const responseId = req.body.currResponseId;
+  const updatedFields = req.body.updatedResponse;
   try {
     await responsesController.updateResponse(responseId, updatedFields);
     res.status(200).send('Successfully updated response');

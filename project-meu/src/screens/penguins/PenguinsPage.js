@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react';
 import { Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import TopBarCheckin from '../../components/TopBarCheckin';
+import TopBarPenguin from '../../components/TopBarPenguin';
 
 const iconData = [
   { name: 'emoticon-happy-outline' },
@@ -91,7 +93,7 @@ function PenguinsPage({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.text}>Penguins Page</Text>
+      <TopBarPenguin />
       <View style={styles.imageContainer}>
         {renderGif()}
         <Image

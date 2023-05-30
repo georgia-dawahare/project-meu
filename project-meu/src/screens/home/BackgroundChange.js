@@ -147,6 +147,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(175, 175, 175, 0.8)',
   },
 
+  containerText: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    color: '#808080',
+  },
+
   iconButton: {
     marginTop: 0,
     marginLeft: 0,
