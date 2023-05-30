@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text,
-  SafeAreaView,
-  StyleSheet, Image, TouchableOpacity, Modal,
+  View, Text, SafeAreaView, StyleSheet, Image, TouchableOpacity, Modal, Dimensions,
 } from 'react-native';
+import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
+const { width, height } = Dimensions.get('window');
 import ClockAndLocation from '../../components/ClockAndLocation';
 import PictureThumbnail from '../../components/PictureThumbnail'; 
 
@@ -14,35 +14,62 @@ function BackgroundChange({navigation}) {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('transparent');
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Permission to access camera was denied');
+      }
+
+      const { status: rollStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (rollStatus !== 'granted') {
+        alert('Permission to access camera roll was denied');
+      }
+    })();
+  }, []);
+
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
   };
 
-  // using expo's now, let's see how it goes
   const handleMenuOptionClick = async (option) => {
-    console.log(`Clicked option:, ${option}`);
-
-    if (option === 'Remove Widget') {
-      // need to get this working soon
-      setBackgroundColor('white');
-    } else {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        allowsEditing: true,
-        quality: 1,
-      });
-
-      if (!result.canceled) {
-        setBackgroundImage(result.assets[0].uri);
-
-        console.log(result);
+    // Menu option handling code...
+    if (option === 'Camera') {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      if (status === 'granted') {
+        const result = await ImagePicker.launchCameraAsync({
+          allowsEditing: true,
+          quality: 1,
+        });
+        if (!result.canceled) {
+          setBackgroundImage(result.uri);
+        }
       } else {
-        console.log('You did not select any image.');
+        alert('Permission to access camera was denied');
       }
+    } else if (option === 'Gallery') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === 'granted') {
+        const result = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          quality: 1,
+        });
+        if (!result.canceled) {
+          setBackgroundImage(result.uri);
+        }
+      } else {
+        alert('Permission to access camera roll was denied');
+      }
+    } else if (option === 'Remove Widget') {
+      setBackgroundImage(null);
     }
   };
 
-  return (
+  const handleOverlayPress = () => {
+    setMenuVisible(false);
+  };
 
+  return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <TopBar />
       {backgroundImage && (
@@ -57,47 +84,51 @@ function BackgroundChange({navigation}) {
         <PictureThumbnail/>
       </View>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={toggleMenu}>
-          <Text>Open Menu</Text>
+         
+        <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
+          <Text>Menu Icon</Text>
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
           transparent
           animationType="slide"
         >
-          <View style={styles.menuContainer}>
-            <TouchableOpacity
-              style={styles.menuOption}
-              onPress={() => handleMenuOptionClick('Edit Partners Widget')}
-            >
-              <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-            </TouchableOpacity>
+          <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
+            <View style={styles.menuContainer}>
+            <View style={styles.menuMask}>
+              <TouchableOpacity
+                style={styles.menuOption1}
+                onPress={() => handleMenuOptionClick('Gallery')}
+              >
+                <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuOption}
+                onPress={() => handleMenuOptionClick('Gallery')}
+              >
+                <Text style={styles.menuOptionText}>Choose From Gallery</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuOption}
-              onPress={() => handleMenuOptionClick('Gallery')}
-            >
-              <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuOption}
+                onPress={() => handleMenuOptionClick('Camera')}
+              >
+                <Text style={styles.menuOptionText}>Camera</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuOption}
-              onPress={() => handleMenuOptionClick('Camera')}
-            >
-              <Text style={styles.menuOptionText}>Camera</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.menuOption2}
+                onPress={() => handleMenuOptionClick('Remove Widget')}
+              >
+                <Text style={styles.menuOptionText}>Remove Widget Image</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.menuOption}
-              onPress={() => handleMenuOptionClick('Remove Widget')}
-            >
-              <Text style={styles.menuOptionText}>Remove Widget Image </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-              <Text>Close</Text>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
+                <Text style={styles.closeButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            </View>
+          </TouchableOpacity>
         </Modal>
       </View>
       <View>
@@ -113,34 +144,50 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignContent: 'center',
+    alignItems: 'center',
   },
 
   image: {
     ...StyleSheet.absoluteFillObject,
   },
 
-  containerText: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    color: '#808080',
-  },
-
-  // mainly for testing purposes, this must be replaced with an the edit icon i believe
-  button: {
+  iconButton: {
     marginTop: 700,
     padding: 10,
     backgroundColor: 'lightblue',
     borderRadius: 5,
   },
 
-  menuContainer: {
+  overlay: {
     flex: 1,
-    justifyContent: 'flex-end',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'flex-end',
+    borderRadius:15,
+  },
 
+  menuContainer: {
+    position: 'absolute',
+    width: 359,
+    height: 213,
+    left: (width - 359) / 2 + 0.5,
+    top: 553,
+    backgroundColor: 'transparent',
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  
+  menuMask: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
 
   menuOption: {
@@ -152,29 +199,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  menuOption1: {
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    backgroundColor: 'lightgray',
+    borderTopLeftRadius:18,
+    borderTopRightRadius:18,
+    borderTopWidth: 1,
+    borderColor: 'darkgray',
+    alignItems: 'center',
+  },
+
+  menuOption2: {
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    backgroundColor: 'lightgray',
+    borderBottomLeftRadius:18,
+    borderBottomRightRadius:18,
+    borderTopWidth: 1,
+    borderColor: 'darkgray',
+    alignItems: 'center',
+  },
+
+
   closeButton: {
     paddingVertical: 20,
     paddingHorizontal: 30,
     backgroundColor: 'white',
     marginTop: 10,
+    borderRadius:15,
     alignItems: 'center',
   },
 
   menuOptionText: {
     textAlign: 'center',
     color: '#007AFF',
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 18,
-
   },
+
   menuOptionText2: {
     textAlign: 'center',
-    color: '#000000',
-    fontWeight: 300,
-    fontSize: 15,
+    color: 'darkgray',
+    fontWeight: '500',
+    fontSize: 14,
   },
 
-  calendarModal: {
-
+  closeButtonText: {
+    fontSize: 18,
+    color: '#007AFF',
+    fontWeight: '500',
   },
 });
