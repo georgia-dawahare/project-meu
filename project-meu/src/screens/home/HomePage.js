@@ -34,55 +34,10 @@ function HomePage({ navigation }) {
     <View style={styles.container}>
       <SignUpGraphic />
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Checkin')}>
-          <Text style={styles.buttonText}>
-            Check-in
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Penguins')}>
-          <Text style={styles.buttonText}>
-            Penguins
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HomeCalendar')}>
-          <Text style={styles.buttonText}>
-            Home Calendar
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BackgroundChange')}>
-          <Text style={styles.buttonText}>
-            BackgroundChange
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SettingPage')}>
-          <Text style={styles.buttonText}>
-            Settings
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersionPage')}>
-          <Text style={styles.buttonText}>
-            Version-Setting
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignIn')}>
-          <Text style={styles.buttonText}>
-            SignIn
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUpSignIn')}>
-          <Text style={styles.buttonText}>
-            SignUpSignIn
-          </Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TempHome')}>
           {/** dont forget you added the above  */}
           <Text style={styles.buttonText}>
             TempHome
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Onboarding')}>
-          <Text style={styles.buttonText}>
-            Onboarding
           </Text>
         </TouchableOpacity>
       </View>
