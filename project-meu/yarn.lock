@@ -8617,11 +8617,16 @@ prop-types@*, prop-types@^15.5.10, prop-types@^15.6.1, prop-types@^15.6.2, prop-
     "flow-parser" "^0.185.0"
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
-
+    
+"react-native-collapsible@^1.6.1":
+  "version" "1.6.1"
+  "resolved" "https://registry.npmjs.org/react-native-collapsible/-/react-native-collapsible-1.6.1.tgz"
+  "integrity" "sha512-orF4BeiXd2hZW7fu9YcqIJXzN6TJcFcddY807D3MAOVktLuW9oQ+RIkrTJ5DR3v9ZOFfREkOjEmS79qeUTvkBQ=="
+  
 "react-native-elements@^3.4.3":
-  "integrity" "sha512-VtZc25EecPZyUBER85zFK9ZbY6kkUdcm1ZwJ9hdoGSCr1R/GFgxor4jngOcSYeMvQ+qimd5No44OVJW3rSJECA=="
-  "resolved" "https://registry.npmjs.org/react-native-elements/-/react-native-elements-3.4.3.tgz"
   "version" "3.4.3"
+  "resolved" "https://registry.npmjs.org/react-native-elements/-/react-native-elements-3.4.3.tgz"
+  "integrity" "sha512-VtZc25EecPZyUBER85zFK9ZbY6kkUdcm1ZwJ9hdoGSCr1R/GFgxor4jngOcSYeMvQ+qimd5No44OVJW3rSJECA=="
   dependencies:
     "@types/react-native-vector-icons" "^6.4.6"
     "color" "^3.1.2"

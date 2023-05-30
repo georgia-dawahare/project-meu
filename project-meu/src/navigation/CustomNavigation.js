@@ -10,7 +10,9 @@ import BackgroundChange from '../screens/home/BackgroundChange';
 import SignIn from '../screens/home/SignIn'
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
-
+import SignUpSignIn from '../screens/home/SignUpSignIn';
+import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
+import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +43,18 @@ function HomeScreenNavigator() {
         name="SignIn"
         component={SignIn}
       />
-     
+      <Stack.Screen
+        name="SignUpSignIn"
+        component={SignUpSignIn}
+      />
+      <Stack.Screen
+        name="SettingNotificationPage"
+        component={SettingPersonalInfo}
+      />
+      <Stack.Screen
+        name="SettingPersonalInfo"
+        component={SettingNotificationPage}
+      />
     </Stack.Navigator>
   );
 }
@@ -81,5 +94,30 @@ function PenguinsScreenNavigator() {
 }
 
 export { PenguinsScreenNavigator };
+
+function SettingScreenNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="SettingPage"
+        component={SettingPage}
+      />
+      <Stack.Screen
+        name="SettingPersonalInfo"
+        component={SettingPersonalInfo}
+      />
+      <Stack.Screen
+        name="VersionPage"
+        component={VersionPage}
+      />
+      <Stack.Screen
+        name="SettingNotificationPage"
+        component={SettingNotificationPage}
+      />
+
+    </Stack.Navigator>
+  );
+}
+export { SettingScreenNavigator };
 
 // Modified code by: https://jaymanyoo.medium.com/combine-bottom-tab-navigator-with-stack-navigator-in-react-native-2020-58804b4afded

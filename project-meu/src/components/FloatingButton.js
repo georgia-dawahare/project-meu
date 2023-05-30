@@ -1,30 +1,29 @@
 import React from 'react';
-import { StyleSheet, Pressable, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FAB } from 'react-native-elements';
-import AnniversaryModal from './/AnniversaryModal';
-
+// import AnniversaryModal from './AnniversaryModal';
 
 function FloatingButton() {
-    const handlePress = () => {
-        console.log('FAB clicked.');
-        // <AnniversaryModal/>
-      };
+  const handlePress = () => {
+    console.log('FAB clicked.');
+    // <AnniversaryModal/>
+  };
   return (
     <FAB
-    icon={<Ionicons name="ios-add" size={24} color="white" />}
-    buttonStyle={styles.FAB}
-    size="large"
-    placement='right'
-    onPress={handlePress}
-  />
+      icon={<Ionicons name="ios-add" size={24} color="white" />}
+      buttonStyle={styles.FAB}
+      size="large"
+      placement="right"
+      onPress={handlePress}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-    FAB:{
-        backgroundColor:'rgba(230, 43, 133, 1)',
-    },
+  FAB: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+  },
 });
 
 export default FloatingButton;

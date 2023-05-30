@@ -6,9 +6,11 @@ import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import TopBar from '../../components/TopBar';
 const { width, height } = Dimensions.get('window');
+import ClockAndLocation from '../../components/ClockAndLocation';
+import PictureThumbnail from '../../components/PictureThumbnail'; 
 
-function BackgroundChange() {
-  const [backgroundImage, setBackgroundImage] = useState(null);
+function BackgroundChange({navigation}) {
+  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('transparent');
 
@@ -69,7 +71,7 @@ function BackgroundChange() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <TopBar></TopBar>
+      <TopBar />
       {backgroundImage && (
         <Image
           source={{ uri: backgroundImage }}
@@ -77,13 +79,15 @@ function BackgroundChange() {
           resizeMode="cover"
         />
       )}
-
+      <View>
+        <TopBar navigation={navigation}/>
+        <PictureThumbnail/>
+      </View>
       <View style={styles.container}>
          
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
           <Text>Menu Icon</Text>
         </TouchableOpacity>
-
         <Modal
           visible={isMenuVisible}
           transparent
@@ -126,6 +130,9 @@ function BackgroundChange() {
             </View>
           </TouchableOpacity>
         </Modal>
+      </View>
+      <View>
+        <ClockAndLocation/>
       </View>
     </SafeAreaView>
   );
@@ -242,7 +249,4 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: '500',
   },
-
-  calendarModal: {
-  }
 });
