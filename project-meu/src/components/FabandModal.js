@@ -10,7 +10,6 @@ import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
 import axios from 'axios';
 import { apiUrl } from '../constants/constants';
-// import { addEvents } from '../services/datastore';
 
 const K_OPTIONS = [
   {

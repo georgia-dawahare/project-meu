@@ -17,7 +17,6 @@ function DdayList({
   const [previousIcon, setPreviousIcon] = useState('');
 
   const handlePress = () => {
-    console.log(eventId);
     if (icon === 'ios-trash') {
       Alert.alert(
         'Confirmation',
