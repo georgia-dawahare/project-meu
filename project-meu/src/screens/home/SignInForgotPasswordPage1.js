@@ -23,7 +23,7 @@ function LoginScreen() {
       <KeyboardAvoidingView KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : null} enabled>
         <SignUpGraphic />
         <View>
-          <Text style={styles.forgetText}>Forgot Password?</Text>
+          <Text style={styles.forgetText} >Forgot Password?</Text>
           <Text style={styles.textT}>We need to confirm your email to send you instructions to reset the password</Text>
           <View style={styles.Container}>
             <View style={styles.buttonContainer}>
@@ -49,6 +49,11 @@ function LoginScreen() {
             </View>
           </View>
         </View>
+        <View/>
+        <View/>
+        <View/>
+        <View/>
+        <View/>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 10,
     marginHorizontal: 24,
-    // marginTop: 17,
+    marginTop: 12,
     textAlign: 'center',
     borderBottomColor: 'black',
     borderBottomWidth: 0.5,
@@ -104,12 +109,14 @@ const styles = StyleSheet.create({
   buttonOutLineText: {
     color: '#000000',
     fontWeight: '400',
-    fontSize: 16,
+    fontSize: 12,
+    marginTop:36,
+    width:106,
+    height: 21
   },
 
   buttonOutLine: {
     backgroundColor: 'white',
-    marginTop: 5,
     borderColor: '#0782F9',
     borderWidth: 2,
   },
@@ -118,7 +125,6 @@ const styles = StyleSheet.create({
     width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 40,
     marginHorizontal: 45,
   },
 
@@ -139,20 +145,25 @@ const styles = StyleSheet.create({
   forgetText: {
     width: 300,
     height: 27,
-    fontWeight: 700,
-    marginTop: 200,
+    marginLeft:39,
+    marginRight: 51,
+    marginTop:200,
+    fontWeight: '700',
+    fontSize: 18,
+    marginBottom: 10,
     textAlign: 'center',
-    fontSize: 20,
   },
-
+  
   textT: {
+    marginLeft:40,
+    marginRight:50,
     width: 300,
     height: 42,
     textAlign: 'center',
     color: 'gray',
-
   },
-
 });
+
+
 
 export default LoginScreen;
