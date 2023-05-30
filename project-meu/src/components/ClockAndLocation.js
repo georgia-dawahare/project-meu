@@ -1,11 +1,14 @@
+/* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
   View,
+  Alert,
 } from 'react-native';
 // using the package expo-location to prompt the user to allow location access
 import * as Location from 'expo-location';
+import * as Font from 'expo-font';
 
 function ClockAndLocation() {
   // api stuff
@@ -14,23 +17,27 @@ function ClockAndLocation() {
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db';
   const starterUrl = 'https://api.openweathermap.org/data/2.5/weather?';
 
-  // user and partner data below:
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
+  // user and partner data below:
   const [userCity, setUserCity] = useState('');
   const [userTemp, setUserTemp] = useState();
-
-  // replace this stuff with the firebase stuff -- city should be a stored parameter
-  const [partnerCity, setPartnerCity] = useState('New York City');
 
   // find from city
   const [partnerTemp, setPartnerTemp] = useState();
 
+  // Dummy variables
+  // replace this stuff with the firebase stuff -- city should be a stored parameter
+  const partnerCity = 'New York City';
+  const name1 = 'Florian';
+  const name2 = 'Catherine';
   // find this in redux
-  const [units, setUnits] = useState('imperial');
-  const [refreshing, setRefreshing] = useState(false);
+  const units = 'imperial';
 
   const loadForecast = async () => {
     setRefreshing(true);
+    console.log('Refreshing: ', refreshing);
 
     const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -71,10 +78,6 @@ function ClockAndLocation() {
     loadForecast();
   }, []);
 
-  // this will be replaced with firebase
-  const [name1, setName1] = useState('Florian');
-  const [name2, setName2] = useState('Catherine');
-
   // used documentation from react-native-analog-clock to set up timer
   // should replace partner's time with timezone of partner
   // basically updates seconds minutes and hours using the nowDate
@@ -98,14 +101,32 @@ function ClockAndLocation() {
 
     useEffect(() => {
       setInterval(() => {
-        const { second, minute, hour } = nowDate();
-        setState({ second, minute, hour });
+        const { secondsNow, minuteNow, hourNow } = nowDate();
+        setState({ secondsNow, minuteNow, hourNow });
       }, 1000);
     }, [useState]);
     return state;
   };
 
   const { second, minute, hour } = nowTimer();
+  console.log(second, minute, hour);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Medium': require('../../assets/fonts/SF-Pro-Display-Medium.otf'),
+        'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View style={styles.calendar}>
       <View style={styles.subSection}>
@@ -198,7 +219,6 @@ const styles = StyleSheet.create({
   subSection: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     justifyContent: 'space-evenly',
   },
@@ -206,7 +226,7 @@ const styles = StyleSheet.create({
   header: {
     textAlign: 'center',
     fontSize: 20,
-    fontFamily: 'SF-Pro-Display',
+    fontFamily: 'SF-Pro-Display-Semibold',
     flex: 1,
     flexWrap: 'wrap',
   },
