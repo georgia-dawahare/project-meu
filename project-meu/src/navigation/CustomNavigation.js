@@ -12,6 +12,7 @@ import VersionPage from '../screens/settings/VersionPage';
 import SignIn from '../screens/home/SignIn';
 import SignUpSignIn from '../screens/home/SignUpSignIn';
 import SignInForgotPasswordPage1 from '../screens/home/SignInForgotPasswordPage1';
+import TempHome from '../screens/home/TempHome';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,10 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SignInForgotPassword1"
         component={SignInForgotPasswordPage1}
+      />
+      <Stack.Screen
+        name="TempHome"
+        component={TempHome}
       />
     </Stack.Navigator>
   );

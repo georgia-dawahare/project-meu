@@ -79,6 +79,12 @@ function HomePage({ navigation }) {
             SignUpSignIn
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('TempHome')}>
+          {/** dont forget you added the above  */}
+          <Text style={styles.buttonText}>
+            TempHome
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Empty view to center button */}
