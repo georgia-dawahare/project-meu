@@ -300,6 +300,66 @@ const deleteResponse = async (responseId) => {
 };
 // === End of Daily Response Functions ===
 
+
+// === Starting User Requests for Widgets === 
+
+// getting the partner's id by just inputing user id
+const getPartnerId = async (uid) => {
+  // first finding the pair ID
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let pairID;
+  if (!doc.exists) {
+    console.log('Pair step 1 does not exist');
+  } else {
+    const data = doc.data();
+    pairID = data.pair_id;
+    console.log('pair id: ' + pairID);
+  }
+
+  // then finding the partner's id by process of elimination
+  const doc2 = await firestore.collection('Pairs').doc(pairID).get();
+  let partnerID; 
+  if (!doc2.exists) {
+    console.log('Pair step 2 does not exist');
+  } else {
+    const data2 = doc2.data();
+    if (data2.user1_id === uid) {
+      partnerID = data2.user2_id;
+    } else {
+      partnerID = data2.user1_id;
+    }
+  }
+
+  console.log('firestore ' + partnerID);
+  return partnerID;
+};
+
+// get user's city
+const getCity = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let city;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    city = data.city;
+  }
+  return city;
+};
+
+// get user's background img url
+const getBackground = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let background;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    background = data.background_photo;
+  }
+  return background;
+};
+
 const firestoreService = {
   createUser,
   getName,
@@ -320,6 +380,9 @@ const firestoreService = {
   getPair,
   deletePair,
   getPairCreatorId,
+  getPartnerId,
+  getCity, 
+  getBackground, 
 };
 
 export default firestoreService;

@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert,

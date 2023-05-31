@@ -4,11 +4,12 @@ import emotionsController from '../controllers/emotionsController';
 const router = Router();
 
 // Send an emote
-router.post('/', async (req, res) => {
+router.patch('/', async (req, res) => {
   const emotionData = req.body;
+  const userId = req.params;
   try {
-    const emotionId = await emotionsController.sendEmotion(emotionData);
-    res.status(200).send(emotionId);
+    await emotionsController.updateEmotion(emotionData, userId);
+    res.status(200).send("Successfully updated emotion");
   } catch (e) {
     console.log('Tried to send an emote');
     res.status(500).send(e.message);
