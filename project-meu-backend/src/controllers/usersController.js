@@ -25,11 +25,6 @@ const getCity = async (id) => {
   return city;
 }
 
-const getTimezone = async (id) => {
-  const timezone = await firestoreService.getTimezone(id);
-  return timezone;
-}
-
 const getBackground = async (id) => {
   const background = await firestoreService.getBackground(id);
   return background;
@@ -41,7 +36,6 @@ const userController = {
   updateUser,
   getUser,
   getCity, 
-  getTimezone, 
   getBackground,
 };
 

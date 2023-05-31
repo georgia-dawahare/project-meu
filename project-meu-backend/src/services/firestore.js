@@ -328,19 +328,6 @@ const getCity = async (uid) => {
   return city;
 };
 
-// get user's timezone
-const getTimezone = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let timezone;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    timezone = data.timezone;
-  }
-  return timezone;
-};
-
 // get user's background img url
 const getBackground = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
@@ -375,7 +362,6 @@ const firestoreService = {
   getPairCreatorId,
   getPartnerId,
   getCity, 
-  getTimezone, 
   getBackground, 
 };
 
