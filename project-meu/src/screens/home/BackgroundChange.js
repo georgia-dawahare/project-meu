@@ -140,7 +140,10 @@ function BackgroundChange({ navigation }) {
       <View style={styles.container}>
 
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <FontAwesome5 name="edit" size={22} color="white" />
+          <Image
+            source={require('../../../assets/icons/Edit-white.png')}
+            style={styles.Icon}
+          />
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
@@ -200,11 +203,23 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
+  Icon: {
+    width: 28,
+    height: 28,
+  },
 
   image: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 15,
     backgroundColor: 'rgba(175, 175, 175, 0.8)',
+  },
+
+  containerText: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    color: '#808080',
   },
 
   iconButton: {

@@ -51,11 +51,14 @@ function App() {
             <Tab.Screen
               name="CheckinTab"
               component={CheckinScreenNavigator}
+              headerTitle=""
+              headerColor="#fff"
               options={{
                 tabBarLabel: 'Check-In',
                 tabBarIcon: ({ color, size }) => (
                   <Icon name="create-outline" type="ionicon" color={color} size={size} />
                 ),
+
               }}
             />
             <Tab.Screen

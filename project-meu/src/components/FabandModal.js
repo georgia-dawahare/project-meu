@@ -26,7 +26,7 @@ const K_OPTIONS = [
   },
 ];
 
-function FabandModal() {
+function FabandModal({ fetchData }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -83,6 +83,8 @@ function FabandModal() {
     setAnniversaries([...anniversaries, {
       date, title, eventId, repeat: selectedTeam.item, pairId: '1',
     }]);
+
+    await fetchData();
 
     setModalVisible(false);
     setDate(new Date());

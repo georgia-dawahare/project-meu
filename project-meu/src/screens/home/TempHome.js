@@ -7,11 +7,8 @@ import {
   Image,
   Text,
 } from 'react-native';
-// import * as ImagePicker from 'expo-image-picker';
-import * as Font from 'expo-font';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
-// import PartnerWidget from '../../components/PartnerWidget';
 import BackgroundChange from './BackgroundChange';
 
 function TempHome({ navigation }) {
@@ -68,10 +65,11 @@ export default TempHome;
 
 const styles = StyleSheet.create({
   partnerWidget: {
-    height: 120,
-    width: 120,
+    height: 124,
+    width: 124,
     margin: 10,
-    borderRadius: 20,
+    marginTop: 20,
+    borderRadius: 15,
   },
 
   container: {

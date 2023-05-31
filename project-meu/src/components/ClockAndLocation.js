@@ -91,24 +91,21 @@ function ClockAndLocation() {
     return { second, minute, hour };
   };
 
-  const nowTimer = () => {
-    const { second, minute, hour } = nowDate();
-    const [state, setState] = useState({
-      second,
-      minute,
-      hour,
-    });
+  const useTimer = () => {
+    const [time, setTime] = useState(nowDate());
 
     useEffect(() => {
-      setInterval(() => {
-        const { secondsNow, minuteNow, hourNow } = nowDate();
-        setState({ secondsNow, minuteNow, hourNow });
+      const timer = setInterval(() => {
+        setTime(nowDate());
       }, 1000);
-    }, [useState]);
-    return state;
+
+      return () => clearInterval(timer);
+    }, []);
+
+    return time;
   };
 
-  const { minute, hour } = nowTimer();
+  const { minute, hour } = useTimer();
 
   useEffect(() => {
     async function loadFont() {
@@ -136,8 +133,8 @@ function ClockAndLocation() {
           </Text>
         </View>
         <View style={styles.list}>
-          <Text>{name1}</Text>
-          <Text>{userCity}</Text>
+          <Text style={styles.name}>{name1}</Text>
+          <Text style={styles.city}>{userCity}</Text>
           <Text>
             {userTemp}
             {'\u00b0'}
@@ -148,8 +145,8 @@ function ClockAndLocation() {
       <View style={styles.divider} />
       <View style={styles.subSection}>
         <View style={styles.list}>
-          <Text style={{ textAlign: 'right' }}>{name2}</Text>
-          <Text style={{ textAlign: 'right' }}>{partnerCity}</Text>
+          <Text style={[styles.name, { textAlign: 'right' }]}>{name2}</Text>
+          <Text style={[styles.city, { textAlign: 'right' }]}>{partnerCity}</Text>
           <Text style={{ textAlign: 'right' }}>
             {partnerTemp}
             {'\u00b0'}
@@ -202,13 +199,13 @@ const styles = StyleSheet.create({
   },
 
   calendar: {
-    width: '95%',
-    height: 120,
-    borderRadius: 20,
+    width: '92%',
+    height: 110,
+    borderRadius: 15,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     position: 'fixed',
     top: 0,
-    left: 10,
+    left: 14,
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
@@ -219,6 +216,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    paddingTop: 12,
+    paddingBottom: 12,
   },
 
   header: {
@@ -227,6 +226,15 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Semibold',
     flex: 1,
     flexWrap: 'wrap',
+  },
+  name: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 16,
+    paddingBottom: 6,
+  },
+  city: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
 

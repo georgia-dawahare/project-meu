@@ -3,7 +3,7 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
-import Button from '../components/Button';
+import Button from '../../components/Button';
 
 function SignupPage7(props) {
   return (
