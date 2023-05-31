@@ -1,10 +1,10 @@
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
@@ -56,8 +56,8 @@ function BackgroundChange({ navigation }) {
 
     // Get pair from Firestore
     if (pairId) {
-      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
-      const pair = pairDoc.data;
+      const pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
+      pair = pairDoc.data;
     }
 
     // Get partner from Firestore
@@ -74,16 +74,7 @@ function BackgroundChange({ navigation }) {
       }
       console.log('partner doc', partnerDoc);
     }
-
-    // console.log('partner', partnerDoc.data);
-
-    // Update partner's background
-    // if (partnerDoc) {
-    //   // partnerDoc = await axios.patch(`${apiUrl}/users/${userId}`);
-    //   console.log(userId);
-    // }
-
-    // return pair;
+    setMenuVisible(false);
   };
 
   const toggleMenu = () => {
