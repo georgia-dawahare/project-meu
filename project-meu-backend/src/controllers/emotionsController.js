@@ -1,12 +1,12 @@
 import firestoreService from '../services/firestore';
 
-const sendEmotion = async (emotionData) => {
-  const emotionId = await firestoreService.sendEmotion(emotionData);
+const updateEmotion = async (emotionData) => {
+  const emotionId = await firestoreService.updateEmotion(emotionData);
   return emotionId;
 };
 
 const emotionsController = {
-  sendEmotion,
+  updateEmotion,
 };
 
 export default emotionsController;
