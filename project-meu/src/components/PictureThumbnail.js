@@ -5,6 +5,7 @@ import {
   StyleSheet,
   View,
   Alert,
+  Image,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome5 } from '@expo/vector-icons';
@@ -37,7 +38,7 @@ function PictureThumbnail() {
   } else {
     return (
       <View style={styles.thumbnail}>
-        <ImageViewer selectedImage={img} />
+        <Image selectedImage={img} />
       </View>
     );
   }

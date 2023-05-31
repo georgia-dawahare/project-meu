@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome5 } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -80,7 +79,10 @@ function BackgroundChange({ navigation }) {
       <View style={styles.container}>
 
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <FontAwesome5 name="edit" size={22} color="white" />
+          <Image
+            source={require('../../../assets/icons/Edit-white.png')}
+            style={styles.Icon}
+          />
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
@@ -139,6 +141,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+  },
+  Icon: {
+    width: 28,
+    height: 28,
   },
 
   image: {
