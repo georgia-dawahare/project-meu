@@ -43,7 +43,7 @@ const getBackground = async (id) => {
 const getPartnerId = async (uid) => {
   const partnerID = await firestoreService.getPartnerId(uid);
   console.log('controller', partnerID)
-  return partnerID; 
+  return partnerID;
 }
 
 const userController = {
@@ -51,8 +51,8 @@ const userController = {
   createUser,
   updateUser,
   getUser,
-  getPartnerEmotion
-  getCity, 
+  getPartnerEmotion,
+  getCity,
   getBackground,
   getPartnerId,
   getUserEmotion
