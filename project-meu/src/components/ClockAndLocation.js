@@ -53,8 +53,6 @@ function ClockAndLocation() {
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
       // setForecast(data)
-        console.log(data);
-
         setUserCity(data.name);
         setUserTemp(data.main.temp.toFixed(0));
         setRefreshing(false);
@@ -66,7 +64,6 @@ function ClockAndLocation() {
     // now, moving onto the partner's data -- make an API call based on the city name
     fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
-        console.log(data);
         setPartnerTemp(data.main.temp.toFixed(0));
       })
       .catch((error) => {
@@ -176,8 +173,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F96EB0',
-    height: 100,
-    width: 70,
+    height: 90,
+    width: 80,
     borderRadius: 15,
   },
 
@@ -199,16 +196,16 @@ const styles = StyleSheet.create({
   },
 
   calendar: {
-    width: '92%',
+    width: '95%',
     height: 110,
     borderRadius: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     position: 'fixed',
     top: 0,
-    left: 14,
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
+    alignSelf: 'center',
   },
 
   subSection: {
