@@ -40,14 +40,14 @@ function TopBar({ navigation, startDate }) {
       console.log(dateSplit);
       // To set two dates to two variables
       
-      // troubleshooting how to find the difference between dates: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
+      // learning to parse to make new date object: https://stackoverflow.com/questions/20247628/calculating-the-difference-between-2-dates-with-the-format-of-dd-mm-yyyy-doesn
       console.log(dateSplit[1])
       const start = new Date(parseInt('20' + dateSplit[2]),parseInt(dateSplit[0])-1,parseInt(dateSplit[1]));
       const today = new Date();
       console.log(start)
       console.log(today)
 
-      // still same source for that: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
+      // used this resource for finding the diff between dates: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
       const diffTime = Math.abs(today - start);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));    
       
