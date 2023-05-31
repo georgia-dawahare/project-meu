@@ -1,19 +1,19 @@
 // keys for actiontypes
 export const ActionTypes = {
-  INCREMENT: 'INCREMENT',
-  DECREMENT: 'DECREMENT',
+  UPDATE_USER: 'UPDATE_USER',
+  GET_USER: 'GET_USER',
 };
 
-export function increment() {
+export function updateUser(body) {
   return {
-    type: ActionTypes.INCREMENT,
-    payload: null,
+    type: ActionTypes.UPDATE_USER,
+    payload: body,
   };
 }
 
-export function decrement() {
+export function getUser() {
   return {
-    type: ActionTypes.DECREMENT,
+    type: ActionTypes.GET_USER,
     payload: null,
   };
 }

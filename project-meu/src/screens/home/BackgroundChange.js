@@ -15,8 +15,6 @@ function BackgroundChange({
   background, uid, toggleMenu, setMenuVisible, isMenuVisible,
 }) {
   const [backgroundImage, setBackgroundImage] = useState('');
-  // const [isMenuVisible, setMenuVisible] = useState(false);
-
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();

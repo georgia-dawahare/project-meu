@@ -1,32 +1,50 @@
 /* eslint-disable global-require */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image,
+  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity,
 } from 'react-native';
+import * as Font from 'expo-font';
 import Button from '../../components/Button';
 
 // need to add draggable selector
 
-function PenguinCustomization(props) {
+function PenguinCustomization({ navigation }) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <SafeAreaView>
       <Image
-        source={require('../../assets/icons/goback-black.png')}
+        source={require('../../../assets/icons/goback-black.png')}
         style={styles.Icon}
       />
       <Image
-        source={require('../../assets/images/progress-3.png')}
+        source={require('../../../assets/images/progress-3.png')}
         style={styles.progress}
       />
 
       <Text style={styles.Text}>Customize your Penguin.</Text>
 
       <Image
-        source={require('../../assets/images/PenguinCumstomize.png')}
+        source={require('../../../assets/images/PenguinCumstomize.png')}
         style={styles.Penguin}
       />
-
-      <Button title="Let's Start" buttonStyle={{ top: 680, left: 45 }} />
+      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
+        <Button title="Let's Start" />
+      </TouchableOpacity>
 
     </SafeAreaView>
   );
@@ -47,7 +65,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   Text: {
-    fontFamily: 'SFProDisplay-Semibold',
+    fontFamily: 'SF-Pro-Display-Semibold',
     fontSize: 18,
     lineHeight: 27,
     color: 'rgba(0,0,0,1)',
@@ -63,7 +81,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   Subtitle: {
-    fontFamily: 'SFProDisplay-Medium',
+    fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 14,
     lineHeight: 21,
     color: 'rgba(106,108,115,1)',
@@ -71,6 +89,13 @@ const styles = StyleSheet.create({
     width: 225,
     textAlign: 'center',
     top: 600,
+  },
+  errorText: {
+    color: '#E62B85',
+    fontFamily: 'SF-Pro-Display-Regular',
+    lineHeight: 24,
+    fontSize: 12,
+    textAlign: 'center',
   },
 });
 

@@ -13,53 +13,24 @@ import {
   Keyboard,
 } from 'react-native';
 import * as Font from 'expo-font';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import Button from '../../components/Button';
-import { apiUrl } from '../../constants/constants';
+import { updateUser } from '../../actions';
 
 function RegisterEmailPassword({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const auth = getAuth();
+  const dispatch = useDispatch();
 
-  const handleRegister = async () => {
+  const handleNext = async () => {
     // I know it's bad to store password, but it's 5 am and I'm hacking it
-    // const newUser = {
-    //   email,
-    //   password,
-    // };
-    if (email && password) {
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          const { user } = userCredential;
-          if (user) {
-            const userData = {
-              email,
-              userId: user.uid,
-              pairId: '',
-              firstName: '',
-              lastName: '',
-              penguinColor: '',
-              backgroundPhoto: '',
-              birthday: '',
-              timezone: '',
-            };
-            axios
-              .post(`${apiUrl}/users/`, userData)
-              .catch((e) => console.log(e.response));
-          }
-        })
-        .catch((e) => {
-          const errorMessage = e.message;
-          // Format error message
-          const message = errorMessage.split(':')[1].split('(')[0].trim();
-          setError(message);
-        });
-    }
+    const newUser = {
+      email,
+      password,
+    };
+    dispatch(updateUser(newUser));
+    navigation.navigate('ProfileInfo');
   };
 
   useEffect(() => {
@@ -116,14 +87,12 @@ function RegisterEmailPassword({ navigation }) {
                 style={styles.input}
                 secureTextEntry
               />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
             </View>
             <View style={styles.buttonWrapper}>
-              <TouchableOpacity onPress={handleRegister}>
+              <TouchableOpacity onPress={handleNext}>
                 <Button title="Next" buttonStyle={{ backgroundColor: password && email ? '#E62B85' : '#FFB2D7' }} />
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
       </TouchableWithoutFeedback>

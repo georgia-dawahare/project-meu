@@ -4,6 +4,7 @@ import admin from 'firebase-admin';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import serviceAccount from '/etc/secrets/credentials.json';
+// import serviceAccount from '../../credentials.json'
 
 // directly connect the local development server
 // eslint-disable-next-line no-unused-vars
@@ -28,8 +29,9 @@ const createUser = async (userData) => {
     birthday: userData.birthday,
     user_last_emotion: userData.user_last_emotion,
     partner_last_emotion: userData.partner_last_emotion,
-    timezone: userData.timezone,
     last_sent_emotion: userData.lastSentEmotion,
+    code: userData.code,
+    city: userData.city,
   };
   await firestore.collection('Users').doc(userId).set(user);
   return userId;
@@ -83,6 +85,54 @@ const getUser = async (uid) => {
   return user;
 };
 
+const connectPairs = async (userId, userCode, isPairCreator, relationshipStart) => {
+  let matchList = [];
+  firestore.collection("Users").where("code", "==", userCode)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, " => ", doc.data());
+        matchList.push(doc.id);
+      });
+      return matchList;
+    })
+    .then((matches) => {
+      console.log(matches.length);
+      if (matches.length === 1) {
+        let user1Id, user2Id;
+        if (isPairCreator) {
+          user1Id = userId;
+          if (user1Id === matches[0]) {
+            user2Id = matches[1];
+          } else if (user1Id === matches[1]) {
+            user2Id = matches[0];
+          }
+        } else {
+          user2Id = userId;
+          if (user2Id === matches[0]) {
+            user1Id = matches[1];
+          } else if (user2Id === matches[1]) {
+            user1Id = matches[0];
+          }
+        }
+        if (user1Id && user2Id) {
+          const pairData = {
+            user1_id: user1Id,
+            user2_id: user2Id,
+            relationship_start: relationshipStart,
+            pair_creator_id: user1Id,
+          };
+          console.log("PAIR", pairData);
+          return createPair(pairData);
+        }
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+}
+
 const updateUser = async (uid, updatedData) => {
   try {
     const user = firestore.collection('Users').doc(uid);
@@ -102,7 +152,7 @@ const updateEmotion = async (updatedEmotion, uid) => {
     let partnerId;
 
     try {
-      const pair = await getPair({pid: pid});
+      const pair = await getPair({ pid: pid });
       if (uid === pair.user1_id) {
         partnerId = pair.user2_id;
       } else if (uid === pair.user2_id) {
@@ -120,25 +170,25 @@ const updateEmotion = async (updatedEmotion, uid) => {
       const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
       const partnerRef = firestore.collection('Users').doc(partnerId);
       partnerRef.update(updatedPartnerFields)
-      .then(() => {
-        console.log("Successfully updated partner's emotion");
-      })
-      .catch((error) => {
-        console.error("Error updating partner's emotion: ", error);
-      });
+        .then(() => {
+          console.log("Successfully updated partner's emotion");
+        })
+        .catch((error) => {
+          console.error("Error updating partner's emotion: ", error);
+        });
 
       // update self emotion
-      const updatedUserFields = {user_last_emotion: updatedEmotion}
+      const updatedUserFields = { user_last_emotion: updatedEmotion }
       const userRef = firestore.collection('Users').doc(uid);
       userRef.update(updatedUserFields)
-      .then(() => {
-        console.log("Successfully updated partner's emotion");
-        return true;
-      })
-      .catch((error) => {
-        console.error("Error updating partner's emotion: ", error);
-        return false;
-      });
+        .then(() => {
+          console.log("Successfully updated partner's emotion");
+          return true;
+        })
+        .catch((error) => {
+          console.error("Error updating partner's emotion: ", error);
+          return false;
+        });
     } catch (e) {
       console.log('Error updating user: ', e);
     }
@@ -150,6 +200,7 @@ const updateEmotion = async (updatedEmotion, uid) => {
 
 // === Pair Functions ===
 const createPair = async (pairData) => {
+  console.log('here', pairData)
   const pair = {
     user1_id: pairData.user1Id,
     user2_id: pairData.user2Id,
@@ -384,7 +435,7 @@ const getPartnerId = async (uid) => {
 
   // then finding the partner's id by process of elimination
   const doc2 = await firestore.collection('Pairs').doc(pairID).get();
-  let partnerID; 
+  let partnerID;
   if (!doc2.exists) {
     console.log('Pair step 2 does not exist');
   } else {
@@ -449,8 +500,9 @@ const firestoreService = {
   deletePair,
   getPairCreatorId,
   getPartnerId,
-  getCity, 
-  getBackground, 
+  getCity,
+  getBackground,
+  connectPairs
 };
 
 export default firestoreService;
