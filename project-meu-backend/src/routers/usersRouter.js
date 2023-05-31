@@ -40,7 +40,6 @@ router.get('/emotion/:uid', async (req, res) => {
 // Get user
 router.get('/:uid', async (req, res) => {
   const user = req.params;
-  console.log(user);
   try {
     const data = await usersController.getUser(user.uid);
     res.status(200).send(data);
