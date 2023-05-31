@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     borderRadius: 15,
   },
-
+//I hate that I'm here doing nothing when I could be asleep. Georgia is done but I can't leave, I feel bad that she had to redo my part, I feel like thats been the case with evey single file that I've touched. But to be fair, these guys are experienced and working with them has been great no lie, KP is super talented, Soo is a succor for detail, Tim is really kind, Kaylie is super smart and Georgia has been the most helpful atleast for me, throughout, she hasnt made me feel anyless than I am and has explained alot more to me than anyone else has in this class---I have talk to Tim, and honestly put my life inorder, my spirit does not approve of Daniel. I now it. He's nolonger in the picture, all I know is that over time God has simeine who he would love for me. I may have squandered my chance for the 
   menuContainer: {
     position: 'absolute',
     width: 359,
@@ -270,6 +270,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginHorizontal:20,
     marginBottom:10
-
   },
 });
