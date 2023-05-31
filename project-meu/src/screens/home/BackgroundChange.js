@@ -11,7 +11,7 @@ import { apiUrl } from '../../constants/constants';
 
 const { width } = Dimensions.get('window');
 
-function BackgroundChange({ background, userId }) {
+function BackgroundChange({ background, uid }) {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
 
@@ -41,8 +41,8 @@ function BackgroundChange({ background, userId }) {
     setBackgroundImage(photoUri);
 
     // Get user from Firestore
-    if (userId) {
-      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+    if (uid) {
+      userDoc = await axios.get(`${apiUrl}/users/${uid}`);
       pairId = userDoc?.data?.pair_id;
     }
 
@@ -55,10 +55,10 @@ function BackgroundChange({ background, userId }) {
     // Get partner from Firestore
     if (pair) {
       // Figure out which user the current user is
-      if (userId === pair.user1_id) {
+      if (uid === pair.user1_id) {
         partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
         partnerId = pair.user2_id;
-      } else if (userId === pair.user2_id) {
+      } else if (uid === pair.user2_id) {
         partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
         partnerId = pair.user1_id;
       } else {
