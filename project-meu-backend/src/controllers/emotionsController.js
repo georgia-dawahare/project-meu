@@ -1,7 +1,7 @@
 import firestoreService from '../services/firestore';
 
-const updateEmotion = async (emotionData) => {
-  const emotionId = await firestoreService.updateEmotion(emotionData);
+const updateEmotion = async (emotionData, id) => {
+  const emotionId = await firestoreService.updateEmotion(emotionData, id);
   return emotionId;
 };
 
