@@ -2,7 +2,7 @@
 /* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert,
+  View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert, SafeAreaView,
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,9 +11,11 @@ import { apiUrl } from '../../constants/constants';
 
 const { width } = Dimensions.get('window');
 
-function BackgroundChange({ background, uid }) {
+function BackgroundChange({
+  background, uid, toggleMenu, setMenuVisible, isMenuVisible,
+}) {
   const [backgroundImage, setBackgroundImage] = useState('');
-  const [isMenuVisible, setMenuVisible] = useState(false);
+  // const [isMenuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -75,9 +77,9 @@ function BackgroundChange({ background, uid }) {
     return pair;
   };
 
-  const toggleMenu = () => {
-    setMenuVisible(!isMenuVisible);
-  };
+  // const toggleMenu = () => {
+  //   setMenuVisible(!isMenuVisible);
+  // };
 
   const handleMenuOptionClick = async (option) => {
     // Menu option handling code...
@@ -134,61 +136,67 @@ function BackgroundChange({ background, uid }) {
 
       <View style={styles.container}>
 
-        <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          {backgroundImage ? (
+        {backgroundImage ? (
+          <View style={styles.iconButton}>
             <Image
               source={require('../../../assets/icons/Edit-white.png')}
               style={styles.icon}
             />
-          ) : (
+          </View>
+
+        ) : (
+          <View style={styles.iconButton}>
             <Image
               source={require('../../../assets/icons/edit-black.png')}
               style={styles.icon}
             />
-          )}
-        </TouchableOpacity>
-        <Modal
-          visible={isMenuVisible}
-          transparent
-          animationType="slide"
-        >
-          <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
-            <View style={styles.menuContainer}>
-              <View style={styles.menuMask}>
-                <TouchableOpacity
-                  style={styles.menuOption1}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuOption}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-                </TouchableOpacity>
+          </View>
 
-                <TouchableOpacity
-                  style={styles.menuOption}
-                  onPress={() => handleMenuOptionClick('Camera')}
-                >
-                  <Text style={styles.menuOptionText}>Camera</Text>
-                </TouchableOpacity>
+        )}
+        <SafeAreaView>
+          <Modal
+            visible={isMenuVisible}
+            transparent
+            animationType="fade"
+          >
+            <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
+              <View style={styles.menuContainer}>
+                <View style={styles.menuMask}>
+                  <TouchableOpacity
+                    style={styles.menuOption1}
+                    onPress={() => handleMenuOptionClick('Gallery')}
+                  >
+                    <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuOption}
+                    onPress={() => handleMenuOptionClick('Gallery')}
+                  >
+                    <Text style={styles.menuOptionText}>Choose From Gallery</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.menuOption2}
-                  onPress={() => handleMenuOptionClick('Remove Widget')}
-                >
-                  <Text style={styles.menuOptionText}>Remove Widget Image</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuOption}
+                    onPress={() => handleMenuOptionClick('Camera')}
+                  >
+                    <Text style={styles.menuOptionText}>Camera</Text>
+                  </TouchableOpacity>
 
-                <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-                  <Text style={styles.closeButtonText}>Cancel</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.menuOption2}
+                    onPress={() => handleMenuOptionClick('Remove Widget')}
+                  >
+                    <Text style={styles.menuOptionText}>Remove Widget Image</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
+                    <Text style={styles.closeButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        </Modal>
+            </TouchableOpacity>
+          </Modal>
+        </SafeAreaView>
       </View>
     </View>
   );
@@ -248,7 +256,7 @@ const styles = StyleSheet.create({
     width: 359,
     height: 213,
     left: (width - 359) / 2 + 0.5,
-    top: 553,
+    top: 510,
     backgroundColor: 'transparent',
     borderRadius: 20,
     borderTopLeftRadius: 20,

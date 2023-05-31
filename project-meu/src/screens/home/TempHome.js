@@ -4,6 +4,7 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
+  TouchableOpacity,
   Image,
 } from 'react-native';
 import axios from 'axios';
@@ -17,6 +18,7 @@ function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
   const [backgrounds, setBackgrounds] = useState([]);
+  const [isMenuVisible, setMenuVisible] = useState(false);
 
   const auth = getAuth();
   const [userId, setUserId] = useState('');
@@ -89,6 +91,10 @@ function TempHome({ navigation }) {
     return userDoc?.data?.background_photo;
   };
 
+  const toggleMenu = () => {
+    setMenuVisible(!isMenuVisible);
+  };
+
   const renderBackground = () => {
     if (backgroundImage) {
       return (
@@ -113,7 +119,10 @@ function TempHome({ navigation }) {
       <TopBar navigation={navigation} />
       <View style={styles.separate}>
         <View style={styles.partnerWidget}>
-          <BackgroundChange background={partnerBackgroundImage} uid={userId} />
+          <TouchableOpacity style={styles.changeBackground} onPress={toggleMenu}>
+            <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
+          </TouchableOpacity>
+
         </View>
         {renderBackground()}
         <View style={styles.clockWidget}>
@@ -125,6 +134,9 @@ function TempHome({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  changeBackground: {
+    position: 'absolute',
+  },
   container: {
     flex: 1,
     backgroundColor: 'white',
