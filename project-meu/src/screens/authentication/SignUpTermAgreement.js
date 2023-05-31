@@ -2,7 +2,7 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Image,
 } from 'react-native';
-import SignUpGraphic from '../components/SignUpGraphic';
+import SignUpGraphic from '../../components/SignUpGraphic';
 
 function SignupTermAgreementPage(props) {
   return (

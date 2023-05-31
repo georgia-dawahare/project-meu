@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image, View, TextInput,
 } from 'react-native';
-import Button from '../components/Button';
+import Button from '../../components/Button';
 
 function SignupPage2() {
   const [code, setCode] = useState('');

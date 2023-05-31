@@ -178,14 +178,15 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
+    borderRadius: 15,
     elevation: 3,
     backgroundColor: 'rgb(230, 43, 133)',
     alignItems: 'center',
   },
   buttonText: {
-    fontFamily: 'SF-Pro-Display-Bold',
+    fontFamily: 'SF-Pro-Display-Medium',
     color: 'white',
+    fontSize: 20,
   },
 
 });
