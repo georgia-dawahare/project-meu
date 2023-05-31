@@ -10,6 +10,11 @@ const getName = async (uid) => {
   return name;
 };
 
+const getUserEmotion = async (uid) => {
+  const emotion = await firestoreService.getUserEmotion(uid);
+  return emotion;
+};
+
 const getUser = async (uid) => {
   const user = await firestoreService.getUser(uid);
   return user;
@@ -25,6 +30,7 @@ const userController = {
   createUser,
   updateUser,
   getUser,
+  getUserEmotion
 };
 
 export default userController;
