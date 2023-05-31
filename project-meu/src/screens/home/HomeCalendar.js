@@ -90,9 +90,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     const events = await axios.get(`${apiUrl}/events/`);
 
-    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
-    // console.log(events.data);
-
     const extractDday = (dateString) => {
       const date = new Date(dateString);
       const today = new Date();
@@ -101,11 +98,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
       return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
     };
 
-    // const mergeEvents = [...events.data, ...defaultEvents.data];
-    // console.log('MergeEvents :   ', mergeEvents);
-
     const ddayList = events.data
-    // const ddayList = mergeEvents
       .map((event) => {
         const {
           title, repeat, date, id,

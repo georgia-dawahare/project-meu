@@ -2,12 +2,10 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { FAB } from 'react-native-elements';
-// import AnniversaryModal from './AnniversaryModal';
 
 function FloatingButton() {
   const handlePress = () => {
     console.log('FAB clicked.');
-    // <AnniversaryModal/>
   };
   return (
     <FAB

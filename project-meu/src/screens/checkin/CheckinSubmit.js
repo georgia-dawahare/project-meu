@@ -71,17 +71,13 @@ function CheckinSubmit({ navigation, route }) {
       }
       // Find out if P1 or P2 is user/partner
       if (p1Response !== null && p1Response.status === 200) {
-        console.log(userId);
-        console.log(p2Response.data.user_id);
         if (p1Response.data.user_id === userId) {
-          console.log('h');
           setTextAnswer(p1Response.data.response);
           setResponseId(responseGroupData.p1_response_id);
           setNewResponse(false);
         }
       }
       if (p2Response !== null && p2Response.status === 200) {
-        console.log('arg');
         if (p2Response.data.user_id === userId) {
           setTextAnswer(p2Response.data.response);
           setResponseId(responseGroupData.p2_response_id);
