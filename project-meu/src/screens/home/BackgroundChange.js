@@ -7,17 +7,13 @@ import {
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 
 const { width } = Dimensions.get('window');
 
-function BackgroundChange({ navigation }) {
+function BackgroundChange({ background, userId }) {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const [userId, setUserId] = useState('');
-  const backgroundColor = 'rgba(83, 83, 83, 0.8';
-  const auth = getAuth();
 
   useEffect(() => {
     (async () => {
@@ -34,49 +30,10 @@ function BackgroundChange({ navigation }) {
   }, []);
 
   useEffect(() => {
-    // Get current user from auth
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
-      } else {
-        console.log('No user logged in');
-      }
-    });
-    if (userId) {
-      setPartnerBackground();
+    if (!backgroundImage) {
+      setBackgroundImage(background);
     }
-  }, [backgroundImage]);
-
-  const setPartnerBackground = async () => {
-    let userDoc, pair, pairId, pairDoc, partnerDoc;
-
-    // Get user from Firestore
-    if (userId) {
-      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
-      pairId = userDoc?.data?.pair_id;
-    }
-
-    // Get pair from Firestore
-    if (pairId) {
-      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
-      pair = pairDoc.data;
-    }
-
-    // Get partner from Firestore
-    if (pair) {
-      // Figure out which user the current user is
-      if (userId === pair.user1_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
-      } else if (userId === pair.user2_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
-      } else {
-        console.log('Could not find partner');
-      }
-    }
-    if (partnerDoc) {
-      setBackgroundImage(partnerDoc.data.background_photo);
-    }
-  };
+  }, [background]);
 
   const updatePartnerBackground = async (photoUri) => {
     let userDoc, pair, pairId, pairDoc, partnerDoc, partnerId;
@@ -160,7 +117,7 @@ function BackgroundChange({ navigation }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <View style={styles.container}>
       {backgroundImage ? (
         <Image
           source={{ uri: backgroundImage }}
@@ -179,7 +136,6 @@ function BackgroundChange({ navigation }) {
 
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
           {backgroundImage ? (
-
             <Image
               source={require('../../../assets/icons/Edit-white.png')}
               style={styles.icon}
@@ -248,6 +204,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
+    backgroundColor: 'rgba(83, 83, 83, 0.8',
   },
   icon: {
     width: 24,

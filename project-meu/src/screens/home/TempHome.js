@@ -15,6 +15,9 @@ import { apiUrl } from '../../constants/constants';
 
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');
+  const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
+  const [backgrounds, setBackgrounds] = useState([]);
+
   const auth = getAuth();
   const [userId, setUserId] = useState('');
 
@@ -27,10 +30,50 @@ function TempHome({ navigation }) {
         console.log('No user logged in');
       }
     });
-    if (userId) {
-      setBackground();
+    initializeView();
+  }, [backgrounds]);
+
+  useEffect(() => {
+    setBackgroundImage(backgrounds[0]);
+    setPartnerBackgroundImage(backgrounds[1]);
+  }, [backgrounds]);
+
+  const initializeView = async () => {
+    if (!backgrounds[0]) {
+      const background = await setBackground();
+      const partnerBackground = await setPartnerBackground();
+      setBackgrounds([background, partnerBackground]);
     }
-  }, []);
+  };
+
+  const setPartnerBackground = async () => {
+    let userDoc, pair, pairId, pairDoc, partnerDoc;
+
+    // Get user from Firestore
+    if (userId) {
+      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+      pairId = userDoc?.data?.pair_id;
+    }
+
+    // Get pair from Firestore
+    if (pairId) {
+      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
+      pair = pairDoc.data;
+    }
+
+    // Get partner from Firestore
+    if (pair) {
+      // Figure out which user the current user is
+      if (userId === pair.user1_id) {
+        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
+      } else if (userId === pair.user2_id) {
+        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
+      } else {
+        console.log('Could not find partner');
+      }
+    }
+    return partnerDoc?.data?.background_photo;
+  };
 
   const setBackground = async () => {
     let userDoc;
@@ -40,11 +83,28 @@ function TempHome({ navigation }) {
       if (userId) {
         userDoc = await axios.get(`${apiUrl}/users/${userId}`);
       }
-      if (userDoc) {
-        setBackgroundImage(userDoc?.data?.background_photo);
-      }
     } catch (e) {
       console.log('Error setting user background: ', e);
+    }
+    return userDoc?.data?.background_photo;
+  };
+
+  const renderBackground = () => {
+    if (backgroundImage) {
+      return (
+        <Image
+          source={{ uri: backgroundImage }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      );
+    } else {
+      return (
+        <Image
+          source={require('../../../assets/images/defaultUserBackground.png')}
+          style={styles.image}
+        />
+      );
     }
   };
 
@@ -53,20 +113,9 @@ function TempHome({ navigation }) {
       <TopBar navigation={navigation} />
       <View style={styles.separate}>
         <View style={styles.partnerWidget}>
-          <BackgroundChange />
+          <BackgroundChange background={partnerBackgroundImage} uid={userId} />
         </View>
-        {backgroundImage ? (
-          <Image
-            source={{ uri: backgroundImage }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        ) : (
-          <Image
-            source={require('../../../assets/images/defaultUserBackground.png')}
-            style={styles.image}
-          />
-        )}
+        {renderBackground()}
         <View style={styles.clockWidget}>
           <ClockAndLocation />
         </View>
@@ -74,8 +123,6 @@ function TempHome({ navigation }) {
     </SafeAreaView>
   );
 }
-
-export default TempHome;
 
 const styles = StyleSheet.create({
   container: {
@@ -118,3 +165,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
+
+export default TempHome;

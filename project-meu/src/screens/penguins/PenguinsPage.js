@@ -99,7 +99,7 @@ function PenguinsPage({ navigation }) {
     } catch (e) {
       console.log('Error retrieving user: ', e);
     }
-    
+
     return emotion;
   };
 
