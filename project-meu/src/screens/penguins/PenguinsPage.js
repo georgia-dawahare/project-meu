@@ -7,6 +7,7 @@ import { Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal 
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import TopBarPenguin from '../../components/TopBarPenguin';
 import { apiUrl } from '../../constants/constants';
 
 const iconData = [
@@ -98,10 +99,7 @@ function PenguinsPage({ navigation }) {
     } catch (e) {
       console.log('Error retrieving user: ', e);
     }
-
-    // how we actually get the user's emotions
-    // const userEmotion = await axios.get(`${apiUrl}/users/emotion/${userId}`);
-    // console.log('successfully gotten self emotion');
+    
     return emotion;
   };
 
@@ -118,90 +116,7 @@ function PenguinsPage({ navigation }) {
     // const partnerEmotion = await axios.get(`${apiUrl}/users/partner_emotion/${userId}`);
     // console.log('successfully gotten partner emotion');
     return partnerEmotion.data;
-    // get the partner's id
-    // try {
-    //   const currUser = await axios.get(`${apiUrl}/users/${userId}`);
-    //   const pid = currUser.pair_id;
-    //   try {
-    //     const pair = await axios.get(`${apiUrl}/pair/${pid}`);
-    //     let partnerId;
-    //     if (userId === pair.user1_id) {
-    //       partnerId = pair.user2_id;
-    //     } else if (userId === pair.user2_id) {
-    //       partnerId = pair.user1_id;
-    //       console.log('success');
-    //     } else {
-    //       console.log('Unable to find partner');
-    //     }
-    //   } catch (e) {
-    //     console.log('Error retrieving pair: ', e);
-    //   }
-    // } catch (e) {
-    //   console.log('Error retrieving user: ', e);
-    // }
-
-    // // to actually get partner's emotion
-    // const partnerEmotion = await axios.patch(`${apiUrl}/users/emotion/${userId}`);
-    // return partnerEmotion;
   };
-
-  // // this allows us to listen to new data & refresh
-  // const refreshData = async () => {
-  //   try {
-  //     // Fetch user ID & emotion doc
-  //     const userId = auth.currentUser?.uid;
-  //     getUserEmotion(userId);
-
-  //     // Set user last emotion if it exist (it should unless first starting)
-  //     try {
-  //       const user_last_emotion = await getEmotion(userEmotion.user_last_emotion);
-  //       if (user_last_emotion) {
-  //         setLastEmotionSent(user_last_emotion);
-  //         setSelectedIcon(user_last_emotion);
-  //       } else {
-  //         setLastEmotionSent(0); // if haven't sent any, initialize to neutral
-  //         setSelectedIcon(0);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching user emotion:', error);
-  //     }
-
-  //     // Set the partner's last emotion if it exist
-  //     try {
-  //       const partner_last_emotion = await getEmotion(userEmotion.partner_last_emotion);
-  //       if (partner_last_emotion) {
-  //         setPartnerLastEmotion(partner_last_emotion);
-  //       } else {
-  //         setPartnerLastEmotion(0); // if they haven't sent any, initialize to neutral
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching partner emotion:', error);
-  //       setPartnerLastEmotion(0); // TODO: make a default partner not found emotion
-  //     }
-  //   } catch (error) {
-  //     console.error('Error occurred during data refresh:', error);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', refreshData);
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, []);
-
-  // this is for responsive screen design
-  // useEffect(() => {
-  //   const updateScreenDimensions = () => {
-  //     setScreenWidth(Dimensions.get('window').width);
-  //     setScreenHeight(Dimensions.get('window').height);
-  //   };
-  //   Dimensions.addEventListener('change', updateScreenDimensions);
-
-  //   return () => {
-  //     Dimensions.removeEventListener('change', updateScreenDimensions);
-  //   };
-  // }, []);
 
   const renderIconItem = ({ item, index }) => {
     const itemStyle = index === selectedIcon ? styles.selectedIcon : styles.unselectedIcon;
@@ -247,8 +162,6 @@ function PenguinsPage({ navigation }) {
     setCarouselSpun(false);
     setLastEmotionSent(selectedIcon.toString());
     updateBothEmotion(lastEmotionSent, userId); // update both users' render emotion based on sender's emotion
-    // updateUserEmotion(selectedIcon);
-    // getUserEmotion(userId); // we don't need this
   };
 
   // try catch for updating both user & partner's emotion (logic in backend)
@@ -280,8 +193,6 @@ function PenguinsPage({ navigation }) {
       <View style={[styles.carouselContainer, { marginTop: screenHeight * 0.02, marginBottom: screenHeight * 0.0644 }]}>
         <View
           style={[styles.circle, {
-            // width: screenWidth * 0.175,
-            // height: screenWidth * 0.175,
             borderRadius: screenHeight * 0.1395,
             borderWidth: screenWidth * 0.0186,
             transform: [{ translateX: -screenWidth * 0.0865 }, { translateY: -screenHeight * 0.041 }],
@@ -344,15 +255,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
   },
-  // image: {
-  //   width: 230,
-  //   height: 440,
-  // },
   imageContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    // marginTop: 80,
   },
   penguinNamesContainer: {
     flexDirection: 'row',
@@ -364,9 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'rgb(79, 79, 79)',
   },
-  carouselContainer: {
-    // marginBottom: 60,
-  },
+  carouselContainer: {},
   icon: {},
   selectedIcon: {
     transform: [{ scale: 0.5 }],
@@ -378,14 +282,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 75,
     height: 75,
-    // borderRadius: 60,
-    // borderWidth: 8,
     borderColor: 'rgb(230, 43, 133)',
     left: '50%',
     top: '50%',
     backgroundColor: 'transparent',
-    // zIndex: 2, // this is more visually appealing but then the central one won't be touch responsive
-    // transform: [{ translateX: -60 }, { translateY: -60 }],
   },
   buttonContainer: {
     backgroundColor: 'rgb(230, 43, 133)',
