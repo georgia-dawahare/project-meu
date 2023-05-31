@@ -39,4 +39,16 @@ router.get('/creator/:pid', async (req, res) => {
   }
 });
 
+// Fetch pair
+router.get('/:pid', async (req, res) => {
+  const pairId = req.params;
+  try {
+    const pair = await pairsController.getPair(pairId);
+    res.status(200).send(pair);
+  } catch (e) {
+    console.log('Tried to get pair');
+    res.status(500).send(e.message);
+  }
+});
+
 export default router;

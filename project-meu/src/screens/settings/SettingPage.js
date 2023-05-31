@@ -11,6 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
+import { getAuth, signOut } from 'firebase/auth';
 
 const SettingContents = [
   {
@@ -86,6 +87,15 @@ function SettingPage({ navigation }) {
     return <Text>Loading...</Text>;
   }
 
+  const signOutUser = async () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+      console.log('Successfully logged out. See you later!');
+    }).catch((error) => {
+      console.log('Error signing out: ', error);
+    });
+  };
+
   const handleItemClick = (title) => {
     console.log('Clicked item:', title);
     if (title === 'Sign Out') {
@@ -99,7 +109,7 @@ function SettingPage({ navigation }) {
           },
           {
             text: 'SignOut',
-            // onPress: deleteEventConfirmation,
+            onPress: signOutUser,
             style: 'destructive',
           },
         ],

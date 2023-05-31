@@ -1,13 +1,38 @@
-import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+} from 'react-native';
+import * as Font from 'expo-font';
 
 function RegistrationInput({
-  placeholder, top, textAlign, editable = true,
+  placeholder, top, textAlign, onChangeText, editable = true,
 }) {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Regular': require('../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <View style={[styles.container, { top }]}>
       <View style={[styles.inputContainer, { alignItems: textAlign }]}>
-        <TextInput style={styles.input} placeholder={placeholder} editable={editable} />
+        <TextInput style={styles.input} placeholder={placeholder} editable={editable} onChangeText={onChangeText} />
       </View>
       <View style={styles.line} />
     </View>
@@ -17,7 +42,7 @@ function RegistrationInput({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    fontFamily: 'SFProDisplay-Regular',
+    fontFamily: 'SF-Pro-Display-Regular',
     justifyContent: 'center',
     alignSelf: 'center',
   },

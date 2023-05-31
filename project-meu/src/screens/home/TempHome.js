@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+/* eslint-disable global-require */
+import React, { useState, useEffect } from 'react';
 import {
   View,
   SafeAreaView,
-  StyleSheet, Image,
+  StyleSheet,
+  Image,
+  Text,
 } from 'react-native';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
 
 function TempHome({ navigation }) {
-  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');
-  const [backgroundColor, setBackgroundColor] = useState('white');
+  const backgroundImage = 'https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766';
+  // const [isMenuVisible, setMenuVisible] = useState(false);
+  const backgroundColor = 'white';
+
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+      });
+
+      setFontLoaded(true);
+    }
+
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
