@@ -27,8 +27,8 @@ const createUser = async (userData) => {
     background_photo: userData.backgroundPhoto,
     birthday: userData.birthday,
     timezone: userData.timezone,
+    last_sent_emotion: userData.lastSentEmotion,
   };
-  // const res = await firestore.collection('Users').add(user);
   await firestore.collection('Users').doc(userId).set(user);
   return userId;
 };
