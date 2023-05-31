@@ -12,7 +12,7 @@ import { apiUrl } from '../../constants/constants';
 const { width } = Dimensions.get('window');
 
 function BackgroundChange({ navigation }) {
-  const [backgroundImage, setBackgroundImage] = useState('../../../assets/images/defaultPartnerBackground');
+  const [backgroundImage, setBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [userId, setUserId] = useState('');
   const backgroundColor = 'rgba(83, 83, 83, 0.8';
