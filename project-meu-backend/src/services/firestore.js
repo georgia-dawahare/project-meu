@@ -26,6 +26,8 @@ const createUser = async (userData) => {
     penguin_color: userData.penguinColor,
     background_photo: userData.backgroundPhoto,
     birthday: userData.birthday,
+    user_last_emotion: userData.user_last_emotion,
+    partner_last_emotion: userData.partner_last_emotion,
     timezone: userData.timezone,
     last_sent_emotion: userData.lastSentEmotion,
   };
@@ -43,6 +45,31 @@ const getName = async (uid) => {
     name = [data.first_name, data.last_name];
   }
   return name;
+};
+
+const getUserEmotion = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let emotion;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    emotion = data.user_last_emotion;
+  }
+  return emotion;
+};
+
+// get the user's partner's last sent emotion
+const getPartnerEmotion = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let emotion;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    emotion = data.partner_last_emotion;
+  }
+  return emotion;
 };
 
 const getUser = async (uid) => {
@@ -68,17 +95,56 @@ const updateUser = async (uid, updatedData) => {
 // === End of User Functions ===
 
 // === Emotion Functions ===
-const sendEmotion = async (emotionData) => {
-  const emotion = {
-    pair_id: emotionData.pairId,
-    receiver_id: emotionData.receiverId,
-    sender_id: emotionData.senderId,
-    type: emotionData.type,
-    timestamp: Timestamp.now(),
-  };
-  console.log(emotion);
-  const res = await firestore.collection('Emotions').add(emotion);
-  return res.id;
+const updateEmotion = async (updatedEmotion, uid) => {
+  try {
+    const currUser = await getUser(uid);
+    const pid = currUser.pair_id;
+    let partnerId;
+
+    try {
+      const pair = await getPair({pid: pid});
+      if (uid === pair.user1_id) {
+        partnerId = pair.user2_id;
+      } else if (uid === pair.user2_id) {
+        partnerId = pair.user1_id;
+      } else {
+        console.log('Unable to find partner');
+      }
+    } catch (e) {
+      console.log('Error retrieving pair: ', e);
+    }
+
+    try {
+      // update partner's emotion
+      console.log("emotions", updatedEmotion);
+      const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
+      const partnerRef = firestore.collection('Users').doc(partnerId);
+      partnerRef.update(updatedPartnerFields)
+      .then(() => {
+        console.log("Successfully updated partner's emotion");
+      })
+      .catch((error) => {
+        console.error("Error updating partner's emotion: ", error);
+      });
+
+      // update self emotion
+      const updatedUserFields = {user_last_emotion: updatedEmotion}
+      const userRef = firestore.collection('Users').doc(uid);
+      userRef.update(updatedUserFields)
+      .then(() => {
+        console.log("Successfully updated partner's emotion");
+        return true;
+      })
+      .catch((error) => {
+        console.error("Error updating partner's emotion: ", error);
+        return false;
+      });
+    } catch (e) {
+      console.log('Error updating user: ', e);
+    }
+  } catch (e) {
+    console.log('Error retrieving user: ', e);
+  }
 };
 // === End of Emotion Functions ===
 
@@ -364,6 +430,8 @@ const firestoreService = {
   createUser,
   getName,
   getUser,
+  getUserEmotion,
+  getPartnerEmotion,
   updateUser,
   getResponseGroup,
   updateResponseGroup,
@@ -375,7 +443,7 @@ const firestoreService = {
   createEvent,
   getEvents,
   deleteEvent,
-  sendEmotion,
+  updateEmotion,
   createPair,
   getPair,
   deletePair,

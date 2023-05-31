@@ -37,6 +37,17 @@ router.get('/emotion/:uid', async (req, res) => {
   }
 });
 
+// Get user's partner's emotion
+router.get('/partner_emotion/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getPartnerEmotion(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 // Get user
 router.get('/:uid', async (req, res) => {
   const user = req.params;
@@ -51,6 +62,7 @@ router.get('/:uid', async (req, res) => {
 // Update user data
 router.patch('/:uid', async (req, res) => {
   const updatedUser = req.body;
+  // console.log(updatedUser);
   const user = req.params;
   try {
     const uid = await usersController.updateUser(user.uid, updatedUser);
