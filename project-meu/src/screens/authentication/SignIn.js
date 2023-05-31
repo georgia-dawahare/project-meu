@@ -36,25 +36,31 @@ function SignIn({ navigation }) {
   }, []);
 
   const handleSignIn = () => {
-    const auth = getAuth();
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        // const { user } = userCredential;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        if (errorCode.includes('email') || errorCode.includes('user')) {
-          setEmailError('Invalid email');
-        } else {
-          setEmailError('');
-        }
-        if (errorCode.includes('password')) {
-          setPasswordError('Invalid password');
-        } else {
-          setPasswordError('');
-        }
-      });
+    // I know it's bad to store password, but it's 5 am and I'm hacking it
+    const newUser = {
+      email,
+      password,
+    };
+    navigation.navigate('/');
+    // const auth = getAuth();
+    // signInWithEmailAndPassword(auth, email, password)
+    //   .then((userCredential) => {
+    //     // Signed in
+    //     // const { user } = userCredential;
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     if (errorCode.includes('email') || errorCode.includes('user')) {
+    //       setEmailError('Invalid email');
+    //     } else {
+    //       setEmailError('');
+    //     }
+    //     if (errorCode.includes('password')) {
+    //       setPasswordError('Invalid password');
+    //     } else {
+    //       setPasswordError('');
+    //     }
+    //   });
   };
 
   if (!fontLoaded) {

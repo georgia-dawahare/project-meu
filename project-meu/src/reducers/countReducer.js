@@ -1,6 +1,16 @@
 import { ActionTypes } from '../actions';
 
-const CountReducer = (state = 0, action = {}) => {
+const initialState = {
+  email: '',
+  password: '',
+  pair_code: '',
+  first_name: '',
+  last_name: '',
+  birthday: '',
+  anniversary: '',
+};
+
+const CountReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case ActionTypes.INCREMENT:
       return state + 1;
