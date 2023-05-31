@@ -5,9 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Text,
 } from 'react-native';
-import * as Font from 'expo-font';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import TopBar from '../../components/TopBar';
@@ -17,30 +15,14 @@ import { apiUrl } from '../../constants/constants';
 
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');
-  const backgroundColor = 'white';
   const auth = getAuth();
-
   const [userId, setUserId] = useState('');
-  const [fontLoaded, setFontLoaded] = useState(false);
-
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-      });
-
-      setFontLoaded(true);
-    }
-
-    loadFont();
-  }, []);
 
   useEffect(() => {
     // Get current user from auth
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid);
+    onAuthStateChanged(auth, (userAuth) => {
+      if (userAuth) {
+        setUserId(userAuth.uid);
       } else {
         console.log('No user logged in');
       }
@@ -54,31 +36,25 @@ function TempHome({ navigation }) {
     let userDoc;
 
     // Get user from Firestore
-    if (userId) {
-      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
-    }
-
-    if (userDoc) {
-      setBackgroundImage(userDoc?.data?.background_photo);
+    try {
+      if (userId) {
+        userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+      }
+      if (userDoc) {
+        setBackgroundImage(userDoc?.data?.background_photo);
+      }
+    } catch (e) {
+      console.log('Error setting user background: ', e);
     }
   };
 
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor }]}>
-
+    <SafeAreaView style={styles.container}>
       <TopBar navigation={navigation} />
-      <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <View style={styles.partnerWidget}>
-            <BackgroundChange />
-          </View>
-        </View>
-      </View>
       <View style={styles.separate}>
+        <View style={styles.partnerWidget}>
+          <BackgroundChange />
+        </View>
         {backgroundImage ? (
           <Image
             source={{ uri: backgroundImage }}
@@ -88,7 +64,7 @@ function TempHome({ navigation }) {
         ) : (
           <Image
             source={require('../../../assets/images/defaultUserBackground.png')}
-            style={styles.defaultImage}
+            style={styles.image}
           />
         )}
         <View style={styles.clockWidget}>
@@ -102,11 +78,18 @@ function TempHome({ navigation }) {
 export default TempHome;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   partnerWidget: {
+    position: 'absolute',
+    zIndex: 1,
+    top: 0,
+    right: 0,
     height: 124,
     width: 124,
     margin: 10,
-    marginTop: 20,
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: {
@@ -117,6 +100,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   clockWidget: {
+    flex: 1,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -124,25 +108,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    justifyContent: 'flex-end',
   },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-
   image: {
     ...StyleSheet.absoluteFillObject,
   },
-  defaultImage: {
-    width: 300,
-    height: 300,
-    alignSelf: 'center',
-  },
   separate: {
     flex: 2,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
     backgroundColor: 'white',
   },
 });
