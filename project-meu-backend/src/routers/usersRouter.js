@@ -110,4 +110,16 @@ router.get('/partner/:uid', async (req, res) => {
   }
 });
 
+// Fetch pair date 
+router.get('/pairdate/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const pairDate = await usersController.getPairDate(user.uid);
+    res.status(200).send(pairDate);
+  } catch (e) {
+    console.log('Could not find relationship start');
+    res.status(500).send(e.message);
+  }
+});
+
 export default router;
