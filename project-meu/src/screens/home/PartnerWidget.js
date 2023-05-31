@@ -8,10 +8,11 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
-function BackgroundChange({ navigation }) {
+function PartnerWidget({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const [backgroundColor, setBackgroundColor] = useState('rgba(83, 83, 83, 0.8');
+  const [emptyText, setEmptyText] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('rgba(83, 83, 83, 0.8)');
 
   useEffect(() => {
     (async () => {
@@ -41,7 +42,8 @@ function BackgroundChange({ navigation }) {
           quality: 1,
         });
         if (!result.canceled) {
-          setBackgroundImage(result.uri);
+          setBackgroundImage(result.assets[0].uri);
+          setEmptyText(null);
         }
       } else {
         Alert.alert('Permission to access camera was denied');
@@ -54,13 +56,15 @@ function BackgroundChange({ navigation }) {
           quality: 1,
         });
         if (!result.canceled) {
-          setBackgroundImage(result.uri);
+          setBackgroundImage(result.assets[0].uri);
+          setEmptyText(null);
         }
       } else {
         Alert.alert('Permission to access camera roll was denied');
       }
     } else if (option === 'Remove Widget') {
       setBackgroundImage(null);
+      setEmptyText('ADD IMAGE');
     }
   };
 
@@ -69,67 +73,71 @@ function BackgroundChange({ navigation }) {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
-      {backgroundImage && (
-        <Image
-          source={{ uri: backgroundImage }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      )}
-      <View style={styles.container}>
+    <TouchableOpacity
+      style={[styles.container, { backgroundColor }]}
+      onPress={toggleMenu}
+      activeOpacity={1}
+    >
 
-        <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <FontAwesome5 name="edit" size={22} color="white" />
-        </TouchableOpacity>
-        <Modal
-          visible={isMenuVisible}
-          transparent
-          animationType="slide"
-        >
-          <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
-            <View style={styles.menuContainer}>
-              <View style={styles.menuMask}>
-                <TouchableOpacity
-                  style={styles.menuOption1}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuOption}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-                </TouchableOpacity>
+  {backgroundImage && (
+    <Image
+      source={{ uri: backgroundImage }}
+      style={styles.image}
+      resizeMode="cover"
+    />
+  )}
+  {emptyText ? <Text style={styles.emptyContainerText}>{emptyText}</Text> : null}
+     <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
+    <FontAwesome5 name="edit" size={22} color="white" />
+  </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.menuOption}
-                  onPress={() => handleMenuOptionClick('Camera')}
-                >
-                  <Text style={styles.menuOptionText}>Camera</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.menuOption2}
-                  onPress={() => handleMenuOptionClick('Remove Widget')}
-                >
-                  <Text style={styles.menuOptionText}>Remove Widget Image</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
-                  <Text style={styles.closeButtonText}>Cancel</Text>
-                </TouchableOpacity>
+      <Modal
+        visible={isMenuVisible}
+        transparent
+        animationType="slide"
+      >
+        <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
+          <View style={styles.menuContainer}>
+            <View style={styles.menuMask}>
+              <View
+                style={styles.menuOption1}
+                onPress={() => handleMenuOptionClick('Gallery')}
+              >
+                <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
               </View>
+              <TouchableOpacity
+                style={styles.menuOption}
+                onPress={() => handleMenuOptionClick('Gallery')}
+              >
+                <Text style={styles.menuOptionText}>Choose From Gallery</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuOption}
+                onPress={() => handleMenuOptionClick('Camera')}
+              >
+                <Text style={styles.menuOptionText}>Camera</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.menuOption2}
+                onPress={() => handleMenuOptionClick('Remove Widget')}
+              >
+                <Text style={styles.menuOptionText}>Remove Widget Image</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.closeButton} onPress={toggleMenu}>
+                <Text style={styles.closeButtonText}>Cancel</Text>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
-        </Modal>
-      </View>
-    </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    </TouchableOpacity>
   );
 }
 
-export default BackgroundChange;
+export default PartnerWidget;
 
 const styles = StyleSheet.create({
   container: {
@@ -236,12 +244,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'darkgray',
     fontWeight: '500',
-    fontSize: 14,
+    fontSize: 18,
   },
 
   closeButtonText: {
-    fontSize: 18,
+    textAlign: 'center',
     color: '#007AFF',
-    fontWeight: '500',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+
+  emptyContainer: {
+    backgroundColor: 'rgba(175, 175, 175, 0.8)',
+    borderRadius: 20,
+    height: 120,
+    width: 120,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+
+  emptyContainerText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginHorizontal:20,
+    marginBottom:10
+
   },
 });

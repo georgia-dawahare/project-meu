@@ -8,7 +8,7 @@ import {
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
 // import PartnerWidget from '../../components/PartnerWidget';
-import BackgroundChange from './BackgroundChange';
+import BackgroundChange from './PartnerWidget';
 
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766');

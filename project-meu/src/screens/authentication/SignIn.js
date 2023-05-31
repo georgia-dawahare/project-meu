@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontSize: 12,
     textAlign: 'center',
-
   },
   buttonContainer: {
     marginTop: 40,
