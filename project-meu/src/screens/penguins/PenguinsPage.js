@@ -135,13 +135,14 @@ function PenguinsPage({ navigation }) {
 
   // get partner's emotion data
   const getPartnerEmotion = async () => {
-    let partnerEmotion;
+    let partnerEmotion, emotion;
     try {
       partnerEmotion = await axios.get(`${apiUrl}/users/partner_emotion/${userId}`);
+      emotion = partnerEmotion.data;
     } catch (e) {
       console.log('Error retrieving user: ', e);
     }
-    return partnerEmotion.data;
+    return emotion;
   };
 
   const renderIconItem = ({ item, index }) => {
@@ -248,9 +249,9 @@ function PenguinsPage({ navigation }) {
       ) : (
         <Text style={[styles.swipeText, { marginTop: -screenHeight * 0.035 }]}>
           Feel free to swipe to set a new emotion :)
-          Partner Last Emotion:
+          {/* Partner Last Emotion:
           {' '}
-          {partnerLastEmotion}
+          {lastEmotionSent} */}
         </Text>
       )}
       <Modal
