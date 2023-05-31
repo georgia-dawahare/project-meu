@@ -196,6 +196,7 @@ function ClockAndLocation() {
 
   //   return state;
   // };
+  
   const pTimer = () => {
     const { minuteP, hourP } = pDate();
     const [state, setState] = useState({
