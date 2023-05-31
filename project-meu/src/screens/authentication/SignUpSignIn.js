@@ -10,7 +10,7 @@ import * as Font from 'expo-font';
 import SignUpGraphic from '../../components/SignUpGraphic';
 import Button from '../../components/Button';
 
-function LoginScreen({ navigation }) {
+function SignUpSignIn({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -85,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default SignUpSignIn;

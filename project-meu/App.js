@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
@@ -10,11 +9,9 @@ import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
   HomeScreenNavigator,
+  OnboardingScreenNavigator,
 } from './src/navigation/CustomNavigation';
-import OnboardingPage from './src/screens/authentication/OnboardingPage';
-import SignUpSignIn from './src/screens/authentication/SignUpSignIn';
-import RegisterEmailPassword from './src/screens/authentication/RegisterEmailPassword';
-import SignIn from './src/screens/authentication/SignIn';
+
 import store from './src/store';
 
 function App() {
@@ -23,7 +20,6 @@ function App() {
 
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
-  const Stack = createNativeStackNavigator();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -83,17 +79,7 @@ function App() {
               }}
             />
           </Tab.Navigator>
-        ) : (
-          <Stack.Navigator
-            initialRouteName="Onboarding"
-            screenOptions={{ headerShown: false, unmountOnBlur: true }}
-          >
-            <Stack.Screen name="Onboarding" component={OnboardingPage} />
-            <Stack.Screen name="SignUpSignIn" component={SignUpSignIn} />
-            <Stack.Screen name="RegisterEmailPassword" component={RegisterEmailPassword} />
-            <Stack.Screen name="SignIn" component={SignIn} />
-          </Stack.Navigator>
-        )}
+        ) : (<OnboardingScreenNavigator />)}
       </NavigationContainer>
     </Provider>
   );

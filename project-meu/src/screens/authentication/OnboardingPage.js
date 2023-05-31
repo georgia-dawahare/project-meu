@@ -28,30 +28,33 @@ function OnboardingPage({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.contentWrapper}>
-        <Image
-          source={require('../../../assets/images/Onboarding.png')}
-          style={styles.graphicsImg}
-        />
-        <View style={styles.textWrapper}>
-          <Text style={styles.title}>
-            Whenever You Are,
-            {'\n'}
-            MeU Connects You
-          </Text>
-          <Text style={styles.subtitle}>
-            MeU connects long-distance couples with
-            {'\n'}
-            various interactions.
-          </Text>
+        <View style={styles.imageWrapper}>
           <Image
-            source={require('../../../assets/images/progress-1.png')}
-            style={styles.progress}
+            source={require('../../../assets/animations/hello/hello_black.gif')}
+            style={styles.graphicsImg}
+          />
+          <Image
+            source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+            style={styles.graphicsImg}
           />
         </View>
+        <Text style={styles.title}>
+          Whenever You Are,
+          {'\n'}
+          MeU Connects You
+        </Text>
+        <Text style={styles.subtitle}>
+          MeU connects long-distance couples with
+          {'\n'}
+          various interactions.
+        </Text>
+      </View>
+      <View>
         <TouchableOpacity onPress={() => { navigation.navigate('SignUpSignIn'); }}>
           <Button title="Let's MeU" />
         </TouchableOpacity>
       </View>
+
     </SafeAreaView>
   );
 }
@@ -59,20 +62,21 @@ function OnboardingPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   contentWrapper: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'space-evenly',
-    marginBottom: 100,
-    top: 20,
+    marginTop: 100,
   },
   graphicsImg: {
-    width: 342,
-    height: 329,
-    alignSelf: 'center',
+    width: 150,
+    height: 300,
   },
-  textWrapper: {
+  imageWrapper: {
+    flexDirection: 'row',
+    marginBottom: -20,
+
   },
   title: {
     fontFamily: 'SF-Pro-Display-Semibold',
@@ -88,15 +92,7 @@ const styles = StyleSheet.create({
     color: 'rgba(106, 109, 115, 1)',
     lineHeight: 24,
     textAlign: 'center',
-    marginBottom: 27,
-  },
-  progressWrapper: {
-    alignItems: 'center',
-  },
-  progress: {
-    alignSelf: 'center',
-  },
-  buttonWrapper: {
+    marginBottom: 30,
   },
 });
 

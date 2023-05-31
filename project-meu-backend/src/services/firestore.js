@@ -17,6 +17,7 @@ const firestore = admin.firestore();
 
 // === User Functions ===
 const createUser = async (userData) => {
+  const { userId } = userData;
   const user = {
     pair_id: userData.pairId,
     first_name: userData.firstName,
@@ -27,8 +28,9 @@ const createUser = async (userData) => {
     birthday: userData.birthday,
     timezone: userData.timezone,
   };
-  const res = await firestore.collection('Users').add(user);
-  return res.id;
+  // const res = await firestore.collection('Users').add(user);
+  await firestore.collection('Users').doc(userId).set(user);
+  return userId;
 };
 
 const getName = async (uid) => {
@@ -97,6 +99,17 @@ const deletePair = async (pairId) => {
       console.error('Error removing document: ', error);
       return false;
     });
+};
+
+const getPair = async (pairId) => {
+  let pair;
+  const doc = await firestore.collection('Pairs').doc(pairId.pid).get();
+  if (!doc.exists) {
+    console.log('Pair does not exist');
+  } else {
+    pair = doc.data();
+  }
+  return pair;
 };
 
 const getPairCreatorId = async (pairId) => {
@@ -301,6 +314,7 @@ const firestoreService = {
   deleteEvent,
   sendEmotion,
   createPair,
+  getPair,
   deletePair,
   getPairCreatorId,
 };

@@ -1,7 +1,14 @@
 /* eslint-disable global-require */
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  StyleSheet, Text, SafeAreaView, Animated, Image, View, TouchableOpacity, Alert,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  Animated,
+  Image,
+  View,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
