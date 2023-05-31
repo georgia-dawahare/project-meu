@@ -20,6 +20,7 @@ import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TopBarCheckin from '../../components/TopBarCheckin';
 import Button from '../../components/Button';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -35,6 +36,50 @@ function CheckinPage({ navigation }) {
   const userFirstName = 'Kaylie';
   const partnerFirstName = 'Steve';
   const tempPairId = 'pair1';
+
+  const [userId, setUserId] = useState('');
+  const [partnerId, setPartnerId] = useState('');
+  const [userName, setUserName] = useState('');
+  const [partnerName, setPartnerName] = useState('');
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/auth.user
+        const { uid } = user;
+        setUserId(uid);
+      } else {
+        // User is signed out
+        console.log('Could not retrieve user');
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const getPartnerID = async () => {
+      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
+      const returnedPartnerId = response.data;
+      setPartnerId(returnedPartnerId);
+    };
+
+    getPartnerID();
+    console.log(partnerId);
+  }, [userId]);
+
+  useEffect(() => {
+    const getNames = async () => {
+      const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
+      const name1 = response1.data;
+      setUserName(name1[0]);
+      const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
+      const name2 = response2.data;
+      setPartnerName(name2[0]);
+    };
+
+    getNames();
+
+  }, [partnerId]);
 
   const getUser = async (uid) => {
     const userResult = await axios.get(`${apiUrl}/users/${uid}`);
@@ -171,7 +216,7 @@ function CheckinPage({ navigation }) {
                   source={require('../../../assets/animations/neutral/neutral_black.gif')}
                 />
                 <View style={{ marginLeft: 10 }}>
-                  <Text>{partnerFirstName}</Text>
+                  <Text>{partnerName}</Text>
                   <Text>{partnerResponseTime}</Text>
                 </View>
               </View>
@@ -183,7 +228,7 @@ function CheckinPage({ navigation }) {
                   <Icon name="trash-outline" type="ionicon" size={20} />
                 </Pressable> */}
                 <View style={{ marginRight: 10 }}>
-                  <Text style={styles.leftText}>{userFirstName}</Text>
+                  <Text style={styles.leftText}>{userName}</Text>
                   <Text style={styles.leftText}>{userResponseTime}</Text>
                 </View>
                 <Image style={styles.profileImg}
@@ -218,7 +263,7 @@ function CheckinPage({ navigation }) {
             <View>
               <View style={styles.myResponseHeader}>
                 <View style={{ marginRight: 10 }}>
-                  <Text style={styles.leftText}>{userFirstName}</Text>
+                  <Text style={styles.leftText}>{userName}</Text>
                   <Text style={styles.leftText}>{userResponseTime}</Text>
                 </View>
                 <Image style={styles.profileImg}
@@ -253,7 +298,7 @@ function CheckinPage({ navigation }) {
                   source={require('../../../assets/animations/neutral/neutral_black.gif')}
                 />
                 <View style={{ marginLeft: 10 }}>
-                  <Text>{partnerFirstName}</Text>
+                  <Text>{partnerName}</Text>
                   <Text>{partnerResponseTime}</Text>
                 </View>
               </View>
