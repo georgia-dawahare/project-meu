@@ -19,6 +19,7 @@ function ClockAndLocation() {
 
   // used the following video tutorial for the open weather API code, with a few modifications for our specific usage\
   // https://youtu.be/NiNLPZsRruY -- tutorial found on medium.com
+  // basically showing me how to make api calls and such
 
   // api stuff
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db';
@@ -83,6 +84,7 @@ function ClockAndLocation() {
   }, [partnerID]);
 
   // again, from video tutorial
+  // use this to load in weather data & some time data 
   const loadForecast = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -100,7 +102,9 @@ function ClockAndLocation() {
         const newUserData = {
           city: data.name,
         };
-        axios.patch(`${apiUrl}/users/${userID}`, newUserData);
+        if (userID) {
+          axios.patch(`${apiUrl}/users/${userID}`, newUserData);
+        }
         setUserCity(data.name);
         setUserTemp(data?.main?.temp?.toFixed(0));
       })
@@ -134,9 +138,8 @@ function ClockAndLocation() {
   }, [partnerCity]);
 
   // used documentation from react-native-analog-clock to set up timer
-  // should replace partner's time with timezone of partner
   // basically updates seconds minutes and hours using the nowDate
-  // could not get the package with the analog clock to work, so using live clock as it is
+  // a bit different for partner -- work with timezone
   // found here: https://github.com/gaetanozappi/react-native-clock-analog
   const nowDate = () => {
     const d = new Date();
@@ -173,27 +176,8 @@ function ClockAndLocation() {
     return { minuteP, hourP };
   };
 
-  // const pTimer = () => {
-  //   const { minuteP, hourP } = pDate();
-  //   const [state, setState] = useState({
-  //     minuteP,
-  //     hourP,
-  //   })
 
-  //   useEffect(() => {
-  //     const interval = setInterval(() => {
-  //       const { minuteP, hourP } = pDate();
-  //       setState({ minuteP, hourP });
-  //     }, 1000);
-  //     // do this to avoid the interval looping from Nan to the correct time
-  //     // thank you chat GPT for this one single line
-  //     return () => clearInterval(interval);
-  //   }, [useState]);
-
-  //   return state;
-  // };
-
-  // thank you chatGPT
+  // thank you chatGPT -- will specify the lines that came from bug fixing thanks to chatGPT
   const pTimer = () => {
     const [state, setState] = useState({
       minuteP: '--',
@@ -201,9 +185,11 @@ function ClockAndLocation() {
     });
 
     useEffect(() => {
+      // made this function asynchronous so it only calls when we have the partner timezone 
       const fetchTimeP = async () => {
         const { minuteP, hourP } = pDate();
         setState({
+          // here chatGPT suggested we use '?' in order to substitute the NaN values if we come across them
           minuteP: Number.isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP,
           hourP: Number.isNaN(hourP) ? new Date(pTime).getHours() : hourP,
         });
@@ -217,6 +203,7 @@ function ClockAndLocation() {
     return state;
   };
 
+  // initializing the clocks
   const { minute, hour } = nowTimer();
   const { minuteP, hourP } = pTimer(pTime);
 
@@ -232,6 +219,7 @@ function ClockAndLocation() {
     loadFont();
   }, []);
 
+  // if we haven't loaded the font or the loadForecast isn't done 
   if (!fontLoaded || loading) {
     return <Text>Loading...</Text>;
   }
@@ -250,6 +238,8 @@ function ClockAndLocation() {
           <Text>{userName}</Text>
           <Text>
             {userCity}
+          </Text>
+          <Text>
             {userTemp}
             {'\u00b0'}
             F
