@@ -8,15 +8,19 @@ import {
   Text,
 } from 'react-native';
 import * as Font from 'expo-font';
+import axios from 'axios';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
+import { apiUrl } from '../../constants/constants';
 
 function TempHome({ navigation }) {
-  const backgroundImage = 'https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766';
-  // const [isMenuVisible, setMenuVisible] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState('');
   const backgroundColor = 'white';
+  const auth = getAuth();
 
+  const [userId, setUserId] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -32,29 +36,62 @@ function TempHome({ navigation }) {
     loadFont();
   }, []);
 
+  useEffect(() => {
+    // Get current user from auth
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserId(user.uid);
+      } else {
+        console.log('No user logged in');
+      }
+    });
+    if (userId) {
+      setBackground();
+    }
+  }, []);
+
+  const setBackground = async () => {
+    let userDoc;
+
+    // Get user from Firestore
+    if (userId) {
+      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+    }
+
+    if (userDoc) {
+      setBackgroundImage(userDoc?.data?.background_photo);
+    }
+  };
+
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <View style={styles.separate}>
-        {backgroundImage && (
-        <Image
-          source={{ uri: backgroundImage }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-        )}
-        <View>
-          <TopBar navigation={navigation} />
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <View style={styles.partnerWidget}>
-              <BackgroundChange />
-            </View>
+
+      <TopBar navigation={navigation} />
+      <View>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <View style={styles.partnerWidget}>
+            <BackgroundChange />
           </View>
         </View>
-        <View>
+      </View>
+      <View style={styles.separate}>
+        {backgroundImage ? (
+          <Image
+            source={{ uri: backgroundImage }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        ) : (
+          <Image
+            source={require('../../../assets/images/defaultUserBackground.png')}
+            style={styles.defaultImage}
+          />
+        )}
+        <View style={styles.clockWidget}>
           <ClockAndLocation />
         </View>
       </View>
@@ -71,8 +108,23 @@ const styles = StyleSheet.create({
     margin: 10,
     marginTop: 20,
     borderRadius: 15,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-
+  clockWidget: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -82,12 +134,15 @@ const styles = StyleSheet.create({
   image: {
     ...StyleSheet.absoluteFillObject,
   },
-
+  defaultImage: {
+    width: 300,
+    height: 300,
+    alignSelf: 'center',
+  },
   separate: {
     flex: 2,
     flexDirection: 'column',
     justifyContent: 'space-between',
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
   },
-
 });

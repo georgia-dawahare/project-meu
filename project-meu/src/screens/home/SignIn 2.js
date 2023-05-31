@@ -43,7 +43,6 @@ function LoginScreen() {
         userRef.once('value', (snapshot) => {
           const userData = snapshot.val();
           const savedPassword = userData.password; // Access the stored password
-          console.log(savedPassword);
 
           // Compare the entered password with the stored password
           if (password === savedPassword) {

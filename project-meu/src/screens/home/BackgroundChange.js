@@ -1,4 +1,5 @@
 /* eslint-disable global-require */
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Image, TouchableOpacity, Modal, Dimensions, Alert,
@@ -12,7 +13,7 @@ import { apiUrl } from '../../constants/constants';
 const { width } = Dimensions.get('window');
 
 function BackgroundChange({ navigation }) {
-  const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
+  const [backgroundImage, setBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [userId, setUserId] = useState('');
   const backgroundColor = 'rgba(83, 83, 83, 0.8';
@@ -41,10 +42,44 @@ function BackgroundChange({ navigation }) {
         console.log('No user logged in');
       }
     });
-  }, []);
+    if (userId) {
+      setPartnerBackground();
+    }
+  }, [backgroundImage]);
+
+  const setPartnerBackground = async () => {
+    let userDoc, pair, pairId, pairDoc, partnerDoc;
+
+    // Get user from Firestore
+    if (userId) {
+      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+      pairId = userDoc?.data?.pair_id;
+    }
+
+    // Get pair from Firestore
+    if (pairId) {
+      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
+      pair = pairDoc.data;
+    }
+
+    // Get partner from Firestore
+    if (pair) {
+      // Figure out which user the current user is
+      if (userId === pair.user1_id) {
+        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
+      } else if (userId === pair.user2_id) {
+        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
+      } else {
+        console.log('Could not find partner');
+      }
+    }
+    if (partnerDoc) {
+      setBackgroundImage(partnerDoc.data.background_photo);
+    }
+  };
 
   const updatePartnerBackground = async (photoUri) => {
-    let userDoc, pair, pairId, partnerDoc;
+    let userDoc, pair, pairId, pairDoc, partnerDoc, partnerId;
 
     setBackgroundImage(photoUri);
 
@@ -56,25 +91,31 @@ function BackgroundChange({ navigation }) {
 
     // Get pair from Firestore
     if (pairId) {
-      const pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
+      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
       pair = pairDoc.data;
     }
 
     // Get partner from Firestore
     if (pair) {
       // Figure out which user the current user is
-      console.log(pair.user1_id);
       if (userId === pair.user1_id) {
-        console.log('yes');
         partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
+        partnerId = pair.user2_id;
       } else if (userId === pair.user2_id) {
         partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
+        partnerId = pair.user1_id;
       } else {
         console.log('Could not find partner');
       }
-      console.log('partner doc', partnerDoc);
     }
-    setMenuVisible(false);
+    // Update partner's background in Firestore
+    if (partnerDoc) {
+      const updatedFields = { background_photo: photoUri };
+      partnerDoc = await axios.patch(`${apiUrl}/users/${partnerId}`, updatedFields);
+    }
+
+    toggleMenu();
+    return pair;
   };
 
   const toggleMenu = () => {
@@ -120,9 +161,15 @@ function BackgroundChange({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
-      {backgroundImage && (
+      {backgroundImage ? (
         <Image
           source={{ uri: backgroundImage }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      ) : (
+        <Image
+          source={require('../../../assets/images/defaultPartnerBackground.png')}
           style={styles.image}
           resizeMode="cover"
         />
@@ -131,10 +178,18 @@ function BackgroundChange({ navigation }) {
       <View style={styles.container}>
 
         <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <Image
-            source={require('../../../assets/icons/Edit-white.png')}
-            style={styles.Icon}
-          />
+          {backgroundImage ? (
+
+            <Image
+              source={require('../../../assets/icons/Edit-white.png')}
+              style={styles.icon}
+            />
+          ) : (
+            <Image
+              source={require('../../../assets/icons/edit-black.png')}
+              style={styles.icon}
+            />
+          )}
         </TouchableOpacity>
         <Modal
           visible={isMenuVisible}
@@ -194,9 +249,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
-  Icon: {
-    width: 28,
-    height: 28,
+  icon: {
+    width: 24,
+    height: 24,
   },
 
   image: {

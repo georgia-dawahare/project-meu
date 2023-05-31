@@ -4,7 +4,7 @@ import {
   StyleSheet, SafeAreaView, TouchableOpacity, Image, View, Text,
 } from 'react-native';
 
-function Homeplaceholder({ navigation }) {
+function HomePlaceholder({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -33,10 +33,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    // flexDirection: 'row',
-    // alignItems: 'center',
-    // paddingHorizontal: 24,
-    // paddingTop: 32,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between', // 수정된 부분
@@ -49,9 +45,7 @@ const styles = StyleSheet.create({
   },
   IconSetting: {
     height: 24,
-    // marginLeft: 8,
   },
-
   topTitle: {
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
@@ -64,4 +58,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Homeplaceholder;
+export default HomePlaceholder;

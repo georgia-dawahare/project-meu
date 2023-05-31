@@ -27,8 +27,8 @@ const createUser = async (userData) => {
     background_photo: userData.backgroundPhoto,
     birthday: userData.birthday,
     timezone: userData.timezone,
+    last_sent_emotion: userData.lastSentEmotion,
   };
-  // const res = await firestore.collection('Users').add(user);
   await firestore.collection('Users').doc(userId).set(user);
   return userId;
 };
@@ -57,8 +57,12 @@ const getUser = async (uid) => {
 };
 
 const updateUser = async (uid, updatedData) => {
-  const user = firestore.collection('Users').doc(uid);
-  await user.update(updatedData);
+  try {
+    const user = firestore.collection('Users').doc(uid);
+    await user.update(updatedData);
+  } catch (e) {
+    console.log("Failed user update: ", e);
+  }
   return uid;
 };
 // === End of User Functions ===

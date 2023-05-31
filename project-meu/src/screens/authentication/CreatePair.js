@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 import RegistrationInput from '../../components/RegistrationInput';
 import SignupShareButton from '../../components/SignUpShareButton';
 
-function SignupPage3(props) {
+function CreatePair(props) {
   return (
     <SafeAreaView>
       <Image
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupPage3;
+export default CreatePair;

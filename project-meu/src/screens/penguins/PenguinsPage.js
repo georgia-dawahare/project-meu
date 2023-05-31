@@ -5,9 +5,9 @@
 import React, { useEffect, useState } from 'react';
 import { Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
-import TopBarPenguin from '../../components/TopBarPenguin';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import TopBarPenguin from '../../components/TopBarPenguin';
 import { apiUrl } from '../../constants/constants';
 
 const iconData = [
@@ -47,7 +47,6 @@ const gifDataPink = [
 ];
 
 function PenguinsPage({ navigation }) {
-
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
@@ -61,21 +60,19 @@ function PenguinsPage({ navigation }) {
   const [userId, setUserId] = useState('');
   const auth = getAuth();
 
-  useEffect(() => {;
-    console.log("hi")
+  useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
         const { uid } = user;
         setUserId(uid);
       } else {
         // User is signed out
-        console.log("Could not retrieve user");      }
+        console.log('Could not retrieve user');
+      }
     });
     if (userId) {
-      console.log("userid", userId);
       const emotion = getUserEmotion(userId);
       setLastEmotionSent(emotion); // set user's rendering emotion
 
@@ -88,45 +85,42 @@ function PenguinsPage({ navigation }) {
   const getUserEmotion = async () => {
     try {
       const user = await axios.get(`${apiUrl}/users/${userId}`);
-      console.log("user", user);
     } catch (e) {
-      console.log("Error retrieving user: ", e);
-      console.log(`${apiUrl}/users/${userId}`);
+      console.log('Error retrieving user: ', e);
     }
 
     // how we actually get the user's emotions
-    const userEmotion = await axios.patch(`${apiUrl}/users/emotion/${uid}`);
+    const userEmotion = await axios.patch(`${apiUrl}/users/emotion/${userId}`);
     return userEmotion;
   };
 
   // get partner's emotion data
   const getPartnerEmotion = async () => {
-
     // get the partner's id
     try {
       const user = await axios.get(`${apiUrl}/users/${userId}`);
       const pid = currUser.pair_id;
       try {
-        const pair = await axios.get(`${apiUrl}/pair/${pid}`)
+        const pair = await axios.get(`${apiUrl}/pair/${pid}`);
         let partnerId;
         if (userId === pair.user1_id) {
           partnerId = pair.user2_id;
         } else if (userId === pair.user2_id) {
           partnerId = pair.user1_id;
         } else {
-          console.log("Unable to find partner")
+          console.log('Unable to find partner');
         }
       } catch (e) {
-        console.log("Error retrieving pair: ", e);
+        console.log('Error retrieving pair: ', e);
       }
     } catch (e) {
-      console.log("Error retrieving user: ", e);
+      console.log('Error retrieving user: ', e);
     }
 
     // to actually get partner's emotion
     const partnerEmotion = await axios.patch(`${apiUrl}/users/emotion/${partnerId}`);
     return partnerEmotion;
-  }
+  };
 
   // // this allows us to listen to new data & refresh
   // const refreshData = async () => {
@@ -216,7 +210,7 @@ function PenguinsPage({ navigation }) {
     return (
       <Image
         source={gifDataBlack[selectedIcon]}
-        style={{width: screenWidth * 0.5349, height: screenHeight * 0.4721}}
+        style={{ width: screenWidth * 0.5349, height: screenHeight * 0.4721 }}
       />
     );
   };
@@ -229,7 +223,7 @@ function PenguinsPage({ navigation }) {
     setModalVisible(true);
     setCarouselSpun(false);
     setLastEmotionSent(selectedIcon);
-    updateBothEmotion(lastEmotionSent, userId) // update both users' render emotion based on sender's emotion
+    updateBothEmotion(lastEmotionSent, userId); // update both users' render emotion based on sender's emotion
     // updateUserEmotion(selectedIcon);
     // getUserEmotion(userId); // we don't need this
   };
@@ -237,36 +231,36 @@ function PenguinsPage({ navigation }) {
   // try catch for updating both user & partner's emotion (logic in backend)
   const updateBothEmotion = async () => {
     try {
-      await axios.patch(`${apiUrl}/emotions/${userId}`, { emotionData, userId})
+      await axios.patch(`${apiUrl}/emotions/${userId}`, { emotionData, userId });
     } catch (e) {
-      console.log("Error updating emotions: ", e);
+      console.log('Error updating emotions: ', e);
     }
   };
 
   return (
-    <SafeAreaView style={[styles.container, {paddingTop: screenHeight * 0.06974, paddingHorizontal: screenWidth * 0.0465}]}>
+    <SafeAreaView style={[styles.container, { paddingTop: screenHeight * 0.06974, paddingHorizontal: screenWidth * 0.0465 }]}>
       <Text style={[styles.text, { marginTop: screenHeight * 0.03 }]}>Penguins</Text>
-      <View style={[styles.imageContainer, {marginTop: screenHeight * 0.06}]}>
+      <View style={[styles.imageContainer, { marginTop: screenHeight * 0.06 }]}>
         {renderGif()}
         <Image
           // change this to other penguin's emotion
           source={gifDataPink[partnerLastEmotion]}
-          style={{width: screenWidth * 0.5349, height: screenHeight * 0.4721}}
+          style={{ width: screenWidth * 0.5349, height: screenHeight * 0.4721 }}
         />
       </View>
-      <View style={[styles.penguinNamesContainer, {marginTop: -screenHeight * 0.045}]}>
+      <View style={[styles.penguinNamesContainer, { marginTop: -screenHeight * 0.045 }]}>
         <Text style={[styles.penguinName, { flex: 1 }]}>Florian</Text>
         <Text style={[styles.penguinName, { flex: 1 }]}>Katherine</Text>
       </View>
-      <View style={[styles.carouselContainer, {marginTop: screenHeight * 0.02, marginBottom: screenHeight * 0.0644}]}>
-        <View 
+      <View style={[styles.carouselContainer, { marginTop: screenHeight * 0.02, marginBottom: screenHeight * 0.0644 }]}>
+        <View
           style={[styles.circle, {
-            // width: screenWidth * 0.175, 
+            // width: screenWidth * 0.175,
             // height: screenWidth * 0.175,
-            borderRadius: screenHeight * 0.1395, 
-            borderWidth: screenWidth * 0.0186, 
-            transform: [{ translateX: -screenWidth * 0.0865}, { translateY: -screenHeight * 0.041 }]
-          }]} 
+            borderRadius: screenHeight * 0.1395,
+            borderWidth: screenWidth * 0.0186,
+            transform: [{ translateX: -screenWidth * 0.0865 }, { translateY: -screenHeight * 0.041 }],
+          }]}
         />
 
         <Carousel
@@ -282,7 +276,7 @@ function PenguinsPage({ navigation }) {
         />
       </View>
       {carouselSpun ? (
-        <View style={[styles.buttonContainer, {marginTop: -screenHeight * 0.035}]}>
+        <View style={[styles.buttonContainer, { marginTop: -screenHeight * 0.035 }]}>
           <Button
             title="Send Emotion"
             onPress={handleButtonPress}
@@ -290,9 +284,11 @@ function PenguinsPage({ navigation }) {
           />
         </View>
       ) : (
-        <Text style={[styles.swipeText, {marginTop: -screenHeight * 0.035}]}>
+        <Text style={[styles.swipeText, { marginTop: -screenHeight * 0.035 }]}>
           Feel free to swipe to set a new emotion :)
-          User Last Emotion: {lastEmotionSent}
+          User Last Emotion:
+          {' '}
+          {lastEmotionSent}
         </Text>
       )}
       <Modal

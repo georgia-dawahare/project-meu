@@ -26,6 +26,11 @@ function RegisterEmailPassword({ navigation }) {
   const auth = getAuth();
 
   const handleRegister = async () => {
+    // I know it's bad to store password, but it's 5 am and I'm hacking it
+    // const newUser = {
+    //   email,
+    //   password,
+    // };
     if (email && password) {
       await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {

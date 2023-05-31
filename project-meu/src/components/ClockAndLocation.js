@@ -57,7 +57,6 @@ function ClockAndLocation() {
       const response = await axios.get(`${apiUrl}/users/partner/${userID}`);
       const returnedPartnerId = response.data;
       setPartnerID(returnedPartnerId);
-      console.log('This is partner id: ', returnedPartnerId);
     };
 
     getPartnerID();
@@ -67,18 +66,15 @@ function ClockAndLocation() {
     const getPartnerCity = async () => {
       const response = await axios.get(`${apiUrl}/users/city/${partnerID}`);
       const city = response.data;
-      console.log(response.data);
       setPartnerCity(city);
     };
 
     const getNames = async () => {
       const response1 = await axios.get(`${apiUrl}/users/name/${userID}`);
       const name1 = response1.data;
-      console.log(name1);
       setUserName(name1[0]);
       const response2 = await axios.get(`${apiUrl}/users/name/${partnerID}`);
       const name2 = response2.data;
-      console.log(name2);
       setPartnerName(name2[0]);
     };
 
@@ -116,7 +112,6 @@ function ClockAndLocation() {
     fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         setPartnerTemp(data?.main?.temp?.toFixed(0));
-        console.log(data);
 
         // now we want to move some numbers around to get the time of the partner
         // this is based on the timezone values of open weather API
@@ -125,8 +120,6 @@ function ClockAndLocation() {
         const localTime = date.getTime();
         const localOffset = date.getTimezoneOffset() * 60000;
         const utc = localTime + localOffset;
-        // console.log(partnerTZ);
-        console.log(data.timezone);
         setPTime(utc + (1000 * data.timezone));
       })
       .catch((error) => {
