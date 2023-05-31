@@ -7,30 +7,44 @@ const questionsData = [
   {
     question: 'What is your favorite memory of us together?',
     type: 'text',
+    partner1: 'In the Green',
+    partner2: 'In the libraray',
   },
   {
     question: 'What is your favorite thing about me?',
     type: 'text',
+    partner1: 'Everything',
+    partner2: 'Your shoulder',
   },
   {
     question: 'What is one thing you\'ve always wanted to tell me, but haven\'t?',
     type: 'text',
+    partner1: 'I love you',
+    partner2: 'we do not have anything!',
   },
   {
     question: 'What is your favorite place to go on a date?',
     type: 'text',
+    partner1: 'TukTuk',
+    partner2: 'Boston',
   },
   {
     question: 'What was your first impression of me?',
     type: 'text',
+    partner1: 'Sassy',
+    partner2: 'Handsome',
   },
   {
     question: 'What is one thing that makes you smile every time you think about it?',
     type: 'text',
+    partner1: 'Your Selfie(My wallpaper!)',
+    partner2: 'Your silly jokes',
   },
   {
     question: 'What is your favorite thing to do with me?',
     type: 'text',
+    partner1: 'Personality',
+    partner2: 'Your passion',
   },
 ];
 
@@ -55,7 +69,7 @@ function CheckinHistory({ navigation }) {
             style={styles.Icon}
           />
         </TouchableOpacity>
-        <Text style={styles.topTitle}>Personal Info</Text>
+        <Text style={styles.topTitle}>Check-in History</Text>
       </View>
       <View style={styles.Accordcontainer}>
         {questionsData.map((item, index) => (
@@ -68,18 +82,21 @@ function CheckinHistory({ navigation }) {
             <View style={styles.space} />
             {expandedList.includes(index) && (
               <View style={styles.content}>
+
                 <View style={styles.partner1}>
+                  <Image
+                    source={require('../../../assets/images/penguin-checkin.png')}
+                  />
                   <Text style={styles.contentText}>
-                    Content
-                    {' '}
-                    {index + 1}
+                    {item.partner1}
                   </Text>
                 </View>
                 <View style={styles.partner2}>
+                  <Image
+                    source={require('../../../assets/images/penguin-checkin.png')}
+                  />
                   <Text style={styles.contentText}>
-                    Content
-                    {' '}
-                    {index + 1}
+                    {item.partner2}
                   </Text>
                 </View>
 
@@ -94,13 +111,13 @@ function CheckinHistory({ navigation }) {
 
 const styles = StyleSheet.create({
   all: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F4F4F4',
   },
   containerwhole: {
     flex: 1,
   },
   Accordcontainer: {
-    backgroundColor: '#fff',
+    backgroundColor: '#F4F4F4',
     marginBottom: 10,
     marginTop: 20,
   },
@@ -118,7 +135,7 @@ const styles = StyleSheet.create({
   topTitle: {
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
-    left: 82,
+    left: 70,
   },
   listItem: {
     marginBottom: 10,
@@ -133,7 +150,7 @@ const styles = StyleSheet.create({
   content: {
     width: 370,
     fontFamily: 'SF-Pro-Display-Regular',
-    backgroundColor: '#eaeaea',
+    backgroundColor: '#ff',
     padding: 10,
     borderRadius: 15,
     alignSelf: 'center',
@@ -146,12 +163,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   partner1: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
     marginBottom: 12,
     padding: 10,
     borderRadius: 8,
   },
   partner2: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#ffffff',
     padding: 10,
     borderRadius: 8,
