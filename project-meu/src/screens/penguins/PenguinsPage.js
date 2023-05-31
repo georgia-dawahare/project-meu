@@ -58,10 +58,15 @@ function PenguinsPage({ navigation }) {
   const [partnerLastEmotion, setPartnerLastEmotion] = useState(null);
 
   const [userId, setUserId] = useState('');
+  const [partnerId, setPartnerId] = useState('');
+
   const auth = getAuth();
 
+  const [userName, setUserName] = useState('');
+  const [partnerName, setPartnerName] = useState('');
+
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/auth.user
@@ -72,14 +77,39 @@ function PenguinsPage({ navigation }) {
         console.log('Could not retrieve user');
       }
     });
-    if (userId) {
+  }, []);
+
+  useEffect(() => {
+    const getPartnerID = async () => {
+      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
+      const returnedPartnerId = response.data;
+      setPartnerId(returnedPartnerId);
+    };
+
+    getPartnerID();
+    console.log(partnerId);
+  }, [userId]);
+
+  useEffect(() => {
+    const getNames = async () => {
+      const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
+      const name1 = response1.data;
+      setUserName(name1[0]);
+      const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
+      const name2 = response2.data;
+      setPartnerName(name2[0]);
+    };
+
+    getNames();
+    if (partnerId) {
       try {
         initializeView();
       } catch (e) {
         console.log('Could not initialize view', e);
       }
     }
-  }, []);
+
+  }, [partnerId]);
 
   const initializeView = async () => {
     const returnEmotion = await getUserEmotion();
@@ -105,17 +135,14 @@ function PenguinsPage({ navigation }) {
 
   // get partner's emotion data
   const getPartnerEmotion = async () => {
-    let partnerEmotion;
+    let partnerEmotion, emotion;
     try {
       partnerEmotion = await axios.get(`${apiUrl}/users/partner_emotion/${userId}`);
+      emotion = partnerEmotion.data;
     } catch (e) {
       console.log('Error retrieving user: ', e);
     }
-
-    // how we actually get the user's partner's last sent emotions
-    // const partnerEmotion = await axios.get(`${apiUrl}/users/partner_emotion/${userId}`);
-    // console.log('successfully gotten partner emotion');
-    return partnerEmotion.data;
+    return emotion;
   };
 
   const renderIconItem = ({ item, index }) => {
@@ -187,8 +214,8 @@ function PenguinsPage({ navigation }) {
         />
       </View>
       <View style={[styles.penguinNamesContainer, { marginTop: -screenHeight * 0.045 }]}>
-        <Text style={[styles.penguinName, { flex: 1 }]}>Florian</Text>
-        <Text style={[styles.penguinName, { flex: 1 }]}>Katherine</Text>
+        <Text style={[styles.penguinName, { flex: 1 }]}>{userName}</Text>
+        <Text style={[styles.penguinName, { flex: 1 }]}>{partnerName}</Text>
       </View>
       <View style={[styles.carouselContainer, { marginTop: screenHeight * 0.02, marginBottom: screenHeight * 0.0644 }]}>
         <View
@@ -222,9 +249,9 @@ function PenguinsPage({ navigation }) {
       ) : (
         <Text style={[styles.swipeText, { marginTop: -screenHeight * 0.035 }]}>
           Feel free to swipe to set a new emotion :)
-          User Last Emotion:
+          {/* Partner Last Emotion:
           {' '}
-          {lastEmotionSent}
+          {lastEmotionSent} */}
         </Text>
       )}
       <Modal
