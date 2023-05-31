@@ -196,21 +196,27 @@ function ClockAndLocation() {
 
   //   return state;
   // };
-  
+
+  // thank you chatGPT
   const pTimer = () => {
-    const { minuteP, hourP } = pDate();
     const [state, setState] = useState({
-      minuteP: isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP, 
-      hourP: isNaN(hourP) ? new Date(pTime).getHours() : hourP,
-    })
+      minuteP: '--',
+      hourP: '--',
+    });
   
     useEffect(() => {
-      const interval = setInterval(() => {
+      const fetchTimeP = async () => {
         const { minuteP, hourP } = pDate();
-        setState({ minuteP: isNaN(minuteP) ? new Date().getMinutes() : minuteP, hourP: isNaN(hourP) ? new Date().getHours() : hourP });
-      }, 1000);
-      return () => clearInterval(interval);
-    }, [useState]);
+        setState({
+          minuteP: isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP,
+          hourP: isNaN(hourP) ? new Date(pTime).getHours() : hourP,
+        });
+      };
+  
+      if (pTime) {
+        fetchTimeP();
+      }
+    }, [pTime]);
   
     return state;
   };
