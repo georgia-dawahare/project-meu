@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -78,7 +79,6 @@ function PartnerWidget({ navigation }) {
       activeOpacity={1}
     >
 
-<<<<<<< HEAD:project-meu/src/screens/home/PartnerWidget.js
   {backgroundImage && (
     <Image
       source={{ uri: backgroundImage }}
@@ -90,34 +90,6 @@ function PartnerWidget({ navigation }) {
      <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
     <FontAwesome5 name="edit" size={22} color="white" />
   </TouchableOpacity>
-=======
-        <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
-          <Image
-            source={require('../../../assets/icons/Edit-white.png')}
-            style={styles.Icon}
-          />
-        </TouchableOpacity>
-        <Modal
-          visible={isMenuVisible}
-          transparent
-          animationType="slide"
-        >
-          <TouchableOpacity style={styles.overlay} onPress={handleOverlayPress} activeOpacity={1}>
-            <View style={styles.menuContainer}>
-              <View style={styles.menuMask}>
-                <TouchableOpacity
-                  style={styles.menuOption1}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText2}>Edit Partner&apos;s Widget</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.menuOption}
-                  onPress={() => handleMenuOptionClick('Gallery')}
-                >
-                  <Text style={styles.menuOptionText}>Choose From Gallery</Text>
-                </TouchableOpacity>
->>>>>>> f98577cd07b4a7ca93561e9a6219c55c94d9e3d1:project-meu/src/screens/home/BackgroundChange.js
 
       <Modal
         visible={isMenuVisible}
@@ -176,23 +148,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
-  Icon: {
-    width: 28,
-    height: 28,
-  },
 
   image: {
     ...StyleSheet.absoluteFillObject,
     borderRadius: 15,
     backgroundColor: 'rgba(175, 175, 175, 0.8)',
-  },
-
-  containerText: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    color: '#808080',
   },
 
   iconButton: {
