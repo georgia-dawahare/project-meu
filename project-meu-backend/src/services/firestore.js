@@ -292,17 +292,18 @@ const getPartnerId = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
   let pairID;
   if (!doc.exists) {
-    console.log('User does not exist');
+    console.log('Pair step 1 does not exist');
   } else {
     const data = doc.data();
     pairID = data.pair_id;
+    console.log('pair id: ' + pairID);
   }
 
   // then finding the partner's id by process of elimination
   const doc2 = await firestore.collection('Pairs').doc(pairID).get();
   let partnerID; 
   if (!doc2.exists) {
-    console.log('User does not exist');
+    console.log('Pair step 2 does not exist');
   } else {
     const data2 = doc2.data();
     if (data2.user1_id === uid) {
@@ -312,6 +313,7 @@ const getPartnerId = async (uid) => {
     }
   }
 
+  console.log('firestore ' + partnerID);
   return partnerID;
 };
 

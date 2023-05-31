@@ -30,6 +30,12 @@ const getBackground = async (id) => {
   return background;
 }
 
+const getPartnerId = async (uid) => {
+  const partnerID = await firestoreService.getPartnerId(uid);
+  console.log('controller', partnerID)
+  return partnerID; 
+}
+
 const userController = {
   getName,
   createUser,
@@ -37,6 +43,7 @@ const userController = {
   getUser,
   getCity, 
   getBackground,
+  getPartnerId,
 };
 
 export default userController;

@@ -9,8 +9,14 @@ import {
 // using the package expo-location to prompt the user to allow location access
 import * as Location from 'expo-location';
 import * as Font from 'expo-font';
+import axios from 'axios'; 
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { apiUrl } from '../constants/constants';
 
 function ClockAndLocation() {
+  const [userID, setUserID] = useState('');
+  const auth = getAuth();
+
   // api stuff
   // used the following video tutorial for the following code, with a few modifications for our specific usage\
   // https://youtu.be/NiNLPZsRruY -- tutorial found on medium.com
@@ -27,14 +33,39 @@ function ClockAndLocation() {
   // find from city
   const [partnerTemp, setPartnerTemp] = useState();
   const [partnerTZ, setPartnerTZ] = useState();
+  const [pTime, setPTime] = useState();
 
   // Dummy variables
   // replace this stuff with the firebase stuff -- city should be a stored parameter
-  const partnerCity = 'San Francisco';
-  const name1 = 'Florian';
-  const name2 = 'Catherine';
+  const partnerCity = 'Atlanta';
+  const name1 = 'User';
+  const name2 = 'Partner';
   // find this in redux
   const units = 'imperial';
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const { uid } = user;
+        setUserID(uid);
+      }});}, []);
+
+  useEffect(() => {
+    getPartnerID();
+  }, [])
+
+  const getPartnerID = async () => {
+    let partnerID;
+    if (userID) { 
+      partnerID = axios.get(`${apiUrl}/users/partner/${userID}`);
+      console.log('This is partner id: ', partnerID);
+      }
+    else {
+    console.log('user not logged in')
+    }
+
+    return partnerID
+  }
 
   const loadForecast = async () => {
     setRefreshing(true);
@@ -54,20 +85,20 @@ function ClockAndLocation() {
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
       // setForecast(data)
-        console.log(data);
-
         setUserCity(data.name);
         setUserTemp(data.main.temp.toFixed(0));
         setRefreshing(false);
+
+        // 
       })
       .catch((error) => {
         console.error(error);
       });
+    
 
     // now, moving onto the partner's data -- make an API call based on the city name
     fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
-        console.log(data);
         setPartnerTemp(data.main.temp.toFixed(0));
         setPartnerTZ(data.timezone);
       })
@@ -76,17 +107,24 @@ function ClockAndLocation() {
       });
   };
 
-  useEffect(() => {
-    loadForecast();
-  }, []);
-
   // now we want to move some numbers around to get the time of the partner
   // this is based on the timezone values of open weather API 
-  d = new Date();
-  localTime = d.getTime();
-  localOffset = d.getTimezoneOffset() * 60000;
-  utc = localTime + localOffset; 
-  var pTime = utc + (1000 * partnerTZ)
+  const loadPartnerTZ = async () => {
+    // learned how to include timezones here! : https://stackoverflow.com/questions/62376115/how-to-obtain-open-weather-api-date-time-from-city-being-fetched
+    d = new Date();
+    localTime = d.getTime();
+    localOffset = d.getTimezoneOffset() * 60000;
+    utc = localTime + localOffset; 
+    const pTime = utc - (1000 * partnerTZ)
+    setPTime(pTime);
+  };
+
+  useEffect(() => {
+    loadForecast();
+    // if we have a partner timezone, we want to load the partner timer in 
+    partnerTZ && pDate(partnerTZ);
+  }, []);
+
 
   // used documentation from react-native-analog-clock to set up timer
   // should replace partner's time with timezone of partner
@@ -100,13 +138,6 @@ function ClockAndLocation() {
     return { minute, hour };
   };
 
-  const pDate = () => {
-    const dP = new Date(pTime);
-    const minuteP = dP.getMinutes();
-    const hourP = dP.getHours();
-    return { minuteP, hourP };
-  };
-
   const nowTimer = () => {
     const { minute, hour } = nowDate();
     const [state, setState] = useState({
@@ -118,11 +149,19 @@ function ClockAndLocation() {
       setInterval(() => {
         const { minute, hour } = nowDate();
         setState({ minute, hour });
-      }, 10000);
+      }, 1000);
     }, [useState]);
     return state;
   };
 
+  // setting default value 
+  const pDate = (pTime) => {
+    const dP = new Date(pTime);
+    const minuteP = dP.getMinutes();
+    const hourP = dP.getHours();
+    return { minuteP, hourP };
+  };
+  
   const pTimer = () => {
     const { minuteP, hourP } = pDate();
     const [state, setState] = useState({
@@ -134,15 +173,16 @@ function ClockAndLocation() {
       setInterval(() => {
         const { minuteP, hourP } = pDate();
         setState({ minuteP, hourP });
-      }, 10000);
+      }, 1000);
     }, [useState]);
 
     return state;
   };
 
   const { minute, hour } = nowTimer();
-  const { minuteP, hourP } = pTimer();
+  const { minuteP, hourP } = pTimer(pTime);
 
+  // font stuff
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({

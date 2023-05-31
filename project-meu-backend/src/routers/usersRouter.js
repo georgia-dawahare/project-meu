@@ -71,4 +71,19 @@ router.get('/background/:uid', async (req, res) => {
   }
 });
 
+// Fetch partner ID 
+router.get('/partner/:uid', async (req, res) => {
+  const pair = req.params;
+  console.log('pair (special) : ', pair.uid)
+  try {
+    console.log(pair);
+    const partnerID = await usersController.getPartnerId(pair.uid);
+    console.log('router', partnerID);
+    res.status(200).send(`success, ${partnerID}`);
+  } catch (e) {
+    console.log('Could not find partner ID');
+    res.status(500).send(e.message);
+  }
+});
+
 export default router;
