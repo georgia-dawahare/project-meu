@@ -9,12 +9,8 @@ import {
 } from 'react-native';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
-<<<<<<< HEAD
 // import PartnerWidget from '../../components/PartnerWidget';
 import BackgroundChange from './PartnerWidget';
-=======
-import BackgroundChange from './BackgroundChange';
->>>>>>> f98577cd07b4a7ca93561e9a6219c55c94d9e3d1
 
 function TempHome({ navigation }) {
   const backgroundImage = 'https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/d8a98af1d41d8274cf130bbb5bf82d5862df78f6?fuid=1112504140237920766';
