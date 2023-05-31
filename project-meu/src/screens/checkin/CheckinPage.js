@@ -233,6 +233,9 @@ function CheckinPage({ navigation }) {
               />
             </TouchableOpacity>
           </Card>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -279,6 +282,9 @@ function CheckinPage({ navigation }) {
               </Text>
             </TouchableOpacity>
           </Card>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
         </View>
 
       </SafeAreaView>
@@ -289,7 +295,6 @@ function CheckinPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
   text: {
     textAlign: 'center',
