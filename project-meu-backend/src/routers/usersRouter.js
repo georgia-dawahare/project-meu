@@ -49,4 +49,37 @@ router.patch('/:uid', async (req, res) => {
   }
 });
 
+// Get user's city
+router.get('/city/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getCity(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+// Get user's timezone
+router.get('/timezone/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getTimezone(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+// Get user's timezone
+router.get('/background/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getBackground(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 export default router;

@@ -283,6 +283,77 @@ const deleteResponse = async (responseId) => {
 };
 // === End of Daily Response Functions ===
 
+
+// === Starting User Requests for Widgets === 
+
+// getting the partner's id by just inputing user id
+const getPartnerId = async (uid) => {
+  // first finding the pair ID
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let pairID;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    pairID = data.pair_id;
+  }
+
+  // then finding the partner's id by process of elimination
+  const doc2 = await firestore.collection('Pairs').doc(pairID).get();
+  let partnerID; 
+  if (!doc2.exists) {
+    console.log('User does not exist');
+  } else {
+    const data2 = doc2.data();
+    if (data2.user1_id === uid) {
+      partnerID = data2.user2_id;
+    } else {
+      partnerID = data2.user1_id;
+    }
+  }
+
+  return partnerID;
+};
+
+// get user's city
+const getCity = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let city;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    city = data.city;
+  }
+  return city;
+};
+
+// get user's timezone
+const getTimezone = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let timezone;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    timezone = data.timezone;
+  }
+  return timezone;
+};
+
+// get user's background img url
+const getBackground = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let background;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    background = data.background_photo;
+  }
+  return background;
+};
+
 const firestoreService = {
   createUser,
   getName,
@@ -302,6 +373,10 @@ const firestoreService = {
   createPair,
   deletePair,
   getPairCreatorId,
+  getPartnerId,
+  getCity, 
+  getTimezone, 
+  getBackground, 
 };
 
 export default firestoreService;

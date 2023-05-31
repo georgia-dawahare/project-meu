@@ -26,10 +26,11 @@ function ClockAndLocation() {
 
   // find from city
   const [partnerTemp, setPartnerTemp] = useState();
+  const [partnerTZ, setPartnerTZ] = useState();
 
   // Dummy variables
   // replace this stuff with the firebase stuff -- city should be a stored parameter
-  const partnerCity = 'New York City';
+  const partnerCity = 'San Francisco';
   const name1 = 'Florian';
   const name2 = 'Catherine';
   // find this in redux
@@ -68,6 +69,7 @@ function ClockAndLocation() {
       .then((response) => response.json()).then((data) => {
         console.log(data);
         setPartnerTemp(data.main.temp.toFixed(0));
+        setPartnerTZ(data.timezone);
       })
       .catch((error) => {
         console.error(error);
@@ -78,6 +80,14 @@ function ClockAndLocation() {
     loadForecast();
   }, []);
 
+  // now we want to move some numbers around to get the time of the partner
+  // this is based on the timezone values of open weather API 
+  d = new Date();
+  localTime = d.getTime();
+  localOffset = d.getTimezoneOffset() * 60000;
+  utc = localTime + localOffset; 
+  var pTime = utc + (1000 * partnerTZ)
+
   // used documentation from react-native-analog-clock to set up timer
   // should replace partner's time with timezone of partner
   // basically updates seconds minutes and hours using the nowDate
@@ -85,30 +95,53 @@ function ClockAndLocation() {
   // found here: https://github.com/gaetanozappi/react-native-clock-analog
   const nowDate = () => {
     const d = new Date();
-    const second = d.getSeconds();
     const minute = d.getMinutes();
     const hour = d.getHours();
-    return { second, minute, hour };
+    return { minute, hour };
+  };
+
+  const pDate = () => {
+    const dP = new Date(pTime);
+    const minuteP = dP.getMinutes();
+    const hourP = dP.getHours();
+    return { minuteP, hourP };
   };
 
   const nowTimer = () => {
-    const { second, minute, hour } = nowDate();
+    const { minute, hour } = nowDate();
     const [state, setState] = useState({
-      second,
       minute,
       hour,
     });
 
     useEffect(() => {
       setInterval(() => {
-        const { second, minute, hour } = nowDate();
-        setState({ second, minute, hour });
-      }, 1000);
+        const { minute, hour } = nowDate();
+        setState({ minute, hour });
+      }, 10000);
     }, [useState]);
     return state;
   };
 
+  const pTimer = () => {
+    const { minuteP, hourP } = pDate();
+    const [state, setState] = useState({
+      minuteP, 
+      hourP,  
+    })
+
+    useEffect(() => {
+      setInterval(() => {
+        const { minuteP, hourP } = pDate();
+        setState({ minuteP, hourP });
+      }, 10000);
+    }, [useState]);
+
+    return state;
+  };
+
   const { minute, hour } = nowTimer();
+  const { minuteP, hourP } = pTimer();
 
   useEffect(() => {
     async function loadFont() {
@@ -157,10 +190,10 @@ function ClockAndLocation() {
           </Text>
         </View>
         <View style={styles.clock}>
-          <Text style={styles.clocktext}>{hour}</Text>
+          <Text style={styles.clocktext}>{hourP}</Text>
           <Text style={styles.clocktext}>
             :
-            {minute}
+            {minuteP}
           </Text>
         </View>
       </View>
