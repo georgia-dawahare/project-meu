@@ -8,20 +8,55 @@ import {
   Image,
 } from 'react-native';
 import * as Font from 'expo-font';
+import axios from 'axios';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { apiUrl } from '../constants/constants';
 
-function TopBar({ navigation }) {
+function TopBar({ navigation, startDate }) {
   const [days, setDays] = useState(0);
   const [fontLoaded, setFontLoaded] = useState(false);
-  const daysExample = 1293;
+  // const daysExample = 1293;
   const daysText = `${days} days`;
+  const [userID, setUserID] = useState('');
+  const auth = getAuth();
+  
 
   useEffect(() => {
-    async function loadData() {
-      await setDays(daysExample);
-    }
-
-    loadData();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const { uid } = user;
+        setUserID(uid);
+      }
+    });
   }, []);
+
+  useEffect(() => {
+    const getPairDate = async () => {
+      const response = await axios.get(`${apiUrl}/users/pairdate/${userID}`);
+      const startDate = response.data;
+      console.log(startDate);
+
+      const dateSplit = startDate.split('/');
+      console.log(dateSplit);
+      // To set two dates to two variables
+      
+      // troubleshooting how to find the difference between dates: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
+      console.log(dateSplit[1])
+      const start = new Date(parseInt('20' + dateSplit[2]),parseInt(dateSplit[0])-1,parseInt(dateSplit[1]));
+      const today = new Date();
+      console.log(start)
+      console.log(today)
+
+      // still same source for that: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
+      const diffTime = Math.abs(today - start);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));    
+      
+      // setting days 
+      setDays(diffDays-1);
+    };
+
+    getPairDate();
+  }, [userID]);
 
   useEffect(() => {
     async function loadFont() {

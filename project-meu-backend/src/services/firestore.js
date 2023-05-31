@@ -4,6 +4,7 @@ import admin from 'firebase-admin';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 import serviceAccount from '/etc/secrets/credentials.json';
+// import serviceAccount from '../../credentials.json'
 
 // directly connect the local development server
 // eslint-disable-next-line no-unused-vars
@@ -426,6 +427,32 @@ const getBackground = async (uid) => {
   return background;
 };
 
+// get user's background img url
+const getPairDate = async (uid) => {
+  // first finding the pair ID
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let pairID;
+  if (!doc.exists) {
+    console.log('Pair step 1 does not exist');
+  } else {
+    const data = doc.data();
+    pairID = data.pair_id;
+    console.log('pair id: ' + pairID);
+  }
+
+  // then finding the partner's id by process of elimination
+  const doc2 = await firestore.collection('Pairs').doc(pairID).get();
+  let pairDate; 
+  if (!doc2.exists) {
+    console.log('Pair step 2 does not exist');
+  } else {
+    const data2 = doc2.data();
+    pairDate = data2.relationship_start;
+  }
+
+  return pairDate;
+};
+
 const firestoreService = {
   createUser,
   getName,
@@ -450,7 +477,8 @@ const firestoreService = {
   getPairCreatorId,
   getPartnerId,
   getCity, 
-  getBackground, 
+  getBackground,
+  getPairDate 
 };
 
 export default firestoreService;
