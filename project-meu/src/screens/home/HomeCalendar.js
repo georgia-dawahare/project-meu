@@ -11,8 +11,7 @@ import FabandModal from '../../components/FabandModal';
 import { apiUrl } from '../../constants/constants';
 
 function DdayList({
-  // date, title, iconName, fetchData, /* onDelete */
-  date, title, iconName, eventId,
+  date, title, iconName, eventId, fetchData, dday,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -45,6 +44,7 @@ function DdayList({
 
   const deleteEventConfirmation = async () => {
     await axios.delete(`${apiUrl}/events/${eventId}`);
+    await fetchData();
   };
 
   return (
@@ -70,65 +70,72 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
   // TODO: Need to filter by pairId
   const printEventTitlesAndDates = async () => {
-    const events = await axios.get(`${apiUrl}/events/`);
-    console.log(events.data);
-    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
+    const addDefaultEvents = async () => {
+      try {
+        const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
+        console.log('Default events added:', response.data);
+      } catch (error) {
+        console.error('Failed to add default events:', error);
+      }
+    };
 
-    const ddayList = events.data.map((event) => {
-      const {
-        title, repeat, date, id,
-      } = event;
-      // const formattedDate = date.slice(0, 5);_
-      return (
+    await addDefaultEvents();
+
+    const events = await axios.get(`${apiUrl}/events/`);
+
+    // const defaultEvents = await axios.get(`${apiUrl}/events/anniversaries`);
+    // console.log(events.data);
+
+    const extractDday = (dateString) => {
+      const date = new Date(dateString);
+      const today = new Date();
+      const timeDiff = date.getTime() - today.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
+    };
+
+    // const mergeEvents = [...events.data, ...defaultEvents.data];
+    // console.log('MergeEvents :   ', mergeEvents);
+
+    const ddayList = events.data
+    // const ddayList = mergeEvents
+      .map((event) => {
+        const {
+          title, repeat, date, id,
+        } = event;
+
+        const extractedDate = extractDday(date);
+
+        return {
+          date: extractedDate,
+          title,
+          repeat,
+          eventId: id,
+          iconName: 'ios-heart',
+        };
+      })
+      .sort((a, b) => {
+        const ddayA = parseInt(a.date.slice(2), 10); // 디데이 값을 숫자로 변환하여 비교
+        const ddayB = parseInt(b.date.slice(2), 10);
+        return ddayA - ddayB;
+      })
+      .map((event) => (
         <DdayList
-          key={event.id}
-          date={date._seconds}
-          title={title}
-          repeat={repeat}
-          eventId={id}
-          iconName="ios-heart"
+          key={event.eventId}
+          date={event.date}
+          title={event.title}
+          repeat={event.repeat}
+          eventId={event.eventId}
+          iconName={event.iconName}
+          fetchData={printEventTitlesAndDates}
         />
-      );
-    });
+      ));
 
     setEventData(ddayList);
   };
 
-  // const printEventTitlesAndDates = async () => {
-  //   try {
-  //     const eventsPromise = axios.get(`${apiUrl}/events/`);
-  //     const defaultEventsPromise = axios.get(`${apiUrl}/events/anniversaries`);
-
-  //     const [eventsResponse, defaultEventsResponse] = await Promise.all([
-  //       eventsPromise,
-  //       defaultEventsPromise,
-  //     ]);
-
-  //     const events = eventsResponse.data;
-  //     // const defaultEvents = defaultEventsResponse.data;
-
-  //     const ddayList = events.map((event) => {
-  //       const {
-  //         title, repeat, date, id,
-  //       } = event;
-  //       const formattedDate = date.slice(0, 5);
-  //       return (
-  //         <DdayList
-  //           key={id}
-  //           date={formattedDate}
-  //           title={title}
-  //           repeat={repeat}
-  //           eventId={id}
-  //           iconName="ios-heart"
-  //         />
-  //       );
-  //     });
-
-  //     setEventData(ddayList);
-  //   } catch (error) {
-  //     console.error('Error retrieving event data:', error);
-  //   }
-  // };
+  // 초기 로딩 시 이벤트 목록을 가져옴
+  // printEventTitlesAndDates();
 
   useEffect(() => {
     async function loadFont() {
@@ -200,7 +207,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           </Animated.Text>
         </Animated.Text>
         <FloatingButton />
-        <FabandModal />
+        <FabandModal fetchData={printEventTitlesAndDates} />
       </Animated.View>
 
       <Animated.ScrollView

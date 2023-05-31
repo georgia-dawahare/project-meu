@@ -206,6 +206,7 @@ const updateResponseGroup = async (groupId, updatedFields) => {
     });
 };
 
+
 const addResponse = async (responseData, pairId, groupId) => {
   const responseObj = {
     response: responseData.response,
@@ -224,8 +225,6 @@ const addResponse = async (responseData, pairId, groupId) => {
     })
     //  Add response ID to Response Group
     .then((pairCreator) => {
-      console.log(responseData.user_id);
-      console.log(pairCreator);
       if (responseData.user_id === pairCreator) {
         updateResponseGroup(groupId, { p1_response_id: responseId });
       } else {
@@ -252,7 +251,7 @@ const getResponse = async (id) => {
       }
     })
     .catch((error) => {
-      console.error('error adding doc', error);
+      console.error('error finding doc', error);
       return null;
     });
 };

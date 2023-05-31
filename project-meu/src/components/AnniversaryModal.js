@@ -11,7 +11,6 @@ function AnniversaryModal({ visible, onClose }) {
         <View style={styles.modalContent}>
           <Text style={styles.modalText}>This is a modal</Text>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            {/* <Text style={styles.closeButtonText}>Close</Text> */}
             Icon=
             <Ionicons name="ios-add" size={24} color="white" />
           </TouchableOpacity>

@@ -2,8 +2,8 @@
 
 var _express = _interopRequireDefault(require("express"));
 var _cors = _interopRequireDefault(require("cors"));
-var _path = _interopRequireDefault(require("path"));
 var _morgan = _interopRequireDefault(require("morgan"));
+var _userRouter = _interopRequireDefault(require("./routers/userRouter"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 // initialize
 const app = (0, _express.default)();
@@ -15,13 +15,13 @@ app.use((0, _cors.default)());
 app.use((0, _morgan.default)('dev'));
 
 // enable only if you want templating
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
 
 // enable only if you want static assets from folder static
-app.use(_express.default.static('static'));
+// app.use(express.static('static'));
 
 // this just allows us to render ejs from the ../app/views directory
-app.set('views', _path.default.join(__dirname, '../src/views'));
+// app.set('views', path.join(__dirname, '../src/views'));
 
 // enable json message body for posting data to API
 app.use(_express.default.urlencoded({
@@ -30,10 +30,11 @@ app.use(_express.default.urlencoded({
 app.use(_express.default.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
+app.use('/user', _userRouter.default);
 
 // default index route
 app.get('/', (req, res) => {
-  res.send('hi');
+  res.send('Welcome to MeU backend!');
 });
 
 // START THE SERVER
