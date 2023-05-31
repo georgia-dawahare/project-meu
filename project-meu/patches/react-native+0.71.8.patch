@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native/index.js b/node_modules/react-native/index.js
-index f556fa3..b412b46 100644
+index f556fa3..3e4f65b 100644
 --- a/node_modules/react-native/index.js
 +++ b/node_modules/react-native/index.js
 @@ -86,16 +86,16 @@ import typeof Vibration from './Libraries/Vibration/Vibration';
@@ -362,9 +362,14 @@ index f556fa3..b412b46 100644
 -        'and switch to a type system like TypeScript. If you need to ' +
 -        'continue using ColorPropType, migrate to the ' +
 -        "'deprecated-react-native-prop-types' package.",
--    );
--    return require('deprecated-react-native-prop-types').ColorPropType;
--  },
++    console.warn(
++    'LogBox is enabled by default so there is no need to call unstable_enableLogBox() anymore. This is a no op and will be removed in the next version.',
+     );
++  },
++    // Deprecated Prop Types
++    get ColorPropType(): $FlowFixMe {
+     return require('deprecated-react-native-prop-types').ColorPropType;
+   },
 -  get EdgeInsetsPropType(): $FlowFixMe {
 -    console.error(
 -      'EdgeInsetsPropType will be removed from React Native, along with all ' +
@@ -373,8 +378,10 @@ index f556fa3..b412b46 100644
 -        'continue using EdgeInsetsPropType, migrate to the ' +
 -        "'deprecated-react-native-prop-types' package.",
 -    );
--    return require('deprecated-react-native-prop-types').EdgeInsetsPropType;
--  },
++
++    get EdgeInsetsPropType(): $FlowFixMe {
+     return require('deprecated-react-native-prop-types').EdgeInsetsPropType;
+   },
 -  get PointPropType(): $FlowFixMe {
 -    console.error(
 -      'PointPropType will be removed from React Native, along with all ' +
@@ -382,11 +389,11 @@ index f556fa3..b412b46 100644
 -        'and switch to a type system like TypeScript. If you need to ' +
 -        'continue using PointPropType, migrate to the ' +
 -        "'deprecated-react-native-prop-types' package.",
-+    console.warn(
-+    'LogBox is enabled by default so there is no need to call unstable_enableLogBox() anymore. This is a no op and will be removed in the next version.',
-     );
--    return require('deprecated-react-native-prop-types').PointPropType;
--  },
+-    );
++
++    get PointPropType(): $FlowFixMe {
+     return require('deprecated-react-native-prop-types').PointPropType;
+   },
 -  get ViewPropTypes(): $FlowFixMe {
 -    console.error(
 -      'ViewPropTypes will be removed from React Native, along with all ' +
@@ -395,13 +402,11 @@ index f556fa3..b412b46 100644
 -        'continue using ViewPropTypes, migrate to the ' +
 -        "'deprecated-react-native-prop-types' package.",
 -    );
--    return require('deprecated-react-native-prop-types').ViewPropTypes;
++
++    get ViewPropTypes(): $FlowFixMe {
+     return require('deprecated-react-native-prop-types').ViewPropTypes;
    },
--};
-+    // Deprecated Prop Types
-+    get ColorPropType(): $FlowFixMe {
-+      return require('deprecated-react-native-prop-types').ColorPropType;
-+    },
+ };
  
 -if (__DEV__) {
 -  /* $FlowFixMe[prop-missing] This is intentional: Flow will error when
@@ -417,26 +422,8 @@ index f556fa3..b412b46 100644
 -          "It can now be installed and imported from '@react-native-community/art' instead of 'react-native'. " +
 -          'See https://github.com/react-native-art/art',
 -      );
-+    get EdgeInsetsPropType(): $FlowFixMe {
-+      return require('deprecated-react-native-prop-types').EdgeInsetsPropType;
-     },
+-    },
 -  });
- 
--  /* $FlowFixMe[prop-missing] This is intentional: Flow will error when
--   * attempting to access ListView. */
--  /* $FlowFixMe[invalid-export] This is intentional: Flow will error when
--   * attempting to access ListView. */
--  Object.defineProperty(module.exports, 'ListView', {
--    configurable: true,
-+    get PointPropType(): $FlowFixMe {
-+      return require('deprecated-react-native-prop-types').PointPropType;
-+    },
-+
-+    get ViewPropTypes(): $FlowFixMe {
-+      return require('deprecated-react-native-prop-types').ViewPropTypes;
-+    },
-+};
-+
 +    if (__DEV__) {
 +      /* $FlowFixMe[prop-missing] This is intentional: Flow will error when
 +       * attempting to access ART. */
@@ -453,7 +440,13 @@ index f556fa3..b412b46 100644
 +          );
 +        },
 +      });
-+
+ 
+-  /* $FlowFixMe[prop-missing] This is intentional: Flow will error when
+-   * attempting to access ListView. */
+-  /* $FlowFixMe[invalid-export] This is intentional: Flow will error when
+-   * attempting to access ListView. */
+-  Object.defineProperty(module.exports, 'ListView', {
+-    configurable: true,
 +    /* $FlowFixMe[prop-missing] This is intentional: Flow will error when
 +     * attempting to access ListView. */
 +    /* $FlowFixMe[invalid-export] This is intentional: Flow will error when

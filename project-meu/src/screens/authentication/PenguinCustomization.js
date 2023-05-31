@@ -7,7 +7,7 @@ import Button from '../../components/Button';
 
 // need to add draggable selector
 
-function SignupPage6(props) {
+function PenguinCustomization(props) {
   return (
     <SafeAreaView>
       <Image
@@ -74,4 +74,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupPage6;
+export default PenguinCustomization;
