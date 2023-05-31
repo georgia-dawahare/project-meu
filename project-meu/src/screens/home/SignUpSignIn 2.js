@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
 
   signInText: {
     color: '#E62B85',
-    fontWeight: 400,
+    fontWeight: '400',
+    fontSize: 16,
 
   },
 
