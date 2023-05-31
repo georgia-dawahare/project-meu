@@ -13,9 +13,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
 function TopBar({ navigation, startDate }) {
-  const [days, setDays] = useState(29);
+  const [days, setDays] = useState(180);
   const [fontLoaded, setFontLoaded] = useState(false);
-  // const daysExample = 1293;
   const daysText = `${days} days`;
   const [userID, setUserID] = useState('');
   const auth = getAuth();
