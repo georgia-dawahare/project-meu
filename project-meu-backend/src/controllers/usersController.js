@@ -25,11 +25,30 @@ const updateUser = async (id, updatedData) => {
   return uid;
 };
 
+const getCity = async (id) => {
+  const city = await firestoreService.getCity(id);
+  return city;
+}
+
+const getBackground = async (id) => {
+  const background = await firestoreService.getBackground(id);
+  return background;
+}
+
+const getPartnerId = async (uid) => {
+  const partnerID = await firestoreService.getPartnerId(uid);
+  console.log('controller', partnerID)
+  return partnerID; 
+}
+
 const userController = {
   getName,
   createUser,
   updateUser,
   getUser,
+  getCity, 
+  getBackground,
+  getPartnerId,
   getUserEmotion
 };
 

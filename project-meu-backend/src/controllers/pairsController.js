@@ -19,7 +19,6 @@ const getPair = async (pairId) => {
   const pair = await firestoreService.getPair(pairId);
   return pair;
 };
-
 const pairController = {
   createPair,
   deletePair,
