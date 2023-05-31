@@ -7,6 +7,7 @@ import {
   Image,
   Text,
 } from 'react-native';
+import * as Font from 'expo-font';
 import TopBar from '../../components/TopBar';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';

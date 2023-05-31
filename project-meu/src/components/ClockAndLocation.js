@@ -9,7 +9,7 @@ import {
 // using the package expo-location to prompt the user to allow location access
 import * as Location from 'expo-location';
 import * as Font from 'expo-font';
-import axios from 'axios'; 
+import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
@@ -23,8 +23,8 @@ function ClockAndLocation() {
   // api stuff
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db';
   const starterUrl = 'https://api.openweathermap.org/data/2.5/weather?';
-  
-  // font 
+
+  // font
   const [fontLoaded, setFontLoaded] = useState(false);
 
   // user and partner data below:
@@ -33,14 +33,14 @@ function ClockAndLocation() {
   const [userTemp, setUserTemp] = useState();
   const [partnerID, setPartnerID] = useState();
   const [partnerName, setPartnerName] = useState('partner');
-  const [partnerCity, setPartnerCity] = useState('')
+  const [partnerCity, setPartnerCity] = useState('');
   const [partnerTemp, setPartnerTemp] = useState(0);
   const [pTime, setPTime] = useState();
 
   // loading
   const [loading, setLoading] = useState(true);
 
-  // find this in redux -- this will be a future change to implement 
+  // find this in redux -- this will be a future change to implement
   const units = 'imperial';
 
   useEffect(() => {
@@ -48,15 +48,17 @@ function ClockAndLocation() {
       if (user) {
         const { uid } = user;
         setUserID(uid);
-      }});}, []);
+      }
+    });
+  }, []);
 
   useEffect(() => {
     const getPartnerID = async () => {
-        const response = await axios.get(`${apiUrl}/users/partner/${userID}`);
-        const partnerID = response.data;
-        setPartnerID(partnerID);
-        console.log('This is partner id: ', partnerID);     
-    }
+      const response = await axios.get(`${apiUrl}/users/partner/${userID}`);
+      const returnedPartnerId = response.data;
+      setPartnerID(returnedPartnerId);
+      console.log('This is partner id: ', returnedPartnerId);
+    };
 
     getPartnerID();
   }, [userID]);
@@ -67,24 +69,24 @@ function ClockAndLocation() {
       const city = response.data;
       console.log(response.data);
       setPartnerCity(city);
-    }
+    };
 
     const getNames = async () => {
       const response1 = await axios.get(`${apiUrl}/users/name/${userID}`);
       const name1 = response1.data;
-      console.log(name1)
+      console.log(name1);
       setUserName(name1[0]);
       const response2 = await axios.get(`${apiUrl}/users/name/${partnerID}`);
       const name2 = response2.data;
       console.log(name2);
       setPartnerName(name2[0]);
-    }
+    };
 
     getPartnerCity();
     getNames();
   }, [partnerID]);
 
-  // again, from video tutorial 
+  // again, from video tutorial
   const loadForecast = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -100,30 +102,29 @@ function ClockAndLocation() {
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         const newUserData = {
-          'city': data.name
-        }
-        const response = axios.patch(`${apiUrl}/users/${userID}`, newUserData);
+          city: data.name,
+        };
+        axios.patch(`${apiUrl}/users/${userID}`, newUserData);
         setUserCity(data.name);
-        setUserTemp(data.main.temp.toFixed(0));
+        setUserTemp(data?.main?.temp?.toFixed(0));
       })
       .catch((error) => {
         console.error(error);
       });
-    
 
     // now, moving onto the partner's data -- make an API call based on the city name
     fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
-        setPartnerTemp(data.main.temp.toFixed(0));
+        setPartnerTemp(data?.main?.temp?.toFixed(0));
         console.log(data);
 
         // now we want to move some numbers around to get the time of the partner
-        // this is based on the timezone values of open weather API 
+        // this is based on the timezone values of open weather API
         // learned how to include timezones here! : https://stackoverflow.com/questions/62376115/how-to-obtain-open-weather-api-date-time-from-city-being-fetched
-        const date = new Date()
-        localTime = date.getTime();
-        localOffset = date.getTimezoneOffset() * 60000;
-        utc = localTime + localOffset; 
+        const date = new Date();
+        const localTime = date.getTime();
+        const localOffset = date.getTimezoneOffset() * 60000;
+        const utc = localTime + localOffset;
         // console.log(partnerTZ);
         console.log(data.timezone);
         setPTime(utc + (1000 * data.timezone));
@@ -132,14 +133,12 @@ function ClockAndLocation() {
         console.error(error);
       });
 
-      setLoading(false);
+    setLoading(false);
   };
-
 
   useEffect(() => {
     loadForecast();
   }, [partnerCity]);
-
 
   // used documentation from react-native-analog-clock to set up timer
   // should replace partner's time with timezone of partner
@@ -162,29 +161,30 @@ function ClockAndLocation() {
 
     useEffect(() => {
       setInterval(() => {
+        // eslint-disable-next-line no-shadow
         const { minute, hour } = nowDate();
         setState({ minute, hour });
       }, 1000);
 
-      return () => clearInterval(timer);
+      return () => clearInterval(state);
     }, []);
 
-    return time;
+    return state;
   };
 
-  // setting default value 
+  // setting default value
   const pDate = () => {
     const dP = new Date(pTime);
     const minuteP = dP.getMinutes();
     const hourP = dP.getHours();
     return { minuteP, hourP };
   };
-  
+
   // const pTimer = () => {
   //   const { minuteP, hourP } = pDate();
   //   const [state, setState] = useState({
-  //     minuteP, 
-  //     hourP,  
+  //     minuteP,
+  //     hourP,
   //   })
 
   //   useEffect(() => {
@@ -192,8 +192,8 @@ function ClockAndLocation() {
   //       const { minuteP, hourP } = pDate();
   //       setState({ minuteP, hourP });
   //     }, 1000);
-  //     // do this to avoid the interval looping from Nan to the correct time 
-  //     // thank you chat GPT for this one single line 
+  //     // do this to avoid the interval looping from Nan to the correct time
+  //     // thank you chat GPT for this one single line
   //     return () => clearInterval(interval);
   //   }, [useState]);
 
@@ -206,21 +206,21 @@ function ClockAndLocation() {
       minuteP: '--',
       hourP: '--',
     });
-  
+
     useEffect(() => {
       const fetchTimeP = async () => {
         const { minuteP, hourP } = pDate();
         setState({
-          minuteP: isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP,
-          hourP: isNaN(hourP) ? new Date(pTime).getHours() : hourP,
+          minuteP: Number.isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP,
+          hourP: Number.isNaN(hourP) ? new Date(pTime).getHours() : hourP,
         });
       };
-  
+
       if (pTime) {
         fetchTimeP();
       }
     }, [pTime]);
-  
+
     return state;
   };
 
@@ -255,7 +255,8 @@ function ClockAndLocation() {
         </View>
         <View style={styles.list}>
           <Text>{userName}</Text>
-          <Text>{userCity}</Text>
+          <Text>
+            {userCity}
             {userTemp}
             {'\u00b0'}
             F
@@ -263,6 +264,7 @@ function ClockAndLocation() {
         </View>
       </View>
       <View style={styles.divider} />
+
       <View style={styles.subSection}>
         <View style={styles.list}>
           <Text style={{ textAlign: 'right' }}>{partnerName}</Text>
