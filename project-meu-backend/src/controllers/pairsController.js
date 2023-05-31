@@ -15,10 +15,15 @@ const getPairCreatorId = async (pairId) => {
   return pairCreatorId;
 };
 
+const getPair = async (pairId) => {
+  const pair = await firestoreService.getPair(pairId);
+  return pair;
+};
 const pairController = {
   createPair,
   deletePair,
   getPairCreatorId,
+  getPair,
 };
 
 export default pairController;

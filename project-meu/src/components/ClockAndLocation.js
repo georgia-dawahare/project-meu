@@ -165,8 +165,11 @@ function ClockAndLocation() {
         const { minute, hour } = nowDate();
         setState({ minute, hour });
       }, 1000);
-    }, [useState]);
-    return state;
+
+      return () => clearInterval(timer);
+    }, []);
+
+    return time;
   };
 
   // setting default value 
@@ -253,7 +256,6 @@ function ClockAndLocation() {
         <View style={styles.list}>
           <Text>{userName}</Text>
           <Text>{userCity}</Text>
-          <Text>
             {userTemp}
             {'\u00b0'}
             F
@@ -317,13 +319,13 @@ const styles = StyleSheet.create({
   },
 
   calendar: {
-    width: '95%',
-    height: 120,
-    borderRadius: 20,
+    width: '92%',
+    height: 110,
+    borderRadius: 15,
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
     position: 'fixed',
     top: 0,
-    left: 10,
+    left: 14,
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
@@ -334,6 +336,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
+    paddingTop: 12,
+    paddingBottom: 12,
   },
 
   header: {
@@ -342,6 +346,15 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Semibold',
     flex: 1,
     flexWrap: 'wrap',
+  },
+  name: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 16,
+    paddingBottom: 6,
+  },
+  city: {
+    fontSize: 14,
+    lineHeight: 20,
   },
 });
 

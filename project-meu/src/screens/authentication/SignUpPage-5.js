@@ -3,8 +3,8 @@ import React from 'react';
 import {
   SafeAreaView, StyleSheet, Text, Image,
 } from 'react-native';
-import Button from '../components/Button';
-import RegistrationInput from '../components/RegistrationInput';
+import Button from '../../components/Button';
+import RegistrationInput from '../../components/RegistrationInput';
 
 function SignupPage5(props) {
   return (

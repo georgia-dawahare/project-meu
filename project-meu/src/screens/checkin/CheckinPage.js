@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Image,
   View,
-  Pressable,
+  // Pressable,
 } from 'react-native';
 import {
   Card,
@@ -19,6 +19,7 @@ import axios from 'axios';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TopBarCheckin from '../../components/TopBarCheckin';
+import Button from '../../components/Button';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -50,10 +51,10 @@ function CheckinPage({ navigation }) {
     return response;
   };
 
-  const handleDeleteResponse = async () => {
-    await axios.delete(`${apiUrl}/responses/${responseId}`);
-    setUserResponse('');
-  };
+  // const handleDeleteResponse = async () => {
+  //   await axios.delete(`${apiUrl}/responses/${responseId}`);
+  //   setUserResponse('');
+  // };
 
   const handleNewResponse = (textAnswer) => {
     setUserResponse(textAnswer);
@@ -178,9 +179,9 @@ function CheckinPage({ navigation }) {
             </View>
             <View>
               <View style={styles.myResponseHeader}>
-                <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
+                {/* <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
                   <Icon name="trash-outline" type="ionicon" size={20} />
-                </Pressable>
+                </Pressable> */}
                 <View style={{ marginRight: 10 }}>
                   <Text style={styles.leftText}>{userFirstName}</Text>
                   <Text style={styles.leftText}>{userResponseTime}</Text>
@@ -198,6 +199,11 @@ function CheckinPage({ navigation }) {
               />
             </TouchableOpacity>
           </Card>
+          {/* <Button title="View More" buttonStyle={{ top: 507, left: 45 }} onPress={CheckinPage} /> */}
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
+
         </View>
       </SafeAreaView>
     );
@@ -227,6 +233,9 @@ function CheckinPage({ navigation }) {
               />
             </TouchableOpacity>
           </Card>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -273,6 +282,9 @@ function CheckinPage({ navigation }) {
               </Text>
             </TouchableOpacity>
           </Card>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
         </View>
 
       </SafeAreaView>
@@ -283,7 +295,6 @@ function CheckinPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
   },
   text: {
     textAlign: 'center',
@@ -330,15 +341,16 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
+    borderRadius: 15,
     elevation: 3,
-    backgroundColor: 'rgb(230, 43, 133)',
+    // backgroundColor: 'rgb(230, 43, 133)',
     alignItems: 'center',
     marginTop: 20,
   },
   buttonText: {
-    fontFamily: 'SF-Pro-Display-Bold',
+    fontFamily: 'SF-Pro-Display-Medium',
     color: 'white',
+    fontSize: 20,
   },
   buttonContainer: {
     alignItems: 'center',

@@ -10,6 +10,10 @@ import VersionPage from '../screens/settings/VersionPage';
 import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import TempHome from '../screens/home/TempHome';
+import OnboardingPage from '../screens/authentication/OnboardingPage';
+import SignUpSignIn from '../screens/authentication/SignUpSignIn';
+import RegisterEmailPassword from '../screens/authentication/RegisterEmailPassword';
+import SignIn from '../screens/authentication/SignIn';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,10 +91,25 @@ function SettingScreenNavigator() {
         name="SettingNotificationPage"
         component={SettingNotificationPage}
       />
-
     </Stack.Navigator>
   );
 }
 export { SettingScreenNavigator };
+
+function OnboardingScreenNavigator() {
+  return (
+    <Stack.Navigator
+      initialRouteName="Onboarding"
+      screenOptions={{ headerShown: false, unmountOnBlur: true }}
+    >
+      <Stack.Screen name="Onboarding" component={OnboardingPage} />
+      <Stack.Screen name="SignUpSignIn" component={SignUpSignIn} />
+      <Stack.Screen name="RegisterEmailPassword" component={RegisterEmailPassword} />
+      <Stack.Screen name="SignIn" component={SignIn} />
+    </Stack.Navigator>
+  );
+}
+
+export { OnboardingScreenNavigator };
 
 // Modified code by: https://jaymanyoo.medium.com/combine-bottom-tab-navigator-with-stack-navigator-in-react-native-2020-58804b4afded

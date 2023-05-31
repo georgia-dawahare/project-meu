@@ -13,7 +13,6 @@ import {
   Platform,
 } from 'react-native';
 import * as Font from 'expo-font';
-// import { auth } from '../../services/datastore';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import SignUpGraphic from '../../components/SignUpGraphic';
 import Button from '../../components/Button';
@@ -41,8 +40,7 @@ function SignIn({ navigation }) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        const { user } = userCredential;
-        console.log(user);
+        // const { user } = userCredential;
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -160,7 +158,6 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontSize: 12,
     textAlign: 'center',
-
   },
   buttonContainer: {
     marginTop: 40,
