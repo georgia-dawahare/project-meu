@@ -52,9 +52,9 @@ function PenguinsPage({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [carouselSpun, setCarouselSpun] = useState(false); // so that we can keep show button only when carousel is spunned
 
-  const [lastEmotionSent, setLastEmotionSent] = useState('0');
-  const [selectedIcon, setSelectedIcon] = useState(0);
-  const [partnerLastEmotion, setPartnerLastEmotion] = useState('0');
+  const [lastEmotionSent, setLastEmotionSent] = useState(null);
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [partnerLastEmotion, setPartnerLastEmotion] = useState(null);
 
   const [userId, setUserId] = useState('');
   const auth = getAuth();
@@ -72,18 +72,29 @@ function PenguinsPage({ navigation }) {
       }
     });
     if (userId) {
-      const returnEmotion = getUserEmotion(userId);
-      setLastEmotionSent(Number(returnEmotion)); // set user's rendering emotion
-      const returnPartnerEmotion = getPartnerEmotion(userId); // yes, userId bc of logic below
-      setPartnerLastEmotion(Number(returnPartnerEmotion)); // set partner's rendering emotion
+      try {
+        initializeView();
+      } catch (e) {
+        console.log('Could not initialize view', e);
+      }
     }
   }, []);
 
+  const initializeView = async () => {
+    const returnEmotion = await getUserEmotion();
+    setLastEmotionSent(Number(returnEmotion)); // set user's rendering emotion
+    const returnPartnerEmotion = await getPartnerEmotion(); // yes, userId bc of logic below
+    setPartnerLastEmotion(Number(returnPartnerEmotion)); // set partner's rendering emotion
+    setSelectedIcon(Number(returnEmotion));
+    return true;
+  };
+
   // get user's emotion data, which includes their last sent emotion & their partner's last sent emotion
   const getUserEmotion = async () => {
-    let userEmotion;
+    let userEmotion, emotion;
     try {
       userEmotion = await axios.get(`${apiUrl}/users/emotion/${userId}`);
+      emotion = userEmotion.data;
     } catch (e) {
       console.log('Error retrieving user: ', e);
     }
@@ -91,7 +102,7 @@ function PenguinsPage({ navigation }) {
     // how we actually get the user's emotions
     // const userEmotion = await axios.get(`${apiUrl}/users/emotion/${userId}`);
     // console.log('successfully gotten self emotion');
-    return userEmotion.data;
+    return emotion;
   };
 
   // get partner's emotion data
@@ -234,7 +245,7 @@ function PenguinsPage({ navigation }) {
   const handleButtonPress = () => {
     setModalVisible(true);
     setCarouselSpun(false);
-    setLastEmotionSent(selectedIcon);
+    setLastEmotionSent(selectedIcon.toString());
     updateBothEmotion(lastEmotionSent, userId); // update both users' render emotion based on sender's emotion
     // updateUserEmotion(selectedIcon);
     // getUserEmotion(userId); // we don't need this
@@ -243,7 +254,9 @@ function PenguinsPage({ navigation }) {
   // try catch for updating both user & partner's emotion (logic in backend)
   const updateBothEmotion = async () => {
     try {
-      await axios.patch(`${apiUrl}/emotions/${userId}`, { lastEmotionSent, userId });
+      if (lastEmotionSent) {
+        await axios.patch(`${apiUrl}/emotions/${userId}`, lastEmotionSent);
+      }
     } catch (e) {
       console.log('Error updating emotions: ', e);
     }
