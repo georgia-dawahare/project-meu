@@ -8,7 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get('window');
 
-function PartnerWidget({ navigation }) {
+function BackgroundChange({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('https://www.figma.com/file/PYeh3GKvg4VwmsTEXIc0Bs/image/72d9c95e3b736ee06dd3ba6eacc4b048d82d7218?fuid=1112504140237920766');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [emptyText, setEmptyText] = useState(false);
@@ -137,7 +137,7 @@ function PartnerWidget({ navigation }) {
   );
 }
 
-export default PartnerWidget;
+export default BackgroundChange;
 
 const styles = StyleSheet.create({
   container: {
