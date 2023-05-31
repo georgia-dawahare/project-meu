@@ -99,7 +99,10 @@ function ClockAndLocation() {
     // make an api call to get the weather
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
-        const response = axios.patch(`${apiUrl}/users/${userID}`);
+        const newUserData = {
+          'city': data.name
+        }
+        const response = axios.patch(`${apiUrl}/users/${userID}`, newUserData);
         setUserCity(data.name);
         setUserTemp(data.main.temp.toFixed(0));
       })
@@ -137,6 +140,7 @@ function ClockAndLocation() {
     loadForecast();
   }, [partnerCity]);
 
+
   // used documentation from react-native-analog-clock to set up timer
   // should replace partner's time with timezone of partner
   // basically updates seconds minutes and hours using the nowDate
@@ -173,23 +177,40 @@ function ClockAndLocation() {
     return { minuteP, hourP };
   };
   
+  // const pTimer = () => {
+  //   const { minuteP, hourP } = pDate();
+  //   const [state, setState] = useState({
+  //     minuteP, 
+  //     hourP,  
+  //   })
+
+  //   useEffect(() => {
+  //     const interval = setInterval(() => {
+  //       const { minuteP, hourP } = pDate();
+  //       setState({ minuteP, hourP });
+  //     }, 1000);
+  //     // do this to avoid the interval looping from Nan to the correct time 
+  //     // thank you chat GPT for this one single line 
+  //     return () => clearInterval(interval);
+  //   }, [useState]);
+
+  //   return state;
+  // };
   const pTimer = () => {
     const { minuteP, hourP } = pDate();
     const [state, setState] = useState({
-      minuteP, 
-      hourP,  
+      minuteP: isNaN(minuteP) ? new Date(pTime).getMinutes() : minuteP, 
+      hourP: isNaN(hourP) ? new Date(pTime).getHours() : hourP,
     })
-
+  
     useEffect(() => {
       const interval = setInterval(() => {
         const { minuteP, hourP } = pDate();
-        setState({ minuteP, hourP });
+        setState({ minuteP: isNaN(minuteP) ? new Date().getMinutes() : minuteP, hourP: isNaN(hourP) ? new Date().getHours() : hourP });
       }, 1000);
-      // do this to avoid the interval looping from Nan to the correct time 
-      // thank you chat GPT for this one single line 
       return () => clearInterval(interval);
     }, [useState]);
-
+  
     return state;
   };
 
