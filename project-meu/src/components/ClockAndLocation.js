@@ -67,18 +67,17 @@ function ClockAndLocation() {
   useEffect(() => {
     const getData = async () => {
       // getting and setting user data
-      const userResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
+      const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
       const user = userResponse.data;
       console.log(user);
 
-      setPartnerName(user.first_name);
-      setPartnerCity(user.city);
-      setPartnerCountry(user.country_code);
+      setUserName(user.first_name);
+      setUserCity(user.city);
 
       // getting and setting partner data
       const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
       const partner = partnerResponse.data;
-      console.log(partner);
+      // console.log(partner);
 
       setPartnerName(partner.first_name);
       setPartnerCity(partner.city);
@@ -104,6 +103,8 @@ function ClockAndLocation() {
     // make an api call to get the weather
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
+
+        // sending firebase the user's city and country data 
         const newUserData = {
           city: data.name,
           country_code: data.sys.country,
