@@ -125,7 +125,7 @@ function ClockAndLocation() {
     fetch(`${starterUrl}units=${units}&q=${partnerCity},${partnerCountry}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         setPartnerTemp(data?.main?.temp?.toFixed(0));
-        console.log(data.sys.country);
+        console.log(data?.sys?.country);
 
         // now we want to move some numbers around to get the time of the partner
         // this is based on the timezone values of open weather API
@@ -143,9 +143,11 @@ function ClockAndLocation() {
     setLoading(false);
   };
 
+  // changed useEffect to depend on partner country because it is the last 
+  // const we grab before the api call 
   useEffect(() => {
     loadForecast();
-  }, [partnerCity]);
+  }, [partnerCountry]);
 
   // used documentation from react-native-analog-clock to set up timer
   // basically updates seconds minutes and hours using the nowDate

@@ -13,9 +13,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
 function TopBar({ navigation, startDate }) {
-  const [days, setDays] = useState(0);
+  const [days, setDays] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
-  const daysText = `${days} days`;
   const [userID, setUserID] = useState('');
   const auth = getAuth();
   
@@ -52,7 +51,7 @@ function TopBar({ navigation, startDate }) {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));    
       
       // setting days 
-      setDays(diffDays);
+      setDays(`${diffDays} days`);
     };
 
     getPairDate();
@@ -83,7 +82,7 @@ function TopBar({ navigation, startDate }) {
         />
       </TouchableOpacity>
 
-      <Text style={styles.header}>{daysText}</Text>
+      <Text style={styles.header}>{days}</Text>
 
       <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
         <Image
