@@ -84,9 +84,9 @@ function HomeCalendarComponent({ scrollY, navigation }) {
       } catch (error) {
         console.error('Failed to add default events:', error);
       }
-    };
+    };``
 
-    await addDefaultEvents();
+    // await addDefaultEvents();
 
     const events = await axios.get(`${apiUrl}/events/`);
 
