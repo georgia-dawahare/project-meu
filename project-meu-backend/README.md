@@ -8,7 +8,7 @@ Backend: Express and Firebase
 
 ## Setup Backend
 1. Clone repo by running `git clone https://github.com/dartmouth-cs52-23s/project-meu.git` in your terminal and `cd project-meu-backend`
-2. Run `npm install`, `npm install babel`, and `npm run build` to install/build all of the necessary dependencies.
+2. Run `npm install` and `npm run build` to install/build all of the necessary dependencies.
 3. Install the [Firebase CLI](https://firebase.google.com/docs/cli) by running `npm install -g firebase-tools`.
 4. Install firebase by running `npm install firebase`
     - Then, login to the `meu.project.52@gmail.com` account by running `firebase login`.
@@ -36,5 +36,3 @@ Hosting URL: https://project-meu-11610.web.app
 * Kaylie Sampson '25
 * Soo Park 'GR
 * Tim Yang 'GR
-
-## Acknowledgments 
