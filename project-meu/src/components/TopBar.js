@@ -17,7 +17,6 @@ function TopBar({ navigation, startDate }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [userID, setUserID] = useState('');
   const auth = getAuth();
-  
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -28,7 +27,7 @@ function TopBar({ navigation, startDate }) {
     });
   }, []);
 
-  // this is for future development 
+  // this is for future development
   useEffect(() => {
     const getPairDate = async () => {
       const response = await axios.get(`${apiUrl}/users/pairdate/${userID}`);
@@ -38,19 +37,19 @@ function TopBar({ navigation, startDate }) {
       const dateSplit = startDate.split('/');
       console.log(dateSplit);
       // To set two dates to two variables
-      
+
       // learning to parse to make new date object: https://stackoverflow.com/questions/20247628/calculating-the-difference-between-2-dates-with-the-format-of-dd-mm-yyyy-doesn
-      console.log(dateSplit[1])
-      const start = new Date(parseInt('20' + dateSplit[2]),parseInt(dateSplit[0])-1,parseInt(dateSplit[1]));
+      console.log(dateSplit[1]);
+      const start = new Date(parseInt(`20${dateSplit[2]}`), parseInt(dateSplit[0]) - 1, parseInt(dateSplit[1]));
       const today = new Date();
-      console.log(start)
-      console.log(today)
+      console.log(start);
+      console.log(today);
 
       // used this resource for finding the diff between dates: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
       const diffTime = Math.abs(today - start);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));    
-      
-      // setting days 
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      // setting days
       setDays(`${diffDays} days`);
     };
 

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 
-function TopBarCheckin() {
+function TopBar({ title }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function TopBarCheckin() {
 
   return (
     <SafeAreaView style={styles.header}>
-      <Text style={styles.topTitle}>Check-in</Text>
+      <Text style={styles.topTitle}>{title}</Text>
     </SafeAreaView>
   );
 }
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopBarCheckin;
+export default TopBar;

@@ -16,7 +16,6 @@ import { apiUrl } from './src/constants/constants';
 import store from './src/store';
 
 function App() {
-  // CHANGE TO TRUE FOR DEV PURPOSES ONLY
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const auth = getAuth();
