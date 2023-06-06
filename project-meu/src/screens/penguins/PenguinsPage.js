@@ -1,12 +1,11 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-unused-vars */
-/* eslint-disable object-curly-newline */
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-import { Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal } from 'react-native';
+import {
+  Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal,
+} from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 
 const iconData = [
@@ -46,105 +45,82 @@ const gifDataPink = [
 ];
 
 function PenguinsPage() {
-  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
-  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+  const screenWidth = Dimensions.get('window').width;
+  const screenHeight = Dimensions.get('window').height;
 
   const [modalVisible, setModalVisible] = useState(false);
   const [carouselSpun, setCarouselSpun] = useState(false); // so that we can keep show button only when carousel is spunned
 
-  const [lastEmotionSent, setLastEmotionSent] = useState(null);
   const [selectedIcon, setSelectedIcon] = useState(null);
-  const [partnerLastEmotion, setPartnerLastEmotion] = useState(null);
 
   const [userId, setUserId] = useState('');
+  const [userDoc, setUserDoc] = useState('');
+  const [userName, setUserName] = useState('');
   const [partnerId, setPartnerId] = useState('');
+  const [partnerDoc, setPartnerDoc] = useState('');
+  const [partnerName, setPartnerName] = useState('');
+  const [partnerLastEmotion, setPartnerLastEmotion] = useState(null);
 
   const auth = getAuth();
 
-  const [userName, setUserName] = useState('');
-  const [partnerName, setPartnerName] = useState('');
-
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const { uid } = user;
-        setUserId(uid);
-      } else {
-        // User is signed out
-        console.log('Could not retrieve user');
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+      if (userInfo) {
+        setUserDoc(userInfo);
       }
-    });
-  }, []);
-
-  useEffect(() => {
-    const getPartnerID = async () => {
-      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
-      const returnedPartnerId = response.data;
-      setPartnerId(returnedPartnerId);
     };
-
-    getPartnerID();
-  }, [userId]);
-
-  useEffect(() => {
-    const getNames = async () => {
-      const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
-      const name1 = response1.data;
-      setUserName(name1[0]);
-      const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
-      const name2 = response2.data;
-      setPartnerName(name2[0]);
-    };
-
-    getNames();
-    if (partnerId) {
-      try {
-        initializeView();
-      } catch (e) {
-        console.log('Could not initialize view', e);
-      }
+    setUserId(auth?.currentUser?.uid);
+    if (userId) {
+      getUser();
     }
   }, [partnerId]);
 
-  const initializeView = async () => {
-    const returnEmotion = await getUserEmotion();
-    setLastEmotionSent(Number(returnEmotion)); // set user's rendering emotion
-    const returnPartnerEmotion = await getPartnerEmotion(); // yes, userId bc of logic below
-    setPartnerLastEmotion(Number(returnPartnerEmotion)); // set partner's rendering emotion
-    setSelectedIcon(Number(returnEmotion));
-    return true;
-  };
+  useEffect(() => {
+    const getPartnerId = async () => {
+      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
+      const returnedPartnerId = response.data;
+      if (returnedPartnerId) {
+        setPartnerId(returnedPartnerId);
+      }
+    };
 
-  // get user's emotion data, which includes their last sent emotion & their partner's last sent emotion
-  const getUserEmotion = async () => {
-    let userEmotion, emotion;
-    try {
-      userEmotion = await axios.get(`${apiUrl}/users/emotion/${userId}`);
-      emotion = userEmotion.data;
-    } catch (e) {
-      console.log('Error retrieving user: ', e);
+    if (userId) {
+      getPartnerId();
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const getPartner = async () => {
+      const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
+      const partnerInfo = partner.data;
+      if (partnerInfo) {
+        setPartnerDoc(partnerInfo);
+      }
+    };
+    if (partnerId) {
+      getPartner();
+    }
+  }, [partnerId]);
+
+  useEffect(() => {
+    if (partnerDoc) {
+      setPartnerName(partnerDoc.first_name);
     }
 
-    return emotion;
-  };
-
-  // get partner's emotion data
-  const getPartnerEmotion = async () => {
-    let partnerEmotion, emotion;
-    try {
-      partnerEmotion = await axios.get(`${apiUrl}/users/partner_emotion/${userId}`);
-      emotion = partnerEmotion.data;
-    } catch (e) {
-      console.log('Error retrieving user: ', e);
+    if (userDoc) {
+      setUserName(userDoc.first_name);
+      setPartnerLastEmotion(Number(userDoc.partner_last_emotion));
     }
-    return emotion;
-  };
+  }, [partnerDoc, userDoc]);
+
+  useEffect(() => {
+    setSelectedIcon(Number(userDoc.user_last_emotion));
+  }, [userDoc]);
 
   const renderIconItem = ({ item, index }) => {
     const itemStyle = index === selectedIcon ? styles.selectedIcon : styles.unselectedIcon;
-    const color = index === selectedIcon ? 'black' : 'gray';
     const marginLeft = (-screenWidth / 100) * 4.4;
 
     return (
@@ -158,10 +134,6 @@ function PenguinsPage() {
   const handleCarouselItemChange = (index) => {
     setSelectedIcon(index);
     setCarouselSpun(true);
-
-    if (lastEmotionSent !== null && index === lastEmotionSent) {
-      setCarouselSpun(false);
-    }
   };
 
   const calculateItemWidth = () => {
@@ -182,17 +154,18 @@ function PenguinsPage() {
   };
 
   const handleButtonPress = () => {
-    setModalVisible(true);
     setCarouselSpun(false);
-    setLastEmotionSent(selectedIcon.toString());
-    updateBothEmotion(lastEmotionSent, userId); // update both users' render emotion based on sender's emotion
+    if (selectedIcon !== null && selectedIcon !== '') {
+      updateBothEmotion(selectedIcon); // update both users' render emotion based on sender's emotion
+      setModalVisible(true);
+    }
   };
 
   // try catch for updating both user & partner's emotion (logic in backend)
-  const updateBothEmotion = async () => {
+  const updateBothEmotion = async (icon) => {
     try {
-      if (lastEmotionSent) {
-        await axios.patch(`${apiUrl}/emotions/${userId}`, lastEmotionSent);
+      if (icon !== null && icon !== '') {
+        await axios.patch(`${apiUrl}/emotions/${userId}`, { emotion: icon });
       }
     } catch (e) {
       console.log('Error updating emotions: ', e);

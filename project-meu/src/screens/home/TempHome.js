@@ -9,7 +9,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
@@ -29,14 +29,8 @@ function TempHome({ navigation }) {
 
   useEffect(() => {
     // Get current user from auth
-    onAuthStateChanged(auth, (userAuth) => {
-      if (userAuth) {
-        setUserId(userAuth.uid);
-      } else {
-        console.log('No user logged in');
-      }
-    });
-  }, []);
+    setUserId(auth?.currentUser?.uid);
+  }, [userId, partnerBackgroundImage]);
 
   useEffect(() => {
     let partnerId, partnerDoc, pairId, pairDoc;
@@ -81,7 +75,7 @@ function TempHome({ navigation }) {
     };
     dispatch(updateUser(updatedUser));
     getPartnerBackground();
-  }, [userId]);
+  }, [userId, partnerBackgroundImage, backgroundImage]);
 
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
