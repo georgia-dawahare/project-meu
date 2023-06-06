@@ -30,9 +30,9 @@ const updateUser = async (id, updatedData) => {
   return uid;
 };
 
-const getCity = async (id) => {
-  const city = await firestoreService.getCity(id);
-  return city;
+const getLocData = async (id) => {
+  const data = await firestoreService.getLocData(id);
+  return data;
 }
 
 const getBackground = async (id) => {
@@ -63,7 +63,7 @@ const userController = {
   updateUser,
   getUser,
   getPartnerEmotion,
-  getCity,
+  getLocData,
   getBackground,
   getPartnerId,
   getUserEmotion,

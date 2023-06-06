@@ -3,8 +3,8 @@ import { Timestamp } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import serviceAccount from '/etc/secrets/credentials.json';
-// import serviceAccount from '../../credentials.json'
+// import serviceAccount from '/etc/secrets/credentials.json';
+import serviceAccount from '../../credentials.json'
 
 // directly connect the local development server
 // eslint-disable-next-line no-unused-vars
@@ -445,17 +445,20 @@ const getPartnerId = async (uid) => {
   return partnerID;
 };
 
-// get user's city
-const getCity = async (uid) => {
+// get user's location data
+const getLocData = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
   let city;
+  let country_code;
   if (!doc.exists) {
     console.log('User does not exist');
   } else {
     const data = doc.data();
     city = data.city;
+    country_code = data.country_code;
+    console.log('country code is')
   }
-  return city;
+  return [city, country_code];
 };
 
 // get user's background img url
@@ -520,7 +523,7 @@ const firestoreService = {
   deletePair,
   getPairCreatorId,
   getPartnerId,
-  getCity,
+  getLocData,
   getBackground,
   getPairDate,
   connectPairs

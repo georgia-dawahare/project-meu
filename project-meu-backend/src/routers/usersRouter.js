@@ -73,10 +73,10 @@ router.patch('/:uid', async (req, res) => {
 });
 
 // Get user's city
-router.get('/city/:uid', async (req, res) => {
+router.get('/locdata/:uid', async (req, res) => {
   const user = req.params;
   try {
-    const data = await usersController.getCity(user.uid);
+    const data = await usersController.getLocData(user.uid);
     console.log(data);
     res.status(200).send(data);
   } catch (e) {

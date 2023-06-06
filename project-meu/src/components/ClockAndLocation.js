@@ -35,6 +35,7 @@ function ClockAndLocation() {
   const [partnerID, setPartnerID] = useState();
   const [partnerName, setPartnerName] = useState('partner');
   const [partnerCity, setPartnerCity] = useState('');
+  const [partnerCountry, setPartnerCountry] = useState('');
   const [partnerTemp, setPartnerTemp] = useState(0);
   const [pTime, setPTime] = useState();
 
@@ -59,28 +60,31 @@ function ClockAndLocation() {
       const returnedPartnerId = response.data;
       setPartnerID(returnedPartnerId);
     };
-
+ 
     getPartnerID();
   }, [userID]);
 
   useEffect(() => {
-    const getPartnerCity = async () => {
-      const response = await axios.get(`${apiUrl}/users/city/${partnerID}`);
-      const city = response.data;
-      setPartnerCity(city);
+    const getData = async () => {
+      // getting and setting user data
+      const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
+      const user = userResponse.data;
+      console.log(user);
+
+      setUserName(user.first_name);
+      setUserCity(user.city);
+
+      // getting and setting partner data
+      const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
+      const partner = partnerResponse.data;
+      // console.log(partner);
+
+      setPartnerName(partner.first_name);
+      setPartnerCity(partner.city);
+      setPartnerCountry(partner.country_code);
     };
 
-    const getNames = async () => {
-      const response1 = await axios.get(`${apiUrl}/users/name/${userID}`);
-      const name1 = response1.data;
-      setUserName(name1[0]);
-      const response2 = await axios.get(`${apiUrl}/users/name/${partnerID}`);
-      const name2 = response2.data;
-      setPartnerName(name2[0]);
-    };
-
-    getPartnerCity();
-    getNames();
+    getData();
   }, [partnerID]);
 
   // again, from video tutorial
@@ -99,9 +103,13 @@ function ClockAndLocation() {
     // make an api call to get the weather
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
+
+        // sending firebase the user's city and country data 
         const newUserData = {
           city: data.name,
-        };
+          country_code: data.sys.country,
+        }
+
         if (userID) {
           axios.patch(`${apiUrl}/users/${userID}`, newUserData);
         }
@@ -113,9 +121,11 @@ function ClockAndLocation() {
       });
 
     // now, moving onto the partner's data -- make an API call based on the city name
-    fetch(`${starterUrl}units=${units}&q=${partnerCity}&appid=${openWeatherKey}`)
+    // to implement -- country code 
+    fetch(`${starterUrl}units=${units}&q=${partnerCity},${partnerCountry}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         setPartnerTemp(data?.main?.temp?.toFixed(0));
+        console.log(data?.sys?.country);
 
         // now we want to move some numbers around to get the time of the partner
         // this is based on the timezone values of open weather API
@@ -133,9 +143,11 @@ function ClockAndLocation() {
     setLoading(false);
   };
 
+  // changed useEffect to depend on partner country because it is the last 
+  // const we grab before the api call 
   useEffect(() => {
     loadForecast();
-  }, [partnerCity]);
+  }, [partnerCountry]);
 
   // used documentation from react-native-analog-clock to set up timer
   // basically updates seconds minutes and hours using the nowDate
