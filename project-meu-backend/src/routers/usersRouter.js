@@ -31,7 +31,8 @@ router.get('/emotion/:uid', async (req, res) => {
   const user = req.params;
   try {
     const data = await usersController.getUserEmotion(user.uid);
-    res.status(200).send(data);
+    const emotion = data.toString();
+    res.status(200).send(emotion);
   } catch (e) {
     res.status(500).send(e.message);
   }
@@ -42,7 +43,8 @@ router.get('/partner_emotion/:uid', async (req, res) => {
   const user = req.params;
   try {
     const data = await usersController.getPartnerEmotion(user.uid);
-    res.status(200).send(data);
+    const emotion = data.toString();
+    res.status(200).send(emotion);
   } catch (e) {
     res.status(500).send(e.message);
   }

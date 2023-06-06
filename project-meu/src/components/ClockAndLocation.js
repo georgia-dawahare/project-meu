@@ -10,7 +10,7 @@ import {
 import * as Location from 'expo-location';
 import * as Font from 'expo-font';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
 function ClockAndLocation() {
@@ -46,13 +46,8 @@ function ClockAndLocation() {
   const units = 'imperial';
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const { uid } = user;
-        setUserID(uid);
-      }
-    });
-  }, []);
+    setUserID(auth?.currentUser?.uid);
+  }, [userID, partnerID]);
 
   useEffect(() => {
     const getPartnerID = async () => {
@@ -60,9 +55,8 @@ function ClockAndLocation() {
       const returnedPartnerId = response.data;
       setPartnerID(returnedPartnerId);
     };
-
     getPartnerID();
-  }, [userID]);
+  }, [partnerID, userID]);
 
   useEffect(() => {
     const getUserData = async () => {
@@ -75,6 +69,7 @@ function ClockAndLocation() {
         setUserCity(user.city);
       }
     };
+
     const getPartnerData = async () => {
       if (partnerID) {
         // getting and setting partner data
@@ -91,7 +86,7 @@ function ClockAndLocation() {
 
     getUserData();
     getPartnerData();
-  }, [partnerID]);
+  }, [partnerID, userID]);
 
   // again, from video tutorial
   // use this to load in weather data & some time data
@@ -152,7 +147,7 @@ function ClockAndLocation() {
   // const we grab before the api call
   useEffect(() => {
     loadForecast();
-  }, [partnerCountry]);
+  }, [userID, partnerID, partnerCountry]);
 
   // used documentation from react-native-analog-clock to set up timer
   // basically updates seconds minutes and hours using the nowDate

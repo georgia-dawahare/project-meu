@@ -29,7 +29,6 @@ const createUser = async (userData) => {
     birthday: userData.birthday,
     user_last_emotion: userData.user_last_emotion,
     partner_last_emotion: userData.partner_last_emotion,
-    last_sent_emotion: userData.lastSentEmotion,
     code: userData.code,
     city: userData.city,
   };
@@ -163,19 +162,27 @@ const updateEmotion = async (updatedEmotion, uid) => {
 
     try {
       // update partner's emotion
-      console.log("emotions", updatedEmotion);
-      const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
-      const partnerRef = firestore.collection('Users').doc(partnerId);
-      partnerRef.update(updatedPartnerFields)
-        .then(() => {
-          console.log("Successfully updated partner's emotion");
-        })
-        .catch((error) => {
-          console.error("Error updating partner's emotion: ", error);
-        });
+      if (partnerId) {
+        const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
+        const partnerRef = firestore.collection('Users').doc(partnerId);
+        partnerRef.update(updatedPartnerFields)
+          .then(() => {
+            console.log("Successfully updated partner's emotion");
+          })
+          .catch((error) => {
+            console.error("Error updating partner's emotion: ", error);
+          });
+      }
+    }
+    catch (e) {
+      console.log('Error updating partner emotion: ', e);
+    }
 
+    try {
       // update self emotion
-      const updatedUserFields = { user_last_emotion: updatedEmotion }
+      const updatedUserFields = {
+        user_last_emotion: updatedEmotion,
+      }
       const userRef = firestore.collection('Users').doc(uid);
       userRef.update(updatedUserFields)
         .then(() => {
@@ -187,7 +194,7 @@ const updateEmotion = async (updatedEmotion, uid) => {
           return false;
         });
     } catch (e) {
-      console.log('Error updating user: ', e);
+      console.log('Error updating user emotion: ', e);
     }
   } catch (e) {
     console.log('Error retrieving user: ', e);
