@@ -14,7 +14,6 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
 function ClockAndLocation() {
-  const [userID, setUserID] = useState('');
   const auth = getAuth();
 
   // used the following video tutorial for the open weather API code, with a few modifications for our specific usage\
@@ -29,11 +28,12 @@ function ClockAndLocation() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   // user and partner data below:
-  const [userName, setUserName] = useState('user');
+  const [userID, setUserID] = useState('');
+  const [userName, setUserName] = useState('');
   const [userCity, setUserCity] = useState('');
   const [userTemp, setUserTemp] = useState();
   const [partnerID, setPartnerID] = useState();
-  const [partnerName, setPartnerName] = useState('partner');
+  const [partnerName, setPartnerName] = useState('');
   const [partnerCity, setPartnerCity] = useState('');
   const [partnerCountry, setPartnerCountry] = useState('');
   const [partnerTemp, setPartnerTemp] = useState(0);
@@ -67,20 +67,26 @@ function ClockAndLocation() {
   useEffect(() => {
     const getUserData = async () => {
       // getting and setting user data
-      const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
-      const user = userResponse.data;
+      if (userID) {
+        const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
+        const user = userResponse.data;
 
-      setUserName(user.first_name);
-      setUserCity(user.city);
+        setUserName(user.first_name);
+        setUserCity(user.city);
+      }
     };
     const getPartnerData = async () => {
-      // getting and setting partner data
-      const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
-      const partner = partnerResponse.data;
+      if (partnerID) {
+        // getting and setting partner data
+        const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
+        const partner = partnerResponse.data;
 
-      setPartnerName(partner.first_name);
-      setPartnerCity(partner.city);
-      setPartnerCountry(partner.country_code);
+        setPartnerName(partner.first_name);
+        if (partner.city && partner.country_code) {
+          setPartnerCity(partner.city);
+          setPartnerCountry(partner.country_code);
+        }
+      }
     };
 
     getUserData();
@@ -264,8 +270,7 @@ function ClockAndLocation() {
           <Text style={{ textAlign: 'right' }}>{partnerCity}</Text>
           <Text style={{ textAlign: 'right' }}>
             {partnerTemp}
-            {'\u00b0'}
-            F
+            {partnerTemp ? ('\u00b0F') : null}
           </Text>
         </View>
         <View style={styles.clock}>
