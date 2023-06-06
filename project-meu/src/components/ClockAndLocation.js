@@ -60,35 +60,35 @@ function ClockAndLocation() {
       const returnedPartnerId = response.data;
       setPartnerID(returnedPartnerId);
     };
- 
+
     getPartnerID();
   }, [userID]);
 
   useEffect(() => {
-    const getData = async () => {
+    const getUserData = async () => {
       // getting and setting user data
       const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
       const user = userResponse.data;
-      console.log(user);
 
       setUserName(user.first_name);
       setUserCity(user.city);
-
+    };
+    const getPartnerData = async () => {
       // getting and setting partner data
       const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
       const partner = partnerResponse.data;
-      // console.log(partner);
 
       setPartnerName(partner.first_name);
       setPartnerCity(partner.city);
       setPartnerCountry(partner.country_code);
     };
 
-    getData();
+    getUserData();
+    getPartnerData();
   }, [partnerID]);
 
   // again, from video tutorial
-  // use this to load in weather data & some time data 
+  // use this to load in weather data & some time data
   const loadForecast = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -103,16 +103,16 @@ function ClockAndLocation() {
     // make an api call to get the weather
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
-
-        // sending firebase the user's city and country data 
+        // sending firebase the user's city and country data
         const newUserData = {
           city: data.name,
           country_code: data.sys.country,
-        }
+        };
 
         if (userID) {
           axios.patch(`${apiUrl}/users/${userID}`, newUserData);
         }
+
         setUserCity(data.name);
         setUserTemp(data?.main?.temp?.toFixed(0));
       })
@@ -121,11 +121,10 @@ function ClockAndLocation() {
       });
 
     // now, moving onto the partner's data -- make an API call based on the city name
-    // to implement -- country code 
+    // to implement -- country code
     fetch(`${starterUrl}units=${units}&q=${partnerCity},${partnerCountry}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         setPartnerTemp(data?.main?.temp?.toFixed(0));
-        console.log(data?.sys?.country);
 
         // now we want to move some numbers around to get the time of the partner
         // this is based on the timezone values of open weather API
@@ -143,8 +142,8 @@ function ClockAndLocation() {
     setLoading(false);
   };
 
-  // changed useEffect to depend on partner country because it is the last 
-  // const we grab before the api call 
+  // changed useEffect to depend on partner country because it is the last
+  // const we grab before the api call
   useEffect(() => {
     loadForecast();
   }, [partnerCountry]);
@@ -188,7 +187,6 @@ function ClockAndLocation() {
     return { minuteP, hourP };
   };
 
-
   // thank you chatGPT -- will specify the lines that came from bug fixing thanks to chatGPT
   const pTimer = () => {
     const [state, setState] = useState({
@@ -197,7 +195,7 @@ function ClockAndLocation() {
     });
 
     useEffect(() => {
-      // made this function asynchronous so it only calls when we have the partner timezone 
+      // made this function asynchronous so it only calls when we have the partner timezone
       const fetchTimeP = async () => {
         const { minuteP, hourP } = pDate();
         setState({
@@ -231,7 +229,7 @@ function ClockAndLocation() {
     loadFont();
   }, []);
 
-  // if we haven't loaded the font or the loadForecast isn't done 
+  // if we haven't loaded the font or the loadForecast isn't done
   if (!fontLoaded || loading) {
     return <Text>Loading...</Text>;
   }

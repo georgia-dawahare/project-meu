@@ -97,20 +97,23 @@ function CreatePair({ navigation }) {
     });
   };
 
+  const triggerOnAuthState = async () => {
+    signOutUser();
+    signInWithEmailAndPassword(auth, currUser.user_data.email, currUser.user_data.password)
+      .then(() => {
+        // Signed in
+        console.log('Signed in');
+      })
+      .catch((e) => {
+        const errorCode = e.code;
+        const errorMessage = e.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
+
   const handleNext = async () => {
     if (isActiveNext) {
-      // Trigger onAuthStateChange
-      signOutUser();
-      signInWithEmailAndPassword(auth, currUser.user_data.email, currUser.user_data.password)
-        .then(() => {
-          // Signed in
-          console.log('Signed in');
-        })
-        .catch((e) => {
-          const errorCode = e.code;
-          const errorMessage = e.message;
-          console.log(errorCode, errorMessage);
-        });
+      triggerOnAuthState();
     }
   };
 
@@ -154,7 +157,7 @@ function CreatePair({ navigation }) {
         };
         await axios.post(`${apiUrl}/users/code/${currUserId}`, userData);
         console.log('Successfully paired!');
-        handleNext();
+        triggerOnAuthState();
       } catch (e) {
         setError('Invalid code');
         console.log('Failed to pair');

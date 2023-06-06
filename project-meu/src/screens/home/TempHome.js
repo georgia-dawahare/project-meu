@@ -51,7 +51,7 @@ function TempHome({ navigation }) {
     async function getPartnerBackground() {
       // Get user from Firestore
       if (userId) {
-        pairId = userDoc?.data?.pair_id;
+        pairId = userDoc.pair_id;
         if (pairId) {
           const pair = await axios.get(`${apiUrl}/pairs/${pairId}`);
           pairDoc = pair?.data;
@@ -72,7 +72,6 @@ function TempHome({ navigation }) {
         }
       }
     }
-
     getUserBackground();
     getPartnerBackground();
   }, [userId]);
