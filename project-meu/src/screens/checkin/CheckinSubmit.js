@@ -6,6 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
 } from 'react-native';
 import {
   Card, Input,
@@ -121,32 +126,41 @@ function CheckinSubmit({ navigation }) {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => { navigation.goBack(); }}>
-        <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
-        />
-      </TouchableOpacity>
 
-      <Card containerStyle={styles.cardContainer}>
-        <Text>Daily Question</Text>
-        <Card.Title style={styles.question}>{question}</Card.Title>
-        <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
-        <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
-          <Text style={styles.buttonText}>
-            Submit
-          </Text>
-        </TouchableOpacity>
-      </Card>
-    </SafeAreaView>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView>
+          <ScrollView>
+            <TouchableOpacity onPress={() => { navigation.goBack(); }}>
+              <Image
+                source={require('../../../assets/icons/goback-black.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <Card containerStyle={styles.cardContainer}>
+              <Text>Daily Question</Text>
+              <Card.Title style={styles.question}>{question}</Card.Title>
+              <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
+              <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
+                <Text style={styles.buttonText}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </Card>
+          </ScrollView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: 'center',
   },
 
   text: {
@@ -159,7 +173,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 15,
     padding: 20,
-    marginTop: '40%',
   },
 
   question: {
@@ -168,7 +181,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Bold',
     margin: 20,
   },
-  Icon: {
+  icon: {
     margin: 20,
   },
   button: {

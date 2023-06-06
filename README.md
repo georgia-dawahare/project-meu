@@ -13,6 +13,7 @@ Backend: Express and Firebase
 * See backend README for backend setup instructions
 1. Clone repo by running `git clone https://github.com/dartmouth-cs52-23s/project-meu.git` in your terminal and `cd project-meu`
 2. Run `npm install` to install all of the necessary dependencies.
+3. Run `npm i -g patch-package` and `patch-package` (might be unnecessary)
 3. Start the Expo simulator by running `npm run start` or `expo start`
 
 ## Deployment

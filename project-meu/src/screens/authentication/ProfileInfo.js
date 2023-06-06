@@ -1,20 +1,20 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View,
+  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View, TextInput,
 } from 'react-native';
 import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
-import Button from '../../components/Button';
-import RegistrationInput from '../../components/RegistrationInput';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { updateUser } from '../../actions';
 
 function ProfileInfo({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [anniversary, setAnniversary] = useState('');
-  const [birthday, setBirthday] = useState('');
+  // const [anniversary, setAnniversary] = useState('');
+  const [birthday, setBirthday] = useState(new Date());
+  const [anniversary, setAnniversary] = useState(new Date());
 
   const dispatch = useDispatch();
 
@@ -22,6 +22,8 @@ function ProfileInfo({ navigation }) {
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+        'SF-Pro-Display-Regular': require('../../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
       });
 
       setFontLoaded(true);
@@ -30,14 +32,22 @@ function ProfileInfo({ navigation }) {
   }, []);
 
   const handleNext = async () => {
+    const birthdayString = birthday.toString();
+    const anniversaryyString = anniversary.toString();
+
     const newUser = {
       first_name: firstName,
       last_name: lastName,
-      anniversary,
-      birthday,
+      anniversary: anniversaryyString,
+      birthday: birthdayString,
     };
     dispatch(updateUser(newUser));
     navigation.navigate('Welcome');
+  };
+
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || anniversary;
+    setAnniversary(currentDate);
   };
 
   if (!fontLoaded) {
@@ -45,99 +55,140 @@ function ProfileInfo({ navigation }) {
   }
 
   return (
-    <SafeAreaView>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.backWrapper}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={require('../../../assets/icons/goback-black.png')}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.mainContent}>
         <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
+          source={require('../../../assets/images/progress-2.png')}
+          style={styles.progress}
         />
-      </TouchableOpacity>
-
-      <Image
-        source={require('../../../assets/images/progress-2.png')}
-        style={styles.progress}
-      />
-
-      <Text style={styles.Text}>Please enter the following information</Text>
-      <View />
-      <View style={styles.inputWrapper}>
 
         <View>
-          <RegistrationInput
-            placeholder="First Name"
-            top={180}
-            onChangeText={(text) => setFirstName(text)}
-          />
+          <Text style={styles.instructionTxt}>Please fill out your profile.</Text>
         </View>
+
         <View>
-          <RegistrationInput
-            placeholder="Last Name"
-            top={250}
-            onChangeText={(text) => setLastName(text)}
-          />
+          <TextInput style={styles.textInput} placeholder="First Name" onChangeText={(text) => setFirstName(text)} />
+          <View style={styles.line} />
         </View>
+
         <View>
-          <RegistrationInput
-            placeholder="Birthday(MM/DD/YYYY)"
-            top={320}
+          <TextInput style={styles.textInput} placeholder="Last Name" onChangeText={(text) => setLastName(text)} />
+          <View style={styles.line} />
+        </View>
+        <View style={styles.dataWrapper}>
+          <Text style={styles.dateTxt}>
+            Birthday:
+          </Text>
+          <DateTimePicker
+            style={styles.dateTimePicker}
+            value={birthday}
+            mode="date"
+            display="default"
             onChangeText={(text) => setBirthday(text)}
           />
         </View>
-        <View>
-          <RegistrationInput
-            placeholder="Your Anniversary"
-            top={380}
-            onChangeText={(text) => setAnniversary(text)}
+
+        <View style={styles.dataWrapper}>
+          <Text>
+            Your Anniversary:
+          </Text>
+          <DateTimePicker
+            style={styles.dateTimePicker}
+            value={anniversary}
+            mode="date"
+            display="default"
+            onChange={handleDateChange}
           />
         </View>
+
+        <View>
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonTxt}>Next</Text>
+          </TouchableOpacity>
+          <Text style={styles.subtitle}>The information can be seen on your partner&apos;s MeU, and all the information you entered will be used only for service optimization</Text>
+        </View>
       </View>
-
-      <TouchableOpacity onPress={handleNext}>
-        <Button title="Next" buttonStyle={{ top: 540, left: 45 }} />
-      </TouchableOpacity>
-      <Text style={styles.Subtitle}>The information can be seen on your partner’s MeU, and all the information you entered will be used only for service optimization</Text>
-
+      <View />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  inputWrapper: {
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+
+  backWrapper: {
+    margin: 25,
+  },
+
+  mainContent: {
     flex: 1,
     justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
-  Icon: {
-    position: 'absolute',
-    top: 50,
-    left: 25,
-    height: 24,
-    zIndex: 2,
-  },
-  progress: {
-    width: 70,
-    height: 10,
-    top: 100,
+  line: {
+    width: 300,
+    height: 1,
+    backgroundColor: '#4f4f4f',
     alignSelf: 'center',
   },
-  Text: {
+  textInput: {
+    fontFamily: 'SF-Pro-Display-Regular',
+    textAlign: 'center',
+    margin: 10,
+  },
+  dateTxt: {
+    justifyContent: 'center',
+  },
+
+  dataWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 300,
+  },
+
+  instructionTxt: {
+    alignSelf: 'center',
+    textAlign: 'center',
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 18,
     lineHeight: 27,
-    color: 'rgba(0,0,0,1)',
-    alignSelf: 'center',
-    width: 300,
-    textAlign: 'center',
-    top: 160,
   },
-  Subtitle: {
+  subtitle: {
     fontFamily: 'SF-Pro-Display-Medium',
-    fontSize: 14,
-    lineHeight: 21,
     color: 'rgba(106,108,115,1)',
     alignSelf: 'center',
-    width: 225,
     textAlign: 'center',
-    top: 610,
+    fontSize: 14,
+    lineHeight: 21,
+    width: 225,
+  },
+  dateTimePicker: {
+  },
+  buttonTxt: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    color: 'white',
+    fontSize: 20,
+  },
+  button: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    height: 56,
+    width: 300,
+    borderRadius: 15,
+    margin: 20,
   },
 });
 

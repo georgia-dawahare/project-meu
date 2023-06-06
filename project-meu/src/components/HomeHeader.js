@@ -9,52 +9,56 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import axios from 'axios';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { apiUrl } from '../constants/constants';
 
-function TopBar({ navigation, startDate }) {
+function HomeHeader({ navigation }) {
   const [days, setDays] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [userID, setUserID] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userDoc, setUserDoc] = useState('');
+
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const { uid } = user;
-        setUserID(uid);
-      }
-    });
+    setUserId(auth?.currentUser?.uid);
   }, []);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+      if (userInfo) {
+        setUserDoc(userInfo);
+      }
+    };
+    if (userId) {
+      getUser();
+    }
+  }, [userId]);
 
   // this is for future development
   useEffect(() => {
     const getPairDate = async () => {
-      const response = await axios.get(`${apiUrl}/users/pairdate/${userID}`);
-      const startDate = response.data;
-      console.log(startDate);
+      const pair = await axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
+      const relationshipStart = pair?.data?.relationship_start;
 
-      const dateSplit = startDate.split('/');
-      console.log(dateSplit);
-      // To set two dates to two variables
+      if (relationshipStart) {
+        const startDate = new Date(relationshipStart);
+        const today = new Date();
 
-      // learning to parse to make new date object: https://stackoverflow.com/questions/20247628/calculating-the-difference-between-2-dates-with-the-format-of-dd-mm-yyyy-doesn
-      console.log(dateSplit[1]);
-      const start = new Date(parseInt(`20${dateSplit[2]}`), parseInt(dateSplit[0]) - 1, parseInt(dateSplit[1]));
-      const today = new Date();
-      console.log(start);
-      console.log(today);
+        const diffTime = Math.abs(today - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      // used this resource for finding the diff between dates: https://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript
-      const diffTime = Math.abs(today - start);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      // setting days
-      setDays(`${diffDays} days`);
+        // setting days
+        setDays(`${diffDays} Days`);
+      } else {
+        console.log('Could not retrieve start date');
+      }
     };
 
     getPairDate();
-  }, [userID]);
+  }, [userId]);
 
   useEffect(() => {
     async function loadFont() {
@@ -80,9 +84,7 @@ function TopBar({ navigation, startDate }) {
           style={styles.Icon}
         />
       </TouchableOpacity>
-
       <Text style={styles.header}>{days}</Text>
-
       <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
         <Image
           source={require('../../assets/icons/Cog.png')}
@@ -116,4 +118,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopBar;
+export default HomeHeader;

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import TopBar from '../../components/TopBar';
+import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
 import { apiUrl } from '../../constants/constants';
@@ -86,7 +86,7 @@ function TempHome({ navigation }) {
         <ImageBackground
           source={{ uri: backgroundImage }}
           style={styles.userBackground}
-          resizeMode="cover"
+          // resizeMode="cover"
         />
       );
     } else {
@@ -101,13 +101,11 @@ function TempHome({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopBar navigation={navigation} />
+      <HomeHeader navigation={navigation} />
       <View style={styles.separate}>
-        <View style={styles.partnerWidget}>
-          <TouchableOpacity style={styles.changeBackground} onPress={toggleMenu}>
-            <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={styles.partnerWidget} onPress={toggleMenu}>
+          <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
+        </TouchableOpacity>
         {renderBackground()}
         <View />
         <View style={styles.clockWidget}>
@@ -119,9 +117,6 @@ function TempHome({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  changeBackground: {
-    position: 'absolute',
-  },
   container: {
     flex: 1,
     backgroundColor: 'white',

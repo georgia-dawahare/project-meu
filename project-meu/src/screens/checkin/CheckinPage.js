@@ -17,7 +17,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
-import TopBar from '../../components/TopBarHeader';
+import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
 function CheckinPage({ navigation }) {
@@ -378,7 +378,7 @@ function CheckinPage({ navigation }) {
   if (userResponse && partnerResponse) {
     return (
       <View style={styles.container}>
-        <TopBar title="Check-In" />
+        <TitleHeader title="Check-In" />
         <ScrollView contentContainerStyle={styles.contentContainer}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -391,7 +391,7 @@ function CheckinPage({ navigation }) {
   } else if (userResponse) {
     return (
       <View style={styles.container}>
-        <TopBar title="Check-In" />
+        <TitleHeader title="Check-In" />
         <ScrollView contentContainerStyle={styles.contentContainer}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -404,7 +404,7 @@ function CheckinPage({ navigation }) {
   } else if (partnerResponse) {
     return (
       <View style={styles.container}>
-        <TopBar title="Check-In" />
+        <TitleHeader title="Check-In" />
         <ScrollView contentContainerStyle={styles.contentContainer}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -417,7 +417,7 @@ function CheckinPage({ navigation }) {
   } else {
     return (
       <View style={styles.container}>
-        <TopBar title="Check-In" />
+        <TitleHeader title="Check-In" />
         <ScrollView contentContainerStyle={styles.contentContainer}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
