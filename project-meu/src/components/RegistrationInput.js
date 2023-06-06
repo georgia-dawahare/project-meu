@@ -9,7 +9,7 @@ import {
 import * as Font from 'expo-font';
 
 function RegistrationInput({
-  placeholder, top, textAlign, onChangeText, editable = true,
+  placeholder, top, textAlign, onChangeText, value, editable = true,
 }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
@@ -32,7 +32,11 @@ function RegistrationInput({
   return (
     <View style={[styles.container, { top }]}>
       <View style={[styles.inputContainer, { alignItems: textAlign }]}>
-        <TextInput style={styles.input} placeholder={placeholder} editable={editable} onChangeText={onChangeText} />
+        {value ? (
+          <TextInput style={styles.knownInput} editable={editable} onChangeText={onChangeText} value={value} />
+        ) : (
+          <TextInput style={styles.input} placeholder={placeholder} editable={editable} onChangeText={onChangeText} />
+        )}
       </View>
       <View style={styles.line} />
     </View>
@@ -42,7 +46,6 @@ function RegistrationInput({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    fontFamily: 'SF-Pro-Display-Regular',
     justifyContent: 'center',
     alignSelf: 'center',
   },
@@ -58,6 +61,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#828282',
     textAlign: 'center',
+    fontFamily: 'SF-Pro-Display-Regular',
+  },
+  knownInput: {
+    fontSize: 24,
+    color: 'black',
+    textAlign: 'center',
+    fontFamily: 'SF-Pro-Display-Semibold',
   },
   line: {
     width: 300,

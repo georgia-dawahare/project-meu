@@ -7,7 +7,6 @@ import { Text, Button, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal 
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import TopBarPenguin from '../../components/TopBarPenguin';
 import { apiUrl } from '../../constants/constants';
 
 const iconData = [
@@ -46,7 +45,7 @@ const gifDataPink = [
   require('../../../assets/animations/selfie/selfie_pink.gif'),
 ];
 
-function PenguinsPage({ navigation }) {
+function PenguinsPage() {
   const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width);
   const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
 
@@ -87,7 +86,6 @@ function PenguinsPage({ navigation }) {
     };
 
     getPartnerID();
-    console.log(partnerId);
   }, [userId]);
 
   useEffect(() => {
@@ -108,7 +106,6 @@ function PenguinsPage({ navigation }) {
         console.log('Could not initialize view', e);
       }
     }
-
   }, [partnerId]);
 
   const initializeView = async () => {
@@ -249,9 +246,6 @@ function PenguinsPage({ navigation }) {
       ) : (
         <Text style={[styles.swipeText, { marginTop: -screenHeight * 0.035 }]}>
           Feel free to swipe to set a new emotion :)
-          {/* Partner Last Emotion:
-          {' '}
-          {lastEmotionSent} */}
         </Text>
       )}
       <Modal
@@ -275,8 +269,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    // paddingTop: 20,
-    // paddingHorizontal: 20,
+    backgroundColor: 'white',
   },
   text: {
     textAlign: 'center',

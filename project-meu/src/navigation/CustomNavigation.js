@@ -14,6 +14,10 @@ import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import RegisterEmailPassword from '../screens/authentication/RegisterEmailPassword';
 import SignIn from '../screens/authentication/SignIn';
+import CreatePair from '../screens/authentication/CreatePair';
+import ProfileInfo from '../screens/authentication/ProfileInfo';
+import PenguinCustomization from '../screens/authentication/PenguinCustomization';
+import Welcome from '../screens/authentication/Welcome';
 
 const Stack = createNativeStackNavigator();
 
@@ -106,6 +110,10 @@ function OnboardingScreenNavigator() {
       <Stack.Screen name="SignUpSignIn" component={SignUpSignIn} />
       <Stack.Screen name="RegisterEmailPassword" component={RegisterEmailPassword} />
       <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen name="CreatePair" component={CreatePair} />
+      <Stack.Screen name="ProfileInfo" component={ProfileInfo} />
+      <Stack.Screen name="PenguinCustomization" component={PenguinCustomization} />
+      <Stack.Screen name="Welcome" component={Welcome} />
     </Stack.Navigator>
   );
 }

@@ -52,6 +52,11 @@ const getPairDate = async (uid) => {
   return pairDate;
 }
 
+const connectPairs = async (uid, userData) => {
+  const pairId = await firestoreService.connectPairs(uid, userData);
+  return pairId;
+}
+
 const userController = {
   getName,
   createUser,
@@ -62,7 +67,8 @@ const userController = {
   getBackground,
   getPartnerId,
   getUserEmotion,
-  getPairDate
+  getPairDate,
+  connectPairs
 };
 
 export default userController;
