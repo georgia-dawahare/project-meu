@@ -75,10 +75,6 @@ function BackgroundChange({
     return pair;
   };
 
-  // const toggleMenu = () => {
-  //   setMenuVisible(!isMenuVisible);
-  // };
-
   const handleMenuOptionClick = async (option) => {
     // Menu option handling code...
     if (option === 'Camera') {

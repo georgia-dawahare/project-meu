@@ -13,7 +13,6 @@ import {
   OnboardingScreenNavigator,
 } from './src/navigation/CustomNavigation';
 import { apiUrl } from './src/constants/constants';
-
 import store from './src/store';
 
 function App() {
@@ -24,18 +23,24 @@ function App() {
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
+    async function checkPartner(uid) {
+      let pairId;
+      if (uid) {
+        const userDoc = await axios.get(`${apiUrl}/users/${uid}`);
+        pairId = userDoc?.data?.pair_id;
+        if (pairId) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      }
+    }
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
         const { uid } = user;
-        const userData = axios.get(`${apiUrl}/users/${uid}`);
-        if (userData.pid) {
-          setIsLoggedIn(true);
+        if (user) {
+          checkPartner(uid);
         }
-      } else {
-        // User is signed out
-        setIsLoggedIn(false); // UNCOMMENT FOR DEV PURPOSES ONLY
       }
     });
   }, []);

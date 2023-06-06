@@ -52,8 +52,8 @@ const getPairDate = async (uid) => {
   return pairDate;
 }
 
-const connectPairs = async (uid, userCode, isPairCreator, relationshipStart) => {
-  const pairId = await firestoreService.connectPairs(uid, userCode, isPairCreator, relationshipStart);
+const connectPairs = async (uid, userData) => {
+  const pairId = await firestoreService.connectPairs(uid, userData);
   return pairId;
 }
 

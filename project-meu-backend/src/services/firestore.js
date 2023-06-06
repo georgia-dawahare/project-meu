@@ -85,48 +85,43 @@ const getUser = async (uid) => {
   return user;
 };
 
-const connectPairs = async (userId, userCode, isPairCreator, relationshipStart) => {
+const connectPairs = async (userId, userData) => {
+  const userCode = userData.userCode;
+  const relationshipStart = userData.relationshipStart;
+
+  let partnerId;
   let matchList = [];
   firestore.collection("Users").where("code", "==", userCode)
     .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
-        // doc.data() is never undefined for query doc snapshots
-        console.log(doc.id, " => ", doc.data());
         matchList.push(doc.id);
       });
       return matchList;
     })
     .then((matches) => {
-      console.log(matches.length);
       if (matches.length === 1) {
-        let user1Id, user2Id;
-        if (isPairCreator) {
-          user1Id = userId;
-          if (user1Id === matches[0]) {
-            user2Id = matches[1];
-          } else if (user1Id === matches[1]) {
-            user2Id = matches[0];
-          }
-        } else {
-          user2Id = userId;
-          if (user2Id === matches[0]) {
-            user1Id = matches[1];
-          } else if (user2Id === matches[1]) {
-            user1Id = matches[0];
-          }
+        // If user is entering their partner's code, then their partner must have created the pair
+        partnerId = matches[0]
+        const pairData = {
+          user1Id: partnerId,
+          user2Id: userId,
+          relationshipStart: relationshipStart,
+          pairCreatorId: partnerId,
         }
-        if (user1Id && user2Id) {
-          const pairData = {
-            user1_id: user1Id,
-            user2_id: user2Id,
-            relationship_start: relationshipStart,
-            pair_creator_id: user1Id,
-          };
-          console.log("PAIR", pairData);
-          return createPair(pairData);
-        }
+        return createPair(pairData);
       }
+    })
+    .then((pairId) => {
+      const userUpdate = {
+        code: userCode,
+        pair_id: pairId
+      }
+      const partnerUpdate = {
+        pair_id: pairId
+      }
+      updateUser(partnerId, partnerUpdate);
+      updateUser(userId, userUpdate);
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
@@ -200,7 +195,6 @@ const updateEmotion = async (updatedEmotion, uid) => {
 
 // === Pair Functions ===
 const createPair = async (pairData) => {
-  console.log('here', pairData)
   const pair = {
     user1_id: pairData.user1Id,
     user2_id: pairData.user2Id,
@@ -528,7 +522,8 @@ const firestoreService = {
   getPartnerId,
   getCity,
   getBackground,
-  getPairDate
+  getPairDate,
+  connectPairs
 };
 
 export default firestoreService;

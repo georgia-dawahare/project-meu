@@ -119,13 +119,11 @@ router.get('/pairdate/:uid', async (req, res) => {
   }
 });
 
-router.get('/code/:uid', async (req, res) => {
+router.post('/code/:uid', async (req, res) => {
   const userId = req.params.uid;
-  const isPairCreator = false;
-  const relationshipStart = '12/02/22';
-  const userCode = '123456'
+  const userData = req.body;
   try {
-    const pairId = await usersController.connectPairs(userId, userCode, isPairCreator, relationshipStart);
+    const pairId = await usersController.connectPairs(userId, userData);
     res.status(200).send(pairId);
   } catch (e) {
     console.log('Could not create pair');

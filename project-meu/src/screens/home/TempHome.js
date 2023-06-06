@@ -33,12 +33,12 @@ function TempHome({ navigation }) {
       }
     });
     initializeView();
-  }, [backgrounds]);
+  }, []);
 
   useEffect(() => {
     setBackgroundImage(backgrounds[0]);
     setPartnerBackgroundImage(backgrounds[1]);
-  }, [backgrounds]);
+  }, []);
 
   const initializeView = async () => {
     if (!backgrounds[0]) {
@@ -107,8 +107,8 @@ function TempHome({ navigation }) {
     } else {
       return (
         <Image
-          source={require('../../../assets/images/defaultUserBackground.png')}
           style={styles.image}
+          source={require('../../../assets/images/defaultUserBackground.png')}
         />
       );
     }
@@ -122,7 +122,6 @@ function TempHome({ navigation }) {
           <TouchableOpacity style={styles.changeBackground} onPress={toggleMenu}>
             <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
           </TouchableOpacity>
-
         </View>
         {renderBackground()}
         <View style={styles.clockWidget}>
