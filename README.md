@@ -1,7 +1,5 @@
 # MeU
 
-![Team Photo](Insert a Team Photo URL here)
-
 app for couples in long-distance relationships
 
 ## Deployment
@@ -16,9 +14,10 @@ Backend: Express and Firebase
 1. Clone repo by running `git clone https://github.com/dartmouth-cs52-23s/project-meu.git` in your terminal and `cd project-meu`
 2. Run `npm install` to install all of the necessary dependencies.
 3. Start the Expo simulator by running `npm run start` or `expo start`
+
 ## Deployment
 * See backend README for backend deployment
-Deploy to Expo using the command `expo publish`
+* Deploy to Expo using the command `expo publish`
 
 ## Authors
 * Chipo Chibbamulilo '26
