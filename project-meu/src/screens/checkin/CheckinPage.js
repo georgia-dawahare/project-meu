@@ -1,13 +1,13 @@
 /* eslint-disable global-require */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Text,
   TouchableOpacity,
-  SafeAreaView,
   StyleSheet,
   Image,
   View,
-  // Pressable,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import {
   Card,
@@ -15,7 +15,6 @@ import {
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
-import { onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TopBarCheckin from '../../components/TopBarCheckin';
@@ -37,6 +36,7 @@ function CheckinPage({ navigation }) {
   const [partnerName, setPartnerName] = useState('');
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -46,22 +46,11 @@ function CheckinPage({ navigation }) {
         setUserDoc(userInfo);
       }
     };
-
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const { uid } = user;
-        setUserId(uid);
-      } else {
-        // User is signed out
-        console.log('Could not retrieve user');
-      }
-    });
+    setUserId(auth?.currentUser?.uid);
     if (userId) {
       getUser();
     }
-  }, []);
+  }, [partnerId]);
 
   useEffect(() => {
     const getPartnerId = async () => {
@@ -71,6 +60,13 @@ function CheckinPage({ navigation }) {
         setPartnerId(returnedPartnerId);
       }
     };
+
+    if (userId) {
+      getPartnerId();
+    }
+  }, [userId]);
+
+  useEffect(() => {
     const getPartner = async () => {
       const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
       const partnerInfo = partner.data;
@@ -78,13 +74,14 @@ function CheckinPage({ navigation }) {
         setPartnerDoc(partnerInfo);
       }
     };
-    if (userId) {
-      getPartnerId();
-      if (partnerId) {
-        getPartner();
-      }
+    if (partnerId) {
+      getPartner();
     }
-  }, [userId]);
+  }, [partnerId]);
+
+  useEffect(() => {
+    refreshData();
+  }, [refreshing, userDoc, partnerDoc]);
 
   useEffect(() => {
     const getNames = async () => {
@@ -105,14 +102,6 @@ function CheckinPage({ navigation }) {
   }, [partnerId]);
 
   useEffect(() => {
-    refreshData();
-    const unsubscribe = navigation.addListener('focus', refreshData);
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
@@ -124,6 +113,13 @@ function CheckinPage({ navigation }) {
     loadFont();
   }, []);
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
+
   const addResponseGroup = async (groupData, groupId) => {
     const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
     return id;
@@ -132,10 +128,6 @@ function CheckinPage({ navigation }) {
   const getResponse = async (id) => {
     const response = await axios.get(`${apiUrl}/responses/${id}`);
     return response.data;
-  };
-
-  const handleNewResponse = (textAnswer) => {
-    setUserResponse(textAnswer);
   };
 
   const getResponseGroup = async (groupId) => {
@@ -284,7 +276,7 @@ function CheckinPage({ navigation }) {
             <Text style={styles.blurText}>{partnerResponse}</Text>
           </View>
           <View style={styles.seeMoreButtonWrapper}>
-            <TouchableOpacity style={styles.seeMoreButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+            <TouchableOpacity style={styles.seeMoreButton} onPress={() => navigation.navigate('CheckinSubmit')}>
               <Text style={styles.seeMoreButtonTxt}>
                 Answer to see
               </Text>
@@ -316,14 +308,15 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.leftText}>{userResponse}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-            <Image style={styles.editButton}
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Image
               source={require('../../../assets/images/editButton.png')}
+              style={styles.editImg}
             />
           </TouchableOpacity>
         </Card>
         <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
             <Text style={styles.buttonTxt}>View More</Text>
           </TouchableOpacity>
         </View>
@@ -362,7 +355,7 @@ function CheckinPage({ navigation }) {
             </View>
             <Text style={styles.leftText}>{userResponse}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image
               style={styles.editButtonContainer}
               source={require('../../../assets/images/editButton.png')}
@@ -384,32 +377,56 @@ function CheckinPage({ navigation }) {
 
   if (userResponse && partnerResponse) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <TopBarCheckin />
-        {displayBothResponses()}
-      </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayBothResponses()}
+        </ScrollView>
+      </View>
     );
   } else if (userResponse) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <TopBarCheckin />
-        {displayUserResponse()}
-      </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayUserResponse()}
+        </ScrollView>
+      </View>
     );
   } else if (partnerResponse) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <TopBarCheckin />
-        {displayPartnerResponded()}
-      </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayPartnerResponded()}
+        </ScrollView>
+      </View>
     );
   } else {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <TopBarCheckin />
-        {displayNoResponses()}
-        <View />
-      </SafeAreaView>
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayNoResponses()}
+          <View />
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -505,12 +522,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   editButton: {
-    marginTop: 20,
-    width: 45,
-    height: 45,
+    marginTop: 10,
     alignSelf: 'flex-end',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  editImg: {
+    width: 45,
+    height: 45,
   },
   viewMoreButtonWrapper: {
     alignItems: 'center',

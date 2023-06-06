@@ -1,48 +1,48 @@
-import React from 'react';
+/* eslint-disable global-require */
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   StyleSheet,
-  View,
+  SafeAreaView,
 } from 'react-native';
+import * as Font from 'expo-font';
 
-function TopBarCheckin({ navigation }) {
+function TopBarCheckin() {
+  const [fontLoaded, setFontLoaded] = useState(false);
+
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Medium': require('../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+      setFontLoaded(true);
+    }
+    loadFont();
+  }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
-    <View style={styles.header}>
+    <SafeAreaView style={styles.header}>
       <Text style={styles.topTitle}>Check-in</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  // topbar: {
-  //   width: '100%',
-  //   height: 60,
-  //   backgroundColor: 'white',
-  //   position: 'fixed',
-  //   top: 0,
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  // },
-  // header: {
-  //   textAlign: 'center',
-  //   fontSize: 20,
-  //   fontFamily: 'SF-Pro-Display',
-  //   flex: 1,
-  //   flexWrap: 'wrap',
-  // },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    height: 60,
-    // backgroundColor: 'white',
+    backgroundColor: 'white',
+    height: 100,
   },
   topTitle: {
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
     alignSelf: 'center',
-
   },
 });
 
