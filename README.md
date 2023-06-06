@@ -28,4 +28,5 @@ Deploy to Expo using the command `expo publish`
 * Soo Park 'GR
 * Tim Yang 'GR
 
-## Acknowledgments
+## Extra Credit
+- Github Projects Board
