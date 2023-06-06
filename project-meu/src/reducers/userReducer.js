@@ -9,6 +9,8 @@ const initialState = {
     last_name: '',
     birthday: '',
     anniversary: '',
+    days_together: '',
+    background_photo: '',
   },
 };
 

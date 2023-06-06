@@ -13,12 +13,13 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as Font from 'expo-font';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
 import { apiUrl } from '../../constants/constants';
 
 function DdayList({
-  date, title, iconName, eventId, fetchData, dday,
+  date, title, iconName, eventId, fetchData,
 }) {
   const [icon, setIcon] = useState(iconName);
   const [previousIcon, setPreviousIcon] = useState('');
@@ -68,23 +69,42 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
   const STICKY_HEADER_HEIGHT = 120;
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
+  const today = new Date();
 
+  const currUser = useSelector((state) => state.user);
   const [fontLoaded, setFontLoaded] = useState(false);
   const [eventData, setEventData] = useState([]);
 
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+      setFontLoaded(true);
+    }
+    loadFont();
+  }, []);
+
+  useEffect(() => {
+    printEventTitlesAndDates();
+  }, []);
+
   // TODO: Need to filter by pairId
   const printEventTitlesAndDates = async () => {
-    const addDefaultEvents = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
-        console.log('Default events added:', response.data);
-      } catch (error) {
-        console.error('Failed to add default events:', error);
-      }
-    };``
+    // const addDefaultEvents = async () => {
+    //   try {
+    //     const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
+    //     console.log('Default events added:', response.data);
+    //   } catch (error) {
+    //     console.error('Failed to add default events:', error);
+    //   }
+    // };
 
     // await addDefaultEvents();
 
@@ -92,7 +112,6 @@ function HomeCalendarComponent({ scrollY, navigation }) {
 
     const extractDday = (dateString) => {
       const date = new Date(dateString);
-      const today = new Date();
       const timeDiff = date.getTime() - today.getTime();
       const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
       return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
@@ -137,21 +156,15 @@ function HomeCalendarComponent({ scrollY, navigation }) {
   // 초기 로딩 시 이벤트 목록을 가져옴
   // printEventTitlesAndDates();
 
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
-      });
-      setFontLoaded(true);
-    }
-    loadFont();
-  }, []);
+  const formatDate = () => {
+    const month = today.getMonth();
+    const day = today.getDate();
+    const year = today.getFullYear();
 
-  useEffect(() => {
-    printEventTitlesAndDates();
-  }, []);
+    const formattedDate = `${months[month]} ${day}th, ${year}`;
+    return formattedDate;
+  };
+  const formattedDate = formatDate();
 
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
@@ -170,6 +183,7 @@ function HomeCalendarComponent({ scrollY, navigation }) {
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
+
       <Animated.View
         style={[
           styles.headerContainer,
@@ -197,13 +211,15 @@ function HomeCalendarComponent({ scrollY, navigation }) {
             style={styles.bgtextday}
           >
             {'\n'}
-            1252
+            {currUser.user_data.days_together}
+            {' '}
+            days
           </Animated.Text>
           <Animated.Text
             style={styles.bgtextdate}
           >
             {'\n'}
-            October 20th, 2019
+            {formattedDate}
           </Animated.Text>
         </Animated.Text>
         <FloatingButton />
@@ -333,6 +349,10 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Semibold',
     fontSize: 18,
     lineHeight: 36,
+  },
+  userBackground: {
+    width: '100%',
+    height: '100%',
   },
 });
 

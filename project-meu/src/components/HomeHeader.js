@@ -10,13 +10,16 @@ import {
 import * as Font from 'expo-font';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
 import { apiUrl } from '../constants/constants';
+import { updateUser } from '../actions';
 
 function HomeHeader({ navigation }) {
   const [days, setDays] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
   const [userId, setUserId] = useState('');
   const [userDoc, setUserDoc] = useState('');
+  const dispatch = useDispatch();
 
   const auth = getAuth();
 
@@ -52,13 +55,15 @@ function HomeHeader({ navigation }) {
 
         // setting days
         setDays(`${diffDays} Days`);
+        const userUpdate = { days_together: diffDays };
+        dispatch(updateUser(userUpdate));
       } else {
         console.log('Could not retrieve start date');
       }
     };
 
     getPairDate();
-  }, [userId]);
+  }, [userDoc]);
 
   useEffect(() => {
     async function loadFont() {

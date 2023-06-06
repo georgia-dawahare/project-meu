@@ -10,19 +10,22 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
 import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
 import { apiUrl } from '../../constants/constants';
+import { updateUser } from '../../actions';
 
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
   const [userDoc, setUserDoc] = useState('');
+  const [userId, setUserId] = useState('');
 
   const auth = getAuth();
-  const [userId, setUserId] = useState('');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // Get current user from auth
@@ -73,6 +76,10 @@ function TempHome({ navigation }) {
       }
     }
     getUserBackground();
+    const updatedUser = {
+      background_photo: backgroundImage,
+    };
+    dispatch(updateUser(updatedUser));
     getPartnerBackground();
   }, [userId]);
 
@@ -86,7 +93,6 @@ function TempHome({ navigation }) {
         <ImageBackground
           source={{ uri: backgroundImage }}
           style={styles.userBackground}
-          // resizeMode="cover"
         />
       );
     } else {
