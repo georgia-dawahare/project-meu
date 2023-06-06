@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  ImageBackground,
 } from 'react-native';
 import axios from 'axios';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -17,8 +18,8 @@ import { apiUrl } from '../../constants/constants';
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');
   const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
-  const [backgrounds, setBackgrounds] = useState([]);
   const [isMenuVisible, setMenuVisible] = useState(false);
+  const [userDoc, setUserDoc] = useState('');
 
   const auth = getAuth();
   const [userId, setUserId] = useState('');
@@ -32,64 +33,49 @@ function TempHome({ navigation }) {
         console.log('No user logged in');
       }
     });
-    initializeView();
   }, []);
 
   useEffect(() => {
-    setBackgroundImage(backgrounds[0]);
-    setPartnerBackgroundImage(backgrounds[1]);
-  }, []);
-
-  const initializeView = async () => {
-    if (!backgrounds[0]) {
-      const background = await setBackground();
-      const partnerBackground = await setPartnerBackground();
-      setBackgrounds([background, partnerBackground]);
-    }
-  };
-
-  const setPartnerBackground = async () => {
-    let userDoc, pair, pairId, pairDoc, partnerDoc;
-
-    // Get user from Firestore
-    if (userId) {
-      userDoc = await axios.get(`${apiUrl}/users/${userId}`);
-      pairId = userDoc?.data?.pair_id;
-    }
-
-    // Get pair from Firestore
-    if (pairId) {
-      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
-      pair = pairDoc.data;
-    }
-
-    // Get partner from Firestore
-    if (pair) {
-      // Figure out which user the current user is
-      if (userId === pair.user1_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
-      } else if (userId === pair.user2_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
-      } else {
-        console.log('Could not find partner');
-      }
-    }
-    return partnerDoc?.data?.background_photo;
-  };
-
-  const setBackground = async () => {
-    let userDoc;
-
-    // Get user from Firestore
-    try {
+    let partnerId, partnerDoc, pairId, pairDoc;
+    async function getUserBackground() {
+      // Get user from Firestore
       if (userId) {
-        userDoc = await axios.get(`${apiUrl}/users/${userId}`);
+        const resUser = await axios.get(`${apiUrl}/users/${userId}`);
+        const userBackground = resUser?.data?.background_photo;
+        setUserDoc(resUser?.data);
+        if (userBackground) {
+          setBackgroundImage(userBackground);
+        }
       }
-    } catch (e) {
-      console.log('Error setting user background: ', e);
     }
-    return userDoc?.data?.background_photo;
-  };
+    async function getPartnerBackground() {
+      // Get user from Firestore
+      if (userId) {
+        pairId = userDoc?.data?.pair_id;
+        if (pairId) {
+          const pair = await axios.get(`${apiUrl}/pairs/${pairId}`);
+          pairDoc = pair?.data;
+          if (pairDoc) {
+            if (userId === pair?.data?.pair_creator_id) {
+              partnerId = pair?.data?.user2_id;
+            } else {
+              partnerId = pair?.data?.user1_id;
+            }
+            if (partnerId) {
+              partnerDoc = await axios.get(`${apiUrl}/users/${partnerId}`);
+              const partnerBackground = partnerDoc?.data?.background_photo;
+              if (partnerBackground) {
+                setPartnerBackgroundImage(partnerBackground);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    getUserBackground();
+    getPartnerBackground();
+  }, [userId]);
 
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
@@ -98,16 +84,16 @@ function TempHome({ navigation }) {
   const renderBackground = () => {
     if (backgroundImage) {
       return (
-        <Image
+        <ImageBackground
           source={{ uri: backgroundImage }}
-          style={styles.image}
+          style={styles.userBackground}
           resizeMode="cover"
         />
       );
     } else {
       return (
         <Image
-          style={styles.image}
+          style={styles.defaultImage}
           source={require('../../../assets/images/defaultUserBackground.png')}
         />
       );
@@ -124,6 +110,7 @@ function TempHome({ navigation }) {
           </TouchableOpacity>
         </View>
         {renderBackground()}
+        <View />
         <View style={styles.clockWidget}>
           <ClockAndLocation />
         </View>
@@ -168,8 +155,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     justifyContent: 'flex-end',
   },
-  image: {
+  defaultImage: {
     ...StyleSheet.absoluteFillObject,
+  },
+  userBackground: {
+    width: '100%',
+    height: '100%',
   },
   separate: {
     flex: 2,

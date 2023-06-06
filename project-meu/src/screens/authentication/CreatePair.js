@@ -154,7 +154,7 @@ function CreatePair({ navigation }) {
         };
         await axios.post(`${apiUrl}/users/code/${currUserId}`, userData);
         console.log('Successfully paired!');
-        await handleNext();
+        handleNext();
       } catch (e) {
         setError('Invalid code');
         console.log('Failed to pair');

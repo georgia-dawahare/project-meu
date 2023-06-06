@@ -113,15 +113,17 @@ const connectPairs = async (userId, userData) => {
       }
     })
     .then((pairId) => {
-      const userUpdate = {
-        code: userCode,
-        pair_id: pairId
+      if (pairId) {
+        const userUpdate = {
+          code: userCode,
+          pair_id: pairId
+        }
+        const partnerUpdate = {
+          pair_id: pairId
+        }
+        updateUser(partnerId, partnerUpdate);
+        updateUser(userId, userUpdate);
       }
-      const partnerUpdate = {
-        pair_id: pairId
-      }
-      updateUser(partnerId, partnerUpdate);
-      updateUser(userId, userUpdate);
     })
     .catch((error) => {
       console.log("Error getting documents: ", error);
