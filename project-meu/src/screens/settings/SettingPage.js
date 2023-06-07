@@ -235,7 +235,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    // marginTop: 8,
   },
   radioButton: {
     flexDirection: 'row',
@@ -243,7 +242,6 @@ const styles = StyleSheet.create({
   },
   radioButtonLabel: {
     fontSize: 15,
-    // paddingLeft: 16,
     paddingLeft: 8,
     alignSelf: 'center',
   },
