@@ -11,55 +11,28 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Keyboard,
+  SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import * as Font from 'expo-font';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import Button from '../../components/Button';
-import { apiUrl } from '../../constants/constants';
+import { updateUser } from '../../actions';
 
 function RegisterEmailPassword({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const auth = getAuth();
+  const dispatch = useDispatch();
 
-  const handleRegister = async () => {
+  const handleNext = async () => {
     // I know it's bad to store password, but it's 5 am and I'm hacking it
-    // const newUser = {
-    //   email,
-    //   password,
-    // };
-    if (email && password) {
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in
-          const { user } = userCredential;
-          if (user) {
-            const userData = {
-              email,
-              userId: user.uid,
-              pairId: '',
-              firstName: '',
-              lastName: '',
-              penguinColor: '',
-              backgroundPhoto: '',
-              birthday: '',
-              timezone: '',
-            };
-            axios
-              .post(`${apiUrl}/users/`, userData)
-              .catch((e) => console.log(e.response));
-          }
-        })
-        .catch((e) => {
-          const errorMessage = e.message;
-          // Format error message
-          const message = errorMessage.split(':')[1].split('(')[0].trim();
-          setError(message);
-        });
-    }
+    const newUser = {
+      email,
+      password,
+    };
+    dispatch(updateUser(newUser));
+    navigation.navigate('ProfileInfo');
   };
 
   useEffect(() => {
@@ -79,59 +52,65 @@ function RegisterEmailPassword({ navigation }) {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.keyboardAvoiding}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image
-              source={require('../../../assets/icons/goback-black.png')}
-              style={styles.icon}
-            />
-          </TouchableOpacity>
-          <View style={styles.contentWrapper}>
+        <SafeAreaView style={styles.container}>
+          <ScrollView>
             <View>
-              <Image
-                source={require('../../../assets/images/progress-1.png')}
-                style={styles.progress}
-              />
-              <View style={styles.textWrapper}>
-                <Text style={styles.text}>Nice to meet you! Please register to join MeU.</Text>
-              </View>
-            </View>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                placeholder="Email"
-                placeholderTextColor="gray"
-                textAlign="center"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-                style={styles.input}
-              />
-              <TextInput
-                placeholder="Password"
-                placeholderTextColor="gray"
-                textAlign="center"
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                style={styles.input}
-                secureTextEntry
-              />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
-            </View>
-            <View style={styles.buttonWrapper}>
-              <TouchableOpacity onPress={handleRegister}>
-                <Button title="Next" buttonStyle={{ backgroundColor: password && email ? '#E62B85' : '#FFB2D7' }} />
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Image
+                  source={require('../../../assets/icons/goback-black.png')}
+                  style={styles.icon}
+                />
               </TouchableOpacity>
             </View>
-
-          </View>
-        </View>
+            <View style={styles.contentWrapper}>
+              <View>
+                <Image
+                  source={require('../../../assets/images/progress-1.png')}
+                  style={styles.progress}
+                />
+                <View style={styles.textWrapper}>
+                  <Text style={styles.text}>Nice to meet you! Please register to join MeU.</Text>
+                </View>
+              </View>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  placeholder="Email"
+                  placeholderTextColor="gray"
+                  textAlign="center"
+                  value={email}
+                  onChangeText={(text) => setEmail(text)}
+                  style={styles.input}
+                />
+                <TextInput
+                  placeholder="Password"
+                  placeholderTextColor="gray"
+                  textAlign="center"
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                  style={styles.input}
+                  secureTextEntry
+                />
+              </View>
+              <View style={styles.buttonWrapper}>
+                <TouchableOpacity onPress={handleNext}>
+                  <Button title="Next" buttonStyle={{ backgroundColor: password && email ? '#E62B85' : '#FFB2D7' }} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoiding: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
   },
@@ -142,7 +121,6 @@ const styles = StyleSheet.create({
     marginTop: 140,
   },
   icon: {
-    // position: 'absolute',
     top: 50,
     left: 25,
   },

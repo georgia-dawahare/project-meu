@@ -1,14 +1,13 @@
 /* eslint-disable global-require */
-import React, { useEffect, useState } from 'react';
-// import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Text,
   TouchableOpacity,
-  SafeAreaView,
   StyleSheet,
   Image,
   View,
-  // Pressable,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import {
   Card,
@@ -16,13 +15,14 @@ import {
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
-import { onAuthStateChanged } from 'firebase/auth';
+// import { onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
-import TopBarCheckin from '../../components/TopBarCheckin';
+import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
 function CheckinPage({ navigation }) {
+  const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [question, setQuestion] = useState('');
@@ -30,60 +30,96 @@ function CheckinPage({ navigation }) {
   const [partnerResponseTime, setPartnerResponseTime] = useState('');
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
-  const [responseId, setResponseId] = useState('');
-
-  // dumby user data
-  const userFirstName = 'Kaylie';
-  const partnerFirstName = 'Steve';
-  const tempPairId = 'pair1';
 
   const [userId, setUserId] = useState('');
-  const [partnerId, setPartnerId] = useState('');
   const [userName, setUserName] = useState('');
+  const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState('');
+  const [userDoc, setUserDoc] = useState('');
+  const [partnerDoc, setPartnerDoc] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const { uid } = user;
-        setUserId(uid);
-      } else {
-        // User is signed out
-        console.log('Could not retrieve user');
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+      if (userInfo) {
+        setUserDoc(userInfo);
       }
-    });
-  }, []);
+    };
+    setUserId(auth?.currentUser?.uid);
+    if (userId) {
+      getUser();
+    }
+  }, [partnerId]);
 
   useEffect(() => {
-    const getPartnerID = async () => {
+    const getPartnerId = async () => {
       const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
       const returnedPartnerId = response.data;
-      setPartnerId(returnedPartnerId);
+      if (returnedPartnerId) {
+        setPartnerId(returnedPartnerId);
+      }
     };
 
-    getPartnerID();
-    console.log(partnerId);
+    if (userId) {
+      getPartnerId();
+    }
   }, [userId]);
+
+  useEffect(() => {
+    const getPartner = async () => {
+      const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
+      const partnerInfo = partner.data;
+      if (partnerInfo) {
+        setPartnerDoc(partnerInfo);
+      }
+    };
+    if (partnerId) {
+      getPartner();
+    }
+  }, [partnerId]);
+
+  useEffect(() => {
+    refreshData();
+  }, [refreshing, userDoc, partnerDoc]);
 
   useEffect(() => {
     const getNames = async () => {
       const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
       const name1 = response1.data;
-      setUserName(name1[0]);
+      if (name1) {
+        setUserName(name1[0]);
+      }
+
       const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
       const name2 = response2.data;
-      setPartnerName(name2[0]);
+      if (name2) {
+        setPartnerName(name2[0]);
+      }
     };
 
     getNames();
   }, [partnerId]);
 
-  const getUser = async (uid) => {
-    const userResult = await axios.get(`${apiUrl}/users/${uid}`);
-    return userResult;
-  };
+  useEffect(() => {
+    async function loadFont() {
+      await Font.loadAsync({
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+      });
+      setFontLoaded(true);
+    }
+    loadFont();
+  }, []);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  }, []);
 
   const addResponseGroup = async (groupData, groupId) => {
     const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
@@ -92,246 +128,306 @@ function CheckinPage({ navigation }) {
 
   const getResponse = async (id) => {
     const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response;
+    return response.data;
   };
 
-  // const handleDeleteResponse = async () => {
-  //   await axios.delete(`${apiUrl}/responses/${responseId}`);
-  //   setUserResponse('');
-  // };
+  const getResponseGroup = async (groupId) => {
+    return axios.get(`${apiUrl}/responses/group/${groupId}`);
+  };
 
-  const handleNewResponse = (textAnswer) => {
-    setUserResponse(textAnswer);
+  const createResponseGroup = async (groupId) => {
+    let questionId = Math.round(Math.random() * 100);
+    // Ignore all image questions until we have a way to display them
+    while (questionData.questions[questionId].type === 'image') {
+      questionId = Math.round(Math.random() * 100);
+    }
+    await addResponseGroup(
+      {
+        p1_response_id: '',
+        p2_response_id: '',
+        question_id: questionId,
+      },
+      groupId,
+    );
+    // Set responseGroup to newly created response group
+    return axios.get(`${apiUrl}/responses/group/${groupId}`);
+  };
+
+  const getDailyResponses = async (responseGroupData) => {
+    let p1Response, p2Response, p1Date, p2Date;
+
+    // Populate partner responses if they exist
+
+    if (responseGroupData.p1_response_id) {
+      p1Response = await getResponse(responseGroupData.p1_response_id);
+    }
+    if (responseGroupData.p2_response_id) {
+      p2Response = await getResponse(responseGroupData.p2_response_id);
+    }
+
+    if (p1Response) {
+      const p1Timestamp = p1Response.timestamp._seconds * 1000 + Math.floor(p1Response.timestamp._nanoseconds / 1000000);
+      p1Date = new Date(p1Timestamp);
+    }
+    if (p2Response) {
+      const p2Timestamp = p2Response.timestamp._seconds * 1000 + Math.floor(p2Response.timestamp._nanoseconds / 1000000);
+      p2Date = new Date(p2Timestamp);
+    }
+
+    // Current user is pair creator
+    if (userId === p1Response?.user_id || partnerId === p2Response?.user_id) {
+      //  Add user response
+      if (p1Response) {
+        setUserResponse(p1Response.response);
+        setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+      }
+      // Add partner response
+      if (p2Response) {
+        const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
+        setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
+        setPartnerResponse(p2Response.response);
+      }
+      // Current user is p2
+    } else if (userId === p2Response?.user_id || partnerId === p1Response?.user_id) {
+      // Add user response
+      if (p2Response) {
+        setUserResponse(p2Response.response);
+        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+      }
+      // Add partner response
+      if (p1Response) {
+        setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+        setPartnerResponse(p1Response.response);
+      }
+    }
   };
 
   const refreshData = async () => {
-    try {
-    // Fetch user ID & user doc
-      const userId = auth.currentUser?.uid;
-      getUser(userId);
+    if (userDoc && partnerDoc) {
+      let responseGroup, responseGroupData, groupId;
+      try {
+        // Fetch user ID & user doc
+        const pairId = userDoc.pair_id;
+        groupId = pairId + moment().format('MMDDYY');
+        responseGroup = await getResponseGroup(groupId);
+      } catch (error) {
+        console.error('Error occurred during data refresh:', error);
+      }
+      try {
+        if (groupId) {
+        // if there is no response group, create a new one!
+          if (responseGroup.status === 202) {
+            responseGroup = await createResponseGroup(groupId);
+          }
 
-      const groupId = tempPairId + moment().format('MMDDYY');
-      let responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-      const questionData = require('../../../assets/data/questions.json');
-      // if there is no response group, create a new one!
-      if (responseGroup.status === 202) {
-        let questionId = Math.round(Math.random() * 100);
-        // Ignore all image questions until we have a way to display them
-        while (questionData.questions[questionId].type === 'image') {
-          questionId = Math.round(Math.random() * 100);
+          if (responseGroup) {
+            responseGroupData = responseGroup.data;
+          } else {
+            return;
+          }
+
+          // Set daily question
+          setQuestion(questionData.questions[responseGroupData.question_id].question);
         }
-        await addResponseGroup(
-          {
-            p1_response_id: '',
-            p2_response_id: '',
-            question_id: questionId,
-          },
-          groupId,
-        );
-        // Set responseGroup to newly created response group
-        responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+      } catch (error) {
+        console.error('Error occurred during data refresh:', error);
       }
 
-      const responseGroupData = responseGroup.data;
-      // Set daily question
-      setQuestion(questionData.questions[responseGroupData.question_id].question);
-
-      // Populate partner responses if they exist
-      let p1Response = null;
-      let p2Response = null;
-      if (responseGroupData.p1_response_id) {
-        p1Response = await getResponse(responseGroupData.p1_response_id);
-      }
-      if (responseGroupData.p2_response_id) {
-        p2Response = await getResponse(responseGroupData.p2_response_id);
-      }
-
-      // Find out if P1 or P2 is user/partner
-      if (p1Response && p1Response.status === 200) {
-        const p1Timestamp = p1Response.data.timestamp._seconds * 1000 + Math.floor(p1Response.data.timestamp._nanoseconds / 1000000);
-        const p1Date = new Date(p1Timestamp);
-        // If P1 is user, then store P1 as user and P2 as partner
-        if (p1Response.data.user_id === userId) {
-          setUserResponse(p1Response.data.response);
-          setResponseId(responseGroupData.p1_response_id);
-          setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        } else {
-        // If P1 is not user, then user must be P2 and P1 will be assigned partner response time
-          const minutes = ((p1Date.getMinutes() < 10 ? '0' : '') + p1Date.getMinutes()).toString();
-          setPartnerResponseTime(`${p1Date.getHours().toString()}:${minutes}`);
-          setPartnerResponse(p1Response.data.response);
+      try {
+        if (responseGroupData) {
+        // Retrieve couple responses
+          await getDailyResponses(responseGroupData);
         }
+      } catch (error) {
+        console.error('Error occurred during data refresh:', error);
       }
-      if (p2Response && p2Response.status === 200) {
-        const p2Timestamp = p2Response.data.timestamp._seconds * 1000 + Math.floor(p2Response.data.timestamp._nanoseconds / 1000000);
-        const p2Date = new Date(p2Timestamp);
-        // If P2 is the user, then store P2 as user and P1 as partner
-        if (p2Response.data.user_id === userId) {
-          setUserResponse(p2Response.data.response);
-          setResponseId(responseGroupData.p2_response_id);
-          setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-        } else {
-          setPartnerResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-          setPartnerResponse(p2Response.data.response);
-        }
-      }
-    } catch (error) {
-      console.error('Error occurred during data refresh:', error);
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', refreshData);
-    return () => {
-      unsubscribe();
-    };
-  }, []);
+  const displayNoResponses = () => {
+    return (
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Daily Question</Text>
+          <Card.Title style={styles.question}>{question}</Card.Title>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Text style={styles.buttonTxt}>Submit a Response</Text>
+          </TouchableOpacity>
+        </Card>
+      </View>
+    );
+  };
 
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-      });
-      setFontLoaded(true);
-    }
-    loadFont();
-  }, []);
+  const displayPartnerResponded = () => {
+    return (
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Daily Question</Text>
+          <Card.Title style={styles.question}>{question}</Card.Title>
+          <View>
+            <View style={styles.responseHeader}>
+              <Image style={styles.profileImg}
+                source={require('../../../assets/animations/neutral/neutral_black.gif')}
+              />
+              <View style={styles.partnerNameTxt}>
+                <Text>{partnerName}</Text>
+                <Text>{partnerResponseTime}</Text>
+              </View>
+            </View>
+            <Text style={styles.blurText}>{partnerResponse}</Text>
+          </View>
+          <View style={styles.seeMoreButtonWrapper}>
+            <TouchableOpacity style={styles.seeMoreButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+              <Text style={styles.seeMoreButtonTxt}>
+                Answer to see
+              </Text>
+              <Image style={styles.chevronRight}
+                source={require('../../../assets/icons/chevron-right.png')}
+              />
+            </TouchableOpacity>
+          </View>
+        </Card>
+      </View>
+    );
+  };
+
+  const displayUserResponse = () => {
+    return (
+      <View style={styles.responseWrapper}>
+        <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Daily Question</Text>
+          <Card.Title style={styles.question}>{question}</Card.Title>
+          <View>
+            <View style={styles.myResponseHeader}>
+              <View style={styles.userNameTxt}>
+                <Text style={styles.leftText}>{userName}</Text>
+                <Text style={styles.leftText}>{userResponseTime}</Text>
+              </View>
+              <Image style={styles.profileImg}
+                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+              />
+            </View>
+            <Text style={styles.leftText}>{userResponse}</Text>
+          </View>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Image
+              source={require('../../../assets/images/editButton.png')}
+              style={styles.editImg}
+            />
+          </TouchableOpacity>
+        </Card>
+        <View style={styles.viewMoreButtonWrapper}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Text style={styles.buttonTxt}>View More</Text>
+          </TouchableOpacity>
+        </View>
+        <View />
+      </View>
+    );
+  };
+
+  const displayBothResponses = () => {
+    return (
+      <View style={styles.responseWrapper}>
+        <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Daily Question</Text>
+          <Card.Title style={styles.question}>{question}</Card.Title>
+          <View>
+            <View style={styles.responseHeader}>
+              <Image style={styles.profileImg}
+                source={require('../../../assets/animations/neutral/neutral_black.gif')}
+              />
+              <View style={styles.partnerNameTxt}>
+                <Text>{partnerName}</Text>
+                <Text>{partnerResponseTime}</Text>
+              </View>
+            </View>
+            <Text>{partnerResponse}</Text>
+          </View>
+          <View>
+            <View style={styles.myResponseHeader}>
+              <View style={styles.userNameTxt}>
+                <Text style={styles.leftText}>{userName}</Text>
+                <Text style={styles.leftText}>{userResponseTime}</Text>
+              </View>
+              <Image style={styles.profileImg}
+                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+              />
+            </View>
+            <Text style={styles.leftText}>{userResponse}</Text>
+          </View>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Image
+              style={styles.editButtonContainer}
+              source={require('../../../assets/images/editButton.png')}
+            />
+          </TouchableOpacity>
+        </Card>
+        <View style={styles.viewMoreButtonWrapper}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+            <Button title="View  More" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
+
   if (userResponse && partnerResponse) {
     return (
-      <SafeAreaView style={styles.container}>
-        <TopBarCheckin />
-        <View style={{ marginTop: '10%' }}>
-          <Card containerStyle={styles.cardContainer}>
-            <Text>Daily Question</Text>
-            <Card.Title style={styles.question}>{question}</Card.Title>
-            <View>
-              <View style={styles.responseHeader}>
-                <Image style={styles.profileImg}
-                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
-                />
-                <View style={{ marginLeft: 10 }}>
-                  <Text>{partnerName}</Text>
-                  <Text>{partnerResponseTime}</Text>
-                </View>
-              </View>
-              <Text>{partnerResponse}</Text>
-            </View>
-            <View>
-              <View style={styles.myResponseHeader}>
-                {/* <Pressable style={styles.deleteIcon} onPress={handleDeleteResponse}>
-                  <Icon name="trash-outline" type="ionicon" size={20} />
-                </Pressable> */}
-                <View style={{ marginRight: 10 }}>
-                  <Text style={styles.leftText}>{userName}</Text>
-                  <Text style={styles.leftText}>{userResponseTime}</Text>
-                </View>
-                <Image style={styles.profileImg}
-                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-                />
-              </View>
-              <Text style={styles.leftText}>{userResponse}</Text>
-            </View>
-            <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-              <Image
-                style={styles.editButtonContainer}
-                source={require('../../../assets/images/editButton.png')}
-              />
-            </TouchableOpacity>
-          </Card>
-          {/* <Button title="View More" buttonStyle={{ top: 507, left: 45 }} onPress={CheckinPage} /> */}
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-
-        </View>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <TitleHeader title="Check-In" />
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayBothResponses()}
+        </ScrollView>
+      </View>
     );
   } else if (userResponse) {
     return (
-      <SafeAreaView style={styles.container}>
-        <TopBarCheckin />
-        <View style={{ marginTop: '15%' }}>
-          <Card containerStyle={styles.cardContainer}>
-            <Text>Daily Question</Text>
-            <Card.Title style={styles.question}>{question}</Card.Title>
-            <View>
-              <View style={styles.myResponseHeader}>
-                <View style={{ marginRight: 10 }}>
-                  <Text style={styles.leftText}>{userName}</Text>
-                  <Text style={styles.leftText}>{userResponseTime}</Text>
-                </View>
-                <Image style={styles.profileImg}
-                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-                />
-              </View>
-              <Text style={styles.leftText}>{userResponse}</Text>
-            </View>
-            <TouchableOpacity onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-              <Image style={styles.editButton}
-                source={require('../../../assets/images/editButton.png')}
-              />
-            </TouchableOpacity>
-          </Card>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <TitleHeader title="Check-In" />
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayUserResponse()}
+        </ScrollView>
+      </View>
     );
   } else if (partnerResponse) {
     return (
-      <SafeAreaView style={styles.container}>
-        <TopBarCheckin />
-        <View style={{ marginTop: '15%' }}>
-          <Card containerStyle={styles.cardContainer}>
-            <Text>Daily Question</Text>
-            <Card.Title style={styles.question}>{question}</Card.Title>
-            <View>
-              <View style={styles.responseHeader}>
-                <Image style={styles.profileImg}
-                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
-                />
-                <View style={{ marginLeft: 10 }}>
-                  <Text>{partnerName}</Text>
-                  <Text>{partnerResponseTime}</Text>
-                </View>
-              </View>
-              <Text style={styles.blurText}>{partnerResponse}</Text>
-            </View>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-              <Text style={styles.buttonText}>
-                Submit a Response
-              </Text>
-            </TouchableOpacity>
-          </Card>
-        </View>
-      </SafeAreaView>
+      <View style={styles.container}>
+        <TitleHeader title="Check-In" />
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayPartnerResponded()}
+        </ScrollView>
+      </View>
     );
   } else {
     return (
-      <SafeAreaView style={styles.container}>
-        <TopBarCheckin />
-        <View style={{ marginTop: '40%' }}>
-          <Card containerStyle={styles.cardContainer}>
-            <Text>Daily Question</Text>
-            <Card.Title style={styles.question}>{question}</Card.Title>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit', { handleNewResponse })}>
-              <Text style={styles.buttonText}>
-                Submit a Response
-              </Text>
-            </TouchableOpacity>
-          </Card>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-        </View>
-
-      </SafeAreaView>
+      <View style={styles.container}>
+        <TitleHeader title="Check-In" />
+        <ScrollView contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {displayNoResponses()}
+          <View />
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -339,72 +435,53 @@ function CheckinPage({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'space-around',
   },
-  text: {
+  cardContainer: {
+    borderRadius: 15,
+    padding: 20,
+    marginBottom: 100,
+  },
+  cardTitle: {
+    fontFamily: 'SF-Pro-Display-Medium',
+  },
+  question: {
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 28,
     fontFamily: 'SF-Pro-Display-Bold',
-    marginBottom: 20,
+    lineHeight: 34,
+    margin: 30,
+  },
+  button: {
+    borderRadius: 15,
+    marginTop: 20,
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    height: 56,
+    width: 300,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonTxt: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    color: 'white',
+    fontSize: 20,
+    lineHeight: 30,
+  },
+  responseHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   profileImg: {
     width: 40,
     height: 80,
     alignSelf: 'flex-end',
   },
-  editButtonContainer: {
-    width: 45,
-    height: 45,
-  },
-  editButton: {
-    marginTop: 20,
-    width: 45,
-    height: 45,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonSecondary: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
-    backgroundColor: 'rgb(230, 43, 133)',
-    alignItems: 'center',
-    margin: 20,
-  },
-  responseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  question: {
-    textAlign: 'center',
-    fontSize: 28,
-    fontFamily: 'SF-Pro-Display-Bold',
-    margin: 20,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 15,
-    elevation: 3,
-    // backgroundColor: 'rgb(230, 43, 133)',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    fontFamily: 'SF-Pro-Display-Medium',
-    color: 'white',
-    fontSize: 20,
-  },
-  buttonContainer: {
-    alignItems: 'center',
-  },
-  leftText: {
-    textAlign: 'right',
+  partnerNameTxt: {
+    marginLeft: 10,
   },
   blurText: {
     height: 3,
-    width: '80%',
+    width: '90%',
     shadowOpacity: 1,
     shadowColor: '#000',
     shadowOffset: { width: 10, height: 10 },
@@ -415,18 +492,57 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 1)',
     marginBottom: 20,
   },
+  seeMoreButtonWrapper: {
+    alignSelf: 'flex-end',
+  },
+  seeMoreButton: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    borderRadius: 30,
+    width: 138,
+    height: 36,
+    alignItems: 'center',
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+  },
+  seeMoreButtonTxt: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    color: 'white',
+    fontSize: 14,
+    lineHeight: 21,
+  },
   myResponseHeader: {
     justifyContent: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  cardContainer: {
-    borderRadius: 15,
-    padding: 20,
+  userNameTxt: {
+    marginRight: 10,
   },
-  // deleteIcon: {
-  //   marginRight: 10,
-  // },
+  leftText: {
+    textAlign: 'right',
+  },
+  editButton: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editImg: {
+    width: 45,
+    height: 45,
+  },
+  viewMoreButtonWrapper: {
+    alignItems: 'center',
+  },
+  responseWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  editButtonContainer: {
+    width: 45,
+    height: 45,
+  },
 });
 
 export default CheckinPage;

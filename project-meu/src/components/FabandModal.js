@@ -65,10 +65,6 @@ function FabandModal({ fetchData }) {
   };
 
   const handleAddEvent = async () => {
-    console.log('Date:', date);
-    console.log('Title:', title);
-    console.log('Repeat:', selectedTeam);
-
     // Need to pull pair id
     const eventData = {
       date,

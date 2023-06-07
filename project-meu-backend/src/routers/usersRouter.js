@@ -31,7 +31,8 @@ router.get('/emotion/:uid', async (req, res) => {
   const user = req.params;
   try {
     const data = await usersController.getUserEmotion(user.uid);
-    res.status(200).send(data);
+    const emotion = data.toString();
+    res.status(200).send(emotion);
   } catch (e) {
     res.status(500).send(e.message);
   }
@@ -42,7 +43,8 @@ router.get('/partner_emotion/:uid', async (req, res) => {
   const user = req.params;
   try {
     const data = await usersController.getPartnerEmotion(user.uid);
-    res.status(200).send(data);
+    const emotion = data.toString();
+    res.status(200).send(emotion);
   } catch (e) {
     res.status(500).send(e.message);
   }
@@ -98,11 +100,8 @@ router.get('/background/:uid', async (req, res) => {
 // Fetch partner ID 
 router.get('/partner/:uid', async (req, res) => {
   const pair = req.params;
-  console.log('pair (special) : ', pair.uid)
   try {
-    console.log(pair);
     const partnerID = await usersController.getPartnerId(pair.uid);
-    console.log('router', partnerID);
     res.status(200).send(partnerID);
   } catch (e) {
     console.log('Could not find partner ID');
@@ -121,5 +120,18 @@ router.get('/pairdate/:uid', async (req, res) => {
     res.status(500).send(e.message);
   }
 });
+
+router.post('/code/:uid', async (req, res) => {
+  const userId = req.params.uid;
+  const userData = req.body;
+  try {
+    const pairId = await usersController.connectPairs(userId, userData);
+    res.status(200).send(pairId);
+  } catch (e) {
+    console.log('Could not create pair');
+    res.status(500).send(e.message);
+  }
+})
+
 
 export default router;

@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "eslint src"
+    "test": "eslint src",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
@@ -29,6 +30,7 @@
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",
     "firebase": "^9.22.0",
+    "immer": "^10.0.2",
     "moment": "^2.29.4",
     "patch-package": "^7.0.0",
     "react": "18.2.0",

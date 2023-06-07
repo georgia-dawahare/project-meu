@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
@@ -25,13 +26,17 @@ function HomeCalendar({ navigation }) {
   const [clickedItem, setClickedItem] = useState(null);
   // const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(null);
+  const currUser = useSelector((state) => state.user);
+  // const [eventData, setEventData] = useState([]);
 
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
   const STICKY_HEADER_HEIGHT = 120;
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
   const inputRange = [0, THRESHOLD];
   const outputRange = [0, -(HEADER_HEIGHT - STICKY_HEADER_HEIGHT)];
+  const today = new Date();
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -57,8 +62,8 @@ function HomeCalendar({ navigation }) {
         const extractedData = eventData.map((event) => {
           const extractDday = (dateString) => {
             const date = new Date(dateString);
-            const today = new Date();
-            const timeDiff = date.getTime() - today.getTime();
+            const today2 = new Date();
+            const timeDiff = date.getTime() - today2.getTime();
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
@@ -113,8 +118,8 @@ function HomeCalendar({ navigation }) {
         const extractedData = eventData.map((event) => {
           const extractDday = (dateString) => {
             const date = new Date(dateString);
-            const today = new Date();
-            const timeDiff = date.getTime() - today.getTime();
+            const today2 = new Date();
+            const timeDiff = date.getTime() - today2.getTime();
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
@@ -199,7 +204,6 @@ function HomeCalendar({ navigation }) {
 
     const extractDday = (dateString) => {
       const date = new Date(dateString);
-      const today = new Date();
       const timeDiff = date.getTime() - today.getTime();
       const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
       return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
@@ -233,6 +237,19 @@ function HomeCalendar({ navigation }) {
     return sortedData;
   };
 
+  // 초기 로딩 시 이벤트 목록을 가져옴
+  // printEventTitlesAndDates();
+
+  const formatDate = () => {
+    const month = today.getMonth();
+    const day = today.getDate();
+    const year = today.getFullYear();
+
+    const formattedDate = `${months[month]} ${day}th, ${year}`;
+    return formattedDate;
+  };
+  const formattedDate = formatDate();
+
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
@@ -250,6 +267,7 @@ function HomeCalendar({ navigation }) {
           <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
+
       <Animated.View
         style={[
           styles.headerContainer,
@@ -277,13 +295,15 @@ function HomeCalendar({ navigation }) {
             style={styles.bgtextday}
           >
             {'\n'}
-            1252
+            {currUser.user_data.days_together}
+            {' '}
+            days
           </Animated.Text>
           <Animated.Text
             style={styles.bgtextdate}
           >
             {'\n'}
-            October 20th, 2019
+            {formattedDate}
           </Animated.Text>
         </Animated.Text>
         <FloatingButton />
@@ -422,5 +442,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingLeft: 16,
     paddingRight: 16,
+  },
+  userBackground: {
+    width: '100%',
+    height: '100%',
   },
 });

@@ -6,6 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
+  ScrollView,
 } from 'react-native';
 import {
   Card, Input,
@@ -15,25 +20,35 @@ import axios from 'axios';
 import auth from '../../services/datastore';
 import { apiUrl } from '../../constants/constants';
 
-function CheckinSubmit({ navigation, route }) {
+function CheckinSubmit({ navigation }) {
+  const questionData = require('../../../assets/data/questions.json');
   const [question, setQuestion] = useState('');
-  const { handleNewResponse } = route.params;
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
   const [responseId, setResponseId] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userDoc, setUserDoc] = useState('');
 
-  // dumby user data
-  const tempPairId = 'pair1';
+  useEffect(() => {
+    setUserId(auth?.currentUser?.uid);
+  }, [userDoc]);
 
-  const getUser = async (uid) => {
-    const userResult = await axios.get(`${apiUrl}/users/${uid}`);
-    return userResult;
-  };
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+      if (userInfo) {
+        setUserDoc(userInfo);
+      }
+    };
+    if (userId) {
+      getUser();
+    }
+  }, [userId]);
 
-  const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response;
-  };
+  useEffect(() => {
+    refreshData();
+  }, [userId, userDoc]);
 
   const updateResponse = async (currResponseId, updatedResponse) => {
     const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
@@ -45,108 +60,107 @@ function CheckinSubmit({ navigation, route }) {
     return id;
   };
 
+  const getPair = async () => {
+    return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
+  };
+
+  const getResponse = async (id) => {
+    const response = await axios.get(`${apiUrl}/responses/${id}`);
+    return response.data;
+  };
+
   const refreshData = async () => {
     try {
     // Fetch user ID & user doc
-      const userId = auth.currentUser?.uid;
-      getUser(userId);
-
-      const groupId = tempPairId + moment().format('MMDDYY');
-      const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-
-      const questionData = require('../../../assets/data/questions.json');
-
-      const responseGroupData = responseGroup.data;
-      // Set daily question
-      setQuestion(questionData.questions[responseGroupData.question_id].question);
-
-      // Populate partner responses if they exist
-      let p1Response = null;
-      let p2Response = null;
-      if (responseGroupData.p1_response_id) {
-        p1Response = await getResponse(responseGroupData.p1_response_id);
-      }
-      if (responseGroupData.p2_response_id) {
-        p2Response = await getResponse(responseGroupData.p2_response_id);
-      }
-      // Find out if P1 or P2 is user/partner
-      if (p1Response !== null && p1Response.status === 200) {
-        if (p1Response.data.user_id === userId) {
-          setTextAnswer(p1Response.data.response);
-          setResponseId(responseGroupData.p1_response_id);
+      if (userDoc) {
+        let userResponse;
+        const pair = await getPair();
+        const groupId = userDoc.pair_id + moment().format('MMDDYY');
+        const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+        const responseGroupData = responseGroup.data;
+        const pairCreatorId = pair?.data?.pair_creator_id;
+        if (userId === pairCreatorId) {
+          if (responseGroupData.p1_response_id) {
+            userResponse = await getResponse(responseGroupData.p1_response_id);
+            setResponseId(responseGroupData?.p1_response_id);
+          }
+        } else if (userId !== pairCreatorId) {
+          if (responseGroupData.p2_response_id) {
+            userResponse = await getResponse(responseGroupData.p2_response_id);
+            setResponseId(responseGroupData?.p2_response_id);
+          }
+        }
+        if (userResponse) {
+          setTextAnswer(userResponse.response);
           setNewResponse(false);
         }
-      }
-      if (p2Response !== null && p2Response.status === 200) {
-        if (p2Response.data.user_id === userId) {
-          setTextAnswer(p2Response.data.response);
-          setResponseId(responseGroupData.p2_response_id);
-          setNewResponse(false);
-        }
+
+        // Set daily question
+        setQuestion(questionData.questions[responseGroupData.question_id].question);
       }
     } catch (error) {
       console.error('Error occurred during data refresh:', error);
     }
   };
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', refreshData);
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
-  useEffect(() => {
-    navigation.setOptions({
-      handleNewResponse,
-    });
-  }, []);
-
-  const handleOnSubmit = () => {
-    const groupId = tempPairId + moment().format('MMDDYY');
-    if (newResponse) {
-      addResponse({
-        response: textAnswer,
-        user_id: auth.currentUser?.uid,
-      }, tempPairId, groupId);
-      handleNewResponse(textAnswer);
-    } else {
-      updateResponse(
-        responseId,
-        {
+  const handleOnSubmit = async () => {
+    const groupId = userDoc.pair_id + moment().format('MMDDYY');
+    try {
+      if (newResponse) {
+        addResponse({
           response: textAnswer,
-          user_id: auth.currentUser?.uid,
-        },
-      );
+          user_id: userId,
+        }, userDoc.pair_id, groupId);
+      } else {
+        updateResponse(
+          responseId,
+          {
+            response: textAnswer,
+            user_id: userId,
+          },
+        );
+      }
+      navigation.navigate('Checkin');
+    } catch (e) {
+      console.log('Failed to submit response: ', e);
     }
-    navigation.navigate('Checkin');
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => { navigation.goBack(); }}>
-        <Image
-          source={require('../../../assets/icons/goback-black.png')}
-          style={styles.Icon}
-        />
-      </TouchableOpacity>
-      <Card containerStyle={styles.cardContainer}>
-        <Text>Daily Question</Text>
-        <Card.Title style={styles.question}>{question}</Card.Title>
-        <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
-        <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
-          <Text style={styles.buttonText}>
-            Submit
-          </Text>
-        </TouchableOpacity>
-      </Card>
-    </SafeAreaView>
+
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView>
+          <ScrollView>
+            <TouchableOpacity onPress={() => { navigation.goBack(); }}>
+              <Image
+                source={require('../../../assets/icons/goback-black.png')}
+                style={styles.icon}
+              />
+            </TouchableOpacity>
+            <Card containerStyle={styles.cardContainer}>
+              <Text>Daily Question</Text>
+              <Card.Title style={styles.question}>{question}</Card.Title>
+              <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
+              <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
+                <Text style={styles.buttonText}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </Card>
+          </ScrollView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    alignContent: 'center',
   },
 
   text: {
@@ -159,7 +173,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     borderRadius: 15,
     padding: 20,
-    marginTop: '40%',
   },
 
   question: {
@@ -168,7 +181,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Bold',
     margin: 20,
   },
-  Icon: {
+  icon: {
     margin: 20,
   },
   button: {

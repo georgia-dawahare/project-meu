@@ -5,9 +5,8 @@ const router = Router();
 
 // Send an emote
 router.patch('/:id', async (req, res) => {
-  const emotionData = req.body;
+  const { emotion } = req.body;
   const userId = req.params;
-  const emotion = Object.keys(emotionData)[0];
   try {
     await emotionsController.updateEmotion(emotion, userId.id);
     res.status(200).send("Successfully updated emotion");

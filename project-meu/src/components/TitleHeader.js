@@ -1,22 +1,20 @@
+/* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  StyleSheet,
-  TouchableOpacity,
   Text,
+  StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 import * as Font from 'expo-font';
 
-function SignupShareButton(props) {
+function TitleHeader({ title }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const { title } = props;
 
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        // eslint-disable-next-line global-require
         'SF-Pro-Display-Medium': require('../../assets/fonts/SF-Pro-Display-Medium.otf'),
       });
-
       setFontLoaded(true);
     }
     loadFont();
@@ -27,28 +25,25 @@ function SignupShareButton(props) {
   }
 
   return (
-    <TouchableOpacity style={styles.shareButton}>
-      <Text style={styles.shareButtonText}>{title || ('Share')}</Text>
-    </TouchableOpacity>
+    <SafeAreaView style={styles.header}>
+      <Text style={styles.topTitle}>{title}</Text>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  shareButton: {
-    width: 72,
-    height: 28,
-    backgroundColor: 'rgba(230, 43, 133, 1)',
-    borderRadius: 12,
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    left: 278,
+    backgroundColor: 'white',
+    height: 100,
   },
-  shareButtonText: {
+  topTitle: {
     fontFamily: 'SF-Pro-Display-Medium',
-    alignItems: 'center',
-    fontSize: 14,
-    color: '#ffffff',
+    fontSize: 20,
+    alignSelf: 'center',
   },
 });
 
-export default SignupShareButton;
+export default TitleHeader;
