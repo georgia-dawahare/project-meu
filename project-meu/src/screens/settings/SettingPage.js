@@ -15,10 +15,10 @@ import { RadioButton } from 'react-native-paper';
 // import { CurrentRenderContext } from '@react-navigation/native';
 
 const SignOutContent = [
-  {
-    id: 'SO',
-    title: 'Sign Out',
-  },
+  // {
+  //   id: 'SO',
+  //   title: 'Sign Out',
+  // },
   {
     id: 'UP',
     title: 'Unpair with Partner',
@@ -248,8 +248,12 @@ const styles = StyleSheet.create({
   tempContainer: {
     flexDirection: 'row',
     padding: 16,
+    alignItems: 'center',
     paddingLeft: 0,
     marginVertical: 8,
+  },
+  itemSignout: {
+    marginTop: 48,
   },
 });
 
