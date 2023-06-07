@@ -131,8 +131,8 @@ function SettingPage({ navigation }) {
         ],
       );
     } else if (title === 'Personal Info') {
-      // navigation.navigate('SettingPersonalInfo');
-      navigation.navigate('SettingNotificationPage');
+      navigation.navigate('SettingPersonalInfo');
+      // navigation.navigate('SettingNotificationPage');
     } else if (title === 'Version') {
       navigation.navigate('VersionPage');
     } else if (title === 'Privacy and Data') {
