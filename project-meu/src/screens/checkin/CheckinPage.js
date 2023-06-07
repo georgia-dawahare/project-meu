@@ -15,6 +15,7 @@ import {
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
+// import { onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TitleHeader from '../../components/TitleHeader';
