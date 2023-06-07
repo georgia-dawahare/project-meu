@@ -6,32 +6,19 @@ import {
   Text,
   Image,
   View,
-  FlatList,
   TouchableOpacity,
+  Platform,
+  DatePickerIOS,
+  DatePickerAndroid,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import * as Font from 'expo-font';
-
-const SettingContents = [
-  {
-    id: 'BD',
-    title: 'Birthday',
-  },
-  {
-    id: 'AV',
-    title: 'Anniversary',
-  },
-];
-
-function Item({ title, onPress }) {
-  return (
-    <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </TouchableOpacity>
-  );
-}
+// import DateTimePicker from '@react-native-community/datetimepicker';
 
 function SettingPersonalInfoPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     async function loadFont() {
@@ -49,39 +36,106 @@ function SettingPersonalInfoPage({ navigation }) {
     return <Text>Loading...</Text>;
   }
 
+  const showDatePicker = () => {
+    setDatePickerVisible(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisible(false);
+  };
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
+
   const handleItemClick = (title) => {
-    console.log('Clicked item:', title);
+    if (title === 'Birthday') {
+      showDatePicker();
+    } else {
+      console.log('Clicked item:', title);
+    }
+  };
+
+  const renderDatePicker = () => {
+    if (isDatePickerVisible) {
+      if (Platform.OS === 'ios') {
+        return (
+          <DatePickerIOS
+            date={selectedDate}
+            onDateChange={handleDateChange}
+            mode="date"
+          />
+        );
+      } else if (Platform.OS === 'android') {
+        DatePickerAndroid.open({
+          date: selectedDate,
+          mode: 'default',
+        }).then((response) => {
+          if (response.action === 'dateSetAction') {
+            const { year, month, day } = response;
+            const selectedAndroidDate = new Date(year, month, day);
+            handleDateChange(selectedAndroidDate);
+          }
+          hideDatePicker();
+        });
+      }
+    }
+    return true;
+  };
+
+  const formatDate = (date) => {
+    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
+      .getDate()
+      .toString()
+      .padStart(2, '0')}/${date.getFullYear()}`;
+  };
+
+  const dismissDatePicker = () => {
+    hideDatePicker();
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback onPress={dismissDatePicker}>
 
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
-          <Image
-            source={require('../../../assets/icons/goback-black.png')}
-            style={styles.Icon}
-          />
-        </TouchableOpacity>
+      <SafeAreaView style={styles.container}>
 
-        <Text style={styles.topTitle}>Personal Info</Text>
-      </View>
-      <View style={styles.contents}>
-        <View style={styles.personalInfo}>
-          <Text style={styles.name}>Florian</Text>
-          <Text style={styles.email}>flori@gmail.com</Text>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
+            <Image
+              source={require('../../../assets/icons/goback-black.png')}
+              style={styles.Icon}
+            />
+          </TouchableOpacity>
+
+          <Text style={styles.topTitle}>Personal Info</Text>
         </View>
+        <View style={styles.contents}>
+          <View style={styles.personalInfo}>
+            <Text style={styles.name}>Florian</Text>
+            <Text style={styles.email}>flori@gmail.com</Text>
+          </View>
 
-        <FlatList
-          data={SettingContents}
-          renderItem={({ item }) => (
-            <Item title={item.title} onPress={handleItemClick} />
-          )}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.listContainer}
-        />
-      </View>
-    </SafeAreaView>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => handleItemClick('Birthday')}
+          >
+            <Text style={styles.title}>Birthday</Text>
+            <Text style={styles.Bday}>{formatDate(selectedDate)}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.item}
+            onPress={() => handleItemClick('Anniversary')}
+          >
+            <Text style={styles.title}>Anniversary</Text>
+            <Text style={styles.Bday}>
+              {formatDate(selectedDate)}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        {isDatePickerVisible && renderDatePicker()}
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
+
   );
 }
 
@@ -125,6 +179,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 16,
     paddingLeft: 0,
     marginVertical: 8,
