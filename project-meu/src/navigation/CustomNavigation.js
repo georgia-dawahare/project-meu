@@ -7,6 +7,7 @@ import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
+// import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import TempHome from '../screens/home/TempHome';
@@ -35,6 +36,18 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingPage"
         component={SettingPage}
+      />
+      <Stack.Screen
+        name="SettingPersonalInfoPage"
+        component={SettingPersonalInfoPage}
+      />
+      <Stack.Screen
+        name="VersionPage"
+        component={VersionPage}
+      />
+      <Stack.Screen
+        name="SettingNotificationPage"
+        component={SettingNotificationPage}
       />
     </Stack.Navigator>
   );
@@ -76,29 +89,29 @@ function PenguinsScreenNavigator() {
 
 export { PenguinsScreenNavigator };
 
-function SettingScreenNavigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="SettingPage"
-        component={SettingPage}
-      />
-      <Stack.Screen
-        name="SettingPersonalInfoPage"
-        component={SettingPersonalInfoPage}
-      />
-      <Stack.Screen
-        name="VersionPage"
-        component={VersionPage}
-      />
-      <Stack.Screen
-        name="SettingNotificationPage"
-        component={SettingNotificationPage}
-      />
-    </Stack.Navigator>
-  );
-}
-export { SettingScreenNavigator };
+// function SettingScreenNavigator() {
+//   return (
+//     <Stack.Navigator screenOptions={{ headerShown: false }}>
+//       <Stack.Screen
+//         name="SettingPage"
+//         component={SettingPage}
+//       />
+//       <Stack.Screen
+//         name="SettingPersonalInfoPage"
+//         component={SettingPersonalInfoPage}
+//       />
+//       <Stack.Screen
+//         name="VersionPage"
+//         component={VersionPage}
+//       />
+//       <Stack.Screen
+//         name="SettingNotificationPage"
+//         component={SettingNotificationPage}
+//       />
+//     </Stack.Navigator>
+//   );
+// }
+// export { SettingScreenNavigator };
 
 function OnboardingScreenNavigator() {
   return (
