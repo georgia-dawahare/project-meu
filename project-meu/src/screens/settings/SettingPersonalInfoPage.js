@@ -30,7 +30,7 @@ function Item({ title, onPress }) {
   );
 }
 
-function SettingPersonalInfo({ navigation }) {
+function SettingPersonalInfoPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
@@ -138,4 +138,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingPersonalInfo;
+export default SettingPersonalInfoPage;

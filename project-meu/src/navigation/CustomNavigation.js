@@ -7,7 +7,7 @@ import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
-import SettingPersonalInfo from '../screens/settings/SettingPersonalInfoPage';
+import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
 import TempHome from '../screens/home/TempHome';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
@@ -84,8 +84,8 @@ function SettingScreenNavigator() {
         component={SettingPage}
       />
       <Stack.Screen
-        name="SettingPersonalInfo"
-        component={SettingPersonalInfo}
+        name="SettingPersonalInfoPage"
+        component={SettingPersonalInfoPage}
       />
       <Stack.Screen
         name="VersionPage"
