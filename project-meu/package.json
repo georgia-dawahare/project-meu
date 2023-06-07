@@ -27,6 +27,7 @@
     "expo-linear-gradient": "^12.1.2",
     "expo-location": "~15.1.1",
     "expo-status-bar": "~1.4.4",
+    "expo-updates": "~0.16.4",
     "firebase": "^9.22.0",
     "moment": "^2.29.4",
     "patch-package": "^7.0.0",

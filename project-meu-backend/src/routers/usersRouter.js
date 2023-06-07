@@ -73,10 +73,10 @@ router.patch('/:uid', async (req, res) => {
 });
 
 // Get user's city
-router.get('/city/:uid', async (req, res) => {
+router.get('/locdata/:uid', async (req, res) => {
   const user = req.params;
   try {
-    const data = await usersController.getCity(user.uid);
+    const data = await usersController.getLocData(user.uid);
     console.log(data);
     res.status(200).send(data);
   } catch (e) {
@@ -106,6 +106,18 @@ router.get('/partner/:uid', async (req, res) => {
     res.status(200).send(partnerID);
   } catch (e) {
     console.log('Could not find partner ID');
+    res.status(500).send(e.message);
+  }
+});
+
+// Fetch pair date 
+router.get('/pairdate/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const pairDate = await usersController.getPairDate(user.uid);
+    res.status(200).send(pairDate);
+  } catch (e) {
+    console.log('Could not find relationship start');
     res.status(500).send(e.message);
   }
 });

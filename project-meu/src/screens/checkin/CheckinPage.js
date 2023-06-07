@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+// import Icon from 'react-native-vector-icons/Ionicons';
 import {
   Text,
   TouchableOpacity,
@@ -16,11 +16,11 @@ import {
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
+import { onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TopBarCheckin from '../../components/TopBarCheckin';
 import Button from '../../components/Button';
-import { onAuthStateChanged } from 'firebase/auth';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -78,7 +78,6 @@ function CheckinPage({ navigation }) {
     };
 
     getNames();
-
   }, [partnerId]);
 
   const getUser = async (uid) => {
