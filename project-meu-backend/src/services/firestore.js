@@ -3,8 +3,8 @@ import { Timestamp } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import serviceAccount from '/etc/secrets/credentials.json';
-// import serviceAccount from '../../credentials.json'
+// import serviceAccount from '/etc/secrets/credentials.json';
+import serviceAccount from '../../credentials.json'
 
 // directly connect the local development server
 // eslint-disable-next-line no-unused-vars
