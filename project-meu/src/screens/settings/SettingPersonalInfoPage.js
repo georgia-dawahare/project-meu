@@ -44,6 +44,34 @@ function SettingPersonalInfoPage({ navigation }) {
     }
   };
 
+  // const updateBirthday = async (newBirthday) => {
+  //   if (userID) {
+  //     try {
+  //       const response = await axios.put(`${apiUrl}/settings/birthday/${userID}`, {
+  //         newBirthday,
+  //       });
+  //       const newBday = response.data;
+  //       setBirthday(newBday);
+  //       // console.log('bday from firebase:   ', bday);
+  //     } catch (error) {
+  //       console.log('Error updating birthday:', error);
+  //     }
+  //   }
+  // };
+
+  const updateBirthday = async (newBirthday) => {
+    if (userID) {
+      try {
+        await axios.put(`${apiUrl}/settings/birthday/${userID}`, {
+          newBirthday,
+        });
+        fetchBirthday();
+      } catch (error) {
+        console.log('Error updating birthday:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchBirthday();
   }, [userID]);
@@ -138,6 +166,7 @@ function SettingPersonalInfoPage({ navigation }) {
                           onPress: () => {
                             setSelectedBDay(date);
                             setBirthday(date);
+                            updateBirthday(date);
                           },
                           style: 'Yes',
                         },
