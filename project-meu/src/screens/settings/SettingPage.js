@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   itemSignout: {
-    marginTop: 48,
+    marginTop: 32,
   },
 });
 
