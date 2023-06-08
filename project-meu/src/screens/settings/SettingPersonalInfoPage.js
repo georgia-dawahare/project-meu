@@ -9,7 +9,7 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  // Alert,
+  Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -125,14 +125,29 @@ function SettingPersonalInfoPage({ navigation }) {
                 display="default"
                 onChange={(event, date) => {
                   if (date) {
-                    setSelectedBDay(date);
-                    setBirthday(date);
+                    Alert.alert(
+                      'Confirmation',
+                      'Are you sure you want to change your birthday?',
+                      [
+                        {
+                          text: 'Cancel',
+                          style: 'cancel',
+                        },
+                        {
+                          text: 'Yes',
+                          onPress: () => {
+                            setSelectedBDay(date);
+                            setBirthday(date);
+                          },
+                          style: 'Yes',
+                        },
+                      ],
+                    );
                   }
                   setSelectedBDayVisible(false);
                 }}
               />
             ) : (
-              // <Text style={styles.date}>{formatDate(selectedBDay)}</Text>
               <Text style={styles.date}>
                 {formattedBirthday || 'Select birthday'}
               </Text>
