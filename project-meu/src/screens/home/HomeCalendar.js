@@ -85,6 +85,7 @@ function HomeCalendar({ navigation }) {
         console.error(error);
       });
   }, []);
+
   const printEventTitlesAndDates = async () => {
     const addDefaultEvents = async () => {
       try {
