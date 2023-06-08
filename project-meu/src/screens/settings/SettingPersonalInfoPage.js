@@ -13,14 +13,52 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import DateTimePicker from '@react-native-community/datetimepicker';
-// import { apiUrl } from '../../constants/constants';
+import { getAuth } from 'firebase/auth';
+import axios from 'axios';
+import { apiUrl } from '../../constants/constants';
 
 function SettingPersonalInfoPage({ navigation }) {
+  const auth = getAuth();
+
   const [fontLoaded, setFontLoaded] = useState(false);
   const [selectedBDay, setSelectedBDay] = useState(new Date());
   const [selectedFirstDate, setSelectedFistDate] = useState(new Date());
   const [selectedBDayVisible, setSelectedBDayVisible] = useState(false);
   const [selectedAnniversaryVisible, setSelectedAnniversaryVisible] = useState(false);
+  const [birthday, setBirthday] = useState('');
+  const userID = auth?.currentUser?.uid;
+
+  console.log('user ID :    ', userID);
+
+  const fetchBirthday = async () => {
+    // getting and setting user data
+    if (userID) {
+      try {
+        const response = await axios.get(`${apiUrl}/settings/birthday/${userID}`);
+        const bday = response.data;
+        setBirthday(bday);
+        // console.log('bday from firebase:   ', bday);
+      } catch (error) {
+        console.log('Error fetching birthday:', error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchBirthday();
+  }, [userID]);
+
+  console.log('bday from firebase:   ', birthday);
+
+  function formatDate(date) {
+    const formattedDate = new Date(date);
+    const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = formattedDate.getDate().toString().padStart(2, '0');
+    const year = formattedDate.getFullYear().toString();
+    return `${month}/${day}/${year}`;
+  }
+
+  const formattedBirthday = formatDate(birthday);
 
   useEffect(() => {
     async function loadFont() {
@@ -50,12 +88,12 @@ function SettingPersonalInfoPage({ navigation }) {
     }
   };
 
-  const formatDate = (date) => {
-    return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
-      .getDate()
-      .toString()
-      .padStart(2, '0')}/${date.getFullYear()}`;
-  };
+  // const formatDate = (date) => {
+  //   return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
+  //     .getDate()
+  //     .toString()
+  //     .padStart(2, '0')}/${date.getFullYear()}`;
+  // };
 
   return (
 
@@ -88,12 +126,16 @@ function SettingPersonalInfoPage({ navigation }) {
                 onChange={(event, date) => {
                   if (date) {
                     setSelectedBDay(date);
+                    setBirthday(date);
                   }
                   setSelectedBDayVisible(false);
                 }}
               />
             ) : (
-              <Text style={styles.date}>{formatDate(selectedBDay)}</Text>
+              // <Text style={styles.date}>{formatDate(selectedBDay)}</Text>
+              <Text style={styles.date}>
+                {formattedBirthday || 'Select birthday'}
+              </Text>
             )}
           </TouchableOpacity>
           <TouchableOpacity
