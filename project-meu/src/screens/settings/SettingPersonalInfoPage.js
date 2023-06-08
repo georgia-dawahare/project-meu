@@ -1,6 +1,5 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-// import axios from 'axios';
 import {
   SafeAreaView,
   StyleSheet,
@@ -37,27 +36,11 @@ function SettingPersonalInfoPage({ navigation }) {
         const response = await axios.get(`${apiUrl}/settings/birthday/${userID}`);
         const bday = response.data;
         setBirthday(bday);
-        // console.log('bday from firebase:   ', bday);
       } catch (error) {
         console.log('Error fetching birthday:', error);
       }
     }
   };
-
-  // const updateBirthday = async (newBirthday) => {
-  //   if (userID) {
-  //     try {
-  //       const response = await axios.put(`${apiUrl}/settings/birthday/${userID}`, {
-  //         newBirthday,
-  //       });
-  //       const newBday = response.data;
-  //       setBirthday(newBday);
-  //       // console.log('bday from firebase:   ', bday);
-  //     } catch (error) {
-  //       console.log('Error updating birthday:', error);
-  //     }
-  //   }
-  // };
 
   const updateBirthday = async (newBirthday) => {
     if (userID) {
@@ -115,13 +98,6 @@ function SettingPersonalInfoPage({ navigation }) {
       console.log('Clicked item:', title);
     }
   };
-
-  // const formatDate = (date) => {
-  //   return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date
-  //     .getDate()
-  //     .toString()
-  //     .padStart(2, '0')}/${date.getFullYear()}`;
-  // };
 
   return (
 
