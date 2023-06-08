@@ -6,6 +6,7 @@ import emotionsRouter from './routers/emotionsRouter';
 import pairsRouter from './routers/pairsRouter';
 import eventsRouter from './routers/eventsRouter';
 import responsesRouter from './routers/responsesRouter';
+import settingsRouter from './routers/settingsRouter';
 
 // initialize
 const app = express();
@@ -35,6 +36,7 @@ app.use('/emotions', emotionsRouter);
 app.use('/pairs', pairsRouter);
 app.use('/events', eventsRouter);
 app.use('/responses', responsesRouter);
+app.use('/settings', settingsRouter);
 
 // default index route
 app.get('/', (req, res) => {

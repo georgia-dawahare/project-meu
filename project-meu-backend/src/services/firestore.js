@@ -35,6 +35,30 @@ const createUser = async (userData) => {
   await firestore.collection('Users').doc(userId).set(user);
   return userId;
 };
+// === Setting Functions ===
+const getBirthday = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let birthday;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    birthday = [data.birthday];
+  }
+  return birthday;
+};
+
+const updateBirthday = async (uid, newBirthday) => {
+  try {
+    await firestore.collection('Users').doc(uid).update({
+      birthday: newBirthday,
+    });
+    console.log('Birthday updated successfully');
+  } catch (error) {
+    console.log('Error updating birthday:', error);
+  }
+};
+// === End Setting Functions ===
 
 const getName = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
@@ -535,7 +559,9 @@ const firestoreService = {
   getLocData,
   getBackground,
   getPairDate,
-  connectPairs
+  connectPairs,
+  getBirthday,
+  updateBirthday,
 };
 
 export default firestoreService;
