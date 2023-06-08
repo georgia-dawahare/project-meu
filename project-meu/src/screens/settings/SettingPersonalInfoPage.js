@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  // Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
 import DateTimePicker from '@react-native-community/datetimepicker';
