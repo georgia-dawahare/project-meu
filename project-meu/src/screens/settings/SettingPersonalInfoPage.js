@@ -4,21 +4,20 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  Image,
   View,
+  Image,
   TouchableOpacity,
-  Platform,
-  DatePickerIOS,
-  DatePickerAndroid,
   TouchableWithoutFeedback,
 } from 'react-native';
 import * as Font from 'expo-font';
-// import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 function SettingPersonalInfoPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [isDatePickerVisible, setDatePickerVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedBDay, setSelectedBDay] = useState(new Date());
+  const [selectedFirstDate, setSelectedFistDate] = useState(new Date());
+  const [selectedBDayVisible, setSelectedBDayVisible] = useState(false);
+  const [selectedAnniversaryVisible, setSelectedAnniversaryVisible] = useState(false);
 
   useEffect(() => {
     async function loadFont() {
@@ -36,51 +35,16 @@ function SettingPersonalInfoPage({ navigation }) {
     return <Text>Loading...</Text>;
   }
 
-  const showDatePicker = () => {
-    setDatePickerVisible(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisible(false);
-  };
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
-
   const handleItemClick = (title) => {
     if (title === 'Birthday') {
-      showDatePicker();
+      setSelectedBDayVisible(!selectedBDayVisible);
+      setSelectedAnniversaryVisible(false);
+    } else if (title === 'Anniversary') {
+      setSelectedAnniversaryVisible(!selectedAnniversaryVisible);
+      setSelectedBDayVisible(false);
     } else {
       console.log('Clicked item:', title);
     }
-  };
-
-  const renderDatePicker = () => {
-    if (isDatePickerVisible) {
-      if (Platform.OS === 'ios') {
-        return (
-          <DatePickerIOS
-            date={selectedDate}
-            onDateChange={handleDateChange}
-            mode="date"
-          />
-        );
-      } else if (Platform.OS === 'android') {
-        DatePickerAndroid.open({
-          date: selectedDate,
-          mode: 'default',
-        }).then((response) => {
-          if (response.action === 'dateSetAction') {
-            const { year, month, day } = response;
-            const selectedAndroidDate = new Date(year, month, day);
-            handleDateChange(selectedAndroidDate);
-          }
-          hideDatePicker();
-        });
-      }
-    }
-    return true;
   };
 
   const formatDate = (date) => {
@@ -90,52 +54,69 @@ function SettingPersonalInfoPage({ navigation }) {
       .padStart(2, '0')}/${date.getFullYear()}`;
   };
 
-  const dismissDatePicker = () => {
-    hideDatePicker();
-  };
-
   return (
-    <TouchableWithoutFeedback onPress={dismissDatePicker}>
 
+    <TouchableWithoutFeedback onPress={() => {
+      setSelectedBDayVisible(false);
+      setSelectedAnniversaryVisible(false);
+    }}
+    >
       <SafeAreaView style={styles.container}>
-
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
             <Image
               source={require('../../../assets/icons/goback-black.png')}
-              style={styles.Icon}
+              style={styles.icon}
             />
           </TouchableOpacity>
-
           <Text style={styles.topTitle}>Personal Info</Text>
         </View>
         <View style={styles.contents}>
-          <View style={styles.personalInfo}>
-            <Text style={styles.name}>Florian</Text>
-            <Text style={styles.email}>flori@gmail.com</Text>
-          </View>
-
           <TouchableOpacity
             style={styles.item}
             onPress={() => handleItemClick('Birthday')}
           >
             <Text style={styles.title}>Birthday</Text>
-            <Text style={styles.Bday}>{formatDate(selectedDate)}</Text>
+            {selectedBDayVisible ? (
+              <DateTimePicker
+                value={selectedBDay}
+                mode="date"
+                display="default"
+                onChange={(event, date) => {
+                  if (date) {
+                    setSelectedBDay(date);
+                  }
+                  setSelectedBDayVisible(false);
+                }}
+              />
+            ) : (
+              <Text style={styles.date}>{formatDate(selectedBDay)}</Text>
+            )}
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.item}
             onPress={() => handleItemClick('Anniversary')}
           >
             <Text style={styles.title}>Anniversary</Text>
-            <Text style={styles.Bday}>
-              {formatDate(selectedDate)}
-            </Text>
+            {selectedAnniversaryVisible ? (
+              <DateTimePicker
+                value={selectedFirstDate}
+                mode="date"
+                display="default"
+                onChange={(event, date) => {
+                  if (date) {
+                    setSelectedFistDate(date);
+                  }
+                  setSelectedAnniversaryVisible(false);
+                }}
+              />
+            ) : (
+              <Text style={styles.date}>{formatDate(selectedFirstDate)}</Text>
+            )}
           </TouchableOpacity>
         </View>
-        {isDatePickerVisible && renderDatePicker()}
       </SafeAreaView>
     </TouchableWithoutFeedback>
-
   );
 }
 
