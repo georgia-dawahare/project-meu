@@ -130,12 +130,6 @@ function SettingPage({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.item}
-          onPress={() => handleItemClick('Privacy and Data')}
-        >
-          <Text style={styles.title}>Privacy and Data</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.item}
           onPress={() => handleItemClick('Notification Preferences')}
         >
           <Text style={styles.title}>Notification Preferences</Text>
