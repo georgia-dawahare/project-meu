@@ -52,7 +52,8 @@
     "react-native-svg": "^12.5.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "^0.19.4",
-    "react-redux": "^8.0.5"
+    "react-redux": "^8.0.5",
+    "toggle-switch-react-native": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
