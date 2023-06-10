@@ -6,10 +6,16 @@ const getBirthday = async (uid) => {
 };
 
 const updateBirthday = async (uid, newBirthday) => {
-  const birthday = await firestoreService.updateBirthday(uid, newBirthday);
-  return birthday;
+  try {
+    await firestoreService.updateBirthday(uid, newBirthday);
+    console.log(newBirthday);
+    console.log('Successfully updated birthday');
+    return true;
+  } catch (error) {
+    console.error('Error updating birthday:', error);
+    return false;
+  }
 };
-
 
 const settingsController = {
     getBirthday,

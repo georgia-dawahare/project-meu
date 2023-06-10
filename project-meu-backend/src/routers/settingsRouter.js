@@ -14,4 +14,18 @@ router.get('/birthday/:uid', async (req, res) => {
   }
 })
 
+//update birthday
+router.put('/birthday/:uid', async (req, res) => {
+  const { uid } = req.params;
+  const { newBirthday } = req.body;
+  try {
+    await settingsController.updateBirthday(uid, newBirthday);
+    res.status(200).send('Successfully updated birthday');
+  } catch (error) {
+    console.log('Failed updating a new birthday:', error);
+    res.status(500).send(error.message);
+  }
+});
+
+
 export default router;
