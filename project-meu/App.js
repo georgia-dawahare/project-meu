@@ -114,7 +114,6 @@ function App() {
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
  
-    console.log('Inside UseEffect listening');
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         console.log('--- notification received ---');
@@ -187,6 +186,7 @@ function App() {
           </Tab.Navigator>
         ) : (<OnboardingScreenNavigator />)}
       </NavigationContainer>
+      {/* Simply remove the comment here to try out push notification on phone */}
       {/* <View
         style={{
           flex: 1,

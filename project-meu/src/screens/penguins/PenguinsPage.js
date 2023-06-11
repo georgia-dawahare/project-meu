@@ -54,8 +54,8 @@ async function sendPushNotification(expoPushToken) {
    const message = {
      to: expoPushToken,
      sound: 'default',
-     title: 'Test title',
-     body: 'Test body 2',
+     title: 'Animation sent',
+     body: 'Your new animation has been sent to your partner',
      data: { testData: 'test data' },
    };
   
