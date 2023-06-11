@@ -1,5 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -114,6 +115,7 @@ function App() {
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
  
+    console.log('Inside UseEffect listening');
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         console.log('--- notification received ---');
@@ -186,6 +188,25 @@ function App() {
           </Tab.Navigator>
         ) : (<OnboardingScreenNavigator />)}
       </NavigationContainer>
+      {/* <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'space-around',
+        }}>
+        <Text>Your expo push token: {expoPushToken}</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text>Notification Title: {notification && notification.request.content.title} </Text>
+          <Text>Notification Body: {notification && notification.request.content.body}</Text>
+          <Text>Notification Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+        </View>
+        <Button
+          title="Press to Send Notification"
+          onPress={async () => {
+            await sendPushNotification(expoPushToken);
+          }}
+        />
+      </View> */}
       {/* Simply remove the comment here to try out push notification on phone */}
       {/* <View
         style={{
