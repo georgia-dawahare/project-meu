@@ -6,29 +6,70 @@ import {
   Text,
   Image,
   View,
+  FlatList,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
 import { getAuth, signOut } from 'firebase/auth';
-import { RadioButton } from 'react-native-paper';
-// import { CurrentRenderContext } from '@react-navigation/native';
+
+const SettingContents = [
+  {
+    id: '11',
+    title: 'Personal Info',
+  },
+  {
+    id: '22',
+    title: 'Privacy and Data',
+  },
+  {
+    id: '33',
+    title: 'Notification Preferences',
+  },
+  {
+    id: '44',
+    title: 'Temperature Unit',
+  },
+  {
+    id: '55',
+    title: 'Version',
+  },
+];
 
 const SignOutContent = [
-  // {
-  //   id: 'SO',
-  //   title: 'Sign Out',
-  // },
+  {
+    id: 'SO',
+    title: 'Sign Out',
+  },
   {
     id: 'UP',
     title: 'Unpair with Partner',
   },
 ];
 
+function Item({ title, onPress }) {
+  return (
+    <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+function ItemSignout({ title, onPress }) {
+  const handleItemClick = () => {
+    onPress(title);
+  };
+
+  return (
+    <TouchableOpacity onPress={handleItemClick} style={styles.itemSignout}>
+      <Text style={[styles.title, styles.signoutTitle]}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
 function SettingPage({ navigation }) {
   // const { navigation } = route.params;
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [temperatureUnit, setTemperatureUnit] = useState('Celsius');
 
   useEffect(() => {
     async function loadFont() {
@@ -90,18 +131,16 @@ function SettingPage({ navigation }) {
         ],
       );
     } else if (title === 'Personal Info') {
-      navigation.navigate('SettingPersonalInfoPage');
+      // navigation.navigate('SettingPersonalInfo');
+      navigation.navigate('SettingNotificationPage');
     } else if (title === 'Version') {
       navigation.navigate('VersionPage');
     } else if (title === 'Privacy and Data') {
       navigation.navigate('VersionPage');
     } else if (title === 'Notification Preferences') {
-      navigation.navigate('SettingNotificationPage');
+      // navigation.navigate('SettingNotificationPage');
+      navigation.navigate('SettingPersonalInfo');
     }
-  };
-
-  const handleTemperatureUnitChange = (value) => {
-    setTemperatureUnit(value);
   };
 
   return (
@@ -122,46 +161,21 @@ function SettingPage({ navigation }) {
           <Text style={styles.email}>flori@gmail.com</Text>
         </View>
 
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => handleItemClick('Personal Info')}
-        >
-          <Text style={styles.title}>Personal Info</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => handleItemClick('Notification Preferences')}
-        >
-          <Text style={styles.title}>Notification Preferences</Text>
-        </TouchableOpacity>
-        <View style={styles.tempContainer}>
-          <Text style={styles.title}>Temperature Unit</Text>
-          <View style={styles.radioContainer}>
-            <RadioButton.Group
-              onValueChange={handleTemperatureUnitChange}
-              value={temperatureUnit}
-              style={styles.radioButtonContainer}
-            >
-              <View style={styles.radioButton}>
-                <RadioButton value="Celsius" color="rgb(230, 43, 133)" />
-                <Text style={[styles.radioButtonLabel, { marginRight: 20 }]}>&apos;C</Text>
-                <RadioButton style={styles.radioButtonF} value="Fahrenheit" color="rgb(230, 43, 133)" />
-                <Text style={styles.radioButtonLabel}>&apos;F</Text>
-              </View>
-            </RadioButton.Group>
-          </View>
+        <FlatList
+          data={SettingContents}
+          renderItem={({ item }) => (
+            <Item title={item.title} onPress={handleItemClick} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
 
-        </View>
-
-        {SignOutContent.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => handleItemClick(item.title)}
-            style={styles.itemSignout}
-          >
-            <Text style={[styles.title, styles.signoutTitle]}>{item.title}</Text>
-          </TouchableOpacity>
-        ))}
+        <FlatList
+          data={SignOutContent}
+          renderItem={({ item }) => item && <ItemSignout title={item.title} style={styles.signoutTitle} onPress={handleItemClick} />}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
 
       </View>
     </SafeAreaView>
@@ -224,30 +238,6 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginBottom: 30,
     fontSize: 15,
-  },
-  radioButtonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  radioButton: {
-    flexDirection: 'row',
-    right: -95,
-  },
-  radioButtonLabel: {
-    fontSize: 15,
-    paddingLeft: 8,
-    alignSelf: 'center',
-  },
-  tempContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    alignItems: 'center',
-    paddingLeft: 0,
-    marginVertical: 8,
-  },
-  itemSignout: {
-    marginTop: 32,
   },
 });
 
