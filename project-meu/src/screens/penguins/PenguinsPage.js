@@ -106,6 +106,11 @@ const gifDataPink = [
   require('../../../assets/animations/selfie/selfie_pink.gif'),
 ];
 
+const gifDataMap = {
+  black: gifDataBlack,
+  pink: gifDataPink,
+};
+
 function PenguinsPage() {
   const screenWidth = Dimensions.get('window').width;
   const screenHeight = Dimensions.get('window').height;
@@ -122,6 +127,8 @@ function PenguinsPage() {
   const [partnerDoc, setPartnerDoc] = useState('');
   const [partnerName, setPartnerName] = useState('');
   const [partnerLastEmotion, setPartnerLastEmotion] = useState(null);
+  const [userColorGifMap, setUserColorGifMap] = useState(gifDataBlack); // default user color = black
+  const [partnerColorGifMap, setPartnerColorGifMap] = useState(gifDataPink); // default partner color = pink
 
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
@@ -186,6 +193,21 @@ function PenguinsPage() {
     setSelectedIcon(Number(userDoc.user_last_emotion));
   }, [userDoc]);
 
+  // get partner and user's penguin color
+  useEffect(() => {
+    if (partnerDoc) {
+      console.log('partner penguin color:', partnerDoc.penguin_color)
+      setPartnerColorGifMap(gifDataMap[partnerDoc.penguin_color]);
+      console.log('partnerMap', gifDataMap[partnerDoc.penguin_color]);
+    }
+    if (userDoc) {
+      console.log('user penguin color:', userDoc.penguin_color)
+      setUserColorGifMap(gifDataMap[userDoc.penguin_color]);
+      console.log('userMap', gifDataMap[userDoc.penguin_color]);
+    }
+  }, [partnerDoc, userDoc]);
+
+  // code for push notifications
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
  
@@ -236,7 +258,8 @@ function PenguinsPage() {
   const renderGif = () => {
     return (
       <Image
-        source={gifDataBlack[selectedIcon]}
+        // set this to user's penguin color
+        source={userColorGifMap[selectedIcon]}
         style={{ width: screenWidth * 0.5349, height: screenHeight * 0.4721 }}
       />
     );
@@ -271,8 +294,8 @@ function PenguinsPage() {
       <View style={[styles.imageContainer, { marginTop: screenHeight * 0.06 }]}>
         {renderGif()}
         <Image
-          // change this to other penguin's emotion
-          source={gifDataPink[partnerLastEmotion]}
+          // change this to partner's penguin's emotion
+          source={partnerColorGifMap[partnerLastEmotion]}
           style={{ width: screenWidth * 0.5349, height: screenHeight * 0.4721 }}
         />
       </View>
