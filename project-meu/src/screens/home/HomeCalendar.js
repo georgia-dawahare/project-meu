@@ -143,8 +143,14 @@ function HomeCalendar({ navigation }) {
   };
 
   const renderItem = ({ item }) => {
+    let itemStyle = styles.item;
+    let iconColor = 'black';
+
     if (item.date.startsWith('D+') && item.date !== 'D+0') {
       return null;
+    } else if (item.date === 'D+0') {
+      itemStyle = styles.coloredItem;
+      iconColor = 'rgb(230, 43, 133)';
     }
 
     const handlePress = () => {
@@ -187,11 +193,17 @@ function HomeCalendar({ navigation }) {
     const icon = clickedItemId === item.id ? 'ios-trash' : 'ios-heart';
 
     return (
-      <TouchableOpacity onPress={handlePress} style={styles.item}>
+      <TouchableOpacity onPress={handlePress} style={itemStyle}>
         <View style={styles.rowContainer}>
-          <Text style={styles.ddaydate}>{item.date}</Text>
-          <Text style={styles.ddayTitle}>{item.name}</Text>
-          <Ionicons name={icon} size={24} color="black" style={styles.icon} />
+          {/* <Text style={styles.ddaydate}>{item.date}</Text> */}
+          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
+            {item.date}
+          </Text>
+          {/* <Text style={styles.ddayTitle}>{item.name}</Text> */}
+          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
+            {item.name}
+          </Text>
+          <Ionicons name={icon} size={24} color={iconColor} style={styles.icon} />
         </View>
       </TouchableOpacity>
     );
@@ -427,6 +439,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginTop: 10,
     marginBottom: 10,
+  },
+  coloredItem: {
+    // color: 'rgb(230, 43, 133)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  coloredItemText: {
+    color: 'rgb(230, 43, 133)',
   },
   rowContainer: {
     flexDirection: 'row',
