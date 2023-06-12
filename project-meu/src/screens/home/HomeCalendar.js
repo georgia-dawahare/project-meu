@@ -67,6 +67,7 @@ function HomeCalendar({ navigation }) {
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
+
           const extractedDate = extractDday(event.date);
           // const name = `${extractedDate}    ${event.title}`;
           const name = `${event.title}`;
@@ -124,6 +125,7 @@ function HomeCalendar({ navigation }) {
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
+
           const extractedDate = extractDday(event.date);
           const name = `${event.title}`;
           const id = `${event.id}`;
@@ -249,9 +251,6 @@ function HomeCalendar({ navigation }) {
 
     return sortedData;
   };
-
-  // 초기 로딩 시 이벤트 목록을 가져옴
-  // printEventTitlesAndDates();
 
   const formatDate = () => {
     const month = today.getMonth();
