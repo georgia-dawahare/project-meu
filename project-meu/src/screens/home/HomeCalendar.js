@@ -148,11 +148,22 @@ function HomeCalendar({ navigation }) {
     let itemStyle = styles.item;
     let iconColor = 'black';
 
+    let dateText = item.date;
+
     if (item.date.startsWith('D+') && item.date !== 'D+0') {
       return null;
     } else if (item.date === 'D+0') {
       itemStyle = styles.coloredItem;
       iconColor = 'rgb(230, 43, 133)';
+      dateText = 'D+0';
+    } else {
+      const day = parseInt(item.date.substring(2), 10);
+      if (day < 0 || day > 7) {
+        // const month = today.getMonth();
+        // const formattedDate = `${months[month]} ${day}th, ${item.date}`;
+        const formattedDate = `${item.date}`;
+        dateText = formattedDate;
+      }
     }
 
     const handlePress = () => {
@@ -199,7 +210,8 @@ function HomeCalendar({ navigation }) {
         <View style={styles.rowContainer}>
           {/* <Text style={styles.ddaydate}>{item.date}</Text> */}
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
-            {item.date}
+            {/* {item.date} */}
+            {dateText}
           </Text>
           {/* <Text style={styles.ddayTitle}>{item.name}</Text> */}
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
@@ -230,8 +242,10 @@ function HomeCalendar({ navigation }) {
           const anniversaryDate = new Date(anniversary.date);
           anniversaryDate.setFullYear(year);
           const extractedDate = extractDday(anniversaryDate);
+
           Defaultdata.push({
             date: extractedDate,
+            // date: anniversary.date,
             name: `${anniversary.name}`,
           });
         } else {
@@ -250,6 +264,19 @@ function HomeCalendar({ navigation }) {
     });
 
     return sortedData;
+    // const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
+    //   if (a.date.startsWith('D+') && !b.date.startsWith('D+')) {
+    //     return 1; // Place 'a' after 'b' if 'a' is D+ and 'b' is not
+    //   } else if (!a.date.startsWith('D+') && b.date.startsWith('D+')) {
+    //     return -1; // Place 'a' before 'b' if 'a' is not D+ and 'b' is D+
+    //   }
+
+    //   const ddayA = parseInt(a.date.substring(2), 10);
+    //   const ddayB = parseInt(b.date.substring(2), 10);
+
+    //   return ddayA - ddayB;
+    // });
+    // return sortedData;
   };
 
   const formatDate = () => {
