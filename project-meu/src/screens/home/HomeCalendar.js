@@ -69,11 +69,12 @@ function HomeCalendar({ navigation }) {
           };
 
           const extractedDate = extractDday(event.date);
-          // const name = `${extractedDate}    ${event.title}`;
           const name = `${event.title}`;
           const id = `${event.id}`;
+          // const date = `${event.date}`;
           return {
             date: extractedDate,
+            // date,
             name,
             id,
           };
@@ -150,20 +151,54 @@ function HomeCalendar({ navigation }) {
 
     let dateText = item.date;
 
-    if (item.date.startsWith('D+') && item.date !== 'D+0') {
-      return null;
-    } else if (item.date === 'D+0') {
-      itemStyle = styles.coloredItem;
-      iconColor = 'rgb(230, 43, 133)';
-      dateText = 'D+0';
-    } else {
-      const day = parseInt(item.date.substring(2), 10);
-      if (day < 0 || day > 7) {
-        // const month = today.getMonth();
-        // const formattedDate = `${months[month]} ${day}th, ${item.date}`;
-        const formattedDate = `${item.date}`;
+    // if (item.date.startsWith('D+') && item.date !== 'D+0') {
+    //   return null;
+    // } else if (item.date === 'D+0') {
+    //   itemStyle = styles.coloredItem;
+    //   iconColor = 'rgb(230, 43, 133)';
+    //   dateText = 'D+0';
+    // } else {
+    //   const day = parseInt(item.date.substring(2), 10);
+    //   if (day < 0 || day > 7) {
+    //     const formattedDate = `${item.date}`;
+    //     dateText = formattedDate;
+    //   }
+    // }
+
+    if (item.date.startsWith('D+')) {
+      const days = parseInt(item.date.substring(2), 10);
+      if (days === 0) {
+        itemStyle = styles.coloredItem;
+        iconColor = 'rgb(230, 43, 133)';
+        dateText = 'D+0';
+      } else if (days <= 7) {
+        dateText = `D-${item.date.substring(2)}`;
+      } else {
+        const date = new Date(item.date);
+        const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
         dateText = formattedDate;
       }
+    } else if (item.date.startsWith('D-')) {
+      const days = parseInt(item.date.substring(2), 10);
+      if (days <= 7) {
+        dateText = `D-${item.date.substring(2)}`;
+      } else {
+        // const today = new Date(); // 현재 날짜
+        const currentDate = new Date();
+        const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
+        futureDate.setDate(futureDate.getDate() + 1);
+        const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+        dateText = formattedDate;
+        // const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        // dateText = formattedDate;
+      }
+    } else {
+      const days = parseInt(item.date.substring(2), 10);
+      const currentDate = new Date();
+      const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
+      futureDate.setDate(futureDate.getDate() + 1);
+      const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+      dateText = formattedDate;
     }
 
     const handlePress = () => {
@@ -256,6 +291,7 @@ function HomeCalendar({ navigation }) {
         }
       }
     }
+
     const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
       const ddayA = parseInt(a.date.substring(2), 10);
       const ddayB = parseInt(b.date.substring(2), 10);
@@ -264,19 +300,6 @@ function HomeCalendar({ navigation }) {
     });
 
     return sortedData;
-    // const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
-    //   if (a.date.startsWith('D+') && !b.date.startsWith('D+')) {
-    //     return 1; // Place 'a' after 'b' if 'a' is D+ and 'b' is not
-    //   } else if (!a.date.startsWith('D+') && b.date.startsWith('D+')) {
-    //     return -1; // Place 'a' before 'b' if 'a' is not D+ and 'b' is D+
-    //   }
-
-    //   const ddayA = parseInt(a.date.substring(2), 10);
-    //   const ddayB = parseInt(b.date.substring(2), 10);
-
-    //   return ddayA - ddayB;
-    // });
-    // return sortedData;
   };
 
   const formatDate = () => {
