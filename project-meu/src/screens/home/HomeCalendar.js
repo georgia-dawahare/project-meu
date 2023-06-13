@@ -58,6 +58,7 @@ function HomeCalendar({ navigation }) {
       .get(`${apiUrl}/events/`)
       .then((response) => {
         const eventData = response.data;
+        // console.log('API Response:', response.data);
 
         const extractedData = eventData.map((event) => {
           const extractDday = (dateString) => {
@@ -71,11 +72,13 @@ function HomeCalendar({ navigation }) {
           const extractedDate = extractDday(event.date);
           const name = `${event.title}`;
           const id = `${event.id}`;
+          const pairId = `${event.pairId}`;
           return {
             date: extractedDate,
             // date,
             name,
             id,
+            pairId,
           };
         });
 
