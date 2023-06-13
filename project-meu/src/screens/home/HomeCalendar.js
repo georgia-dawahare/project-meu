@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
+import auth from '../../services/datastore';
 import anniversariesData from '../../../assets/data/anniversaries.json';
 
 function HomeCalendar({ navigation }) {
@@ -27,6 +28,8 @@ function HomeCalendar({ navigation }) {
   // const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(null);
   const currUser = useSelector((state) => state.user);
+  const [userDoc, setUserDoc] = useState('');
+  const [userId, setUserId] = useState('');
   // const [eventData, setEventData] = useState([]);
 
   const THRESHOLD = 480;
@@ -54,11 +57,27 @@ function HomeCalendar({ navigation }) {
   }, []);
 
   useEffect(() => {
+    setUserId(auth?.currentUser?.uid);
+  }, [userDoc]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+      if (userInfo) {
+        setUserDoc(userInfo);
+      }
+    };
+    if (userId) {
+      getUser();
+    }
+  }, [userId]);
+
+  useEffect(() => {
     axios
       .get(`${apiUrl}/events/`)
       .then((response) => {
         const eventData = response.data;
-        // console.log('API Response:', response.data);
 
         const extractedData = eventData.map((event) => {
           const extractDday = (dateString) => {
@@ -89,6 +108,16 @@ function HomeCalendar({ navigation }) {
         console.error(error);
       });
   }, []);
+
+  // get pairs 안나옴
+  const getPair = async () => {
+    return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
+  };
+
+  (async () => {
+    const pair = await getPair();
+    console.log('pair:', pair);
+  })();
 
   const printEventTitlesAndDates = async () => {
     const addDefaultEvents = async () => {
@@ -132,10 +161,13 @@ function HomeCalendar({ navigation }) {
           const extractedDate = extractDday(event.date);
           const name = `${event.title}`;
           const id = `${event.id}`;
+          const pairId = `${event.pairId}`;
+
           return {
             date: extractedDate,
             name,
             id,
+            pairId,
           };
         });
 
