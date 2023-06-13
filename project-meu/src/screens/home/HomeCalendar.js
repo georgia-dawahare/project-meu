@@ -135,7 +135,7 @@ function HomeCalendar({ navigation }) {
           };
         });
 
-        console.log('Extracted Firebase Data:', extractedData);
+        // console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
