@@ -9,6 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import SelectBox from 'react-native-multi-selectbox';
 import * as Font from 'expo-font';
 import axios from 'axios';
+import auth from '../services/datastore';
 import { apiUrl } from '../constants/constants';
 
 const K_OPTIONS = [
@@ -33,6 +34,8 @@ function FabandModal({ fetchData }) {
   const [title, setTitle] = useState('');
   const [selectedTeam, setSelectedTeam] = useState({});
   const [anniversaries, setAnniversaries] = useState([]);
+  const [userpairID, setuserpairID] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     async function loadFont() {
@@ -46,6 +49,26 @@ function FabandModal({ fetchData }) {
 
     loadFont();
   }, []);
+
+  useEffect(() => {
+    setUserId(auth?.currentUser?.uid);
+  }, [userpairID]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+
+      if (userInfo) {
+        setuserpairID(userInfo.pair_id);
+      }
+    };
+    if (userId) {
+      getUser();
+    }
+  }, [userId]);
+
+  // console.log('userID :    ', userpairID);
 
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
@@ -65,12 +88,11 @@ function FabandModal({ fetchData }) {
   };
 
   const handleAddEvent = async () => {
-    // Need to pull pair id
     const eventData = {
       date,
       title,
       repeat: selectedTeam.item,
-      pairId: '1',
+      pairId: userpairID,
     };
 
     // Push to db

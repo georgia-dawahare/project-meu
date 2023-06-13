@@ -280,8 +280,9 @@ const createEvent = async (eventData) => {
     date: eventData.date,
     title: eventData.title,
     repeat: eventData.repeat,
-  };
 
+  };
+  // console.log(event,':     event');
   if (!event.pair_id || !event.date || !event.title || !event.repeat) {
     console.error('Missing fields');
     return null;

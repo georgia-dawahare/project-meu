@@ -26,12 +26,10 @@ function HomeCalendar({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [extractedFirebaseData, setExtractedFirebaseData] = useState([]);
   const [clickedItem, setClickedItem] = useState(null);
-  // const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(null);
   const currUser = useSelector((state) => state.user);
   const [userID, setuserID] = useState('');
   const [userId, setUserId] = useState('');
-  // const [eventData, setEventData] = useState([]);
 
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
@@ -96,7 +94,6 @@ function HomeCalendar({ navigation }) {
           const pairId = `${event.pairId}`;
           return {
             date: extractedDate,
-            // date,
             name,
             id,
             pairId,
@@ -109,35 +106,8 @@ function HomeCalendar({ navigation }) {
         console.error(error);
       });
   }, []);
-  // console.log('pairId :    ', userID);
+
   const printEventTitlesAndDates = async () => {
-    // const addDefaultEvents = async () => {
-    //   try {
-    //     const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
-    //     console.log('Default events added:', response.data);
-    //   } catch (error) {
-    //     console.error('Failed to add default events:', error);
-    //   }
-    // };
-
-    const addNewEvent = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/events/`, {
-          title: 'New Event',
-          date: '2023-06-06',
-          // pair_id: userID,
-          // repeat: 'never',
-        });
-        // console.log('pair id  :  ', response);
-        console.log('New event added:', response.data);
-      } catch (error) {
-        console.error('Failed to add new event:', error);
-      }
-    };
-
-    // await addDefaultEvents();
-    await addNewEvent();
-
     axios
       .get(`${apiUrl}/events/`)
       .then((response) => {
@@ -165,7 +135,7 @@ function HomeCalendar({ navigation }) {
           };
         });
 
-        // console.log('Extracted Firebase Data:', extractedData);
+        console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
@@ -305,7 +275,12 @@ function HomeCalendar({ navigation }) {
       }
     }
 
-    const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
+    const userAnniversaries = extractedFirebaseData.filter(
+      (event) => event.pairId === userID,
+    );
+
+    // const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
+    const sortedData = [...Defaultdata, ...userAnniversaries].sort((a, b) => {
       const ddayA = parseInt(a.date.substring(2), 10);
       const ddayB = parseInt(b.date.substring(2), 10);
 
@@ -383,7 +358,6 @@ function HomeCalendar({ navigation }) {
         </Animated.Text>
         <FloatingButton />
         <FabandModal fetchData={printEventTitlesAndDates} />
-        {/* <FabandModal /> */}
       </Animated.View>
 
       <Animated.ScrollView
