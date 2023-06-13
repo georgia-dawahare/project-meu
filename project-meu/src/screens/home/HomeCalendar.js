@@ -11,6 +11,7 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
+  // NativeEventEmitter,
 } from 'react-native';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,7 +29,7 @@ function HomeCalendar({ navigation }) {
   // const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(null);
   const currUser = useSelector((state) => state.user);
-  const [userDoc, setUserDoc] = useState('');
+  const [userID, setuserID] = useState('');
   const [userId, setUserId] = useState('');
   // const [eventData, setEventData] = useState([]);
 
@@ -58,14 +59,15 @@ function HomeCalendar({ navigation }) {
 
   useEffect(() => {
     setUserId(auth?.currentUser?.uid);
-  }, [userDoc]);
+  }, [userID]);
 
   useEffect(() => {
     const getUser = async () => {
       const user = await axios.get(`${apiUrl}/users/${userId}`);
       const userInfo = user.data;
+
       if (userInfo) {
-        setUserDoc(userInfo);
+        setuserID(userInfo.pair_id);
       }
     };
     if (userId) {
@@ -101,47 +103,39 @@ function HomeCalendar({ navigation }) {
           };
         });
 
-        console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
-
-  // get pairs 안나옴
-  const getPair = async () => {
-    return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
-  };
-
-  (async () => {
-    const pair = await getPair();
-    console.log('pair:', pair);
-  })();
-
+  // console.log('pairId :    ', userID);
   const printEventTitlesAndDates = async () => {
-    const addDefaultEvents = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
-        console.log('Default events added:', response.data);
-      } catch (error) {
-        console.error('Failed to add default events:', error);
-      }
-    };
+    // const addDefaultEvents = async () => {
+    //   try {
+    //     const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
+    //     console.log('Default events added:', response.data);
+    //   } catch (error) {
+    //     console.error('Failed to add default events:', error);
+    //   }
+    // };
 
     const addNewEvent = async () => {
       try {
         const response = await axios.post(`${apiUrl}/events/`, {
           title: 'New Event',
           date: '2023-06-06',
+          // pair_id: userID,
+          // repeat: 'never',
         });
+        // console.log('pair id  :  ', response);
         console.log('New event added:', response.data);
       } catch (error) {
         console.error('Failed to add new event:', error);
       }
     };
 
-    await addDefaultEvents();
+    // await addDefaultEvents();
     await addNewEvent();
 
     axios
@@ -171,7 +165,7 @@ function HomeCalendar({ navigation }) {
           };
         });
 
-        console.log('Extracted Firebase Data:', extractedData);
+        // console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
