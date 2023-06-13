@@ -71,7 +71,6 @@ function HomeCalendar({ navigation }) {
           const extractedDate = extractDday(event.date);
           const name = `${event.title}`;
           const id = `${event.id}`;
-          // const date = `${event.date}`;
           return {
             date: extractedDate,
             // date,
@@ -151,20 +150,6 @@ function HomeCalendar({ navigation }) {
 
     let dateText = item.date;
 
-    // if (item.date.startsWith('D+') && item.date !== 'D+0') {
-    //   return null;
-    // } else if (item.date === 'D+0') {
-    //   itemStyle = styles.coloredItem;
-    //   iconColor = 'rgb(230, 43, 133)';
-    //   dateText = 'D+0';
-    // } else {
-    //   const day = parseInt(item.date.substring(2), 10);
-    //   if (day < 0 || day > 7) {
-    //     const formattedDate = `${item.date}`;
-    //     dateText = formattedDate;
-    //   }
-    // }
-
     if (item.date.startsWith('D+') && item.date !== 'D+0') {
       return null;
     } else if (item.date.startsWith('D+')) {
@@ -187,16 +172,12 @@ function HomeCalendar({ navigation }) {
       if (days <= 7) {
         dateText = `D-${item.date.substring(2)}`;
       } else {
-        // const today = new Date(); // 현재 날짜
         const currentDate = new Date();
         const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
         futureDate.setDate(futureDate.getDate() + 1);
-        // const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
         const formattedDate = `${(futureDate.getMonth() + 1).toString().padStart(2, '0')}/${futureDate.getDate().toString().padStart(2, '0')}/${futureDate.getFullYear()}`;
 
         dateText = formattedDate;
-        // const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-        // dateText = formattedDate;
       }
     } else {
       const days = parseInt(item.date.substring(2), 10);
@@ -249,12 +230,9 @@ function HomeCalendar({ navigation }) {
     return (
       <TouchableOpacity onPress={handlePress} style={itemStyle}>
         <View style={styles.rowContainer}>
-          {/* <Text style={styles.ddaydate}>{item.date}</Text> */}
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
-            {/* {item.date} */}
             {dateText}
           </Text>
-          {/* <Text style={styles.ddayTitle}>{item.name}</Text> */}
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
             {item.name}
           </Text>
