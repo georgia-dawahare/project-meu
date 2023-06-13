@@ -165,7 +165,9 @@ function HomeCalendar({ navigation }) {
     //   }
     // }
 
-    if (item.date.startsWith('D+')) {
+    if (item.date.startsWith('D+') && item.date !== 'D+0') {
+      return null;
+    } else if (item.date.startsWith('D+')) {
       const days = parseInt(item.date.substring(2), 10);
       if (days === 0) {
         itemStyle = styles.coloredItem;
@@ -175,7 +177,9 @@ function HomeCalendar({ navigation }) {
         dateText = `D-${item.date.substring(2)}`;
       } else {
         const date = new Date(item.date);
-        const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        // const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+        const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+
         dateText = formattedDate;
       }
     } else if (item.date.startsWith('D-')) {
@@ -187,7 +191,9 @@ function HomeCalendar({ navigation }) {
         const currentDate = new Date();
         const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
         futureDate.setDate(futureDate.getDate() + 1);
-        const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+        // const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+        const formattedDate = `${(futureDate.getMonth() + 1).toString().padStart(2, '0')}/${futureDate.getDate().toString().padStart(2, '0')}/${futureDate.getFullYear()}`;
+
         dateText = formattedDate;
         // const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
         // dateText = formattedDate;
