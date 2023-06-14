@@ -136,10 +136,10 @@ function CheckinPage({ navigation }) {
   };
 
   const createResponseGroup = async (groupId) => {
-    let questionId = Math.round(Math.random() * 100);
+    let questionId = Math.round(Math.random() * 2);
     // Ignore all image questions until we have a way to display them
     while (questionData.questions[questionId].type === 'image') {
-      questionId = Math.round(Math.random() * 100);
+      questionId = Math.round(Math.random() * 2);
     }
     await addResponseGroup(
       {
@@ -227,6 +227,14 @@ function CheckinPage({ navigation }) {
           }
 
           // Set daily question
+          // make firebase call for the question
+          try {
+            const question = await axios.get(`${apiUrl}/questions/${responseGroupData.question_id}`);
+            setQuestion(question);
+          } catch(error){
+            console.log('firebase did not work')
+          }
+
           setQuestion(questionData.questions[responseGroupData.question_id].question);
         }
       } catch (error) {

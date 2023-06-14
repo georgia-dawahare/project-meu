@@ -3,8 +3,8 @@ import { Timestamp } from 'firebase-admin/firestore';
 import admin from 'firebase-admin';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
-import serviceAccount from '/etc/secrets/credentials.json';
-// import serviceAccount from '../../credentials.json'
+// import serviceAccount from '/etc/secrets/credentials.json';
+import serviceAccount from '../../credentials.json'
 
 // directly connect the local development server
 // eslint-disable-next-line no-unused-vars
@@ -509,6 +509,20 @@ const getPairDate = async (uid) => {
   return pairDate;
 };
 
+// gatherine question data 
+const getQuestion = async (qid) => {
+  const doc = await firestore.collection('Questions').doc(qid).get();
+  let question;
+  if (!doc.exists) {
+    console.log('Question does not exist');
+  } else {
+    const data = doc.data();
+    question = data.question;
+  }
+  console.log('firestore call finished')
+  return question;
+};
+
 const firestoreService = {
   createUser,
   getName,
@@ -535,7 +549,8 @@ const firestoreService = {
   getLocData,
   getBackground,
   getPairDate,
-  connectPairs
+  connectPairs,
+  getQuestion
 };
 
 export default firestoreService;
