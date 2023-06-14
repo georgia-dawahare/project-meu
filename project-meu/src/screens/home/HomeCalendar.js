@@ -173,7 +173,7 @@ function HomeCalendar({ navigation }) {
       } else {
         const currentDate = new Date();
         const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
-        futureDate.setDate(futureDate.getDate() + 1);
+        futureDate.setDate(futureDate.getDate());
         const formattedDate = `${(futureDate.getMonth() + 1).toString().padStart(2, '0')}/${futureDate.getDate().toString().padStart(2, '0')}/${futureDate.getFullYear()}`;
 
         dateText = formattedDate;
