@@ -124,7 +124,6 @@ function BackgroundChange({
         <Image
           source={require('../../../assets/images/defaultPartnerBackground.png')}
           style={styles.image}
-          resizeMode="cover"
         />
       )}
 
@@ -133,7 +132,7 @@ function BackgroundChange({
         {backgroundImage ? (
           <View style={styles.iconButton}>
             <Image
-              source={require('../../../assets/icons/edit-2.png')}
+              source={require('../../../assets/icons/edit-white.png')}
               style={styles.iconEdit}
             />
           </View>
@@ -142,7 +141,6 @@ function BackgroundChange({
           <View style={styles.iconButton}>
             <Image
               source={require('../../../assets/icons/edit.png')}
-              // source={require('../../../assets/icons/picture.png')}
               style={styles.iconEdit}
             />
           </View>

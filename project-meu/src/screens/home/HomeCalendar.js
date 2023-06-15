@@ -314,7 +314,7 @@ function HomeCalendar({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('TempHome')} style={styles.backButton}>
         <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+          <Image source={require('../../../assets/icons/back-arrow.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
 

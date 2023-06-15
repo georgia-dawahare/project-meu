@@ -169,7 +169,7 @@ function FabandModal({ fetchData }) {
       </Modal>
 
       <FAB
-        icon={<Ionicons name="ios-add" size={24} color="white" />}
+        icon={<Ionicons name="ios-add" size={26} color="white" />}
         buttonStyle={styles.FAB}
         size="large"
         placement="right"
@@ -182,7 +182,8 @@ function FabandModal({ fetchData }) {
 const styles = StyleSheet.create({
   FAB: {
     backgroundColor: 'rgba(230, 43, 133, 1)',
-    position: 'relative',
+    // position: 'relative',
+    // alignItems: 'center',
   },
   container: {
     flex: 1,

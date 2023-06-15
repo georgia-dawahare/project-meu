@@ -110,7 +110,7 @@ function SettingPersonalInfoPage({ navigation }) {
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
             <Image
-              source={require('../../../assets/icons/goback-black.png')}
+              source={require('../../../assets/icons/back-arrow.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
