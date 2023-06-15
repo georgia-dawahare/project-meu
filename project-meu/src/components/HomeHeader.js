@@ -85,14 +85,14 @@ function HomeHeader({ navigation }) {
     <View style={styles.topbar}>
       <TouchableOpacity onPress={() => navigation.navigate('HomeCalendar')}>
         <Image
-          source={require('../../assets/icons/Calendar.png')}
+          source={require('../../assets/icons/calendar-heart.png')}
           style={styles.Icon}
         />
       </TouchableOpacity>
       <Text style={styles.header}>{days}</Text>
       <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
         <Image
-          source={require('../../assets/icons/Cog.png')}
+          source={require('../../assets/icons/setting.png')}
           style={styles.Icon}
         />
       </TouchableOpacity>
