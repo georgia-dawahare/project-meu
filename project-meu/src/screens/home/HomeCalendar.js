@@ -30,6 +30,7 @@ function HomeCalendar({ navigation }) {
   const currUser = useSelector((state) => state.user);
   const [userID, setuserID] = useState('');
   const [userId, setUserId] = useState('');
+  const [userFirstDate, setUserFirstDate] = useState('');
 
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
@@ -72,6 +73,23 @@ function HomeCalendar({ navigation }) {
       getUser();
     }
   }, [userId]);
+
+  // here
+  useEffect(() => {
+    const getPairDate = async () => {
+      const pair = await axios.get(`${apiUrl}/pairs/${userID}`);
+      const relationshipStart = pair?.data?.relationship_start;
+
+      if (relationshipStart) {
+        const startDate = new Date(relationshipStart);
+        setUserFirstDate(startDate);
+        console.log('first startd ate"      ', startDate);
+      } else {
+        console.log('Could not retrieve start date');
+      }
+    };
+    getPairDate();
+  }, [userID]);
 
   useEffect(() => {
     axios
@@ -275,11 +293,18 @@ function HomeCalendar({ navigation }) {
       }
     }
 
+    // for (let year = currentYear; year <= endYear; year++) {
+    //   Defaultdata.push({
+    //     date: userFirstDate,
+    //     // name: `${currentYear - userFirstDate.getFullYear() + 1}th anniversary`,
+    //     name: '4th anniversary',
+    //   });
+    // }
+
     const userAnniversaries = extractedFirebaseData.filter(
       (event) => event.pairId === userID,
     );
 
-    // const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
     const sortedData = [...Defaultdata, ...userAnniversaries].sort((a, b) => {
       const ddayA = parseInt(a.date.substring(2), 10);
       const ddayB = parseInt(b.date.substring(2), 10);
