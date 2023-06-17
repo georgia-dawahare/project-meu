@@ -21,6 +21,7 @@
     "delay": "1500"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.353.0",
     "@babel/cli": "^7.21.5",
     "@babel/core": "^7.21.8",
     "@babel/node": "^7.20.7",
@@ -42,5 +43,6 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.32.2",
     "nodemon": "^2.0.22"
-  }
+  },
+  "type": "module"
 }
