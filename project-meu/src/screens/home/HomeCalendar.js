@@ -11,10 +11,8 @@ import {
   FlatList,
   TouchableOpacity,
   Alert,
-  // NativeEventEmitter,
 } from 'react-native';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import FloatingButton from '../../components/FloatingButton';
@@ -83,14 +81,13 @@ function HomeCalendar({ navigation }) {
       if (relationshipStart) {
         const startDate = new Date(relationshipStart);
         setUserFirstDate(startDate);
-        console.log('first startd ate"      ', startDate);
       } else {
         console.log('Could not retrieve start date');
       }
     };
     getPairDate();
   }, [userID]);
-
+  console.log('first startd dateee"      ', userFirstDate);
   useEffect(() => {
     axios
       .get(`${apiUrl}/events/`)
@@ -163,8 +160,6 @@ function HomeCalendar({ navigation }) {
 
   const renderItem = ({ item }) => {
     let itemStyle = styles.item;
-    let iconColor = 'black';
-
     let dateText = item.date;
 
     if (item.date.startsWith('D+') && item.date !== 'D+0') {
@@ -173,13 +168,11 @@ function HomeCalendar({ navigation }) {
       const days = parseInt(item.date.substring(2), 10);
       if (days === 0) {
         itemStyle = styles.coloredItem;
-        iconColor = 'rgb(230, 43, 133)';
         dateText = 'D+0';
       } else if (days <= 7) {
         dateText = `D-${item.date.substring(2)}`;
       } else {
         const date = new Date(item.date);
-        // const formattedDate = `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
         const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
 
         dateText = formattedDate;
@@ -242,8 +235,6 @@ function HomeCalendar({ navigation }) {
       }
     };
 
-    // const icon = clickedItemId === item.id ? 'ios-trash' : 'ios-heart';
-    // project-meu/assets/icons/heart.png
     const icon = clickedItemId === item.id ? (
       <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
     ) : (
@@ -259,11 +250,31 @@ function HomeCalendar({ navigation }) {
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
             {item.name}
           </Text>
-          {/* <Ionicons name={icon} size={24} color={iconColor} style={styles.icon} /> */}
           {icon}
         </View>
       </TouchableOpacity>
     );
+  };
+
+  const getCurrentAnniversary = () => {
+    if (userFirstDate) {
+      const anniversaryDate = new Date(userFirstDate);
+      const currentDate = new Date();
+
+      const yearsDiff = currentDate.getFullYear() - anniversaryDate.getFullYear();
+      const monthsDiff = currentDate.getMonth() - anniversaryDate.getMonth();
+      const daysDiff = currentDate.getDate() - anniversaryDate.getDate();
+
+      let currentAnniversary = yearsDiff;
+
+      if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
+        currentAnniversary--;
+      }
+
+      return currentAnniversary;
+    }
+
+    return null;
   };
 
   // render Anniversaries from json
@@ -288,7 +299,6 @@ function HomeCalendar({ navigation }) {
 
           Defaultdata.push({
             date: extractedDate,
-            // date: anniversary.date,
             name: `${anniversary.name}`,
           });
         } else {
@@ -300,13 +310,18 @@ function HomeCalendar({ navigation }) {
       }
     }
 
-    // for (let year = currentYear; year <= endYear; year++) {
-    //   Defaultdata.push({
-    //     date: userFirstDate,
-    //     // name: `${currentYear - userFirstDate.getFullYear() + 1}th anniversary`,
-    //     name: '4th anniversary',
-    //   });
-    // }
+    const currentAnniversary = getCurrentAnniversary();
+    if (currentAnniversary !== null) {
+      const upcomingTwoYearAnniversary = currentAnniversary + 2;
+      const upcomingAnniversaryDate = new Date(userFirstDate);
+      upcomingAnniversaryDate.setFullYear(upcomingAnniversaryDate.getFullYear() + upcomingTwoYearAnniversary);
+
+      const extractedDate = extractDday(upcomingAnniversaryDate);
+      Defaultdata.push({
+        date: extractedDate,
+        name: `${upcomingTwoYearAnniversary}th anniversary`,
+      });
+    }
 
     const userAnniversaries = extractedFirebaseData.filter(
       (event) => event.pairId === userID,
