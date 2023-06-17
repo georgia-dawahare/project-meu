@@ -242,7 +242,13 @@ function HomeCalendar({ navigation }) {
       }
     };
 
-    const icon = clickedItemId === item.id ? 'ios-trash' : 'ios-heart';
+    // const icon = clickedItemId === item.id ? 'ios-trash' : 'ios-heart';
+    // project-meu/assets/icons/heart.png
+    const icon = clickedItemId === item.id ? (
+      <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
+    ) : (
+      <Image source={require('../../../assets/icons/heart.png')} style={styles.icon} />
+    );
 
     return (
       <TouchableOpacity onPress={handlePress} style={itemStyle}>
@@ -253,7 +259,8 @@ function HomeCalendar({ navigation }) {
           <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
             {item.name}
           </Text>
-          <Ionicons name={icon} size={24} color={iconColor} style={styles.icon} />
+          {/* <Ionicons name={icon} size={24} color={iconColor} style={styles.icon} /> */}
+          {icon}
         </View>
       </TouchableOpacity>
     );
