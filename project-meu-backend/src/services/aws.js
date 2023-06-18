@@ -3,8 +3,7 @@ import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../libs/s3Client.js";
 import * as fs from 'fs';
 
-const uploadPhoto = async () => {
-    const imageUrl = "https://www.publicdomainpictures.net/pictures/160000/nahled/couple-damoureux.jpg";
+const uploadImage = async (imageUrl) => {
     // const fileContent = fs.readFileSync(imageUrl);
     // const res = await fetch(imageUrl);
     // const blob = await res.buffer()
@@ -33,27 +32,25 @@ const uploadPhoto = async () => {
     }
 };
 
-const downloadPhoto = async () => {
+const downloadImage = async (imageUrl) => {
     const command = new GetObjectCommand({
         Bucket: "meu-photo-bucket",
-        Key: "sample_upload"
+        Key: imageUrl
     });
 
     try {
         const response = await s3Client.send(command);
         // The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-        const str = await response.Body.transformToString();
-        console.log(str);
+        const webStream = response.Body.transformToWebStream();
+        console.log(webStream);
     } catch (err) {
         console.error(err);
     }
 }
 
-uploadPhoto();
-
 const awsService = {
-    downloadPhoto,
-    uploadPhoto
+    downloadImage,
+    uploadImage
 }
 
 export default awsService;
