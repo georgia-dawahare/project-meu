@@ -54,22 +54,20 @@ function SettingPersonalInfo({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
-          <Image
-            source={require('../../../assets/icons/goback-black.png')}
-            style={styles.Icon}
-          />
-        </TouchableOpacity>
-
-        <Text style={styles.topTitle}>Personal Info</Text>
-      </View>
-      <View style={styles.contents}>
-        <View style={styles.personalInfo}>
-          <Text style={styles.name}>Florian</Text>
-          <Text style={styles.email}>flori@gmail.com</Text>
+    <TouchableWithoutFeedback onPress={() => {
+      setSelectedBDayVisible(false);
+      setSelectedAnniversaryVisible(false);
+    }}
+    >
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
+            <Image
+              source={require('../../../assets/icons/back-arrow.png')}
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+          <Text style={styles.topTitle}>Personal Info</Text>
         </View>
 
         <FlatList

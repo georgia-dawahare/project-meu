@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
+    "@flaticon/flaticon-uicons": "^2.2.0",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/datetimepicker": "^7.1.0",
     "@react-navigation/bottom-tabs": "^6.5.7",

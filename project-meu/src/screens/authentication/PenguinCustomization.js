@@ -28,7 +28,7 @@ function PenguinCustomization({ navigation }) {
   return (
     <SafeAreaView>
       <Image
-        source={require('../../../assets/icons/goback-black.png')}
+        source={require('../../../assets/icons/back-arrow.png')}
         style={styles.Icon}
       />
       <Image
