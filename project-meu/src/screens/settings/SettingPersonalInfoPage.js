@@ -4,72 +4,34 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
   Image,
+  View,
+  FlatList,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { getAuth } from 'firebase/auth';
-import axios from 'axios';
-import { apiUrl } from '../../constants/constants';
 
-function SettingPersonalInfoPage({ navigation }) {
-  const auth = getAuth();
+const SettingContents = [
+  {
+    id: 'BD',
+    title: 'Birthday',
+  },
+  {
+    id: 'AV',
+    title: 'Anniversary',
+  },
+];
 
+function Item({ title, onPress }) {
+  return (
+    <TouchableOpacity onPress={() => onPress(title)} style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  );
+}
+
+function SettingPersonalInfo({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [selectedBDay, setSelectedBDay] = useState(new Date());
-  const [selectedFirstDate, setSelectedFistDate] = useState(new Date());
-  const [selectedBDayVisible, setSelectedBDayVisible] = useState(false);
-  const [selectedAnniversaryVisible, setSelectedAnniversaryVisible] = useState(false);
-  const [birthday, setBirthday] = useState('');
-  const userID = auth?.currentUser?.uid;
-
-  console.log('user ID :    ', userID);
-
-  const fetchBirthday = async () => {
-    // getting and setting user data
-    if (userID) {
-      try {
-        const response = await axios.get(`${apiUrl}/settings/birthday/${userID}`);
-        const bday = response.data;
-        setBirthday(bday);
-      } catch (error) {
-        console.log('Error fetching birthday:', error);
-      }
-    }
-  };
-
-  const updateBirthday = async (newBirthday) => {
-    if (userID) {
-      try {
-        await axios.put(`${apiUrl}/settings/birthday/${userID}`, {
-          newBirthday,
-        });
-        fetchBirthday();
-      } catch (error) {
-        console.log('Error updating birthday:', error);
-      }
-    }
-  };
-
-  useEffect(() => {
-    fetchBirthday();
-  }, [userID]);
-
-  console.log('bday from firebase:   ', birthday);
-
-  function formatDate(date) {
-    const formattedDate = new Date(date);
-    const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = formattedDate.getDate().toString().padStart(2, '0');
-    const year = formattedDate.getFullYear().toString();
-    return `${month}/${day}/${year}`;
-  }
-
-  const formattedBirthday = formatDate(birthday);
 
   useEffect(() => {
     async function loadFont() {
@@ -88,19 +50,10 @@ function SettingPersonalInfoPage({ navigation }) {
   }
 
   const handleItemClick = (title) => {
-    if (title === 'Birthday') {
-      setSelectedBDayVisible(!selectedBDayVisible);
-      setSelectedAnniversaryVisible(false);
-    } else if (title === 'Anniversary') {
-      setSelectedAnniversaryVisible(!selectedAnniversaryVisible);
-      setSelectedBDayVisible(false);
-    } else {
-      console.log('Clicked item:', title);
-    }
+    console.log('Clicked item:', title);
   };
 
   return (
-
     <TouchableWithoutFeedback onPress={() => {
       setSelectedBDayVisible(false);
       setSelectedAnniversaryVisible(false);
@@ -116,72 +69,17 @@ function SettingPersonalInfoPage({ navigation }) {
           </TouchableOpacity>
           <Text style={styles.topTitle}>Personal Info</Text>
         </View>
-        <View style={styles.contents}>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleItemClick('Birthday')}
-          >
-            <Text style={styles.title}>Birthday</Text>
-            {selectedBDayVisible ? (
-              <DateTimePicker
-                value={selectedBDay}
-                mode="date"
-                display="default"
-                onChange={(event, date) => {
-                  if (date) {
-                    Alert.alert(
-                      'Confirmation',
-                      'Are you sure you want to change your birthday?',
-                      [
-                        {
-                          text: 'Cancel',
-                          style: 'cancel',
-                        },
-                        {
-                          text: 'Yes',
-                          onPress: () => {
-                            setSelectedBDay(date);
-                            setBirthday(date);
-                            updateBirthday(date);
-                          },
-                          style: 'Yes',
-                        },
-                      ],
-                    );
-                  }
-                  setSelectedBDayVisible(false);
-                }}
-              />
-            ) : (
-              <Text style={styles.date}>
-                {formattedBirthday || 'Select birthday'}
-              </Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleItemClick('Anniversary')}
-          >
-            <Text style={styles.title}>Anniversary</Text>
-            {selectedAnniversaryVisible ? (
-              <DateTimePicker
-                value={selectedFirstDate}
-                mode="date"
-                display="default"
-                onChange={(event, date) => {
-                  if (date) {
-                    setSelectedFistDate(date);
-                  }
-                  setSelectedAnniversaryVisible(false);
-                }}
-              />
-            ) : (
-              <Text style={styles.date}>{formatDate(selectedFirstDate)}</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+
+        <FlatList
+          data={SettingContents}
+          renderItem={({ item }) => (
+            <Item title={item.title} onPress={handleItemClick} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -225,8 +123,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     padding: 16,
     paddingLeft: 0,
     marginVertical: 8,
@@ -240,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingPersonalInfoPage;
+export default SettingPersonalInfo;
