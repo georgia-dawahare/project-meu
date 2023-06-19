@@ -124,8 +124,8 @@ function SettingPersonalInfoPage({ navigation }) {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
         />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }
 
