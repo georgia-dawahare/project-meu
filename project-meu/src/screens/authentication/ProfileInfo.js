@@ -42,7 +42,7 @@ function ProfileInfo({ navigation }) {
       birthday: birthdayString,
     };
     dispatch(updateUser(newUser));
-    navigation.navigate('Welcome');
+    navigation.navigate('PenguinCustomization');
   };
 
   const handleDateChange = (event, selectedDate) => {
