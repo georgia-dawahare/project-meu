@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
-    "@notifee/react-native": "^7.7.1",
+    "@flaticon/flaticon-uicons": "^2.2.0",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-native-community/push-notification-ios": "^1.11.0",

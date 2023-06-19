@@ -100,7 +100,6 @@ function SettingPersonalInfoPage({ navigation }) {
   };
 
   return (
-
     <TouchableWithoutFeedback onPress={() => {
       setSelectedBDayVisible(false);
       setSelectedAnniversaryVisible(false);
@@ -110,78 +109,23 @@ function SettingPersonalInfoPage({ navigation }) {
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.navigate('SettingPage')}>
             <Image
-              source={require('../../../assets/icons/goback-black.png')}
+              source={require('../../../assets/icons/back-arrow.png')}
               style={styles.icon}
             />
           </TouchableOpacity>
           <Text style={styles.topTitle}>Personal Info</Text>
         </View>
-        <View style={styles.contents}>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleItemClick('Birthday')}
-          >
-            <Text style={styles.title}>Birthday</Text>
-            {selectedBDayVisible ? (
-              <DateTimePicker
-                value={selectedBDay}
-                mode="date"
-                display="default"
-                onChange={(event, date) => {
-                  if (date) {
-                    Alert.alert(
-                      'Confirmation',
-                      'Are you sure you want to change your birthday?',
-                      [
-                        {
-                          text: 'Cancel',
-                          style: 'cancel',
-                        },
-                        {
-                          text: 'Yes',
-                          onPress: () => {
-                            setSelectedBDay(date);
-                            setBirthday(date);
-                            updateBirthday(date);
-                          },
-                          style: 'Yes',
-                        },
-                      ],
-                    );
-                  }
-                  setSelectedBDayVisible(false);
-                }}
-              />
-            ) : (
-              <Text style={styles.date}>
-                {formattedBirthday || 'Select birthday'}
-              </Text>
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => handleItemClick('Anniversary')}
-          >
-            <Text style={styles.title}>Anniversary</Text>
-            {selectedAnniversaryVisible ? (
-              <DateTimePicker
-                value={selectedFirstDate}
-                mode="date"
-                display="default"
-                onChange={(event, date) => {
-                  if (date) {
-                    setSelectedFistDate(date);
-                  }
-                  setSelectedAnniversaryVisible(false);
-                }}
-              />
-            ) : (
-              <Text style={styles.date}>{formatDate(selectedFirstDate)}</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+
+        <FlatList
+          data={SettingContents}
+          renderItem={({ item }) => (
+            <Item title={item.title} onPress={handleItemClick} />
+          )}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
 

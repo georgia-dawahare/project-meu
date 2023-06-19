@@ -59,7 +59,7 @@ function ProfileInfo({ navigation }) {
       <View style={styles.backWrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
-            source={require('../../../assets/icons/goback-black.png')}
+            source={require('../../../assets/icons/back-arrow.png')}
           />
         </TouchableOpacity>
       </View>

@@ -123,7 +123,6 @@ function BackgroundChange({
         <Image
           source={require('../../../assets/images/defaultPartnerBackground.png')}
           style={styles.image}
-          resizeMode="cover"
         />
       )}
 
@@ -132,16 +131,16 @@ function BackgroundChange({
         {backgroundImage ? (
           <View style={styles.iconButton}>
             <Image
-              source={require('../../../assets/icons/Edit-white.png')}
-              style={styles.icon}
+              source={require('../../../assets/icons/edit-white.png')}
+              style={styles.iconEdit}
             />
           </View>
 
         ) : (
           <View style={styles.iconButton}>
             <Image
-              source={require('../../../assets/icons/edit-black.png')}
-              style={styles.icon}
+              source={require('../../../assets/icons/edit.png')}
+              style={styles.iconEdit}
             />
           </View>
 
@@ -210,6 +209,12 @@ const styles = StyleSheet.create({
   icon: {
     width: 24,
     height: 24,
+  },
+  iconEdit: {
+    width: 18,
+    height: 18,
+    right: 74,
+    top: -6,
   },
 
   image: {

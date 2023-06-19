@@ -312,6 +312,7 @@ function CheckinPage({ navigation }) {
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image
               source={require('../../../assets/images/editButton.png')}
+              // source={require('../../../assets/icons/checkin-answer.png')}
               style={styles.editImg}
             />
           </TouchableOpacity>
