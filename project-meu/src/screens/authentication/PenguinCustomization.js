@@ -143,19 +143,7 @@ function PenguinCustomization({ navigation }) {
     return <Text>Loading...</Text>;
   }
   return (
-<<<<<<< HEAD
     <SafeAreaView style={styles.container}>
-=======
-    <SafeAreaView>
-      <Image
-        source={require('../../../assets/icons/back-arrow.png')}
-        style={styles.Icon}
-      />
-      <Image
-        source={require('../../../assets/images/progress-3.png')}
-        style={styles.progress}
-      />
->>>>>>> 21cfcd3c7dd6835d6769a1bb2539eb12c51112f2
 
       <View style={styles.backWrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
