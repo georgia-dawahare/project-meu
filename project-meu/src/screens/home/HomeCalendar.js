@@ -121,6 +121,7 @@ function HomeCalendar({ navigation }) {
         console.error(error);
       });
   }, []);
+
   const printEventTitlesAndDates = async () => {
     axios
       .get(`${apiUrl}/events/`)

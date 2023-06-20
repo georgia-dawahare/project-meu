@@ -20,6 +20,11 @@ const getPartnerEmotion = async (uid) => {
   return partnerEmotion;
 };
 
+const getUserPenguinColor = async (uid) => {
+  const name = await firestoreService.getUserPenguinColor(uid);
+  return name;
+};
+
 const getUser = async (uid) => {
   const user = await firestoreService.getUser(uid);
   return user;
@@ -63,6 +68,7 @@ const userController = {
   updateUser,
   getUser,
   getPartnerEmotion,
+  getUserPenguinColor,
   getLocData,
   getBackground,
   getPartnerId,
