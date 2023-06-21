@@ -97,6 +97,19 @@ const getPartnerEmotion = async (uid) => {
   return emotion;
 };
 
+// get the user's penguin color
+const getUserPenguinColor = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let color;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    color = data.penguin_color;
+  }
+  return color;
+};
+
 const getUser = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
   let user;
@@ -540,6 +553,7 @@ const firestoreService = {
   getUser,
   getUserEmotion,
   getPartnerEmotion,
+  getUserPenguinColor,
   updateUser,
   getResponseGroup,
   updateResponseGroup,

@@ -1,15 +1,67 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity,
+  Text, TouchableOpacity, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal, Platform,
 } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 import * as Font from 'expo-font';
-import Button from '../../components/Button';
+import { useDispatch } from 'react-redux';
+import { updateUser } from '../../actions';
 
-// need to add draggable selector
+const gifDataColors = {
+  0: require('../../../assets/animations/hello/hello_black.gif'),
+  1: require('../../../assets/animations/hello/hello_pink.gif'),
+  2: require('../../../assets/animations/hello/hello_blue.gif'),
+  3: require('../../../assets/animations/hello/hello_golden_brown.gif'),
+  4: require('../../../assets/animations/hello/hello_gray.gif'),
+  5: require('../../../assets/animations/hello/hello_lime.gif'),
+  6: require('../../../assets/animations/hello/hello_purple.gif'),
+  7: require('../../../assets/animations/hello/hello_red.gif'),
+  8: require('../../../assets/animations/hello/hello_sky.gif'),
+  9: require('../../../assets/animations/hello/hello_orange.gif'),
+  10: require('../../../assets/animations/hello/hello_lavender.gif'),
+  11: require('../../../assets/animations/hello/hello_teal.gif'),
+};
+
+const iconColors = [
+  require('../../../assets/penguin_colors/black.png'),
+  require('../../../assets/penguin_colors/pink.png'),
+  require('../../../assets/penguin_colors/blue.png'),
+  require('../../../assets/penguin_colors/golden_brown.png'),
+  require('../../../assets/penguin_colors/gray.png'),
+  require('../../../assets/penguin_colors/lime.png'),
+  require('../../../assets/penguin_colors/purple.png'),
+  require('../../../assets/penguin_colors/red.png'),
+  require('../../../assets/penguin_colors/sky.png'),
+  require('../../../assets/penguin_colors/orange.png'),
+  require('../../../assets/penguin_colors/lavender.png'),
+  require('../../../assets/penguin_colors/teal.png'),
+];
+
+const colorsMap = {
+  0: 'black',
+  1: 'pink',
+  2: 'blue',
+  3: 'golden_brown',
+  4: 'gray',
+  5: 'lime',
+  6: 'purple',
+  7: 'red',
+  8: 'sky',
+  9: 'orange',
+  10: 'lavender',
+  11: 'teal',
+};
 
 function PenguinCustomization({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
+
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const screenWidth = Dimensions.get('window').width;
+  const [carouselSpun, setCarouselSpun] = useState(false);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
@@ -22,35 +74,147 @@ function PenguinCustomization({ navigation }) {
     loadFont();
   }, []);
 
+  const handleNext = async () => {
+    const color = colorsMap[selectedIcon].toString();
+    console.log(color);
+
+    const newUser = {
+      penguin_color: color,
+    };
+    dispatch(updateUser(newUser));
+    navigation.navigate('Welcome');
+  };
+
+  const renderIconItem = ({ item, index }) => {
+    const itemStyle = index === selectedIcon ? styles.selectedIcon : styles.unselectedIcon;
+    // const marginLeft = (-screenWidth / 100) * 4.4;
+
+    return (
+      <Image
+        source={item}
+        style={[styles.icon, itemStyle]} //, { marginLeft }]}
+      />
+    );
+  };
+
+  const handleCarouselItemChange = (index) => {
+    setSelectedIcon(index);
+    setCarouselSpun(true);
+  };
+
+  const calculateItemWidth = () => {
+    return screenWidth / 5;
+  };
+
+  const renderGif = () => {
+    if (selectedIcon === null) {
+      setSelectedIcon(0);
+    }
+
+    return (
+      <Image
+        // set this to user's penguin color
+        source={gifDataColors[selectedIcon]}
+        style={styles.image}
+      />
+    );
+  };
+
+  const handleButtonPress = () => {
+    setCarouselSpun(false);
+    if (selectedIcon !== null && selectedIcon !== '') {
+      updateBothEmotion(selectedIcon); // update both users' render emotion based on sender's emotion
+      setModalVisible(true);
+    }
+  };
+
+  // try catch for updating both user & partner's emotion (logic in backend)
+  const updateBothEmotion = async (icon) => {
+    try {
+      if (icon !== null && icon !== '') {
+        await axios.patch(`${apiUrl}/emotions/${userId}`, { emotion: icon });
+      }
+    } catch (e) {
+      console.log('Error updating emotions: ', e);
+    }
+  };
+
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
   return (
-    <SafeAreaView>
-      <Image
-        source={require('../../../assets/icons/back-arrow.png')}
-        style={styles.Icon}
-      />
-      <Image
-        source={require('../../../assets/images/progress-3.png')}
-        style={styles.progress}
-      />
+    <SafeAreaView style={styles.container}>
 
-      <Text style={styles.Text}>Customize your Penguin.</Text>
+      <View style={styles.backWrapper}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            source={require('../../../assets/icons/back-arrow.png')}
+          />
+        </TouchableOpacity>
+      </View>
 
-      <Image
-        source={require('../../../assets/images/PenguinCumstomize.png')}
-        style={styles.Penguin}
-      />
-      <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
-        <Button title="Let's Start" />
-      </TouchableOpacity>
+      <View style={styles.mainContent}>
+        <Image
+          source={require('../../../assets/images/progress-3.png')}
+          style={styles.progress}
+        />
 
+        <View style={styles.clearContainer}>
+          <Text style={styles.buttonTxt}></Text>
+        </View>
+
+        <Text style={styles.Text}>Customize your Penguin</Text>
+
+        <View style={styles.imageContainer}>
+          <View style={styles.overlayImage}>
+            {renderGif()}
+          </View>
+        </View>
+
+        <View style={styles.carouselContainer}>
+          <View style={styles.circle}/>
+          <Carousel
+            data={iconColors}
+            renderItem={renderIconItem}
+            sliderWidth={screenWidth}
+            itemWidth={calculateItemWidth()}
+            layout="default"
+            onSnapToItem={handleCarouselItemChange}
+            lockScrollWhileSnapping={false}
+            lockScrollTimeoutDuration={300}
+            firstItem={selectedIcon}
+          />
+        </View>
+        
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonTxt}>Let's start</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.clearContainer}>
+          <Text style={styles.buttonTxt}></Text>
+        </View>
+
+      </View>
+      
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  backWrapper: {
+    margin: 25,
+  },
+  mainContent: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  },
   Icon: {
     position: 'absolute',
     top: 32,
@@ -58,26 +222,55 @@ const styles = StyleSheet.create({
     height: 24,
     zIndex: 2,
   },
-  progress: {
-    width: 70,
-    height: 10,
-    top: 160,
-    alignSelf: 'center',
-  },
   Text: {
-    fontFamily: 'SF-Pro-Display-Semibold',
+    alignSelf: 'center',
+    textAlign: 'center',
+    fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 18,
     lineHeight: 27,
-    color: 'rgba(0,0,0,1)',
-    alignSelf: 'center',
-    width: 300,
-    textAlign: 'center',
-    top: 230,
   },
-  Penguin: {
-    width: 332,
-    height: 255,
-    top: 244,
+  imageContainer: {
+    // backgroundColor: 'red',
+    flex: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  image: {
+    flex: 1,
+    aspectRatio: 332 / 255, // Set the aspect ratio of the image
+    alignSelf: 'center',
+    maxWidth: '100%', // Set a maximum width to prevent it from exceeding the screen width
+  },
+  carouselContainer: {
+    // backgroundColor: 'blue',
+    flex: 1,
+  },
+  icon: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -22,
+  },
+  selectedIcon: {
+    transform: [{ scale: 0.5 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -22,
+  },
+  unselectedIcon: {
+    transform: [{ scale: 0.25 }],
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  circle: {
+    position: 'absolute',
+    width: 75,
+    height: 75,
+    borderColor: 'rgb(230, 43, 133)', // 'transparent'
+    borderRadius: 93, // 93 on SE
+    borderWidth: 7, // 7 on SE
+    transform: [{ translateX: 2 }, { translateY: 25 }],
+    backgroundColor: 'transparent',
     alignSelf: 'center',
   },
   Subtitle: {
@@ -96,6 +289,27 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontSize: 12,
     textAlign: 'center',
+  },
+  buttonTxt: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    color: 'white',
+    fontSize: 20,
+  },
+  button: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    height: 56,
+    width: 300,
+    borderRadius: 15,
+    margin: 20,
+  },
+  buttonContainer: {
+    // backgroundColor: 'red',
+  },
+  clearContainer: {
+    marginTop: 20,
   },
 });
 

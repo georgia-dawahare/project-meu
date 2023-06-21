@@ -42,14 +42,14 @@ function Welcome({ navigation }) {
               pairId: '',
               firstName: currUser.user_data.first_name,
               lastName: currUser.user_data.last_name,
-              penguinColor: '',
+              penguinColor: currUser.user_data.penguin_color,
               backgroundPhoto: '',
               birthday: currUser.user_data.birthday,
               code: '',
               lastSentEmotion: '0',
               partner_last_emotion: '0',
               city: '',
-              user_last_emotion: '',
+              user_last_emotion: '0',
             };
             axios
               .post(`${apiUrl}/users/`, userData)

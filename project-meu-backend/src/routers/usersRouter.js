@@ -50,6 +50,17 @@ router.get('/partner_emotion/:uid', async (req, res) => {
   }
 });
 
+// Get user's penguin color
+router.get('/penguin_color/:uid', async (req, res) => {
+  const user = req.params;
+  try {
+    const data = await usersController.getName(user.uid);
+    res.status(200).send(data);
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
 // Get user
 router.get('/:uid', async (req, res) => {
   const user = req.params;
