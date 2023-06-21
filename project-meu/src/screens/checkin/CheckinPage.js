@@ -38,6 +38,7 @@ function CheckinPage({ navigation }) {
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  // const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   useEffect(() => {
     const getUser = async () => {
