@@ -10,6 +10,7 @@ const getEvents = async () => {
   return eventList;
 };
 
+
 const deleteEvent = async (eventId) => {
   const resBool = await firestoreService.deleteEvent(eventId);
   return resBool;

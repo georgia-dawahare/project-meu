@@ -32,6 +32,7 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 // Delete event
 router.delete('/:id', async (req, res) => {
   const eventId = req.params;
