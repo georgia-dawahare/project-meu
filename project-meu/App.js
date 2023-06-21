@@ -6,6 +6,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import axios from 'axios';
+import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
+// import {
+//   Text, View, Button, Platform,
+// } from 'react-native';
+import Alert from 'react-native';
 import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
@@ -14,10 +20,7 @@ import {
 } from './src/navigation/CustomNavigation';
 import { apiUrl } from './src/constants/constants';
 import store from './src/store';
-import * as Notifications from 'expo-notifications';
 // import expoPushTokensApi from './src/api/expoPushTokens';
-import * as Device from 'expo-device';
-import { Text, View, Button, Platform } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -25,7 +28,7 @@ Notifications.setNotificationHandler({
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
- });
+});
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -37,15 +40,15 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+      Alert.alert('Failed to get push token for push notification!');
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log("Expo push token:", token);
+    console.log('Expo push token:', token);
   } else {
-    alert('Must use physical device for Push Notifications');
+    Alert.alert('Must use physical device for Push Notifications');
   }
- 
+
   // if (Platform.OS === 'android') {
   //   Notifications.setNotificationChannelAsync('default', {
   //     name: 'default',
@@ -54,29 +57,29 @@ async function registerForPushNotificationsAsync() {
   //     lightColor: '#FF231F7C',
   //   });
   // }
- 
+
   return token;
 }
- 
+
 async function sendPushNotification(expoPushToken) {
-   const message = {
-     to: expoPushToken,
-     sound: 'default',
-     title: 'Test title',
-     body: 'Test body 2',
-     data: { testData: 'test data' },
-   };
-  
-   await fetch('https://exp.host/--/api/v2/push/send', {
-     method: 'POST',
-     headers: {
-       Accept: 'application/json',
-       'Accept-encoding': 'gzip, deflate',
-       'Content-Type': 'application/json',
-     },
-     body: JSON.stringify(message),
-   });
-} 
+  const message = {
+    to: expoPushToken,
+    sound: 'default',
+    title: 'Test title',
+    body: 'Test body 2',
+    data: { testData: 'test data' },
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
 
 function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -112,24 +115,24 @@ function App() {
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
- 
+    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-        console.log('--- notification received ---');
-        console.log(notification);
-        setNotification(notification);
-        console.log('------');
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification2) => {
+      console.log('--- notification received ---');
+      console.log(notification2);
+      setNotification(notification2);
+      console.log('------');
     });
- 
+
     // This listener is fired whenever a user taps on or interacts with a notification
     // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-        console.log('--- notification tapped ---');
-        console.log(response);
-        console.log('------');
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log('--- notification tapped ---');
+      console.log(response);
+      console.log('------');
     });
- 
+
     // Unsubscribe from events
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
