@@ -337,55 +337,55 @@ const firestore = admin.firestore();
 // === End of Pair Functions ===
 
 // === Events Functions ===
-const createEvent = async (eventData) => {
-  const event = {
-    pair_id: eventData.pairId,
-    date: eventData.date,
-    title: eventData.title,
-    repeat: eventData.repeat,
-  };
+// const createEvent = async (eventData) => {
+//   const event = {
+//     pair_id: eventData.pairId,
+//     date: eventData.date,
+//     title: eventData.title,
+//     repeat: eventData.repeat,
+//   };
 
-  if (!event.pair_id || !event.date || !event.title || !event.repeat) {
-    console.error('Missing fields');
-    return null;
-  }
+//   if (!event.pair_id || !event.date || !event.title || !event.repeat) {
+//     console.error('Missing fields');
+//     return null;
+//   }
 
-  const res = await firestore.collection('Events').add(event);
-  return res.id;
-};
+//   const res = await firestore.collection('Events').add(event);
+//   return res.id;
+// };
 
-const getEvents = async () => {
-  return firestore.collection('Events').get()
-    .then((querySnapshot) => {
-      const events = [];
-      querySnapshot.forEach((doc) => {
-        const eventData = doc.data();
-        events.push({
-          id: doc.id,
-          date: eventData.date,
-          title: eventData.title,
-          repeat: eventData.repeat,
-          pairId: eventData.pair_id,
-        });
-      });
-      return events;
-    })
-    .catch((error) => {
-      console.error('error getting Events', error);
-      return [];
-    });
-};
+// const getEvents = async () => {
+//   return firestore.collection('Events').get()
+//     .then((querySnapshot) => {
+//       const events = [];
+//       querySnapshot.forEach((doc) => {
+//         const eventData = doc.data();
+//         events.push({
+//           id: doc.id,
+//           date: eventData.date,
+//           title: eventData.title,
+//           repeat: eventData.repeat,
+//           pairId: eventData.pair_id,
+//         });
+//       });
+//       return events;
+//     })
+//     .catch((error) => {
+//       console.error('error getting Events', error);
+//       return [];
+//     });
+// };
 
-const deleteEvent = async (eventId) => {
-  firestore.collection('Events').doc(eventId.id).delete().then(() => {
-    console.log('Event successfully deleted');
-    return true;
-  })
-    .catch((error) => {
-      console.error('Error removing document: ', error);
-      return false;
-    });
-};
+// const deleteEvent = async (eventId) => {
+//   firestore.collection('Events').doc(eventId.id).delete().then(() => {
+//     console.log('Event successfully deleted');
+//     return true;
+//   })
+//     .catch((error) => {
+//       console.error('Error removing document: ', error);
+//       return false;
+//     });
+// };
 // === End of Event Functions ===
 
 // === Daily Response Functions ===

@@ -1,4 +1,4 @@
-import Event from '../models/EventModel'
+import Event from '../models/EventModel';
 
 export async function createEvent(eventFields) {
     // Create new event
@@ -10,11 +10,30 @@ export async function createEvent(eventFields) {
 
     try {
         // Await save to db
-        const savedEvent = await event.save().then(savedDoc => {
-            console.log("Successfully saved event: " + savedDoc); // true
-            return savedEvent;
-        });;
+        const savedEvent = await event.save();
+        return savedEvent;
     } catch (error) {
         throw new Error(`Create event error: ${error}`);
+    }
+}
+
+export async function findAllEvents() {
+    try {
+        const allEvents = await Event.find({});
+        return allEvents;
+        // const allPosts = await Post.find({}).sort({ createdAt: -1 });
+    } catch (error) {
+        throw new Error(`Find events error: ${error}`);
+    }
+}
+
+export async function deleteEvent(eventId) {
+    try {
+        // await find an event by id and delete
+        await Event.findByIdAndDelete(eventId);
+        const success = `Successfully deleted event with ID: ${eventId}`;
+        return success; // return confirmation
+    } catch (error) {
+        throw new Error(`delete event error: ${error}`);
     }
 }

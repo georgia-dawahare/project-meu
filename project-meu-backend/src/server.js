@@ -6,8 +6,8 @@ import mongoose from 'mongoose';
 // import emotionsRouter from './routers/emotionsRouter';
 // import eventsRouter from './routers/eventsRouter';
 // import responsesRouter from './routers/responsesRouter';
-// import eventRoutes from './routers/EventRouter';
 
+import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
 
@@ -36,8 +36,8 @@ app.use(express.json()); // To parse the incoming requests with JSON payloads
 // additional init stuff should go before hitting the routing
 // app.use('/emotions', emotionsRouter);
 // app.use('/responses', responsesRouter);
-// app.use('/events', eventRoutes);
 
+app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
 
