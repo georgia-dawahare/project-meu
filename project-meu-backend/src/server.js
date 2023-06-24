@@ -4,11 +4,12 @@ import morgan from 'morgan';
 import mongoose from 'mongoose';
 
 // import emotionsRouter from './routers/emotionsRouter';
-// import pairsRouter from './routers/pairsRouter';
 // import eventsRouter from './routers/eventsRouter';
 // import responsesRouter from './routers/responsesRouter';
+// import eventRoutes from './routers/EventRouter';
+
 import userRoutes from './routers/UserRouter';
-import eventRoutes from './routers/EventRouter';
+import pairRoutes from './routers/PairRouter';
 
 // initialize
 const app = express();
@@ -34,11 +35,11 @@ app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
 // app.use('/emotions', emotionsRouter);
-// app.use('/pairs', pairsRouter);
 // app.use('/responses', responsesRouter);
+// app.use('/events', eventRoutes);
 
+app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
-app.use('/events', eventRoutes);
 
 // default index route
 app.get('/', (req, res) => {

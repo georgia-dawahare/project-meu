@@ -57,6 +57,17 @@ const handleGetUserEmotion = async (req, res) => {
     }
 }
 
+// Get partner's last emotion
+const handleGetPartnerEmotion = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const partnerEmotion = await Users.getPartnerEmotion(userId);
+        res.json(partnerEmotion);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 // Get user's location data
 const handleGetUserLocation = async (req, res) => {
     const userId = req.params.id;
@@ -89,6 +100,9 @@ router.route('/:id')
 
 router.route('/emotion/:id')
     .get(handleGetUserEmotion);
+
+router.route('/partner_emotion/:id')
+    .get(handleGetPartnerEmotion);
 
 router.route('/location/:id')
     .get(handleGetUserLocation);

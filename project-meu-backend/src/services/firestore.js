@@ -110,171 +110,230 @@ const firestore = admin.firestore();
 //   }
 //   return uid;
 // };
+
+// // get the user's partner's last sent emotion
+// const getPartnerEmotion = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let emotion;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     const data = doc.data();
+//     emotion = data.partner_last_emotion;
+//   }
+//   return emotion;
+// };
+
 // === End of User Functions ===
 
 // === Pair Functions ===
-const createPair = async (pairData) => {
-  const pair = {
-    user1_id: pairData.user1Id,
-    user2_id: pairData.user2Id,
-    relationship_start: pairData.relationshipStart,
-    pair_creator_id: pairData.pairCreatorId,
-  };
-  const res = await firestore.collection('Pairs').add(pair);
-  return res.id;
-};
+// const createPair = async (pairData) => {
+//   const pair = {
+//     user1_id: pairData.user1Id,
+//     user2_id: pairData.user2Id,
+//     relationship_start: pairData.relationshipStart,
+//     pair_creator_id: pairData.pairCreatorId,
+//   };
+//   const res = await firestore.collection('Pairs').add(pair);
+//   return res.id;
+// };
 
-const deletePair = async (pairId) => {
-  firestore.collection('Pairs').doc(pairId.pid).delete().then(() => {
-    console.log('Pair successfully deleted');
-    return true;
-  })
-    .catch((error) => {
-      console.error('Error removing document: ', error);
-      return false;
-    });
-};
+// const deletePair = async (pairId) => {
+//   firestore.collection('Pairs').doc(pairId.pid).delete().then(() => {
+//     console.log('Pair successfully deleted');
+//     return true;
+//   })
+//     .catch((error) => {
+//       console.error('Error removing document: ', error);
+//       return false;
+//     });
+// };
 
-const getPair = async (pairId) => {
-  let pair;
-  const doc = await firestore.collection('Pairs').doc(pairId.pid).get();
-  if (!doc.exists) {
-    console.log('Pair does not exist');
-  } else {
-    pair = doc.data();
-  }
-  return pair;
-};
+// const getPair = async (pairId) => {
+//   let pair;
+//   const doc = await firestore.collection('Pairs').doc(pairId.pid).get();
+//   if (!doc.exists) {
+//     console.log('Pair does not exist');
+//   } else {
+//     pair = doc.data();
+//   }
+//   return pair;
+// };
 
-const getPairCreatorId = async (pairId) => {
-  const doc = await firestore.collection('Pairs').doc(pairId).get();
-  let pairCreatorId;
-  if (!doc.exists) {
-    console.log('Pair does not exist');
-  } else {
-    const data = doc.data();
-    pairCreatorId = data.pair_creator_id;
-  }
-  return pairCreatorId;
-};
+// const getPairCreatorId = async (pairId) => {
+//   const doc = await firestore.collection('Pairs').doc(pairId).get();
+//   let pairCreatorId;
+//   if (!doc.exists) {
+//     console.log('Pair does not exist');
+//   } else {
+//     const data = doc.data();
+//     pairCreatorId = data.pair_creator_id;
+//   }
+//   return pairCreatorId;
+// };
 
-// get the user's partner's last sent emotion
-const getPartnerEmotion = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let emotion;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    emotion = data.partner_last_emotion;
-  }
-  return emotion;
-};
+// // getting the partner's id by just inputing user id
+// const getPartnerId = async (uid) => {
+//   // first finding the pair ID
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let pairID;
+//   if (!doc.exists) {
+//     console.log('Pair step 1 does not exist');
+//   } else {
+//     const data = doc.data();
+//     pairID = data.pair_id;
+//     console.log('pair id: ' + pairID);
+//   }
 
-const connectPairs = async (userId, userData) => {
-  const userCode = userData.userCode;
-  const relationshipStart = userData.relationshipStart;
+//   // then finding the partner's id by process of elimination
+//   const doc2 = await firestore.collection('Pairs').doc(pairID).get();
+//   let partnerID;
+//   if (!doc2.exists) {
+//     console.log('Pair step 2 does not exist');
+//   } else {
+//     const data2 = doc2.data();
+//     if (data2.user1_id === uid) {
+//       partnerID = data2.user2_id;
+//     } else {
+//       partnerID = data2.user1_id;
+//     }
+//   }
 
-  let partnerId;
-  let matchList = [];
-  firestore.collection("Users").where("code", "==", userCode)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        matchList.push(doc.id);
-      });
-      return matchList;
-    })
-    .then((matches) => {
-      if (matches.length === 1) {
-        // If user is entering their partner's code, then their partner must have created the pair
-        partnerId = matches[0]
-        const pairData = {
-          user1Id: partnerId,
-          user2Id: userId,
-          relationshipStart: relationshipStart,
-          pairCreatorId: partnerId,
-        }
-        return createPair(pairData);
-      }
-    })
-    .then((pairId) => {
-      if (pairId) {
-        const userUpdate = {
-          code: userCode,
-          pair_id: pairId
-        }
-        const partnerUpdate = {
-          pair_id: pairId
-        }
-        updateUser(partnerId, partnerUpdate);
-        updateUser(userId, userUpdate);
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting documents: ", error);
-    });
-}
+//   console.log('firestore ' + partnerID);
+//   return partnerID;
+// };
 
-const updateEmotion = async (updatedEmotion, uid) => {
-  try {
-    const currUser = await getUser(uid);
-    const pid = currUser.pair_id;
-    let partnerId;
+// // get user's background img url
+// const getPairDate = async (uid) => {
+//   // first finding the pair ID
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let pairID;
+//   if (!doc.exists) {
+//     console.log('Pair step 1 does not exist');
+//   } else {
+//     const data = doc.data();
+//     pairID = data.pair_id;
+//     console.log('pair id: ' + pairID);
+//   }
 
-    try {
-      const pair = await getPair({ pid: pid });
-      if (uid === pair.user1_id) {
-        partnerId = pair.user2_id;
-      } else if (uid === pair.user2_id) {
-        partnerId = pair.user1_id;
-      } else {
-        console.log('Unable to find partner');
-      }
-    } catch (e) {
-      console.log('Error retrieving pair: ', e);
-    }
+//   // then finding the partner's id by process of elimination
+//   const doc2 = await firestore.collection('Pairs').doc(pairID).get();
+//   let pairDate;
+//   if (!doc2.exists) {
+//     console.log('Pair step 2 does not exist');
+//   } else {
+//     const data2 = doc2.data();
+//     pairDate = data2.relationship_start;
+//   }
 
-    try {
-      // update partner's emotion
-      if (partnerId) {
-        const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
-        const partnerRef = firestore.collection('Users').doc(partnerId);
-        partnerRef.update(updatedPartnerFields)
-          .then(() => {
-            console.log("Successfully updated partner's emotion");
-          })
-          .catch((error) => {
-            console.error("Error updating partner's emotion: ", error);
-          });
-      }
-    }
-    catch (e) {
-      console.log('Error updating partner emotion: ', e);
-    }
+//   return pairDate;
+// };
 
-    try {
-      // update self emotion
-      const updatedUserFields = {
-        user_last_emotion: updatedEmotion,
-      }
-      const userRef = firestore.collection('Users').doc(uid);
-      userRef.update(updatedUserFields)
-        .then(() => {
-          console.log("Successfully updated partner's emotion");
-          return true;
-        })
-        .catch((error) => {
-          console.error("Error updating partner's emotion: ", error);
-          return false;
-        });
-    } catch (e) {
-      console.log('Error updating user emotion: ', e);
-    }
-  } catch (e) {
-    console.log('Error retrieving user: ', e);
-  }
-};
+
+// const connectPairs = async (userId, userData) => {
+//   const userCode = userData.userCode;
+//   const relationshipStart = userData.relationshipStart;
+
+//   let partnerId;
+//   let matchList = [];
+//   firestore.collection("Users").where("code", "==", userCode)
+//     .get()
+//     .then((querySnapshot) => {
+//       querySnapshot.forEach((doc) => {
+//         matchList.push(doc.id);
+//       });
+//       return matchList;
+//     })
+//     .then((matches) => {
+//       if (matches.length === 1) {
+//         // If user is entering their partner's code, then their partner must have created the pair
+//         partnerId = matches[0]
+//         const pairData = {
+//           user1Id: partnerId,
+//           user2Id: userId,
+//           relationshipStart: relationshipStart,
+//           pairCreatorId: partnerId,
+//         }
+//         return createPair(pairData);
+//       }
+//     })
+//     .then((pairId) => {
+//       if (pairId) {
+//         const userUpdate = {
+//           code: userCode,
+//           pair_id: pairId
+//         }
+//         const partnerUpdate = {
+//           pair_id: pairId
+//         }
+//         updateUser(partnerId, partnerUpdate);
+//         updateUser(userId, userUpdate);
+//       }
+//     })
+//     .catch((error) => {
+//       console.log("Error getting documents: ", error);
+//     });
+// }
+
+// const updateEmotion = async (updatedEmotion, uid) => {
+//   try {
+//     const currUser = await getUser(uid);
+//     const pid = currUser.pair_id;
+//     let partnerId;
+
+//     try {
+//       const pair = await getPair({ pid: pid });
+//       if (uid === pair.user1_id) {
+//         partnerId = pair.user2_id;
+//       } else if (uid === pair.user2_id) {
+//         partnerId = pair.user1_id;
+//       } else {
+//         console.log('Unable to find partner');
+//       }
+//     } catch (e) {
+//       console.log('Error retrieving pair: ', e);
+//     }
+
+//     try {
+//       // update partner's emotion
+//       if (partnerId) {
+//         const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
+//         const partnerRef = firestore.collection('Users').doc(partnerId);
+//         partnerRef.update(updatedPartnerFields)
+//           .then(() => {
+//             console.log("Successfully updated partner's emotion");
+//           })
+//           .catch((error) => {
+//             console.error("Error updating partner's emotion: ", error);
+//           });
+//       }
+//     }
+//     catch (e) {
+//       console.log('Error updating partner emotion: ', e);
+//     }
+
+//     try {
+//       // update self emotion
+//       const updatedUserFields = {
+//         user_last_emotion: updatedEmotion,
+//       }
+//       const userRef = firestore.collection('Users').doc(uid);
+//       userRef.update(updatedUserFields)
+//         .then(() => {
+//           console.log("Successfully updated partner's emotion");
+//           return true;
+//         })
+//         .catch((error) => {
+//           console.error("Error updating partner's emotion: ", error);
+//           return false;
+//         });
+//     } catch (e) {
+//       console.log('Error updating user emotion: ', e);
+//     }
+//   } catch (e) {
+//     console.log('Error retrieving user: ', e);
+//   }
+// };
 // === End of Pair Functions ===
 
 // === Events Functions ===
@@ -451,62 +510,6 @@ const deleteResponse = async (responseId) => {
 
 // === Starting User Requests for Widgets === 
 
-// getting the partner's id by just inputing user id
-const getPartnerId = async (uid) => {
-  // first finding the pair ID
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let pairID;
-  if (!doc.exists) {
-    console.log('Pair step 1 does not exist');
-  } else {
-    const data = doc.data();
-    pairID = data.pair_id;
-    console.log('pair id: ' + pairID);
-  }
-
-  // then finding the partner's id by process of elimination
-  const doc2 = await firestore.collection('Pairs').doc(pairID).get();
-  let partnerID;
-  if (!doc2.exists) {
-    console.log('Pair step 2 does not exist');
-  } else {
-    const data2 = doc2.data();
-    if (data2.user1_id === uid) {
-      partnerID = data2.user2_id;
-    } else {
-      partnerID = data2.user1_id;
-    }
-  }
-
-  console.log('firestore ' + partnerID);
-  return partnerID;
-};
-
-// get user's background img url
-const getPairDate = async (uid) => {
-  // first finding the pair ID
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let pairID;
-  if (!doc.exists) {
-    console.log('Pair step 1 does not exist');
-  } else {
-    const data = doc.data();
-    pairID = data.pair_id;
-    console.log('pair id: ' + pairID);
-  }
-
-  // then finding the partner's id by process of elimination
-  const doc2 = await firestore.collection('Pairs').doc(pairID).get();
-  let pairDate;
-  if (!doc2.exists) {
-    console.log('Pair step 2 does not exist');
-  } else {
-    const data2 = doc2.data();
-    pairDate = data2.relationship_start;
-  }
-
-  return pairDate;
-};
 
 const firestoreService = {
   createUser,

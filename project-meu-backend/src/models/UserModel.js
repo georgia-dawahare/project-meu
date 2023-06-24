@@ -13,6 +13,7 @@ const UserSchema = new Schema({
     partnerLastEmotion: { type: Number, default: 0 },
 
     // Info retrieved after registration
+    pairCode: { type: Number },
     pairId: { type: Schema.Types.ObjectId, ref: 'Pair' },
     backgroundPhoto: { type: String },
     countryCode: { type: String },

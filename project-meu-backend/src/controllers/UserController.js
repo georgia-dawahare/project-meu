@@ -1,8 +1,7 @@
 import User from '../models/UserModel'
 
-// Primary user created the pair (i.e., the first to sign up)
+// Create new user
 export async function createUser(userFields) {
-    // Create new user
     const user = new User();
     user.firstName = userFields.firstName;
     user.lastName = userFields.lastName;
@@ -34,7 +33,6 @@ export async function updateUser(uid, updatedFields) {
 export async function deleteUser(uid) {
     try {
         // await find a user by id and delete
-        console.log(uid);
         await User.findByIdAndDelete(uid);
         const success = `Successfully deleted user with ID: ${uid}`;
         return success; // return confirmation
@@ -56,6 +54,16 @@ export async function getUserEmotion(uid) {
         return user.userLastEmotion;
     } catch (error) {
         throw new Error(`Get user emotion error: ${error}`);
+    }
+};
+
+// Get partner's last emotion
+export async function getPartnerEmotion(uid) {
+    try {
+        const user = await User.findById(uid);
+        return user.partnerLastEmotion;
+    } catch (error) {
+        throw new Error(`Get partner emotion error: ${error}`);
     }
 };
 
