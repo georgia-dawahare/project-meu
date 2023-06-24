@@ -7,13 +7,15 @@ const uploadImage = async (imageUrl) => {
     // const fileContent = fs.readFileSync(imageUrl);
     // const res = await fetch(imageUrl);
     // const blob = await res.buffer()
-    const fileStream = fs.createReadStream(imageUrl);
+
+    // const fileStream = fs.createReadStream(imageUrl);
+    const testContent = 'test'
 
     // Set the parameters
     const params = {
         Bucket: "meu-photo-bucket", // The name of the bucket. For example, 'sample-bucket-101'.
         Key: imageUrl, // The name of the object. For example, 'sample_upload.txt'.
-        Body: fileStream, // The content of the object. For example, 'Hello world!".
+        Body: testContent, // The content of the object. For example, 'Hello world!".
     };
     // Create an object and upload it to the Amazon S3 bucket.
     try {
@@ -41,12 +43,17 @@ const downloadImage = async (imageUrl) => {
     try {
         const response = await s3Client.send(command);
         // The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-        const webStream = response.Body.transformToWebStream();
-        console.log(webStream);
+        // const webStream = response.Body.transformToWebStream();
+        const str = await response.Body.transformToString();
+        console.log(str);
+        // console.log(webStream);
     } catch (err) {
         console.error(err);
     }
 }
+
+// uploadImage("test.txt");
+downloadImage("test.txt");
 
 const awsService = {
     downloadImage,

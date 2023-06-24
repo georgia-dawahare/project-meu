@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import responsesController from '../controllers/responsesController';
+import responsesController from '../controllers-old/responsesController';
 
 const router = Router();
 

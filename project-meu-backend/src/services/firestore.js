@@ -17,36 +17,36 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 // === User Functions ===
-const createUser = async (userData) => {
-  const { userId } = userData;
-  const user = {
-    pair_id: userData.pairId,
-    first_name: userData.firstName,
-    last_name: userData.lastName,
-    email: userData.email,
-    penguin_color: userData.penguinColor,
-    background_photo: userData.backgroundPhoto,
-    birthday: userData.birthday,
-    user_last_emotion: userData.user_last_emotion,
-    partner_last_emotion: userData.partner_last_emotion,
-    code: userData.code,
-    city: userData.city,
-  };
-  await firestore.collection('Users').doc(userId).set(user);
-  return userId;
-};
+// const createUser = async (userData) => {
+//   const { userId } = userData;
+//   const user = {
+//     pair_id: userData.pairId,
+//     first_name: userData.firstName,
+//     last_name: userData.lastName,
+//     email: userData.email,
+//     penguin_color: userData.penguinColor,
+//     background_photo: userData.backgroundPhoto,
+//     birthday: userData.birthday,
+//     user_last_emotion: userData.user_last_emotion,
+//     partner_last_emotion: userData.partner_last_emotion,
+//     code: userData.code,
+//     city: userData.city,
+//   };
+//   await firestore.collection('Users').doc(userId).set(user);
+//   return userId;
+// };
 
-const getName = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let name;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    name = [data.first_name, data.last_name];
-  }
-  return name;
-};
+// const getName = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let name;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     const data = doc.data();
+//     name = [data.first_name, data.last_name];
+//   }
+//   return name;
+// };
 
 const getUserEmotion = async (uid) => {
   const doc = await firestore.collection('Users').doc(uid).get();
@@ -60,84 +60,26 @@ const getUserEmotion = async (uid) => {
   return emotion;
 };
 
-// get the user's partner's last sent emotion
-const getPartnerEmotion = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let emotion;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    emotion = data.partner_last_emotion;
-  }
-  return emotion;
-};
+// const getUser = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let user;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     user = doc.data();
+//   }
+//   return user;
+// };
 
-const getUser = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let user;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    user = doc.data();
-  }
-  return user;
-};
-
-const connectPairs = async (userId, userData) => {
-  const userCode = userData.userCode;
-  const relationshipStart = userData.relationshipStart;
-
-  let partnerId;
-  let matchList = [];
-  firestore.collection("Users").where("code", "==", userCode)
-    .get()
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        matchList.push(doc.id);
-      });
-      return matchList;
-    })
-    .then((matches) => {
-      if (matches.length === 1) {
-        // If user is entering their partner's code, then their partner must have created the pair
-        partnerId = matches[0]
-        const pairData = {
-          user1Id: partnerId,
-          user2Id: userId,
-          relationshipStart: relationshipStart,
-          pairCreatorId: partnerId,
-        }
-        return createPair(pairData);
-      }
-    })
-    .then((pairId) => {
-      if (pairId) {
-        const userUpdate = {
-          code: userCode,
-          pair_id: pairId
-        }
-        const partnerUpdate = {
-          pair_id: pairId
-        }
-        updateUser(partnerId, partnerUpdate);
-        updateUser(userId, userUpdate);
-      }
-    })
-    .catch((error) => {
-      console.log("Error getting documents: ", error);
-    });
-}
-
-const updateUser = async (uid, updatedData) => {
-  try {
-    const user = firestore.collection('Users').doc(uid);
-    await user.update(updatedData);
-  } catch (e) {
-    console.log("Failed user update: ", e);
-  }
-  return uid;
-};
+// const updateUser = async (uid, updatedData) => {
+//   try {
+//     const user = firestore.collection('Users').doc(uid);
+//     await user.update(updatedData);
+//   } catch (e) {
+//     console.log("Failed user update: ", e);
+//   }
+//   return uid;
+// };
 // === End of User Functions ===
 
 // === Emotion Functions ===
@@ -247,6 +189,66 @@ const getPairCreatorId = async (pairId) => {
   }
   return pairCreatorId;
 };
+
+// get the user's partner's last sent emotion
+const getPartnerEmotion = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let emotion;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    emotion = data.partner_last_emotion;
+  }
+  return emotion;
+};
+
+
+const connectPairs = async (userId, userData) => {
+  const userCode = userData.userCode;
+  const relationshipStart = userData.relationshipStart;
+
+  let partnerId;
+  let matchList = [];
+  firestore.collection("Users").where("code", "==", userCode)
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        matchList.push(doc.id);
+      });
+      return matchList;
+    })
+    .then((matches) => {
+      if (matches.length === 1) {
+        // If user is entering their partner's code, then their partner must have created the pair
+        partnerId = matches[0]
+        const pairData = {
+          user1Id: partnerId,
+          user2Id: userId,
+          relationshipStart: relationshipStart,
+          pairCreatorId: partnerId,
+        }
+        return createPair(pairData);
+      }
+    })
+    .then((pairId) => {
+      if (pairId) {
+        const userUpdate = {
+          code: userCode,
+          pair_id: pairId
+        }
+        const partnerUpdate = {
+          pair_id: pairId
+        }
+        updateUser(partnerId, partnerUpdate);
+        updateUser(userId, userUpdate);
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting documents: ", error);
+    });
+}
+
 // === End of Pair Functions ===
 
 // === Events Functions ===

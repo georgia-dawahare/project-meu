@@ -1,0 +1,60 @@
+import User from '../models/UserModel'
+
+// Primary user created the pair (i.e., the first to sign up)
+export async function createUser(userFields) {
+    // Create new user
+    const user = new User();
+    user.firstName = userFields.firstName;
+    user.lastName = userFields.lastName;
+    user.email = userFields.email;
+    user.birthday = userFields.birthday;
+    user.penguinColor = userFields.penguinColor;
+
+    try {
+        // await save to db
+        const savedUser = await user.save();
+        return savedUser;
+    } catch (error) {
+        throw new Error(`create user error: ${error}`);
+    }
+}
+
+// Update user 
+export async function updateUser(uid, updatedFields) {
+    try {
+        // await updating user by ID
+        const updatedUser = await User.findOneAndUpdate({ _id: uid }, updatedFields, { returnOriginal: false });
+        return updatedUser; // return *updated* user
+    } catch (error) {
+        throw new Error(`update user error: ${error}`);
+    }
+}
+
+// Delete user
+export async function deleteUser(uid) {
+    try {
+        // await find a user by id and delete
+        console.log(uid);
+        await User.findByIdAndDelete(uid);
+        const success = `Successfully deleted user with ID: ${uid}`;
+        return success; // return confirmation
+    } catch (error) {
+        throw new Error(`delete user error: ${error}`);
+    }
+}
+
+// Get user by ID
+export async function findUserById(uid) {
+    const user = await User.findById(uid);
+    return user;
+}
+
+// Get user's last emotion
+export async function getUserEmotion(uid) {
+    try {
+        const user = await User.findById(uid);
+        return user.userLastEmotion;
+    } catch (error) {
+        throw new Error(`Get user emotion error: ${error}`);
+    }
+}
