@@ -17,7 +17,7 @@ export async function createUser(userFields) {
     } catch (error) {
         throw new Error(`create user error: ${error}`);
     }
-}
+};
 
 // Update user 
 export async function updateUser(uid, updatedFields) {
@@ -28,7 +28,7 @@ export async function updateUser(uid, updatedFields) {
     } catch (error) {
         throw new Error(`update user error: ${error}`);
     }
-}
+};
 
 // Delete user
 export async function deleteUser(uid) {
@@ -47,7 +47,7 @@ export async function deleteUser(uid) {
 export async function findUserById(uid) {
     const user = await User.findById(uid);
     return user;
-}
+};
 
 // Get user's last emotion
 export async function getUserEmotion(uid) {
@@ -57,4 +57,38 @@ export async function getUserEmotion(uid) {
     } catch (error) {
         throw new Error(`Get user emotion error: ${error}`);
     }
-}
+};
+
+// Get user's location data
+export async function getUserLocationData(uid) {
+    try {
+        const user = await User.findById(uid);
+        const locData = [];
+        if (user.city && user.countryCode) {
+            locData = [user.city, user.countryCode];
+        } else {
+            console.log("No location data yet");
+        }
+        return locData;
+
+    } catch (error) {
+        throw new Error(`Get user emotion error: ${error}`);
+    }
+};
+
+// Get user's background image
+export async function getUserBackground(uid) {
+    try {
+        const user = await User.findById(uid);
+        const backgroundPhoto = '';
+        if (user.backgroundPhoto) {
+            backgroundPhoto = user.backgroundPhoto;
+        } else {
+            console.log("No background data yet");
+        }
+        return backgroundPhoto;
+
+    } catch (error) {
+        throw new Error(`Get user emotion error: ${error}`);
+    }
+};

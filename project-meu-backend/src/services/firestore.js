@@ -17,6 +17,36 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 // === User Functions ===
+
+// // get user's location data
+// const getLocData = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let city;
+//   let country_code;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     const data = doc.data();
+//     city = data.city;
+//     country_code = data.country_code;
+//     console.log('country code is')
+//   }
+//   return [city, country_code];
+// };
+
+// // get user's background img url
+// const getBackground = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let background;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     const data = doc.data();
+//     background = data.background_photo;
+//   }
+//   return background;
+// };
+
 // const createUser = async (userData) => {
 //   const { userId } = userData;
 //   const user = {
@@ -48,17 +78,17 @@ const firestore = admin.firestore();
 //   return name;
 // };
 
-const getUserEmotion = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let emotion;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    emotion = data.user_last_emotion;
-  }
-  return emotion;
-};
+// const getUserEmotion = async (uid) => {
+//   const doc = await firestore.collection('Users').doc(uid).get();
+//   let emotion;
+//   if (!doc.exists) {
+//     console.log('User does not exist');
+//   } else {
+//     const data = doc.data();
+//     emotion = data.user_last_emotion;
+//   }
+//   return emotion;
+// };
 
 // const getUser = async (uid) => {
 //   const doc = await firestore.collection('Users').doc(uid).get();
@@ -81,68 +111,6 @@ const getUserEmotion = async (uid) => {
 //   return uid;
 // };
 // === End of User Functions ===
-
-// === Emotion Functions ===
-const updateEmotion = async (updatedEmotion, uid) => {
-  try {
-    const currUser = await getUser(uid);
-    const pid = currUser.pair_id;
-    let partnerId;
-
-    try {
-      const pair = await getPair({ pid: pid });
-      if (uid === pair.user1_id) {
-        partnerId = pair.user2_id;
-      } else if (uid === pair.user2_id) {
-        partnerId = pair.user1_id;
-      } else {
-        console.log('Unable to find partner');
-      }
-    } catch (e) {
-      console.log('Error retrieving pair: ', e);
-    }
-
-    try {
-      // update partner's emotion
-      if (partnerId) {
-        const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
-        const partnerRef = firestore.collection('Users').doc(partnerId);
-        partnerRef.update(updatedPartnerFields)
-          .then(() => {
-            console.log("Successfully updated partner's emotion");
-          })
-          .catch((error) => {
-            console.error("Error updating partner's emotion: ", error);
-          });
-      }
-    }
-    catch (e) {
-      console.log('Error updating partner emotion: ', e);
-    }
-
-    try {
-      // update self emotion
-      const updatedUserFields = {
-        user_last_emotion: updatedEmotion,
-      }
-      const userRef = firestore.collection('Users').doc(uid);
-      userRef.update(updatedUserFields)
-        .then(() => {
-          console.log("Successfully updated partner's emotion");
-          return true;
-        })
-        .catch((error) => {
-          console.error("Error updating partner's emotion: ", error);
-          return false;
-        });
-    } catch (e) {
-      console.log('Error updating user emotion: ', e);
-    }
-  } catch (e) {
-    console.log('Error retrieving user: ', e);
-  }
-};
-// === End of Emotion Functions ===
 
 // === Pair Functions ===
 const createPair = async (pairData) => {
@@ -203,7 +171,6 @@ const getPartnerEmotion = async (uid) => {
   return emotion;
 };
 
-
 const connectPairs = async (userId, userData) => {
   const userCode = userData.userCode;
   const relationshipStart = userData.relationshipStart;
@@ -249,6 +216,65 @@ const connectPairs = async (userId, userData) => {
     });
 }
 
+const updateEmotion = async (updatedEmotion, uid) => {
+  try {
+    const currUser = await getUser(uid);
+    const pid = currUser.pair_id;
+    let partnerId;
+
+    try {
+      const pair = await getPair({ pid: pid });
+      if (uid === pair.user1_id) {
+        partnerId = pair.user2_id;
+      } else if (uid === pair.user2_id) {
+        partnerId = pair.user1_id;
+      } else {
+        console.log('Unable to find partner');
+      }
+    } catch (e) {
+      console.log('Error retrieving pair: ', e);
+    }
+
+    try {
+      // update partner's emotion
+      if (partnerId) {
+        const updatedPartnerFields = { partner_last_emotion: updatedEmotion }
+        const partnerRef = firestore.collection('Users').doc(partnerId);
+        partnerRef.update(updatedPartnerFields)
+          .then(() => {
+            console.log("Successfully updated partner's emotion");
+          })
+          .catch((error) => {
+            console.error("Error updating partner's emotion: ", error);
+          });
+      }
+    }
+    catch (e) {
+      console.log('Error updating partner emotion: ', e);
+    }
+
+    try {
+      // update self emotion
+      const updatedUserFields = {
+        user_last_emotion: updatedEmotion,
+      }
+      const userRef = firestore.collection('Users').doc(uid);
+      userRef.update(updatedUserFields)
+        .then(() => {
+          console.log("Successfully updated partner's emotion");
+          return true;
+        })
+        .catch((error) => {
+          console.error("Error updating partner's emotion: ", error);
+          return false;
+        });
+    } catch (e) {
+      console.log('Error updating user emotion: ', e);
+    }
+  } catch (e) {
+    console.log('Error retrieving user: ', e);
+  }
+};
 // === End of Pair Functions ===
 
 // === Events Functions ===
@@ -454,35 +480,6 @@ const getPartnerId = async (uid) => {
 
   console.log('firestore ' + partnerID);
   return partnerID;
-};
-
-// get user's location data
-const getLocData = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let city;
-  let country_code;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    city = data.city;
-    country_code = data.country_code;
-    console.log('country code is')
-  }
-  return [city, country_code];
-};
-
-// get user's background img url
-const getBackground = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let background;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    background = data.background_photo;
-  }
-  return background;
 };
 
 // get user's background img url

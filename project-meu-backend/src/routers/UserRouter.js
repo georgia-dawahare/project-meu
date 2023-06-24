@@ -57,6 +57,28 @@ const handleGetUserEmotion = async (req, res) => {
     }
 }
 
+// Get user's location data
+const handleGetUserLocation = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const userLocation = await Users.getUserLocationData(userId);
+        res.json(userLocation);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
+// Get user's background photo
+const handleGetUserBackground = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const userBackground = await Users.getUserBackground(userId);
+        res.json(userBackground);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 router.route('/')
     .post(handleCreateUser);
 
@@ -67,5 +89,11 @@ router.route('/:id')
 
 router.route('/emotion/:id')
     .get(handleGetUserEmotion);
+
+router.route('/location/:id')
+    .get(handleGetUserLocation);
+
+router.route('/background/:id')
+    .get(handleGetUserBackground);
 
 export default router;
