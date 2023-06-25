@@ -66,7 +66,6 @@ const firestore = admin.firestore();
 //   return userId;
 // };
 
-<<<<<<< HEAD
 // const getName = async (uid) => {
 //   const doc = await firestore.collection('Users').doc(uid).get();
 //   let name;
@@ -78,31 +77,6 @@ const firestore = admin.firestore();
 //   }
 //   return name;
 // };
-=======
-// get the user's penguin color
-const getUserPenguinColor = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let color;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    color = data.penguin_color;
-  }
-  return color;
-};
-
-const getUser = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let user;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    user = doc.data();
-  }
-  return user;
-};
->>>>>>> georgia-merge
 
 // const getUserEmotion = async (uid) => {
 //   const doc = await firestore.collection('Users').doc(uid).get();
@@ -363,7 +337,6 @@ const getUser = async (uid) => {
 // === End of Pair Functions ===
 
 // === Events Functions ===
-<<<<<<< HEAD
 // const createEvent = async (eventData) => {
 //   const event = {
 //     pair_id: eventData.pairId,
@@ -376,20 +349,6 @@ const getUser = async (uid) => {
 //     console.error('Missing fields');
 //     return null;
 //   }
-=======
-const createEvent = async (eventData) => {
-  const event = {
-    pair_id: eventData.pairId,
-    date: eventData.date,
-    title: eventData.title,
-    repeat: eventData.repeat,
-
-  };
-  if (!event.pair_id || !event.date || !event.title || !event.repeat) {
-    console.error('Missing fields');
-    return null;
-  }
->>>>>>> georgia-merge
 
 //   const res = await firestore.collection('Events').add(event);
 //   return res.id;
@@ -417,7 +376,6 @@ const createEvent = async (eventData) => {
 //     });
 // };
 
-<<<<<<< HEAD
 // const deleteEvent = async (eventId) => {
 //   firestore.collection('Events').doc(eventId.id).delete().then(() => {
 //     console.log('Event successfully deleted');
@@ -428,19 +386,6 @@ const createEvent = async (eventData) => {
 //       return false;
 //     });
 // };
-=======
-const deleteEvent = async (eventId) => {
-  firestore.collection('Events').doc(eventId.id).delete().then(() => {
-    console.log('Event successfully deleted');
-    return true;
-  })
-    .catch((error) => {
-      console.error('Error removing document: ', error);
-      return false;
-    });
-};
-
->>>>>>> georgia-merge
 // === End of Event Functions ===
 
 // === Daily Response Functions ===

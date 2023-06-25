@@ -31,20 +31,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
-<<<<<<< HEAD
 app.use('/responses', responseRoutes);
 app.use('/response_groups', responseGroupRoutes);
 app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
-=======
-app.use('/users', usersRouter);
-app.use('/emotions', emotionsRouter);
-app.use('/pairs', pairsRouter);
-app.use('/events', eventsRouter);
-app.use('/responses', responsesRouter);
-app.use('/settings', settingsRouter);
->>>>>>> georgia-merge
 
 // default index route
 app.get('/', (req, res) => {
