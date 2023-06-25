@@ -1,13 +1,10 @@
 import User from '../models/UserModel'
 
 // Create new user
-export async function createUser(userFields) {
+export async function createUser(userId, userEmail) {
     const user = new User();
-    user.firstName = userFields.firstName;
-    user.lastName = userFields.lastName;
-    user.email = userFields.email;
-    user.birthday = userFields.birthday;
-    user.penguinColor = userFields.penguinColor;
+    user.uid = userId;
+    user.email = userEmail;
 
     try {
         // await save to db

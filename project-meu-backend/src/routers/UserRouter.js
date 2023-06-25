@@ -6,7 +6,7 @@ const router = Router();
 // Create new user
 const handleCreateUser = async (req, res) => {
     try {
-        const newUser = await Users.createUser(req.body);
+        const newUser = await Users.createUser(req.body.uid, req.body.email);
         res.json(newUser);
     } catch (error) {
         res.status(500).json({ error });

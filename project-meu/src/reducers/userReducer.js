@@ -3,9 +3,9 @@ import { ActionTypes } from '../actions/UserActions';
 const initialState = {
   userData: {
     userId: '',
+    email: '',
     firstName: '',
     lastName: '',
-    email: '',
     birthday: '',
     penguinColor: '',
     userLastEmotion: 0,
@@ -16,7 +16,6 @@ const initialState = {
     backgroundPhoto: '',
     countryCode: '',
     city: '',
-    password: '',
   },
 };
 

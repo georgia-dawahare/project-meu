@@ -2,11 +2,12 @@ import mongoose, { Schema } from 'mongoose';
 
 const UserSchema = new Schema({
     // Registration info
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    uid: { type: String, required: true },  // Firebase auth uid
     email: { type: String, required: true },
-    birthday: { type: Date, required: true },
-    penguinColor: { type: String, required: true },
+    firstName: { type: String },
+    lastName: { type: String },
+    birthday: { type: Date },
+    penguinColor: { type: String },
 
     // Defaults
     userLastEmotion: { type: Number, default: 0 },

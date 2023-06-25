@@ -6,7 +6,7 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
-import { updateUser } from '../../actions';
+import { updateUser } from '../../actions/UserActions';
 
 const gifDataColors = {
   0: require('../../../assets/animations/hello/hello_black.gif'),
@@ -92,7 +92,7 @@ function PenguinCustomization({ navigation }) {
     return (
       <Image
         source={item}
-        style={[styles.icon, itemStyle]} //, { marginLeft }]}
+        style={[styles.icon, itemStyle]} // , { marginLeft }]}
       />
     );
   };
@@ -160,7 +160,7 @@ function PenguinCustomization({ navigation }) {
         />
 
         <View style={styles.clearContainer}>
-          <Text style={styles.buttonTxt}></Text>
+          <Text style={styles.buttonTxt} />
         </View>
 
         <Text style={styles.Text}>Customize your Penguin</Text>
@@ -172,7 +172,7 @@ function PenguinCustomization({ navigation }) {
         </View>
 
         <View style={styles.carouselContainer}>
-          <View style={styles.circle}/>
+          <View style={styles.circle} />
           <Carousel
             data={iconColors}
             renderItem={renderIconItem}
@@ -185,7 +185,7 @@ function PenguinCustomization({ navigation }) {
             firstItem={selectedIcon}
           />
         </View>
-        
+
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleNext}>
             <Text style={styles.buttonTxt}>Let's start</Text>
@@ -193,11 +193,11 @@ function PenguinCustomization({ navigation }) {
         </View>
 
         <View style={styles.clearContainer}>
-          <Text style={styles.buttonTxt}></Text>
+          <Text style={styles.buttonTxt} />
         </View>
 
       </View>
-      
+
     </SafeAreaView>
   );
 }

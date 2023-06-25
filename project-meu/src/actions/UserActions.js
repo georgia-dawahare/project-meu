@@ -12,7 +12,7 @@ export const ActionTypes = {
 export function createUser(userData) {
   // axios post
   return (dispatch) => {
-    axios.post(`${apiUrl}/users`, userData)
+    axios.post(`${apiUrl}/users/`, userData)
       .then((response) => {
         dispatch({ type: ActionTypes.UPDATE_USER, payload: response.data });
         console.log('Successfully created user');
@@ -60,14 +60,6 @@ export function updateUser(uid, updatedFields) {
         // Need to add error actions
         console.log('error updating user: ', error);
       });
-  };
-}
-
-// Update redux store user
-export function updateLocalUser(body) {
-  return {
-    type: ActionTypes.UPDATE_USER,
-    payload: body,
   };
 }
 
