@@ -295,7 +295,6 @@ const createEvent = async (eventData) => {
     repeat: eventData.repeat,
 
   };
-  // console.log(event,':     event');
   if (!event.pair_id || !event.date || !event.title || !event.repeat) {
     console.error('Missing fields');
     return null;
@@ -337,6 +336,7 @@ const deleteEvent = async (eventId) => {
       return false;
     });
 };
+
 // === End of Event Functions ===
 
 // === Daily Response Functions ===

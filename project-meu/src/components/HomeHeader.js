@@ -57,7 +57,7 @@ function HomeHeader({ navigation }) {
         setDays(`${diffDays} Days`);
         const userUpdate = { days_together: diffDays };
         dispatch(updateUser(userUpdate));
-        console.log('first startd ate"      ', startDate);
+        // console.log('first startd ate"      ', startDate);
       } else {
         console.log('Could not retrieve start date');
       }
