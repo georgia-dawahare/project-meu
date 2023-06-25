@@ -2,10 +2,18 @@
 // this defines what your store state will look like
 import { combineReducers } from '@reduxjs/toolkit';
 
-import UserReducer from './userReducer';
+import UserReducer from './UserReducer';
+import PairReducer from './PairReducer';
+import ResponseReducer from './ResponseReducer';
+import ResponseGroupReducer from './ResponseGroupReducer';
+import EventReducer from './EventReducer';
 
 const rootReducer = combineReducers({
-  user: UserReducer,
+  userState: UserReducer,
+  pairState: PairReducer,
+  responseState: ResponseReducer,
+  responseGroupState: ResponseGroupReducer,
+  eventState: EventReducer,
 });
 
 export default rootReducer;

@@ -1,27 +1,34 @@
-import { ActionTypes } from '../actions';
+import { ActionTypes } from '../actions/UserActions';
 
 const initialState = {
-  user_data: {
+  userData: {
+    userId: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    password: '',
-    pair_code: '',
-    first_name: '',
-    last_name: '',
     birthday: '',
-    anniversary: '',
-    days_together: '',
-    background_photo: '',
+    penguinColor: '',
+    userLastEmotion: 0,
+    partnerLastEmotion: 0,
+    partnerId: '',
+    pairCode: '',
+    pairId: '',
+    backgroundPhoto: '',
+    countryCode: '',
+    city: '',
+    password: '',
   },
 };
 
 const UserReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case ActionTypes.UPDATE_USER:
-      return { ...state, user_data: { ...state.user_data, ...action.payload } };
-    case ActionTypes.GET_USER:
+      return { ...state, userData: { ...state.userData, ...action.payload } };
+    case ActionTypes.FETCH_USER:
       return { ...state, ...action.payload };
     default:
       return state;
   }
 };
+
 export default UserReducer;
