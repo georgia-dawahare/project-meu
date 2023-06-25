@@ -48,13 +48,12 @@ function OnboardingPage({ navigation }) {
           {'\n'}
           various interactions.
         </Text>
+        <View>
+          <TouchableOpacity onPress={() => { navigation.navigate('SignUpSignIn'); }}>
+            <Button title="Let's MeU" />
+          </TouchableOpacity>
+        </View>
       </View>
-      <View>
-        <TouchableOpacity onPress={() => { navigation.navigate('SignUpSignIn'); }}>
-          <Button title="Let's MeU" />
-        </TouchableOpacity>
-      </View>
-
     </SafeAreaView>
   );
 }
@@ -63,7 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   contentWrapper: {
@@ -75,8 +73,6 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     flexDirection: 'row',
-    marginBottom: -20,
-
   },
   title: {
     fontFamily: 'SF-Pro-Display-Semibold',

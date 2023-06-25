@@ -17,7 +17,7 @@ import {
 import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
 import Button from '../../components/Button';
-import { updateUser } from '../../actions';
+import { updateLocalUser } from '../../actions/UserActions';
 
 function RegisterEmailPassword({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -31,7 +31,7 @@ function RegisterEmailPassword({ navigation }) {
       email,
       password,
     };
-    dispatch(updateUser(newUser));
+    dispatch(updateLocalUser(newUser));
     navigation.navigate('ProfileInfo');
   };
 

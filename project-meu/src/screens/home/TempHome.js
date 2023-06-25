@@ -15,7 +15,7 @@ import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
 import { apiUrl } from '../../constants/constants';
-import { updateUser } from '../../actions';
+import { updateUser } from '../../actions/UserActions';
 
 function TempHome({ navigation }) {
   const [backgroundImage, setBackgroundImage] = useState('');

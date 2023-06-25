@@ -12,7 +12,7 @@ import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { apiUrl } from '../constants/constants';
-import { updateUser } from '../actions';
+import { updateUser } from '../actions/UserActions';
 
 function HomeHeader({ navigation }) {
   const [days, setDays] = useState('');

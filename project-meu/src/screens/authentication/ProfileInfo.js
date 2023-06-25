@@ -6,13 +6,12 @@ import {
 import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { updateUser } from '../../actions';
+import { updateUser } from '../../actions/UserActions';
 
 function ProfileInfo({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  // const [anniversary, setAnniversary] = useState('');
   const [birthday, setBirthday] = useState(new Date());
   const [anniversary, setAnniversary] = useState(new Date());
 
