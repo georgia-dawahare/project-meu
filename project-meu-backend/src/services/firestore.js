@@ -17,51 +17,6 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 // === User Functions ===
-<<<<<<< HEAD
-=======
-const createUser = async (userData) => {
-  const { userId } = userData;
-  const user = {
-    pair_id: userData.pairId,
-    first_name: userData.firstName,
-    last_name: userData.lastName,
-    email: userData.email,
-    penguin_color: userData.penguinColor,
-    background_photo: userData.backgroundPhoto,
-    birthday: userData.birthday,
-    user_last_emotion: userData.user_last_emotion,
-    partner_last_emotion: userData.partner_last_emotion,
-    code: userData.code,
-    city: userData.city,
-  };
-  await firestore.collection('Users').doc(userId).set(user);
-  return userId;
-};
-// === Setting Functions ===
-const getBirthday = async (uid) => {
-  const doc = await firestore.collection('Users').doc(uid).get();
-  let birthday;
-  if (!doc.exists) {
-    console.log('User does not exist');
-  } else {
-    const data = doc.data();
-    birthday = [data.birthday];
-  }
-  return birthday;
-};
-
-const updateBirthday = async (uid, newBirthday) => {
-  try {
-    await firestore.collection('Users').doc(uid).update({
-      birthday: newBirthday,
-    });
-    console.log('Birthday updated successfully');
-  } catch (error) {
-    console.log('Error updating birthday:', error);
-  }
-};
-// === End Setting Functions ===
->>>>>>> georgia-merge
 
 // // get user's location data
 // const getLocData = async (uid) => {

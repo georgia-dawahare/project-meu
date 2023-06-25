@@ -1,21 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-<<<<<<< HEAD
 import mongoose from 'mongoose';
 import responseGroupRoutes from './routers/ResponseGroupRouter';
 import responseRoutes from './routers/ResponseRouter';
 import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
-=======
-import usersRouter from './routers/usersRouter';
-import emotionsRouter from './routers/emotionsRouter';
-import pairsRouter from './routers/pairsRouter';
-import eventsRouter from './routers/eventsRouter';
-import responsesRouter from './routers/responsesRouter';
-import settingsRouter from './routers/settingsRouter';
->>>>>>> georgia-merge
 
 // initialize
 const app = express();
