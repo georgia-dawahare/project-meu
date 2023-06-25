@@ -2,11 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
-
-// import emotionsRouter from './routers/emotionsRouter';
-// import eventsRouter from './routers/eventsRouter';
-// import responsesRouter from './routers/responsesRouter';
-
+import responseGroupRoutes from './routers/ResponseGroupRouter';
+import responseRoutes from './routers/ResponseRouter';
 import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
@@ -34,9 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
-// app.use('/emotions', emotionsRouter);
-// app.use('/responses', responsesRouter);
-
+app.use('/responses', responseRoutes);
+app.use('/response_groups', responseGroupRoutes);
 app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);

@@ -70,7 +70,7 @@ export async function updatePair(pairId, updatedFields) {
 // Delete pair
 export async function deletePair(pairId) {
     try {
-        // await find a user by id and delete
+        // await find a pair by id and delete
         await User.findByIdAndDelete(pairId);
         const success = `Successfully deleted pair with ID: ${pairId}`;
         return success; // return confirmation

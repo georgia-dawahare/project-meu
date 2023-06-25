@@ -19,9 +19,8 @@ export async function createEvent(eventFields) {
 
 export async function findAllEvents() {
     try {
-        const allEvents = await Event.find({});
+        const allEvents = await Event.find({}).sort({ eventDate: -1 });
         return allEvents;
-        // const allPosts = await Post.find({}).sort({ createdAt: -1 });
     } catch (error) {
         throw new Error(`Find events error: ${error}`);
     }

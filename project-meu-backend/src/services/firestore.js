@@ -389,15 +389,15 @@ const firestore = admin.firestore();
 // === End of Event Functions ===
 
 // === Daily Response Functions ===
-const addResponseGroup = async (groupData, id) => {
-  const group = {
-    p1_response_id: groupData.p1_response_id,
-    p2_response_id: groupData.p2_response_id,
-    question_id: groupData.question_id,
-  };
-  await firestore.collection('ResponseGroups').doc(id).set(group);
-  return id;
-};
+// const addResponseGroup = async (groupData, id) => {
+//   const group = {
+//     p1_response_id: groupData.p1_response_id,
+//     p2_response_id: groupData.p2_response_id,
+//     question_id: groupData.question_id,
+//   };
+//   await firestore.collection('ResponseGroups').doc(id).set(group);
+//   return id;
+// };
 
 const getResponseGroup = async (id) => {
   const docRef = firestore.collection('ResponseGroups').doc(id);
@@ -431,80 +431,80 @@ const updateResponseGroup = async (groupId, updatedFields) => {
 };
 
 
-const addResponse = async (responseData, pairId, groupId) => {
-  const responseObj = {
-    response: responseData.response,
-    timestamp: Timestamp.now(),
-    user_id: responseData.user_id,
-  };
+// const addResponse = async (responseData, pairId, groupId) => {
+//   const responseObj = {
+//     response: responseData.response,
+//     timestamp: Timestamp.now(),
+//     user_id: responseData.user_id,
+//   };
 
-  let responseId;
+//   let responseId;
 
-  // Add response to Responses collection
-  return firestore.collection('Responses').add(responseObj)
-    // Find pair creator (P1)
-    .then((docRef) => {
-      responseId = docRef.id;
-      return getPairCreatorId(pairId);
-    })
-    //  Add response ID to Response Group
-    .then((pairCreator) => {
-      if (responseData.user_id === pairCreator) {
-        updateResponseGroup(groupId, { p1_response_id: responseId });
-      } else {
-        updateResponseGroup(groupId, { p2_response_id: responseId });
-      }
-      return responseId;
-    })
-    .catch((error) => {
-      console.error('Error adding response: ', error);
-      return null;
-    });
-};
+//   // Add response to Responses collection
+//   return firestore.collection('Responses').add(responseObj)
+//     // Find pair creator (P1)
+//     .then((docRef) => {
+//       responseId = docRef.id;
+//       return getPairCreatorId(pairId);
+//     })
+//     //  Add response ID to Response Group
+//     .then((pairCreator) => {
+//       if (responseData.user_id === pairCreator) {
+//         updateResponseGroup(groupId, { p1_response_id: responseId });
+//       } else {
+//         updateResponseGroup(groupId, { p2_response_id: responseId });
+//       }
+//       return responseId;
+//     })
+//     .catch((error) => {
+//       console.error('Error adding response: ', error);
+//       return null;
+//     });
+// };
 
-const getResponse = async (id) => {
-  const docRef = firestore.collection('Responses').doc(id);
-  return docRef.get()
-    .then((doc) => {
-      if (doc.exists) {
-        console.log('Successfully fetched response');
-        return doc.data();
-      } else {
-        console.log('Response does not exist');
-        return null;
-      }
-    })
-    .catch((error) => {
-      console.error('error finding doc', error);
-      return null;
-    });
-};
+// const getResponse = async (id) => {
+//   const docRef = firestore.collection('Responses').doc(id);
+//   return docRef.get()
+//     .then((doc) => {
+//       if (doc.exists) {
+//         console.log('Successfully fetched response');
+//         return doc.data();
+//       } else {
+//         console.log('Response does not exist');
+//         return null;
+//       }
+//     })
+//     .catch((error) => {
+//       console.error('error finding doc', error);
+//       return null;
+//     });
+// };
 
-const updateResponse = async (responseId, updatedResponse) => {
-  const docRef = firestore.collection('Responses').doc(responseId);
-  return docRef.update(updatedResponse)
-    .then(() => {
-      console.log('Successfully updated response');
-      return true;
-    })
-    .catch((error) => {
-      console.error('Error updating response:', error);
-      return false;
-    });
-};
+// const updateResponse = async (responseId, updatedResponse) => {
+//   const docRef = firestore.collection('Responses').doc(responseId);
+//   return docRef.update(updatedResponse)
+//     .then(() => {
+//       console.log('Successfully updated response');
+//       return true;
+//     })
+//     .catch((error) => {
+//       console.error('Error updating response:', error);
+//       return false;
+//     });
+// };
 
-const deleteResponse = async (responseId) => {
-  const docRef = firestore.collection('Responses').doc(responseId);
-  return docRef.delete()
-    .then(() => {
-      console.log('Successfully deleted response');
-      return true;
-    })
-    .catch((error) => {
-      console.error('Error deleting response:', error);
-      return false;
-    });
-};
+// const deleteResponse = async (responseId) => {
+//   const docRef = firestore.collection('Responses').doc(responseId);
+//   return docRef.delete()
+//     .then(() => {
+//       console.log('Successfully deleted response');
+//       return true;
+//     })
+//     .catch((error) => {
+//       console.error('Error deleting response:', error);
+//       return false;
+//     });
+// };
 // === End of Daily Response Functions ===
 
 

@@ -1,10 +1,11 @@
 import mongoose, { Schema } from "mongoose";
 
 export const ResponseGroupSchema = new Schema({
-    responseId1: { type: Schema.Types.ObjectId, ref: 'Response', required: true },
-    responseId2: { type: Schema.Types.ObjectId, ref: 'Response', required: true },
-    questionId: { type: Number, required: true }
+    questionId: { type: Number, required: true },
+    responseId1: { type: Schema.Types.ObjectId, ref: 'Response' },
+    responseId2: { type: Schema.Types.ObjectId, ref: 'Response' },
 }, {
+    timestamps: true,
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
 })
