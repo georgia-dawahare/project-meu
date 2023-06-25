@@ -13,21 +13,22 @@ import {
   Alert,
 } from 'react-native';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import FloatingButton from '../../components/FloatingButton';
 import FabandModal from '../../components/FabandModal';
+import auth from '../../services/datastore';
 import anniversariesData from '../../../assets/data/anniversaries.json';
 
 function HomeCalendar({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [extractedFirebaseData, setExtractedFirebaseData] = useState([]);
   const [clickedItem, setClickedItem] = useState(null);
-  // const [isModalVisible, setIsModalVisible] = useState(false);
   const [clickedItemId, setClickedItemId] = useState(null);
   const currUser = useSelector((state) => state.user);
-  // const [eventData, setEventData] = useState([]);
+  const [userID, setuserID] = useState('');
+  const [userId, setUserId] = useState('');
+  const [userFirstDate, setUserFirstDate] = useState('');
 
   const THRESHOLD = 480;
   const HEADER_HEIGHT = 600;
@@ -54,6 +55,40 @@ function HomeCalendar({ navigation }) {
   }, []);
 
   useEffect(() => {
+    setUserId(auth?.currentUser?.uid);
+  }, [userID]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await axios.get(`${apiUrl}/users/${userId}`);
+      const userInfo = user.data;
+
+      if (userInfo) {
+        setuserID(userInfo.pair_id);
+      }
+    };
+    if (userId) {
+      getUser();
+    }
+  }, [userId]);
+
+  // here
+  useEffect(() => {
+    const getPairDate = async () => {
+      const pair = await axios.get(`${apiUrl}/pairs/${userID}`);
+      const relationshipStart = pair?.data?.relationship_start;
+
+      if (relationshipStart) {
+        const startDate = new Date(relationshipStart);
+        setUserFirstDate(startDate);
+      } else {
+        console.log('Could not retrieve start date');
+      }
+    };
+    getPairDate();
+  }, [userID]);
+  console.log('first startd dateee"      ', userFirstDate);
+  useEffect(() => {
     axios
       .get(`${apiUrl}/events/`)
       .then((response) => {
@@ -67,49 +102,27 @@ function HomeCalendar({ navigation }) {
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
+
           const extractedDate = extractDday(event.date);
-          // const name = `${extractedDate}    ${event.title}`;
           const name = `${event.title}`;
           const id = `${event.id}`;
+          const pairId = `${event.pairId}`;
           return {
             date: extractedDate,
             name,
             id,
+            pairId,
           };
         });
 
-        console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
         console.error(error);
       });
   }, []);
+
   const printEventTitlesAndDates = async () => {
-    const addDefaultEvents = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/events/addDefaultEvents`);
-        console.log('Default events added:', response.data);
-      } catch (error) {
-        console.error('Failed to add default events:', error);
-      }
-    };
-
-    const addNewEvent = async () => {
-      try {
-        const response = await axios.post(`${apiUrl}/events/`, {
-          title: 'New Event',
-          date: '2023-06-06',
-        });
-        console.log('New event added:', response.data);
-      } catch (error) {
-        console.error('Failed to add new event:', error);
-      }
-    };
-
-    await addDefaultEvents();
-    await addNewEvent();
-
     axios
       .get(`${apiUrl}/events/`)
       .then((response) => {
@@ -123,17 +136,21 @@ function HomeCalendar({ navigation }) {
             const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
             return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
           };
+
           const extractedDate = extractDday(event.date);
           const name = `${event.title}`;
           const id = `${event.id}`;
+          const pairId = `${event.pairId}`;
+
           return {
             date: extractedDate,
             name,
             id,
+            pairId,
           };
         });
 
-        console.log('Extracted Firebase Data:', extractedData);
+        // console.log('Extracted Firebase Data:', extractedData);
         setExtractedFirebaseData(extractedData);
       })
       .catch((error) => {
@@ -142,8 +159,43 @@ function HomeCalendar({ navigation }) {
   };
 
   const renderItem = ({ item }) => {
+    let itemStyle = styles.item;
+    let dateText = item.date;
+
     if (item.date.startsWith('D+') && item.date !== 'D+0') {
       return null;
+    } else if (item.date.startsWith('D+')) {
+      const days = parseInt(item.date.substring(2), 10);
+      if (days === 0) {
+        itemStyle = styles.coloredItem;
+        dateText = 'D+0';
+      } else if (days <= 7) {
+        dateText = `D-${item.date.substring(2)}`;
+      } else {
+        const date = new Date(item.date);
+        const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+
+        dateText = formattedDate;
+      }
+    } else if (item.date.startsWith('D-')) {
+      const days = parseInt(item.date.substring(2), 10);
+      if (days <= 7) {
+        dateText = `D-${item.date.substring(2)}`;
+      } else {
+        const currentDate = new Date();
+        const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
+        futureDate.setDate(futureDate.getDate());
+        const formattedDate = `${(futureDate.getMonth() + 1).toString().padStart(2, '0')}/${futureDate.getDate().toString().padStart(2, '0')}/${futureDate.getFullYear()}`;
+
+        dateText = formattedDate;
+      }
+    } else {
+      const days = parseInt(item.date.substring(2), 10);
+      const currentDate = new Date();
+      const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
+      futureDate.setDate(futureDate.getDate() + 1);
+      const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+      dateText = formattedDate;
     }
 
     const handlePress = () => {
@@ -183,17 +235,46 @@ function HomeCalendar({ navigation }) {
       }
     };
 
-    const icon = clickedItemId === item.id ? 'ios-trash' : 'ios-heart';
+    const icon = clickedItemId === item.id ? (
+      <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
+    ) : (
+      <Image source={require('../../../assets/icons/heart.png')} style={styles.icon} />
+    );
 
     return (
-      <TouchableOpacity onPress={handlePress} style={styles.item}>
+      <TouchableOpacity onPress={handlePress} style={itemStyle}>
         <View style={styles.rowContainer}>
-          <Text style={styles.ddaydate}>{item.date}</Text>
-          <Text style={styles.ddayTitle}>{item.name}</Text>
-          <Ionicons name={icon} size={24} color="black" style={styles.icon} />
+          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
+            {dateText}
+          </Text>
+          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
+            {item.name}
+          </Text>
+          {icon}
         </View>
       </TouchableOpacity>
     );
+  };
+
+  const getCurrentAnniversary = () => {
+    if (userFirstDate) {
+      const anniversaryDate = new Date(userFirstDate);
+      const currentDate = new Date();
+
+      const yearsDiff = currentDate.getFullYear() - anniversaryDate.getFullYear();
+      const monthsDiff = currentDate.getMonth() - anniversaryDate.getMonth();
+      const daysDiff = currentDate.getDate() - anniversaryDate.getDate();
+
+      let currentAnniversary = yearsDiff;
+
+      if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
+        currentAnniversary--;
+      }
+
+      return currentAnniversary;
+    }
+
+    return null;
   };
 
   // render Anniversaries from json
@@ -215,6 +296,7 @@ function HomeCalendar({ navigation }) {
           const anniversaryDate = new Date(anniversary.date);
           anniversaryDate.setFullYear(year);
           const extractedDate = extractDday(anniversaryDate);
+
           Defaultdata.push({
             date: extractedDate,
             name: `${anniversary.name}`,
@@ -227,7 +309,25 @@ function HomeCalendar({ navigation }) {
         }
       }
     }
-    const sortedData = [...Defaultdata, ...extractedFirebaseData].sort((a, b) => {
+
+    const currentAnniversary = getCurrentAnniversary();
+    if (currentAnniversary !== null) {
+      const upcomingTwoYearAnniversary = currentAnniversary + 2;
+      const upcomingAnniversaryDate = new Date(userFirstDate);
+      upcomingAnniversaryDate.setFullYear(upcomingAnniversaryDate.getFullYear() + upcomingTwoYearAnniversary);
+
+      const extractedDate = extractDday(upcomingAnniversaryDate);
+      Defaultdata.push({
+        date: extractedDate,
+        name: `${upcomingTwoYearAnniversary}th anniversary`,
+      });
+    }
+
+    const userAnniversaries = extractedFirebaseData.filter(
+      (event) => event.pairId === userID,
+    );
+
+    const sortedData = [...Defaultdata, ...userAnniversaries].sort((a, b) => {
       const ddayA = parseInt(a.date.substring(2), 10);
       const ddayB = parseInt(b.date.substring(2), 10);
 
@@ -236,9 +336,6 @@ function HomeCalendar({ navigation }) {
 
     return sortedData;
   };
-
-  // 초기 로딩 시 이벤트 목록을 가져옴
-  // printEventTitlesAndDates();
 
   const formatDate = () => {
     const month = today.getMonth();
@@ -264,7 +361,7 @@ function HomeCalendar({ navigation }) {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={() => navigation.navigate('TempHome')} style={styles.backButton}>
         <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/goback-black.png')} style={styles.Icon} />
+          <Image source={require('../../../assets/icons/back-arrow.png')} style={styles.Icon} />
         </View>
       </TouchableOpacity>
 
@@ -308,7 +405,6 @@ function HomeCalendar({ navigation }) {
         </Animated.Text>
         <FloatingButton />
         <FabandModal fetchData={printEventTitlesAndDates} />
-        {/* <FabandModal /> */}
       </Animated.View>
 
       <Animated.ScrollView
@@ -426,6 +522,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     marginTop: 10,
     marginBottom: 10,
+  },
+  coloredItem: {
+    // color: 'rgb(230, 43, 133)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  coloredItemText: {
+    color: 'rgb(230, 43, 133)',
   },
   rowContainer: {
     flexDirection: 'row',

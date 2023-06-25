@@ -8,14 +8,15 @@ router.post('/', async (req, res) => {
   const eventData = req.body;
   try {
     const eventId = await eventsController.createEvent(eventData);
+    console.log('event id :     ',eventId); //null
     if (eventId) {
       res.status(200).send(eventId);
     } else {
-      console.log('Tried to create event');
+      console.log('Tried to create event1');
       res.status(500).send('Create event failed');
     }
   } catch (e) {
-    console.log('Tried to create event');
+    console.log('Tried to create event2');
     res.status(500).send(e.message);
   }
 });
@@ -30,6 +31,7 @@ router.get('/', async (req, res) => {
     res.status(500).send(e.message);
   }
 });
+
 
 // Delete event
 router.delete('/:id', async (req, res) => {

@@ -12,6 +12,7 @@ import {
 import {
   Card,
 } from 'react-native-elements';
+import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
@@ -38,6 +39,10 @@ function CheckinPage({ navigation }) {
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  // added
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   useEffect(() => {
     const getUser = async () => {
@@ -113,6 +118,20 @@ function CheckinPage({ navigation }) {
     }
     loadFont();
   }, []);
+
+  // added
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const selectEmoji = (emoji) => {
+    setSelectedEmoji(emoji);
+    closeModal();
+  };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -312,6 +331,7 @@ function CheckinPage({ navigation }) {
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image
               source={require('../../../assets/images/editButton.png')}
+              // source={require('../../../assets/icons/checkin-answer.png')}
               style={styles.editImg}
             />
           </TouchableOpacity>
@@ -341,6 +361,32 @@ function CheckinPage({ navigation }) {
                 <Text>{partnerName}</Text>
                 <Text>{partnerResponseTime}</Text>
               </View>
+              {/* added */}
+              <TouchableOpacity
+                style={styles.responseHeader}
+                onLongPress={openModal}
+              >
+                {selectedEmoji ? (
+                  <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
+                ) : (
+                  <Text style={styles.defaultEmoji}>+</Text>
+                )}
+              </TouchableOpacity>
+
+              <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
+                <View style={styles.modalContainer}>
+                  {emojis.map((emoji, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.emojiOption}
+                      onPress={() => selectEmoji(emoji)}
+                    >
+                      <Text style={styles.emoji}>{emoji}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </Modal>
+
             </View>
             <Text>{partnerResponse}</Text>
           </View>

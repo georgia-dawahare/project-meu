@@ -41,7 +41,7 @@ function ProfileInfo({ navigation }) {
       birthday: birthdayString,
     };
     dispatch(updateUser(newUser));
-    navigation.navigate('Welcome');
+    navigation.navigate('PenguinCustomization');
   };
 
   const handleDateChange = (event, selectedDate) => {
@@ -58,7 +58,7 @@ function ProfileInfo({ navigation }) {
       <View style={styles.backWrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
-            source={require('../../../assets/icons/goback-black.png')}
+            source={require('../../../assets/icons/back-arrow.png')}
           />
         </TouchableOpacity>
       </View>

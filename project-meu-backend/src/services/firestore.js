@@ -17,6 +17,51 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 // === User Functions ===
+<<<<<<< HEAD
+=======
+const createUser = async (userData) => {
+  const { userId } = userData;
+  const user = {
+    pair_id: userData.pairId,
+    first_name: userData.firstName,
+    last_name: userData.lastName,
+    email: userData.email,
+    penguin_color: userData.penguinColor,
+    background_photo: userData.backgroundPhoto,
+    birthday: userData.birthday,
+    user_last_emotion: userData.user_last_emotion,
+    partner_last_emotion: userData.partner_last_emotion,
+    code: userData.code,
+    city: userData.city,
+  };
+  await firestore.collection('Users').doc(userId).set(user);
+  return userId;
+};
+// === Setting Functions ===
+const getBirthday = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let birthday;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    birthday = [data.birthday];
+  }
+  return birthday;
+};
+
+const updateBirthday = async (uid, newBirthday) => {
+  try {
+    await firestore.collection('Users').doc(uid).update({
+      birthday: newBirthday,
+    });
+    console.log('Birthday updated successfully');
+  } catch (error) {
+    console.log('Error updating birthday:', error);
+  }
+};
+// === End Setting Functions ===
+>>>>>>> georgia-merge
 
 // // get user's location data
 // const getLocData = async (uid) => {
@@ -66,6 +111,7 @@ const firestore = admin.firestore();
 //   return userId;
 // };
 
+<<<<<<< HEAD
 // const getName = async (uid) => {
 //   const doc = await firestore.collection('Users').doc(uid).get();
 //   let name;
@@ -77,6 +123,31 @@ const firestore = admin.firestore();
 //   }
 //   return name;
 // };
+=======
+// get the user's penguin color
+const getUserPenguinColor = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let color;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    const data = doc.data();
+    color = data.penguin_color;
+  }
+  return color;
+};
+
+const getUser = async (uid) => {
+  const doc = await firestore.collection('Users').doc(uid).get();
+  let user;
+  if (!doc.exists) {
+    console.log('User does not exist');
+  } else {
+    user = doc.data();
+  }
+  return user;
+};
+>>>>>>> georgia-merge
 
 // const getUserEmotion = async (uid) => {
 //   const doc = await firestore.collection('Users').doc(uid).get();
@@ -337,6 +408,7 @@ const firestore = admin.firestore();
 // === End of Pair Functions ===
 
 // === Events Functions ===
+<<<<<<< HEAD
 // const createEvent = async (eventData) => {
 //   const event = {
 //     pair_id: eventData.pairId,
@@ -349,6 +421,20 @@ const firestore = admin.firestore();
 //     console.error('Missing fields');
 //     return null;
 //   }
+=======
+const createEvent = async (eventData) => {
+  const event = {
+    pair_id: eventData.pairId,
+    date: eventData.date,
+    title: eventData.title,
+    repeat: eventData.repeat,
+
+  };
+  if (!event.pair_id || !event.date || !event.title || !event.repeat) {
+    console.error('Missing fields');
+    return null;
+  }
+>>>>>>> georgia-merge
 
 //   const res = await firestore.collection('Events').add(event);
 //   return res.id;
@@ -376,6 +462,7 @@ const firestore = admin.firestore();
 //     });
 // };
 
+<<<<<<< HEAD
 // const deleteEvent = async (eventId) => {
 //   firestore.collection('Events').doc(eventId.id).delete().then(() => {
 //     console.log('Event successfully deleted');
@@ -386,6 +473,19 @@ const firestore = admin.firestore();
 //       return false;
 //     });
 // };
+=======
+const deleteEvent = async (eventId) => {
+  firestore.collection('Events').doc(eventId.id).delete().then(() => {
+    console.log('Event successfully deleted');
+    return true;
+  })
+    .catch((error) => {
+      console.error('Error removing document: ', error);
+      return false;
+    });
+};
+
+>>>>>>> georgia-merge
 // === End of Event Functions ===
 
 // === Daily Response Functions ===
@@ -517,6 +617,7 @@ const firestoreService = {
   getUser,
   getUserEmotion,
   getPartnerEmotion,
+  getUserPenguinColor,
   updateUser,
   getResponseGroup,
   updateResponseGroup,
@@ -537,7 +638,9 @@ const firestoreService = {
   getLocData,
   getBackground,
   getPairDate,
-  connectPairs
+  connectPairs,
+  getBirthday,
+  updateBirthday,
 };
 
 export default firestoreService;

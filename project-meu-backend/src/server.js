@@ -1,12 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+<<<<<<< HEAD
 import mongoose from 'mongoose';
 import responseGroupRoutes from './routers/ResponseGroupRouter';
 import responseRoutes from './routers/ResponseRouter';
 import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
+=======
+import usersRouter from './routers/usersRouter';
+import emotionsRouter from './routers/emotionsRouter';
+import pairsRouter from './routers/pairsRouter';
+import eventsRouter from './routers/eventsRouter';
+import responsesRouter from './routers/responsesRouter';
+import settingsRouter from './routers/settingsRouter';
+>>>>>>> georgia-merge
 
 // initialize
 const app = express();
@@ -31,11 +40,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // To parse the incoming requests with JSON payloads
 
 // additional init stuff should go before hitting the routing
+<<<<<<< HEAD
 app.use('/responses', responseRoutes);
 app.use('/response_groups', responseGroupRoutes);
 app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
+=======
+app.use('/users', usersRouter);
+app.use('/emotions', emotionsRouter);
+app.use('/pairs', pairsRouter);
+app.use('/events', eventsRouter);
+app.use('/responses', responsesRouter);
+app.use('/settings', settingsRouter);
+>>>>>>> georgia-merge
 
 // default index route
 app.get('/', (req, res) => {

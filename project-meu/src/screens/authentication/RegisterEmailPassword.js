@@ -59,7 +59,7 @@ function RegisterEmailPassword({ navigation }) {
             <View>
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Image
-                  source={require('../../../assets/icons/goback-black.png')}
+                  source={require('../../../assets/icons/back-arrow.png')}
                   style={styles.icon}
                 />
               </TouchableOpacity>
