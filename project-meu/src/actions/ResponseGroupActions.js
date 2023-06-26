@@ -41,7 +41,7 @@ export function fetchResponseGroup(responseGroupId) {
   return (dispatch) => {
     axios.get(`${apiUrl}/response_groups/${responseGroupId}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_RESPONSE, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUP, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
