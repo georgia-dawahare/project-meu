@@ -24,7 +24,7 @@ function CustomIcon({ source, size, color }) {
           width: size,
           height: size,
           tintColor: isPressed ? '#E62B85' : color,
-          marginTop: 14,
+          marginTop: 16,
         //   backgroundColor: 'green',
         }}
       />
