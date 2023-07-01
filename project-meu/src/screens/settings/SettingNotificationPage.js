@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { apiUrl } from '../../constants/constants';
+// import { apiUrl } from '../../constants/constants';
 
 function SettingNotificationPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);

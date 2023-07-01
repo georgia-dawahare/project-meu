@@ -8,10 +8,11 @@ import {
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Alert,
+  // Alert,
+  FlatList,
 } from 'react-native';
 import * as Font from 'expo-font';
-import DateTimePicker from '@react-native-community/datetimepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { apiUrl } from '../../constants/constants';

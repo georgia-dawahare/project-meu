@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
-  View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image,
+  View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image, ScrollView,
 } from 'react-native';
 
 const questionsData = [
@@ -60,8 +61,13 @@ function CheckinHistory({ navigation }) {
     }
   };
 
+  const getPair = async () => {
+    return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
+  };
+
   return (
     <SafeAreaView style={styles.all}>
+
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate('Checkin')}>
           <Image
@@ -71,53 +77,55 @@ function CheckinHistory({ navigation }) {
         </TouchableOpacity>
         <Text style={styles.topTitle}>Check-in History</Text>
       </View>
-      <View style={styles.Accordcontainer}>
-        {questionsData.map((item, index) => (
-          <View key={index} style={styles.listItem}>
-            <TouchableOpacity style={styles.Accordheader} onPress={() => toggleAccordion(index)}>
-              <Text style={styles.headerText}>
-                {item.question}
-              </Text>
-            </TouchableOpacity>
-            <View style={styles.space} />
-            {expandedList.includes(index) && (
-              <View style={styles.content}>
+      <ScrollView>
+        <View style={styles.Accordcontainer}>
+          {questionsData.map((item, index) => (
+            <View key={index} style={styles.listItem}>
+              <TouchableOpacity style={styles.Accordheader} onPress={() => toggleAccordion(index)}>
+                <Text style={styles.headerText}>
+                  {item.question}
+                </Text>
+              </TouchableOpacity>
+              <View style={styles.space} />
+              {expandedList.includes(index) && (
+                <View style={styles.content}>
 
-                <View style={styles.partner1}>
-                  <Image
-                    source={require('../../../assets/images/penguin-checkin.png')}
-                  />
-                  <Text style={styles.contentText}>
-                    {item.partner1}
-                  </Text>
-                </View>
-                <View style={styles.partner2}>
-                  <Image
-                    source={require('../../../assets/images/penguin-checkin.png')}
-                  />
-                  <Text style={styles.contentText}>
-                    {item.partner2}
-                  </Text>
-                </View>
+                  <View style={styles.partner1}>
+                    <Image
+                      source={require('../../../assets/images/penguin-checkin.png')}
+                    />
+                    <Text style={styles.contentText}>
+                      {item.partner1}
+                    </Text>
+                  </View>
+                  <View style={styles.partner2}>
+                    <Image
+                      source={require('../../../assets/images/penguin-checkin.png')}
+                    />
+                    <Text style={styles.contentText}>
+                      {item.partner2}
+                    </Text>
+                  </View>
 
-              </View>
-            )}
-          </View>
-        ))}
-      </View>
+                </View>
+              )}
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   all: {
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#ffffff',
   },
   containerwhole: {
     flex: 1,
   },
   Accordcontainer: {
-    backgroundColor: '#F4F4F4',
     marginBottom: 10,
     marginTop: 20,
   },
@@ -150,10 +158,10 @@ const styles = StyleSheet.create({
   content: {
     width: 370,
     fontFamily: 'SF-Pro-Display-Regular',
-    backgroundColor: '#ff',
     padding: 10,
-    borderRadius: 15,
+    borderRadius: 12,
     alignSelf: 'center',
+    backgroundColor: '#FFF9ED',
   },
   contentText: {
     marginLeft: 24,
@@ -165,7 +173,6 @@ const styles = StyleSheet.create({
   partner1: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     marginBottom: 12,
     padding: 10,
     borderRadius: 8,
@@ -173,7 +180,6 @@ const styles = StyleSheet.create({
   partner2: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     padding: 10,
     borderRadius: 8,
   },
