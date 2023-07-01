@@ -21,6 +21,7 @@ import {
 import { apiUrl } from './src/constants/constants';
 import store from './src/store';
 // import expoPushTokensApi from './src/api/expoPushTokens';
+import CustomIcon from './src/components/CustomIcon';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -159,9 +160,11 @@ function App() {
               headerTitle=""
               headerColor="#fff"
               options={{
-                tabBarLabel: 'Check-In',
+                // tabBarLabel: 'Check-In',
+                tabBarLabel: '',
                 tabBarIcon: ({ color, size }) => (
-                  <Icon name="create-outline" type="ionicon" color={color} size={size} />
+                  // <Icon name="create-outline" type="ionicon" color={color} size={size} />
+                  <CustomIcon source={require('./assets/icons/writing.png')} size={size} color={color} />
                 ),
 
               }}
@@ -170,9 +173,12 @@ function App() {
               name="HomeTab"
               component={HomeScreenNavigator}
               options={{
-                tabBarLabel: 'Home',
-                tabBarIcon: ({ color, size }) => (
-                  <Icon name="home-outline" type="ionicon" color={color} size={size} />
+                // tabBarLabel: 'Home',
+                tabBarLabel: '',
+                // tabBarIcon: ({ color, size }) => (
+                tabBarIcon: ({ color }) => (
+                  // <Icon name="home-outline" type="ionicon" color={color} size={size} />
+                  <CustomIcon source={require('./assets/icons/home.png')} size={32} color={color} />
                 ),
               }}
             />
@@ -180,9 +186,11 @@ function App() {
               name="PenguinsTab"
               component={PenguinsScreenNavigator}
               options={{
-                tabBarLabel: 'Penguins',
+                // tabBarLabel: 'Penguins',
+                tabBarLabel: '',
                 tabBarIcon: ({ color, size }) => (
-                  <Icon name="heart-outline" type="ionicon" color={color} size={size} />
+                  // <Icon name="heart-outline" type="ionicon" color={color} size={size} />
+                  <CustomIcon source={require('./assets/icons/penguins.png')} size={32} color={color} />
                 ),
               }}
             />
