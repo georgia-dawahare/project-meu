@@ -213,6 +213,7 @@ function HomeCalendar({ navigation }) {
   const [userID, setuserID] = useState('');
   const [userId, setUserId] = useState('');
   const [userFirstDate, setUserFirstDate] = useState('');
+  const [responseData, setResponseData] = useState([]);
 
   const today = new Date();
 
@@ -261,45 +262,57 @@ function HomeCalendar({ navigation }) {
         && obj.p1_response_id !== ''
         && obj.p2_response_id !== '');
 
-      console.log('filteredData :   ', filteredData);
+      setResponseData(filteredData);
+
+      
+      return filteredData;
     } catch (error) {
       console.error(error);
     }
   };
 
-  getResponse();
+  useEffect(() => {
+    getResponse();
+  }, []);
+
+  console.log('RESPONSEDATA :   ', responseData);
 
   const renderItem = ({ item }) => {
     const itemStyle = styles.item;
-    let dateText = item.date;
+    const p1 = item.p1_response_id;
+    const p2 = item.p2_response_id;
+    const questions = item.question_id;
+    // let dateText = item.date;
 
-    if (item.date.startsWith('D+') && item.date !== 'D+0') {
-      return null;
-    } else {
-      const days = parseInt(item.date.substring(2), 10);
-      const currentDate = new Date();
-      const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
-      futureDate.setDate(futureDate.getDate() + 1);
-      const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
-      dateText = formattedDate;
-    }
+    // if (item.date.startsWith('D+') && item.date !== 'D+0') {
+    //   return null;
+    // } else {
+    //   const days = parseInt(item.date.substring(2), 10);
+    //   const currentDate = new Date();
+    //   const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
+    //   futureDate.setDate(futureDate.getDate() + 1);
+    //   const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
+    //   dateText = formattedDate;
+    // }
 
-    const icon = clickedItemId === item.id ? (
-      <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
-    ) : (
-      <Image source={require('../../../assets/icons/heart.png')} style={styles.icon} />
-    );
+    // const icon = clickedItemId === item.id ? (
+    //   <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
+    // ) : (
+    //   <Image source={require('../../../assets/icons/heart.png')} style={styles.icon} />
+    // );
 
     return (
       <TouchableOpacity style={itemStyle}>
         <View style={styles.rowContainer}>
-          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
-            {dateText}
+          <Text style={styles.itemText}>
+            {questions}
           </Text>
-          <Text style={item.date === 'D+0' ? styles.coloredItemText : styles.itemText}>
-            {item.name}
+          <Text style={styles.itemText}>
+            {p1}
           </Text>
-          {icon}
+          <Text style={styles.itemText}>
+            {p2}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -422,7 +435,8 @@ function HomeCalendar({ navigation }) {
             </Text>
             <View style={styles.contents}>
               <FlatList
-                data={renderAnniversaries()}
+                // data={renderAnniversaries()}
+                data={responseData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.listContainer}

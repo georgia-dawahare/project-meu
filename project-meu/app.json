@@ -24,7 +24,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo-2.png",
+        "foregroundImage": "./assets/images/logo-1.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": ["CAMERA", "READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
