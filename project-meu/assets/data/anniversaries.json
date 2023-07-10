@@ -1,0 +1,24 @@
+{
+    "anniversaries": [
+      {
+        "date": "2023-12-25",
+        "name": "Christmas",
+        "yearly": true
+      },
+      {
+        "date": "2024-02-14",
+        "name": "Valentines' Day",
+        "yearly": true
+      },
+      {
+        "date": "2024-01-01",
+        "name": "New Year",
+        "yearly": true
+      },
+      {
+        "date": "2023-12-31",
+        "name": "Silvester",
+        "yearly": true
+      }
+    ]
+  }
