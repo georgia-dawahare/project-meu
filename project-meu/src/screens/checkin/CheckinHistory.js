@@ -203,19 +203,18 @@ import * as Font from 'expo-font';
 // import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
-import anniversariesData from '../../../assets/data/anniversaries.json';
 
 function CheckinHistory({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [extractedFirebaseData, setExtractedFirebaseData] = useState([]);
-  const [clickedItem, setClickedItem] = useState(null);
-  const [clickedItemId, setClickedItemId] = useState(null);
+  // const [extractedFirebaseData, setExtractedFirebaseData] = useState([]);
+  // const [clickedItem, setClickedItem] = useState(null);
+  // const [clickedItemId, setClickedItemId] = useState(null);
   const [userID, setuserID] = useState('');
   const [userId, setUserId] = useState('');
-  const [userFirstDate, setUserFirstDate] = useState('');
+  // const [userFirstDate, setUserFirstDate] = useState('');
   const [responseData, setResponseData] = useState([]);
-
-  const today = new Date();
+  // added
+  const [expandedItems, setExpandedItems] = useState([]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -274,108 +273,44 @@ function CheckinHistory({ navigation }) {
 
   console.log('RESPONSEDATA :   ', responseData);
 
+  const toggleItem = (itemId) => {
+    if (expandedItems.includes(itemId)) {
+      setExpandedItems(expandedItems.filter((id) => id !== itemId));
+    } else {
+      setExpandedItems([...expandedItems, itemId]);
+    }
+  };
+
   const renderItem = ({ item }) => {
     const itemStyle = styles.item;
     // const p1 = item.p1_response_id;
     // const p2 = item.p2_response_id;
     const questions = item.question_id;
 
+    // added
+    const isExpanded = expandedItems.includes(questions);
+
     return (
-      <TouchableOpacity style={itemStyle}>
-        <View style={styles.rowContainer}>
-          <Text style={styles.itemText}>
-            {questions}
-          </Text>
-          {/* <Text style={styles.itemText}>
-            {p1}
-          </Text>
-          <Text style={styles.itemText}>
-            {p2}
-          </Text> */}
+      <View>
+        <TouchableOpacity style={itemStyle} onPress={() => toggleItem(questions)}>
+          <View style={styles.rowContainer}>
+            <Text style={styles.itemText}>
+              {questions}
+              {/* {item.questions} */}
+            </Text>
+            <Text style={styles.itemText}>
+              {isExpanded ? '-' : '+'}
+            </Text>
+          </View>
+        </TouchableOpacity>
+        {isExpanded && (
+        <View style={styles.expandedContent}>
+          <Text>{item.p1_response_id}</Text>
+          <Text>{item.p2_response_id}</Text>
         </View>
-      </TouchableOpacity>
+        )}
+      </View>
     );
-  };
-
-  const getCurrentAnniversary = () => {
-    if (userFirstDate) {
-      const anniversaryDate = new Date(userFirstDate);
-      const currentDate = new Date();
-
-      const yearsDiff = currentDate.getFullYear() - anniversaryDate.getFullYear();
-      const monthsDiff = currentDate.getMonth() - anniversaryDate.getMonth();
-      const daysDiff = currentDate.getDate() - anniversaryDate.getDate();
-
-      let currentAnniversary = yearsDiff;
-
-      if (monthsDiff < 0 || (monthsDiff === 0 && daysDiff < 0)) {
-        currentAnniversary--;
-      }
-
-      return currentAnniversary;
-    }
-
-    return null;
-  };
-
-  // render Anniversaries from json
-  const renderAnniversaries = () => {
-    const currentYear = new Date().getFullYear();
-    const endYear = currentYear + 2;
-    const Defaultdata = [];
-
-    const extractDday = (dateString) => {
-      const date = new Date(dateString);
-      const timeDiff = date.getTime() - today.getTime();
-      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      return daysDiff > 0 ? `D-${daysDiff}` : `D+${Math.abs(daysDiff)}`;
-    };
-
-    for (let year = currentYear; year <= endYear; year++) {
-      for (const anniversary of anniversariesData.anniversaries) {
-        if (anniversary.yearly) {
-          const anniversaryDate = new Date(anniversary.date);
-          anniversaryDate.setFullYear(year);
-          const extractedDate = extractDday(anniversaryDate);
-
-          Defaultdata.push({
-            date: extractedDate,
-            name: `${anniversary.name}`,
-          });
-        } else {
-          Defaultdata.push({
-            id: `${anniversary.id}`,
-            title: `${anniversary.name}`,
-          });
-        }
-      }
-    }
-
-    const currentAnniversary = getCurrentAnniversary();
-    if (currentAnniversary !== null) {
-      const upcomingTwoYearAnniversary = currentAnniversary + 2;
-      const upcomingAnniversaryDate = new Date(userFirstDate);
-      upcomingAnniversaryDate.setFullYear(upcomingAnniversaryDate.getFullYear() + upcomingTwoYearAnniversary);
-
-      const extractedDate = extractDday(upcomingAnniversaryDate);
-      Defaultdata.push({
-        date: extractedDate,
-        name: `${upcomingTwoYearAnniversary}th anniversary`,
-      });
-    }
-
-    const userAnniversaries = extractedFirebaseData.filter(
-      (event) => event.pairId === userID,
-    );
-
-    const sortedData = [...Defaultdata, ...userAnniversaries].sort((a, b) => {
-      const ddayA = parseInt(a.date.substring(2), 10);
-      const ddayB = parseInt(b.date.substring(2), 10);
-
-      return ddayA - ddayB;
-    });
-
-    return sortedData;
   };
 
   if (!fontLoaded) {
@@ -424,12 +359,14 @@ function CheckinHistory({ navigation }) {
               />
             </View>
           </View>
+
         </View>
 
         <View />
       </Animated.ScrollView>
 
     </SafeAreaView>
+
   );
 }
 export default CheckinHistory;
@@ -503,5 +440,8 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 20,
     left: 65,
+  },
+  rowContainer: {
+    flexDirection: 'row',
   },
 });
