@@ -23,7 +23,6 @@ router.get('/group/:id', async (req, res) => {
   try {
     const data = await responsesController.getResponseGroup(groupId);
     if (!data) {
-      //fuck here
       res.status(202).send(data);
     } else {
       res.status(200).send(data);
@@ -35,8 +34,6 @@ router.get('/group/:id', async (req, res) => {
 });
 
 //added by Soo
-// Get response group all req needs?
-// router.get('/group/all', async (req,res) => {
 router.get('/group', async (req,res) => {
   try {
     const responseGroups = await responsesController.getAllResponseGroups();
