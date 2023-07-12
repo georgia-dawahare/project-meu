@@ -774,11 +774,11 @@ function CheckinHistory({ navigation }) {
     const questions = item.question_id;
 
     // added
-    const isExpanded = expandedItems.includes(item.questions);
+    const isExpanded = expandedItems.includes(questions);
 
     return (
       <View>
-        <TouchableOpacity style={itemStyle} onPress={() => toggleItem(item.questions)}>
+        <TouchableOpacity style={itemStyle} onPress={() => toggleItem(questions)}>
           <View style={styles.rowContainer}>
             <Text style={styles.itemText}>
               {questions}
@@ -791,7 +791,8 @@ function CheckinHistory({ navigation }) {
         </TouchableOpacity>
         {isExpanded && (
         <View style={styles.expandedContent}>
-          <Text>Hey</Text>
+          <Text>{item.p1_response_id}</Text>
+          <Text>{item.p2_response_id}</Text>
         </View>
         )}
       </View>
