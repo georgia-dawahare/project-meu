@@ -480,6 +480,7 @@ const getAllResponseGroups = async () => {
 
   try {
     const querySnapshot = await firestore.collection('ResponseGroups').get();
+    console.log('all rg :     ',querySnapshot);
     if (querySnapshot.empty) {
       console.log('No response groups found');
       return []; // 데이터가 없는 경우 빈 배열 반환

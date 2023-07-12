@@ -738,6 +738,12 @@ function CheckinHistory({ navigation }) {
   const getResponse = async () => {
     try {
       const allResponses = await axios.get(`${apiUrl}/responses/group/all`);
+
+      if (allResponses) {
+        console.log('until here works :     ', allResponses.data);
+      } else {
+        console.log('problematic here');
+      }
       const alldata = allResponses.data;
       // console.log('all data :   ', allResponses);
 

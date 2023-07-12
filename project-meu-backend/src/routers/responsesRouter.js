@@ -4,7 +4,8 @@ import responsesController from '../controllers/responsesController';
 const router = Router();
 
 // Create a response group
-router.post('/group', async (req, res) => {
+// router.post('/group', async (req, res) => {
+router.post('/group/post', async (req, res) => {
   const response = req.body.groupData;
   const { groupId } = req.body;
   try {
@@ -22,6 +23,7 @@ router.get('/group/:id', async (req, res) => {
   try {
     const data = await responsesController.getResponseGroup(groupId);
     if (!data) {
+      //fuck here
       res.status(202).send(data);
     } else {
       res.status(200).send(data);
@@ -34,20 +36,14 @@ router.get('/group/:id', async (req, res) => {
 
 //added by Soo
 // Get response group all req needs?
-router.get('/group/all', async (req,res) => {
-  // try {
-  //   const eventList = await responsesController.getAllResponseGroups();
-  //   res.status(200).send(eventList);
-  // } catch (e) {
-  //   console.log('Tried to fetch all response groups');
-  //   res.status(500).send(e.message);
-  // }
+// router.get('/group/all', async (req,res) => {
+router.get('/group', async (req,res) => {
   try {
     const responseGroups = await responsesController.getAllResponseGroups();
     if (responseGroups.length === 0) {
-      res.status(404).send('No response groups found'); // 데이터가 없는 경우 404 상태 코드 반환
+      res.status(404).send('No response groups found');
     } else {
-      res.status(200).send(responseGroups); // 데이터가 있는 경우 200 상태 코드와 함께 데이터 반환
+      res.status(200).send(responseGroups);
     }
   } catch (error) {
     console.log('Error fetching all response groups', error);

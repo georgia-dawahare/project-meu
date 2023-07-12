@@ -141,7 +141,9 @@ function CheckinPage({ navigation }) {
   }, []);
 
   const addResponseGroup = async (groupData, groupId) => {
-    const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
+    //added
+    // const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
+    const id = await axios.post(`${apiUrl}/responses/group/post`, { groupData, groupId });
     return id;
   };
 
