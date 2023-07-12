@@ -15,6 +15,43 @@ import * as Font from 'expo-font';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 
+function AnswerContent({ p1ResponseId, p2ResponseId }) {
+  const [p1Answer, setP1Answer] = useState('');
+  const [p2Answer, setP2Answer] = useState('');
+
+  useEffect(() => {
+    const fetchAnswers = async () => {
+      try {
+        const p1AnswerData = await getAnswer(p1ResponseId);
+        const p2AnswerData = await getAnswer(p2ResponseId);
+        setP1Answer(p1AnswerData);
+        setP2Answer(p2AnswerData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAnswers();
+  }, [p1ResponseId, p2ResponseId]);
+
+  const getAnswer = async (id) => {
+    try {
+      const allResponses = await axios.get(`${apiUrl}/responses/${id}`);
+      const answer = allResponses.data.response;
+      return answer;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <View>
+      <Text>{p1Answer}</Text>
+      <Text>{p2Answer}</Text>
+    </View>
+  );
+}
+
 function CheckinHistory({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [userID, setuserID] = useState('');
@@ -98,67 +135,36 @@ function CheckinHistory({ navigation }) {
     }
   };
 
-  // const renderItem = ({ item }) => {
-  //   const itemStyle = styles.item;
-  //   // const p1 = item.p1_response_id;
-  //   // const p2 = item.p2_response_id;
-  //   const questions = item.question_id;
+  // function AnswerContent({ p1ResponseId, p2ResponseId }) {
+  //   const [p1Answer, setP1Answer] = useState('');
+  //   const [p2Answer, setP2Answer] = useState('');
 
-  //   // added
-  //   const isExpanded = expandedItems.includes(questions);
+  //   useEffect(() => {
+  //     const fetchAnswers = async () => {
+  //       try {
+  //         const p1AnswerData = await getAnswer(p1ResponseId);
+  //         const p2AnswerData = await getAnswer(p2ResponseId);
+  //         setP1Answer(p1AnswerData);
+  //         setP2Answer(p2AnswerData);
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     };
+
+  //     fetchAnswers();
+  //   }, [p1ResponseId, p2ResponseId]);
 
   //   return (
   //     <View>
-  //       <TouchableOpacity style={itemStyle} onPress={() => toggleItem(questions)}>
-  //         <View style={styles.rowContainer}>
-  //           <Text style={styles.itemText}>
-  //             {questions}
-  //           </Text>
-  //           <Text style={styles.itemText}>
-  //             {isExpanded ? '-' : '+'}
-  //           </Text>
-  //         </View>
-  //       </TouchableOpacity>
-  //       {isExpanded && (
-  //       <View style={styles.expandedContent}>
-  //         <Text>{item.p1_response_id}</Text>
-  //         <Text>{item.p2_response_id}</Text>
-  //       </View>
-  //       )}
+  //       <Text>
+  //         {p1Answer}
+  //       </Text>
+  //       <Text>
+  //         {p2Answer}
+  //       </Text>
   //     </View>
   //   );
-  // };
-
-  function AnswerContent({ p1ResponseId, p2ResponseId }) {
-    const [p1Answer, setP1Answer] = useState('');
-    const [p2Answer, setP2Answer] = useState('');
-
-    useEffect(() => {
-      const fetchAnswers = async () => {
-        try {
-          const p1AnswerData = await getAnswer(p1ResponseId);
-          const p2AnswerData = await getAnswer(p2ResponseId);
-          setP1Answer(p1AnswerData);
-          setP2Answer(p2AnswerData);
-        } catch (error) {
-          console.error(error);
-        }
-      };
-
-      fetchAnswers();
-    }, [p1ResponseId, p2ResponseId]);
-
-    return (
-      <View>
-        <Text>
-          {p1Answer}
-        </Text>
-        <Text>
-          {p2Answer}
-        </Text>
-      </View>
-    );
-  }
+  // }
 
   const renderItem = ({ item }) => {
     const itemStyle = styles.item;
