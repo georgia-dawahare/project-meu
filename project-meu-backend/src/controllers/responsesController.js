@@ -5,6 +5,12 @@ const addResponseGroup = async (response, responseId) => {
   return groupId;
 };
 
+//added by Soo
+const getAllResponseGroups = async () => {
+  const groupResponses = await firestoreService.getAllResponseGroups();
+  return groupResponses;
+};
+
 const getResponseGroup = async (id) => {
   const responseGroup = await firestoreService.getResponseGroup(id);
   return responseGroup;
@@ -43,6 +49,7 @@ const responseController = {
   addResponseGroup,
   updateResponse,
   deleteResponse,
+  getAllResponseGroups,
 };
 
 export default responseController;

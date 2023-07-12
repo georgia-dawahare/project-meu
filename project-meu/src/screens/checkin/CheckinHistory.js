@@ -739,7 +739,7 @@ function CheckinHistory({ navigation }) {
     try {
       const allResponses = await axios.get(`${apiUrl}/responses/group/all`);
       const alldata = allResponses.data;
-      // console.log('all data :   ', alldata);
+      // console.log('all data :   ', allResponses);
 
       const filteredData = alldata.filter((obj) => obj.id.startsWith(userID)
         && obj.p1_response_id !== ''

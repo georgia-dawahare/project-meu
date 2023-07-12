@@ -32,6 +32,29 @@ router.get('/group/:id', async (req, res) => {
   }
 });
 
+//added by Soo
+// Get response group all req needs?
+router.get('/group/all', async (req,res) => {
+  // try {
+  //   const eventList = await responsesController.getAllResponseGroups();
+  //   res.status(200).send(eventList);
+  // } catch (e) {
+  //   console.log('Tried to fetch all response groups');
+  //   res.status(500).send(e.message);
+  // }
+  try {
+    const responseGroups = await responsesController.getAllResponseGroups();
+    if (responseGroups.length === 0) {
+      res.status(404).send('No response groups found'); // 데이터가 없는 경우 404 상태 코드 반환
+    } else {
+      res.status(200).send(responseGroups); // 데이터가 있는 경우 200 상태 코드와 함께 데이터 반환
+    }
+  } catch (error) {
+    console.log('Error fetching all response groups', error);
+    res.status(500).send(error.message);
+  }
+});
+
 // Update response group
 router.patch('/group/:id', async (req, res) => {
   const updatedFields = req.body;

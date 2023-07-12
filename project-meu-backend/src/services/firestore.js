@@ -456,6 +456,51 @@ const deleteResponse = async (responseId) => {
       return false;
     });
 };
+
+//added by Soo
+const getAllResponseGroups = async () => {
+  // return firestore.collection('ResponseGroups').get()
+  // .then((querySnapshot) => {
+  //   const responseGroups = [];
+  //   querySnapshot.forEach((doc) => {
+  //     const responses = doc.data();
+  //     responseGroups.push({
+  //       id: doc.id,
+  //       question_id: responses.question_id,
+  //       p1_response_id: responses.p1_response_id,
+  //       p2_response_id: responses.p2_response_id,
+  //     });
+  //   });
+  //   return responseGroups;
+  // })
+  // .catch((error) => {
+  //   console.error('error getting all ResponseGroups', error);
+  //   return [];
+  // });
+
+  try {
+    const querySnapshot = await firestore.collection('ResponseGroups').get();
+    if (querySnapshot.empty) {
+      console.log('No response groups found');
+      return []; // 데이터가 없는 경우 빈 배열 반환
+    }
+    const responseGroups = [];
+    querySnapshot.forEach((doc) => {
+      const responses = doc.data();
+      responseGroups.push({
+        id: doc.id,
+        question_id: responses.question_id,
+        p1_response_id: responses.p1_response_id,
+        p2_response_id: responses.p2_response_id,
+      });
+    });
+    return responseGroups;
+  } catch (error) {
+    console.error('Error getting all ResponseGroups', error);
+    return [];
+  }
+};
+
 // === End of Daily Response Functions ===
 
 
@@ -556,6 +601,7 @@ const firestoreService = {
   getUserPenguinColor,
   updateUser,
   getResponseGroup,
+  getAllResponseGroups,
   updateResponseGroup,
   addResponseGroup,
   getResponse,
