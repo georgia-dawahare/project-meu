@@ -123,7 +123,7 @@
 //     flex: 1,
 //   },
 //   Accordcontainer: {
-//     marginBottom: 10,
+//     margin: 10,
 //     marginTop: 20,
 //   },
 //   header: {
@@ -205,7 +205,7 @@ import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import anniversariesData from '../../../assets/data/anniversaries.json';
 
-function HomeCalendar({ navigation }) {
+function CheckinHistory({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [extractedFirebaseData, setExtractedFirebaseData] = useState([]);
   const [clickedItem, setClickedItem] = useState(null);
@@ -250,8 +250,6 @@ function HomeCalendar({ navigation }) {
     }
   }, [userId]);
 
-  // userID is pairID
-
   const getResponse = async () => {
     try {
       const allResponses = await axios.get(`${apiUrl}/responses/group/all`);
@@ -264,7 +262,6 @@ function HomeCalendar({ navigation }) {
 
       setResponseData(filteredData);
 
-      
       return filteredData;
     } catch (error) {
       console.error(error);
@@ -279,27 +276,9 @@ function HomeCalendar({ navigation }) {
 
   const renderItem = ({ item }) => {
     const itemStyle = styles.item;
-    const p1 = item.p1_response_id;
-    const p2 = item.p2_response_id;
+    // const p1 = item.p1_response_id;
+    // const p2 = item.p2_response_id;
     const questions = item.question_id;
-    // let dateText = item.date;
-
-    // if (item.date.startsWith('D+') && item.date !== 'D+0') {
-    //   return null;
-    // } else {
-    //   const days = parseInt(item.date.substring(2), 10);
-    //   const currentDate = new Date();
-    //   const futureDate = new Date(currentDate.getTime() + (days * 24 * 60 * 60 * 1000));
-    //   futureDate.setDate(futureDate.getDate() + 1);
-    //   const formattedDate = `${futureDate.getMonth() + 1}/${futureDate.getDate()}/${futureDate.getFullYear()}`;
-    //   dateText = formattedDate;
-    // }
-
-    // const icon = clickedItemId === item.id ? (
-    //   <Image source={require('../../../assets/icons/trash.png')} style={styles.icon} />
-    // ) : (
-    //   <Image source={require('../../../assets/icons/heart.png')} style={styles.icon} />
-    // );
 
     return (
       <TouchableOpacity style={itemStyle}>
@@ -307,12 +286,12 @@ function HomeCalendar({ navigation }) {
           <Text style={styles.itemText}>
             {questions}
           </Text>
-          <Text style={styles.itemText}>
+          {/* <Text style={styles.itemText}>
             {p1}
           </Text>
           <Text style={styles.itemText}>
             {p2}
-          </Text>
+          </Text> */}
         </View>
       </TouchableOpacity>
     );
@@ -405,11 +384,16 @@ function HomeCalendar({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate('TempHome')} style={styles.backButton}>
-        <View style={styles.buttonContent}>
-          <Image source={require('../../../assets/icons/back-arrow.png')} style={styles.Icon} />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.navigate('Checkin')}>
+          <Image
+            source={require('../../../assets/icons/back-arrow.png')}
+            style={styles.Icon}
+          />
+        </TouchableOpacity>
+
+        <Text style={styles.topTitle}>Check-in History</Text>
+      </View>
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -430,17 +414,13 @@ function HomeCalendar({ navigation }) {
         />
         <View>
           <View>
-            <Text style={styles.annivtitle}>
-              Upcoming Anniversaries
-            </Text>
             <View style={styles.contents}>
               <FlatList
-                // data={renderAnniversaries()}
                 data={responseData}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.questions}
                 contentContainerStyle={styles.listContainer}
-                style={styles.ddayTitle}
+                style={styles.questions}
               />
             </View>
           </View>
@@ -452,7 +432,7 @@ function HomeCalendar({ navigation }) {
     </SafeAreaView>
   );
 }
-export default HomeCalendar;
+export default CheckinHistory;
 
 const styles = StyleSheet.create({
   backButton: {
@@ -461,37 +441,14 @@ const styles = StyleSheet.create({
     left: 16,
     zIndex: 200,
   },
-  Icon: {
-    position: 'relative',
-    top: 32,
-    left: 24,
-    height: 24,
-    zIndex: 200,
-  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
-  headerContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 120,
-    backgroundColor: 'lightskyblue',
-    zIndex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerText: {
-    fontFamily: 'SF-Pro-Display-Medium',
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
+
   scrollContent: {
-    paddingTop: 120,
+    paddingTop: 32,
   },
   ddayItem: {
     flex: 1,
@@ -504,12 +461,6 @@ const styles = StyleSheet.create({
   DdayList: {
     flex: 1,
     flexDirection: 'column',
-  },
-  annivtitle: {
-    fontFamily: 'SF-Pro-Display-Semibold',
-    fontSize: 20,
-    paddingLeft: 24,
-    marginBottom: 18,
   },
   bgtextday: {
     fontFamily: 'SF-Pro-Display-Semibold',
@@ -527,35 +478,30 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
-  coloredItem: {
-    // color: 'rgb(230, 43, 133)',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-    marginTop: 10,
-    marginBottom: 10,
-  },
+
   coloredItemText: {
     color: 'rgb(230, 43, 133)',
   },
-  rowContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  ddaydate: {
-    fontFamily: 'SF-Pro-Display-Regular',
-    fontSize: 16,
-  },
-  ddayTitle: {
+  questions: {
     fontFamily: 'SF-Pro-Display-Regular',
     fontSize: 16,
     paddingLeft: 16,
     paddingRight: 16,
   },
-  userBackground: {
-    width: '100%',
-    height: '100%',
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 32,
+  },
+  Icon: {
+    height: 24,
+    marginRight: 8,
+  },
+  topTitle: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 20,
+    left: 65,
   },
 });
