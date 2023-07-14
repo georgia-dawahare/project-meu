@@ -67,7 +67,7 @@ function VersionPage({ navigation }) {
       </View>
       <View style={styles.logo}>
         <Image
-          source={require('../../../assets/images/logo-1.png')}
+          source={require('../../../assets/images/logo.png')}
           style={styles.logoIcon}
         />
       </View>
