@@ -11,9 +11,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import * as Font from 'expo-font';
-// import { useSelector } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
+import SearchBar from '../../components/Searchbar';
 
 function AnswerContent({ p1ResponseId, p2ResponseId }) {
   const [p1Answer, setP1Answer] = useState('');
@@ -135,37 +135,6 @@ function CheckinHistory({ navigation }) {
     }
   };
 
-  // function AnswerContent({ p1ResponseId, p2ResponseId }) {
-  //   const [p1Answer, setP1Answer] = useState('');
-  //   const [p2Answer, setP2Answer] = useState('');
-
-  //   useEffect(() => {
-  //     const fetchAnswers = async () => {
-  //       try {
-  //         const p1AnswerData = await getAnswer(p1ResponseId);
-  //         const p2AnswerData = await getAnswer(p2ResponseId);
-  //         setP1Answer(p1AnswerData);
-  //         setP2Answer(p2AnswerData);
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-  //     };
-
-  //     fetchAnswers();
-  //   }, [p1ResponseId, p2ResponseId]);
-
-  //   return (
-  //     <View>
-  //       <Text>
-  //         {p1Answer}
-  //       </Text>
-  //       <Text>
-  //         {p2Answer}
-  //       </Text>
-  //     </View>
-  //   );
-  // }
-
   const renderItem = ({ item }) => {
     const itemStyle = styles.item;
     const questions = item.question_id;
@@ -208,6 +177,7 @@ function CheckinHistory({ navigation }) {
 
         <Text style={styles.topTitle}>Check-in History</Text>
       </View>
+      <SearchBar />
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -264,7 +234,7 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    paddingTop: 32,
+    paddingTop: 12,
   },
   ddayItem: {
     flex: 1,
