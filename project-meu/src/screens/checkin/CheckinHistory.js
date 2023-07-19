@@ -1,4 +1,4 @@
-import axios, { all } from 'axios';
+import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   SafeAreaView,
@@ -58,6 +58,7 @@ function CheckinHistory({ navigation }) {
   const [userId, setUserId] = useState('');
   const [responseData, setResponseData] = useState([]);
   const [expandedItems, setExpandedItems] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -113,7 +114,30 @@ function CheckinHistory({ navigation }) {
     getQuestion();
   }, []);
 
-  // console.log('RESPONSEDATA :   ', responseData);
+  const handleSearch = async (searchText) => {
+    // try {
+    //   console.log('rd :    ', responseData);
+    //   console.log('input :     ', searchText);
+    //   const filteredData = responseData.filter((obj) => {
+    //     const questionMatch = obj.question_id;
+
+    //     console.log('question match :       ', questionMatch);
+    //     return questionMatch;
+    //   });
+    try {
+      const filteredData = responseData.filter((obj) => {
+        // Convert the question_id to string, as the searchText might be a string
+        const questionIdString = obj.question_id.toString();
+
+        // Check if the question_id includes the searchText
+        return questionIdString.includes(searchText);
+      });
+
+      setSearchResults(filteredData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getAnswer = async (id) => {
     try {
@@ -177,7 +201,7 @@ function CheckinHistory({ navigation }) {
 
         <Text style={styles.topTitle}>Check-in History</Text>
       </View>
-      <SearchBar />
+      <SearchBar onSearch={handleSearch} />
 
       <Animated.ScrollView
         scrollEventThrottle={16}
@@ -199,8 +223,15 @@ function CheckinHistory({ navigation }) {
         <View>
           <View>
             <View style={styles.contents}>
-              <FlatList
+              {/* <FlatList
                 data={responseData}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.questions}
+                contentContainerStyle={styles.listContainer}
+                style={styles.questions}
+              /> */}
+              <FlatList
+                data={searchResults.length > 0 ? searchResults : responseData}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.questions}
                 contentContainerStyle={styles.listContainer}

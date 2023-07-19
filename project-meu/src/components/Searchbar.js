@@ -3,12 +3,11 @@ import {
   View, TextInput, Button, StyleSheet,
 } from 'react-native';
 
-function SearchBar() {
+function SearchBar({ onSearch }) {
   const [searchText, setSearchText] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearch = () => {
-    // search from database
+  const handleSearchButton = () => {
+    onSearch(searchText);
   };
 
   return (
@@ -30,7 +29,7 @@ function SearchBar() {
       />
 
       <View style={styles.buttonContainer}>
-        <Button title="Search" onPress={handleSearch} color="#E62B85" fontsize="0.8" />
+        <Button title="Search" onPress={handleSearchButton} color="#E62B85" fontsize="0.8" />
       </View>
 
     </View>
