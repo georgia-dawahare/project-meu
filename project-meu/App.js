@@ -190,7 +190,7 @@ function App() {
                 tabBarLabel: '',
                 tabBarIcon: ({ color, size }) => (
                   // <Icon name="heart-outline" type="ionicon" color={color} size={size} />
-                  <CustomIcon source={require('./assets/icons/penguins.png')} size={32} color={color} />
+                  <CustomIcon source={require('./assets/icons/penguin.png')} size={32} color={color} />
                 ),
               }}
             />

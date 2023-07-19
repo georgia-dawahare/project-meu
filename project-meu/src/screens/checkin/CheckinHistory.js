@@ -42,6 +42,7 @@ function AnswerContent({ p1ResponseId, p2ResponseId }) {
     } catch (error) {
       console.error(error);
     }
+    return true;
   };
 
   return (
@@ -131,17 +132,17 @@ function CheckinHistory({ navigation }) {
     }
   };
 
-  const getAnswer = async (id) => {
-    try {
-      const allResponses = await axios.get(`${apiUrl}/responses/${id}`);
+  // const getAnswer = async (id) => {
+  //   try {
+  //     const allResponses = await axios.get(`${apiUrl}/responses/${id}`);
 
-      const answer = allResponses.data.response;
+  //     const answer = allResponses.data.response;
 
-      return answer;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     return answer;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const toggleItem = (itemId) => {
     if (expandedItems.includes(itemId)) {
@@ -215,13 +216,6 @@ function CheckinHistory({ navigation }) {
         <View>
           <View>
             <View style={styles.contents}>
-              {/* <FlatList
-                data={responseData}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.questions}
-                contentContainerStyle={styles.listContainer}
-                style={styles.questions}
-              /> */}
               <FlatList
                 data={searchResults.length > 0 ? searchResults : responseData}
                 renderItem={renderItem}
