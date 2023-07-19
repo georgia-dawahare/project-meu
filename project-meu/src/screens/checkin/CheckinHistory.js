@@ -112,18 +112,10 @@ function CheckinHistory({ navigation }) {
 
   useEffect(() => {
     getQuestion();
-  }, []);
+  }, [userID]);
 
   const handleSearch = async (searchText) => {
-    // try {
-    //   console.log('rd :    ', responseData);
-    //   console.log('input :     ', searchText);
-    //   const filteredData = responseData.filter((obj) => {
-    //     const questionMatch = obj.question_id;
-
-    //     console.log('question match :       ', questionMatch);
-    //     return questionMatch;
-    //   });
+    // needs to be fixed to string instead of search number
     try {
       const filteredData = responseData.filter((obj) => {
         // Convert the question_id to string, as the searchText might be a string
