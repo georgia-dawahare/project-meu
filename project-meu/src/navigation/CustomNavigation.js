@@ -10,7 +10,7 @@ import VersionPage from '../screens/settings/VersionPage';
 // import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
-import TempHome from '../screens/home/TempHome';
+import Home from '../screens/home/Home';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import RegisterEmailPassword from '../screens/authentication/RegisterEmailPassword';
@@ -26,10 +26,10 @@ function HomeScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="TempHome"
-        component={TempHome}
+        name="Home"
+        component={Home}
       />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="HomeCalendar"
         component={HomeCalendar}
       />
@@ -48,7 +48,7 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingNotificationPage"
         component={SettingNotificationPage}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }
