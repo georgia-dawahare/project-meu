@@ -1,13 +1,19 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity,
+  SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View,
 } from 'react-native';
 import * as Font from 'expo-font';
-import Button from '../../components/Button';
+import {
+  getAuth, signInWithEmailAndPassword, signOut,
+} from 'firebase/auth';
+import { useSelector } from 'react-redux';
 
-function Welcome({ navigation }) {
+function Welcome() {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const auth = getAuth();
+  const currUser = useSelector((state) => state.userState.userData);
+  const password = useSelector((state) => state.passwordState.password);
 
   useEffect(() => {
     async function loadFont() {
@@ -20,8 +26,30 @@ function Welcome({ navigation }) {
     loadFont();
   }, []);
 
+  const signOutUser = async () => {
+    signOut(auth).then(() => {
+      console.log('Successfully logged out. See you later!');
+    }).catch((e) => {
+      console.log('Error signing out: ', e);
+    });
+  };
+
+  const triggerOnAuthState = async () => {
+    signOutUser();
+    signInWithEmailAndPassword(auth, currUser.email, password)
+      .then(() => {
+        // Signed in
+        console.log('Signed in');
+      })
+      .catch((e) => {
+        const errorCode = e.code;
+        const errorMessage = e.message;
+        console.log(errorCode, errorMessage);
+      });
+  };
+
   const handleNext = async () => {
-    navigation.navigate('CreatePair');
+    triggerOnAuthState();
   };
 
   if (!fontLoaded) {
@@ -29,35 +57,53 @@ function Welcome({ navigation }) {
   }
 
   return (
-    <SafeAreaView>
-      <Image
-        source={require('../../../assets/animations/confetti/confetti_black.gif')}
-        style={styles.BannerImg}
-      />
-      <Text style={styles.Title}>Welcome to MeU!</Text>
-      <TouchableOpacity onPress={handleNext}>
-        <Button title="Let&apos;s start" buttonStyle={{ top: 500, left: 45 }} />
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text style={styles.title}>Welcome to MeU!</Text>
+        <Image
+          source={require('../../../assets/animations/confetti/confetti_black.gif')}
+          style={styles.celebrationPenguin}
+        />
+      </View>
+
+      <TouchableOpacity onPress={handleNext} style={styles.btn}>
+        <Text style={styles.btnTxt}>
+          Let&apos;s start
+        </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  BannerImg: {
-    position: 'absolute',
-    width: 342,
-    height: 329,
-    alignSelf: 'center',
-    left: 50,
-    top: 240,
+  container: {
+    flex: 1,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
   },
-  Title: {
+  celebrationPenguin: {
+    width: 450,
+    height: 350,
+  },
+  title: {
     fontFamily: 'SF-Pro-Display-Bold',
     fontSize: 34,
-    color: 'rgba(0,0,0,1)',
-    alignSelf: 'center',
     lineHeight: 41,
-    top: 140,
+    textAlign: 'center',
+  },
+  btn: {
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    height: 56,
+    width: 300,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnTxt: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    color: 'white',
+    fontSize: 20,
+    lineHeight: 30,
   },
 });
 

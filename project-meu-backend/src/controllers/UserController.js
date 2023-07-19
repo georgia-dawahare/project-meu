@@ -44,6 +44,12 @@ export async function findUserById(uid) {
     return user;
 };
 
+// Get user by Firestore UID
+export async function findFirestoreUser(firestoreUid) {
+    const user = await User.findOne({ "uid": firestoreUid });
+    return user;
+}
+
 // Get user's last emotion
 export async function getUserEmotion(uid) {
     try {

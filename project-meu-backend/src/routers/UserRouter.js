@@ -46,6 +46,18 @@ const handleGetUser = async (req, res) => {
     }
 };
 
+// Get user by Firestore UID
+const handlGetFirestoreUser = async (req, res) => {
+    const firestoreUid = req.params.id;
+    try {
+        const user = await Users.findFirestoreUser(firestoreUid);
+        res.json(user);
+    }
+    catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 // Get user's last emotion
 const handleGetUserEmotion = async (req, res) => {
     const userId = req.params.id;
@@ -109,5 +121,8 @@ router.route('/location/:id')
 
 router.route('/background/:id')
     .get(handleGetUserBackground);
+
+router.route('/firestore/:id')
+    .get(handlGetFirestoreUser);
 
 export default router;

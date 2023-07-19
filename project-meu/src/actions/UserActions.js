@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { apiUrl } from '../constants/constants';
 
 // keys for actiontypes
@@ -40,6 +39,18 @@ export function fetchCurrentUser() {
   return {
     type: ActionTypes.FETCH_USER,
     payload: null,
+  };
+}
+
+// Fetch user by Firestore uid
+export function fetchFirestoreUser(uid) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/users/firestore/${uid}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_USER, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching user: ', error);
+      });
   };
 }
 

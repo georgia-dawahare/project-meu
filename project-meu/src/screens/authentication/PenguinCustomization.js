@@ -77,7 +77,6 @@ function PenguinCustomization({ navigation }) {
   // TODO: add error catching before navigation?
   const updatePenguin = async () => {
     const color = colorsMap[selectedIcon].toString();
-    console.log(color);
     try {
       const userData = {
         penguinColor: color,

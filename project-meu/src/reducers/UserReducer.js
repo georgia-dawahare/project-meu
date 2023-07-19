@@ -15,6 +15,7 @@ const initialState = {
     backgroundPhoto: '',
     countryCode: '',
     city: '',
+    asdf: '',
   },
 };
 

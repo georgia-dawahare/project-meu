@@ -18,6 +18,7 @@ import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { createUser } from '../../actions/UserActions';
+import { updatePassword } from '../../actions/PasswordActions';
 
 function RegisterEmailPassword({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -52,6 +53,7 @@ function RegisterEmailPassword({ navigation }) {
         });
     }
     if (userId) {
+      dispatch(updatePassword(password));
       navigation.navigate('CreatePair');
     }
   };

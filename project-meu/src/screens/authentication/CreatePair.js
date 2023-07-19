@@ -14,11 +14,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import * as Font from 'expo-font';
-// import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  getAuth, signInWithEmailAndPassword, signOut,
-} from 'firebase/auth';
 import { updateUser } from '../../actions/UserActions';
 import { connectPair, fetchPair } from '../../actions/PairActions';
 
@@ -30,8 +26,6 @@ function CreatePair({ navigation }) {
   const [error, setError] = useState('');
   const [isActiveNext, setIsActiveNext] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const currUser = useSelector((state) => state.user);
-  const auth = getAuth();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userState.userData);
   const pair = useSelector((state) => state.pairState.pairData);
@@ -68,6 +62,11 @@ function CreatePair({ navigation }) {
     }, 500);
   }, []);
 
+  const goBack = async () => {
+    // TODO: Clear current pair
+    navigation.goBack();
+  };
+
   const generateCode = () => {
     let randomCode = '';
     for (let i = 0; i < 6; i++) {
@@ -75,34 +74,6 @@ function CreatePair({ navigation }) {
       randomCode += randomNumber.toString();
     }
     return randomCode;
-  };
-
-  const signOutUser = async () => {
-    signOut(auth).then(() => {
-      console.log('Successfully logged out. See you later!');
-    }).catch((e) => {
-      console.log('Error signing out: ', e);
-    });
-  };
-
-  const triggerOnAuthState = async () => {
-    signOutUser();
-    signInWithEmailAndPassword(auth, currUser.user_data.email, currUser.user_data.password)
-      .then(() => {
-        // Signed in
-        console.log('Signed in');
-      })
-      .catch((e) => {
-        const errorCode = e.code;
-        const errorMessage = e.message;
-        console.log(errorCode, errorMessage);
-      });
-  };
-
-  const handleNext = async () => {
-    if (isActiveNext) {
-      triggerOnAuthState();
-    }
   };
 
   const onShare = async () => {
@@ -159,8 +130,16 @@ function CreatePair({ navigation }) {
   // received partner's code
   const handleConnect = async () => {
     setIsPairCreator(false);
+
+    // TODO: Add error handling
     createPair();
     navigation.navigate('ProfileInfo');
+  };
+
+  const handleNext = async () => {
+    if (isActiveNext) {
+      navigation.navigate('ProfileInfo');
+    }
   };
 
   if (!fontLoaded) {
@@ -169,7 +148,7 @@ function CreatePair({ navigation }) {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+      <TouchableOpacity onPress={goBack}>
         <Image
           source={require('../../../assets/icons/back-arrow.png')}
           style={styles.backButton}

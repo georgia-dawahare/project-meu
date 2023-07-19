@@ -5,20 +5,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-// import axios from 'axios';
 import * as Notifications from 'expo-notifications';
 // import * as Device from 'expo-device';
 // import {
 //   Text, View, Button, Platform,
 // } from 'react-native';
 // import Alert from 'react-native';
+import axios from 'axios';
 import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
   HomeScreenNavigator,
   OnboardingScreenNavigator,
 } from './src/navigation/CustomNavigation';
-// import { apiUrl } from './src/constants/constants';
+import { apiUrl } from './src/constants/constants';
 import store from './src/store';
 // import expoPushTokensApi from './src/api/expoPushTokens';
 
@@ -86,23 +86,21 @@ function App() {
   const setNotification = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const isLoggedIn = false;
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
     async function checkPartner(uid) {
-      // let pairId;
+      let pairId;
       if (uid) {
-        // const userDoc = await axios.get(`${apiUrl}/users/${uid}`);
-        // pairId = userDoc?.data?.pair_id;
-        // if (pairId) {
-        //   setIsLoggedIn(true);
-        // } else {
-        //   setIsLoggedIn(false);
-        // }
+        const userDoc = await axios.get(`${apiUrl}/users/firestore/${uid}`);
+        pairId = userDoc?.data?.pairId;
+        if (pairId) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
       }
     }
     onAuthStateChanged(auth, (user) => {
