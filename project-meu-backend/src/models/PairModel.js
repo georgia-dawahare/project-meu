@@ -5,7 +5,7 @@ import mongoose, { Schema } from 'mongoose';
 export const PairSchema = new Schema({
     primaryUserId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     secondaryUserId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    relationshipStart: { type: Date, required: true },
+    relationshipStart: { type: Date },
     requestedRelationshipStart: { type: Date },
 }, {
     toObject: { virtuals: true },

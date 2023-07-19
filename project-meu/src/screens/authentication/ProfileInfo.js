@@ -4,16 +4,23 @@ import {
   SafeAreaView, StyleSheet, Text, Image, TouchableOpacity, View, TextInput,
 } from 'react-native';
 import * as Font from 'expo-font';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { updateUser } from '../../actions/UserActions';
+import { updatePair } from '../../actions/PairActions';
 
 function ProfileInfo({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+
+  // TODO: IMPLEMENT DATE CHECKING LOGIC
   const [birthday, setBirthday] = useState(new Date());
   const [anniversary, setAnniversary] = useState(new Date());
+  const user = useSelector((state) => state.userState.userData);
+  const pair = useSelector((state) => state.pairState.pairData);
+  const currUserId = user._id;
+  const pairId = pair._id;
 
   const dispatch = useDispatch();
 
@@ -30,17 +37,27 @@ function ProfileInfo({ navigation }) {
     loadFont();
   }, []);
 
-  const handleNext = async () => {
-    const birthdayString = birthday.toString();
-    const anniversaryyString = anniversary.toString();
+  // TODO: add error catching before navigation?
+  const updateProfile = async () => {
+    try {
+      const newUserInfo = {
+        firstName,
+        lastName,
+        birthday,
+      };
 
-    const newUser = {
-      first_name: firstName,
-      last_name: lastName,
-      anniversary: anniversaryyString,
-      birthday: birthdayString,
-    };
-    dispatch(updateUser(newUser));
+      // TODO: Confirm anniversary w/ partner
+      const newPairInfo = {
+        relationshipStart: anniversary,
+      };
+      dispatch(updateUser(currUserId, newUserInfo));
+      dispatch(updatePair(pairId, newPairInfo));
+    } catch (e) {
+      console.log('Failed to update');
+    }
+  };
+  const handleNext = async () => {
+    updateProfile();
     navigation.navigate('PenguinCustomization');
   };
 
@@ -70,7 +87,11 @@ function ProfileInfo({ navigation }) {
         />
 
         <View>
-          <Text style={styles.instructionTxt}>Please fill out your profile.</Text>
+          <Text style={styles.instructionTxt}>
+            Successfully connected!
+            {'\n'}
+            Please fill out your profile
+          </Text>
         </View>
 
         <View>

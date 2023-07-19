@@ -8,13 +8,17 @@ export const ActionTypes = {
 };
 
 // Connect pair
-export function connectPair(uid, userData) {
+export function connectPair(uid, pairCode) {
   // axios post
   return (dispatch) => {
-    axios.post(`${apiUrl}/pairs/${uid}`, userData)
+    axios.post(`${apiUrl}/pairs/${uid}`, pairCode)
       .then((response) => {
-        dispatch({ type: ActionTypes.UPDATE_PAIR, payload: response.data });
-        console.log('Successfully connected pair');
+        if (response.data === 'No partner found') {
+          console.log(response.data);
+        } else {
+          dispatch({ type: ActionTypes.UPDATE_PAIR, payload: response.data });
+          console.log('Successfully connected pair');
+        }
       }).catch((error) => {
         // Need to add error actions
         console.log('error connecting pair: ', error);
@@ -57,7 +61,12 @@ export function fetchPair(uid) {
   return (dispatch) => {
     axios.get(`${apiUrl}/pairs/${uid}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_PAIR, payload: response.data });
+        if (response) {
+          dispatch({ type: ActionTypes.FETCH_PAIR, payload: response.data });
+        } else {
+          // Need to add error catching
+          console.log(response.data);
+        }
       }).catch((error) => {
         console.log('error fetching pair: ', error);
       });

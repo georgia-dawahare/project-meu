@@ -7,8 +7,6 @@ export async function createPair(pairFields) {
     const pair = new Pair();
     pair.primaryUserId = pairFields.primaryUserId;
     pair.secondaryUserId = pairFields.secondaryUserId;
-    pair.relationshipStart = pairFields.relationshipStart;
-
     try {
         // await save to db
         const savedPair = await pair.save();
@@ -19,37 +17,36 @@ export async function createPair(pairFields) {
 };
 
 // Connect pair
-export async function connectPair(userId, userData) {
-    const userCode = userData.userCode;
-    const relationshipStart = userData.relationshipStart;
-
+export async function connectPair(userId, pairCode) {
     try {
         // Find users with matching code
-        const matchList = await User.find({ "pairCode": userCode });
+        const matchList = await User.find({ "pairCode": pairCode });
+        const user = await Users.findUserById(userId);
 
         // Create pair if found match
         if (matchList.length === 1) {
             const partnerId = matchList[0]._id;
             const pairData = {
                 primaryUserId: partnerId,
-                secondaryUserId: userId,
-                relationshipStart: relationshipStart,
+                secondaryUserId: user._id,
             }
             const pair = await createPair(pairData);
 
             if (pair) {
                 // Update pair ID for both users
                 const userUpdate = {
-                    pairCode: userCode,
+                    pairCode: pairCode,
                     pairId: pair._id
                 }
                 const partnerUpdate = {
                     pairId: pair._id
                 }
-                Users.updateUser(userId, userUpdate);
-                Users.updateUser(partnerId, partnerUpdate);
+                await Users.updateUser(userId, userUpdate);
+                await Users.updateUser(partnerId, partnerUpdate);
                 return pair;
             }
+        } else {
+            return 'No partner found';
         }
     } catch (error) {
         throw new Error(`connect pair error: ${error}`);

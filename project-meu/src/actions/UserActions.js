@@ -23,8 +23,8 @@ export function createUser(userData) {
   };
 }
 
-// Fetch logged in user
-export function fetchCurrentUser(uid) {
+// Fetch user by ID
+export function fetchUserById(uid) {
   return (dispatch) => {
     axios.get(`${apiUrl}/users/${uid}`)
       .then((response) => {
@@ -32,6 +32,14 @@ export function fetchCurrentUser(uid) {
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
+  };
+}
+
+// Fetch logged in user
+export function fetchCurrentUser() {
+  return {
+    type: ActionTypes.FETCH_USER,
+    payload: null,
   };
 }
 

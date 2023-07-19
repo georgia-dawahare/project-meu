@@ -2,7 +2,7 @@ import { ActionTypes } from '../actions/UserActions';
 
 const initialState = {
   userData: {
-    userId: '',
+    uid: '',
     email: '',
     firstName: '',
     lastName: '',
@@ -10,7 +10,6 @@ const initialState = {
     penguinColor: '',
     userLastEmotion: 0,
     partnerLastEmotion: 0,
-    partnerId: '',
     pairCode: '',
     pairId: '',
     backgroundPhoto: '',

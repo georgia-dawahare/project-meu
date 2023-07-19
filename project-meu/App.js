@@ -5,20 +5,20 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import axios from 'axios';
+// import axios from 'axios';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
+// import * as Device from 'expo-device';
 // import {
 //   Text, View, Button, Platform,
 // } from 'react-native';
-import Alert from 'react-native';
+// import Alert from 'react-native';
 import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
   HomeScreenNavigator,
   OnboardingScreenNavigator,
 } from './src/navigation/CustomNavigation';
-import { apiUrl } from './src/constants/constants';
+// import { apiUrl } from './src/constants/constants';
 import store from './src/store';
 // import expoPushTokensApi from './src/api/expoPushTokens';
 
@@ -30,78 +30,79 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function registerForPushNotificationsAsync() {
-  let token;
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      Alert.alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log('Expo push token:', token);
-  } else {
-    Alert.alert('Must use physical device for Push Notifications');
-  }
+// async function registerForPushNotificationsAsync() {
+//   let token;
+//   if (Device.isDevice) {
+//     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//     let finalStatus = existingStatus;
+//     if (existingStatus !== 'granted') {
+//       const { status } = await Notifications.requestPermissionsAsync();
+//       finalStatus = status;
+//     }
+//     if (finalStatus !== 'granted') {
+//       Alert.alert('Failed to get push token for push notification!');
+//       return;
+//     }
+//     token = (await Notifications.getExpoPushTokenAsync()).data;
+//     console.log('Expo push token:', token);
+//   } else {
+//     Alert.alert('Must use physical device for Push Notifications');
+//   }
 
-  // if (Platform.OS === 'android') {
-  //   Notifications.setNotificationChannelAsync('default', {
-  //     name: 'default',
-  //     importance: Notifications.AndroidImportance.MAX,
-  //     vibrationPattern: [0, 250, 250, 250],
-  //     lightColor: '#FF231F7C',
-  //   });
-  // }
+// if (Platform.OS === 'android') {
+//   Notifications.setNotificationChannelAsync('default', {
+//     name: 'default',
+//     importance: Notifications.AndroidImportance.MAX,
+//     vibrationPattern: [0, 250, 250, 250],
+//     lightColor: '#FF231F7C',
+//   });
+// }
 
-  return token;
-}
+//   return token;
+// }
 
-async function sendPushNotification(expoPushToken) {
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Test title',
-    body: 'Test body 2',
-    data: { testData: 'test data' },
-  };
+// async function sendPushNotification(expoPushToken) {
+//   const message = {
+//     to: expoPushToken,
+//     sound: 'default',
+//     title: 'Test title',
+//     body: 'Test body 2',
+//     data: { testData: 'test data' },
+//   };
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-}
+//   await fetch('https://exp.host/--/api/v2/push/send', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Accept-encoding': 'gzip, deflate',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(message),
+//   });
+// }
 
 function App() {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  // const setExpoPushToken = useState('');
+  const setNotification = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = false;
 
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
 
   useEffect(() => {
     async function checkPartner(uid) {
-      let pairId;
+      // let pairId;
       if (uid) {
-        const userDoc = await axios.get(`${apiUrl}/users/${uid}`);
-        pairId = userDoc?.data?.pair_id;
-        if (pairId) {
-          setIsLoggedIn(true);
-        } else {
-          setIsLoggedIn(false);
-        }
+        // const userDoc = await axios.get(`${apiUrl}/users/${uid}`);
+        // pairId = userDoc?.data?.pair_id;
+        // if (pairId) {
+        //   setIsLoggedIn(true);
+        // } else {
+        //   setIsLoggedIn(false);
+        // }
       }
     }
     onAuthStateChanged(auth, (user) => {
@@ -115,7 +116,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+    // registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener((notification2) => {

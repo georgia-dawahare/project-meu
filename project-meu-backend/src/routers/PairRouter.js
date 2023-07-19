@@ -7,7 +7,7 @@ const router = Router();
 const handleConnectPair = async (req, res) => {
     const userId = req.params.id;
     try {
-        const newPair = await Pairs.connectPair(userId, req.body);
+        const newPair = await Pairs.connectPair(userId, req.body.pairCode);
         res.json(newPair);
     } catch (error) {
         res.status(500).json({ error });

@@ -2,6 +2,7 @@ import { ActionTypes } from '../actions/PairActions';
 
 const initialState = {
   pairData: {
+    _id: '',
     primaryUserId: '',
     secondaryUserId: '',
     relationshipStart: '',

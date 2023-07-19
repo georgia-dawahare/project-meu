@@ -14,25 +14,40 @@ import {
   RefreshControl,
 } from 'react-native';
 import * as Font from 'expo-font';
-import axios from 'axios';
+// import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut,
+  getAuth, signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
-
-import { useSelector } from 'react-redux';
-import { apiUrl } from '../../constants/constants';
+import { updateUser } from '../../actions/UserActions';
+import { connectPair, fetchPair } from '../../actions/PairActions';
 
 function CreatePair({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [code, setCode] = useState('');
   const [inputCode, setInputCode] = useState('');
   const [isPairCreator, setIsPairCreator] = useState(false);
-  const [currUserId, setCurrUserId] = useState('');
   const [error, setError] = useState('');
   const [isActiveNext, setIsActiveNext] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const currUser = useSelector((state) => state.user);
   const auth = getAuth();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userState.userData);
+  const pair = useSelector((state) => state.pairState.pairData);
+  const currUserId = user._id;
+
+  useEffect(() => {
+    async function checkPartner() {
+      if (currUserId) {
+        dispatch(fetchPair(currUserId));
+        if (pair._id) {
+          setIsActiveNext(true);
+        }
+      }
+    }
+    checkPartner();
+  }, [refreshing]);
 
   useEffect(() => {
     async function loadFont() {
@@ -45,33 +60,6 @@ function CreatePair({ navigation }) {
     }
     loadFont();
   }, []);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/auth.user
-        const { uid } = user;
-        setCurrUserId(uid);
-      } else {
-        // User is signed out
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    async function checkPartner() {
-      let pairId;
-      if (currUserId) {
-        const userDoc = await axios.get(`${apiUrl}/users/${currUserId}`);
-        pairId = userDoc?.data?.pair_id;
-        if (pairId) {
-          setIsActiveNext(true);
-        }
-      }
-    }
-    checkPartner();
-  }, [refreshing]);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -143,21 +131,22 @@ function CreatePair({ navigation }) {
     setIsPairCreator(true);
     const newCode = generateCode();
     setCode(newCode);
-    await axios.patch(`${apiUrl}/users/${currUserId}`, { code: newCode });
+    dispatch(updateUser(currUserId, { pairCode: newCode }));
   };
 
-  // received partner's code
-  const handleConnect = async () => {
-    setIsPairCreator(false);
+  // TODO: add error catching before navigation?
+  const createPair = async () => {
+    // TODO: Add error setting in backend to display no partner found
     if (inputCode) {
       try {
-        const userData = {
-          userCode: inputCode,
-          relationshipStart: currUser?.user_data?.anniversary,
-        };
-        await axios.post(`${apiUrl}/users/code/${currUserId}`, userData);
-        console.log('Successfully paired!');
-        triggerOnAuthState();
+        dispatch(connectPair(currUserId, { pairCode: inputCode }));
+        if (pair.primaryUserId && pair.secondaryUserId) {
+          const update = {
+            pairCode: inputCode,
+            pairId: pair._id,
+          };
+          dispatch(updateUser(currUserId, update));
+        }
       } catch (e) {
         setError('Invalid code');
         console.log('Failed to pair');
@@ -165,6 +154,13 @@ function CreatePair({ navigation }) {
     } else {
       setError('Please enter a valid code');
     }
+  };
+
+  // received partner's code
+  const handleConnect = async () => {
+    setIsPairCreator(false);
+    createPair();
+    navigation.navigate('ProfileInfo');
   };
 
   if (!fontLoaded) {
@@ -181,7 +177,7 @@ function CreatePair({ navigation }) {
       </TouchableOpacity>
       <View style={styles.contentContainer}>
         <Image
-          source={require('../../../assets/images/progress-3.png')}
+          source={require('../../../assets/images/progress-2.png')}
           style={styles.progress}
         />
 
@@ -226,7 +222,7 @@ function CreatePair({ navigation }) {
                 Did you receive your partner&apos;s pair code?
               </Text>
               <View style={styles.textInputWrapper}>
-                <TextInput style={styles.input} placeholder="Enter the Code" onChangeText={(text) => setInputCode(text)} />
+                <TextInput style={styles.input} placeholder="Enter pair code" onChangeText={(text) => setInputCode(text)} />
                 <TouchableOpacity style={styles.connectShare} onPress={handleConnect}>
                   <Text style={styles.connectShareButtonText}>Connect</Text>
                 </TouchableOpacity>

@@ -1,11 +1,11 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import {
-  Text, TouchableOpacity, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal, Platform,
+  Text, TouchableOpacity, SafeAreaView, StyleSheet, View, Image, Dimensions,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import * as Font from 'expo-font';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../actions/UserActions';
 
 const gifDataColors = {
@@ -55,10 +55,10 @@ const colorsMap = {
 
 function PenguinCustomization({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-
   const [selectedIcon, setSelectedIcon] = useState(null);
   const screenWidth = Dimensions.get('window').width;
-  const [carouselSpun, setCarouselSpun] = useState(false);
+  const user = useSelector((state) => state.userState.userData);
+  const currUserId = user._id;
 
   const dispatch = useDispatch();
 
@@ -74,32 +74,38 @@ function PenguinCustomization({ navigation }) {
     loadFont();
   }, []);
 
-  const handleNext = async () => {
+  // TODO: add error catching before navigation?
+  const updatePenguin = async () => {
     const color = colorsMap[selectedIcon].toString();
     console.log(color);
+    try {
+      const userData = {
+        penguinColor: color,
+      };
+      dispatch(updateUser(currUserId, userData));
+    } catch (e) {
+      console.log('Error updating user: ', e);
+    }
+  };
 
-    const newUser = {
-      penguin_color: color,
-    };
-    dispatch(updateUser(newUser));
+  const handleNext = async () => {
+    updatePenguin();
     navigation.navigate('Welcome');
   };
 
   const renderIconItem = ({ item, index }) => {
     const itemStyle = index === selectedIcon ? styles.selectedIcon : styles.unselectedIcon;
-    // const marginLeft = (-screenWidth / 100) * 4.4;
 
     return (
       <Image
         source={item}
-        style={[styles.icon, itemStyle]} // , { marginLeft }]}
+        style={[styles.icon, itemStyle]}
       />
     );
   };
 
   const handleCarouselItemChange = (index) => {
     setSelectedIcon(index);
-    setCarouselSpun(true);
   };
 
   const calculateItemWidth = () => {
@@ -118,25 +124,6 @@ function PenguinCustomization({ navigation }) {
         style={styles.image}
       />
     );
-  };
-
-  const handleButtonPress = () => {
-    setCarouselSpun(false);
-    if (selectedIcon !== null && selectedIcon !== '') {
-      updateBothEmotion(selectedIcon); // update both users' render emotion based on sender's emotion
-      setModalVisible(true);
-    }
-  };
-
-  // try catch for updating both user & partner's emotion (logic in backend)
-  const updateBothEmotion = async (icon) => {
-    try {
-      if (icon !== null && icon !== '') {
-        await axios.patch(`${apiUrl}/emotions/${userId}`, { emotion: icon });
-      }
-    } catch (e) {
-      console.log('Error updating emotions: ', e);
-    }
   };
 
   if (!fontLoaded) {
@@ -188,7 +175,7 @@ function PenguinCustomization({ navigation }) {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleNext}>
-            <Text style={styles.buttonTxt}>Let's start</Text>
+            <Text style={styles.buttonTxt}>Let&apos;s start</Text>
           </TouchableOpacity>
         </View>
 
@@ -230,7 +217,6 @@ const styles = StyleSheet.create({
     lineHeight: 27,
   },
   imageContainer: {
-    // backgroundColor: 'red',
     flex: 2,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -243,7 +229,6 @@ const styles = StyleSheet.create({
     maxWidth: '100%', // Set a maximum width to prevent it from exceeding the screen width
   },
   carouselContainer: {
-    // backgroundColor: 'blue',
     flex: 1,
   },
   icon: {
@@ -305,9 +290,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     margin: 20,
   },
-  buttonContainer: {
-    // backgroundColor: 'red',
-  },
+  buttonContainer: {},
   clearContainer: {
     marginTop: 20,
   },

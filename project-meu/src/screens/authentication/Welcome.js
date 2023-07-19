@@ -34,9 +34,9 @@ function Welcome({ navigation }) {
         source={require('../../../assets/animations/confetti/confetti_black.gif')}
         style={styles.BannerImg}
       />
-      <Text style={styles.Title}>Welcome to MeU</Text>
+      <Text style={styles.Title}>Welcome to MeU!</Text>
       <TouchableOpacity onPress={handleNext}>
-        <Button title="Find Your Pair" buttonStyle={{ top: 500, left: 45 }} />
+        <Button title="Let&apos;s start" buttonStyle={{ top: 500, left: 45 }} />
       </TouchableOpacity>
     </SafeAreaView>
   );
