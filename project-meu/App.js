@@ -164,7 +164,7 @@ function App() {
                 ),
 
               }}
-            /> */}
+            />
             <Tab.Screen
               name="HomeTab"
               component={HomeScreenNavigator}
@@ -174,8 +174,8 @@ function App() {
                   <Icon name="home-outline" type="ionicon" color={color} size={size} />
                 ),
               }}
-            />
-            {/* <Tab.Screen
+            /> */}
+            <Tab.Screen
               name="PenguinsTab"
               component={PenguinsScreenNavigator}
               options={{
@@ -184,7 +184,7 @@ function App() {
                   <Icon name="heart-outline" type="ionicon" color={color} size={size} />
                 ),
               }}
-            /> */}
+            />
           </Tab.Navigator>
         ) : (<OnboardingScreenNavigator />)}
       </NavigationContainer>
