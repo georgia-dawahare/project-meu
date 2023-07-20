@@ -1,7 +1,7 @@
-import { ActionTypes } from '../actions/UserActions';
+import { ActionTypes } from '../actions/PartnerActions';
 
 const initialState = {
-  userData: {
+  partnerData: {
     uid: '',
     email: '',
     firstName: '',
@@ -18,7 +18,7 @@ const initialState = {
   },
 };
 
-const UserReducer = (state = initialState, action = {}) => {
+const PartnerReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case ActionTypes.UPDATE_USER:
       return { ...state, userData: { ...state.userData, ...action.payload } };
@@ -29,4 +29,4 @@ const UserReducer = (state = initialState, action = {}) => {
   }
 };
 
-export default UserReducer;
+export default PartnerReducer;

@@ -8,84 +8,59 @@ import {
   Image,
   ImageBackground,
 } from 'react-native';
-import axios from 'axios';
-import { getAuth } from 'firebase/auth';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
-import { apiUrl } from '../../constants/constants';
-import { updateUser } from '../../actions/UserActions';
+// import { apiUrl } from '../../constants/constants';
+import { fetchUserById, updateUser } from '../../actions/UserActions';
+import { fetchPartnerById, fetchPartnerId, updatePartner } from '../../actions/PartnerActions';
 
-function TempHome({ navigation }) {
-  const [backgroundImage, setBackgroundImage] = useState('');
+function Home({ navigation }) {
+  const [userBackgroundImage, setUserBackgroundImage] = useState('');
   const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
-  const [userDoc, setUserDoc] = useState('');
-  const [userId, setUserId] = useState('');
+  const user = useSelector((state) => state.userState.userData);
+  const partner = useSelector((state) => state.partnerState.partnerData);
 
-  const auth = getAuth();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Get current user from auth
-    setUserId(auth?.currentUser?.uid);
-  }, [userId, partnerBackgroundImage]);
+    console.log('here');
+    async function setUserBackground() {
+      console.log('use', user);
+      dispatch(fetchUserById(user._id));
+      if (user && user.backgroundPhoto) {
+        setUserBackgroundImage(user.backgroundPhoto);
+      }
+    }
 
-  useEffect(() => {
-    let partnerId, partnerDoc, pairId, pairDoc;
-    async function getUserBackground() {
-      // Get user from Firestore
-      if (userId) {
-        const resUser = await axios.get(`${apiUrl}/users/${userId}`);
-        const userBackground = resUser?.data?.background_photo;
-        setUserDoc(resUser?.data);
-        if (userBackground) {
-          setBackgroundImage(userBackground);
+    async function setPartnerBackground() {
+      dispatch(fetchPartnerId(user._id));
+
+      if (partner._id) {
+        dispatch(fetchPartnerById(partner._id));
+        if (partner.backgroundPhoto) {
+          setPartnerBackgroundImage(partner.backgroundPhoto);
         }
       }
     }
-    async function getPartnerBackground() {
-      // Get user from Firestore
-      if (userId) {
-        pairId = userDoc.pair_id;
-        if (pairId) {
-          const pair = await axios.get(`${apiUrl}/pairs/${pairId}`);
-          pairDoc = pair?.data;
-          if (pairDoc) {
-            if (userId === pair?.data?.pair_creator_id) {
-              partnerId = pair?.data?.user2_id;
-            } else {
-              partnerId = pair?.data?.user1_id;
-            }
-            if (partnerId) {
-              partnerDoc = await axios.get(`${apiUrl}/users/${partnerId}`);
-              const partnerBackground = partnerDoc?.data?.background_photo;
-              if (partnerBackground) {
-                setPartnerBackgroundImage(partnerBackground);
-              }
-            }
-          }
-        }
-      }
-    }
-    getUserBackground();
-    const updatedUser = {
-      background_photo: backgroundImage,
-    };
-    dispatch(updateUser(updatedUser));
-    getPartnerBackground();
-  }, [userId, partnerBackgroundImage, backgroundImage]);
+
+    setUserBackground();
+    setPartnerBackground();
+    console.log(userBackgroundImage);
+    console.log(partnerBackgroundImage);
+  }, []);
 
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
   };
 
   const renderBackground = () => {
-    if (backgroundImage) {
+    if (userBackgroundImage) {
       return (
         <ImageBackground
-          source={{ uri: backgroundImage }}
+          source={{ uri: userBackgroundImage }}
           style={styles.userBackground}
         />
       );
@@ -101,15 +76,15 @@ function TempHome({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HomeHeader navigation={navigation} />
+      {/* <HomeHeader navigation={navigation} /> */}
       <View style={styles.separate}>
         <TouchableOpacity style={styles.partnerWidget} onPress={toggleMenu}>
-          <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
+          {/* <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} /> */}
         </TouchableOpacity>
         {renderBackground()}
         <View />
         <View style={styles.clockWidget}>
-          <ClockAndLocation />
+          {/* <ClockAndLocation /> */}
         </View>
       </View>
     </SafeAreaView>
@@ -140,13 +115,13 @@ const styles = StyleSheet.create({
   },
   clockWidget: {
     flex: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 4,
     justifyContent: 'flex-end',
   },
   defaultImage: {
@@ -162,4 +137,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TempHome;
+export default Home;

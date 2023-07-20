@@ -24,6 +24,7 @@ export function createUser(userData) {
 
 // Fetch user by ID
 export function fetchUserById(uid) {
+  console.log('bug1');
   return (dispatch) => {
     axios.get(`${apiUrl}/users/${uid}`)
       .then((response) => {
@@ -50,19 +51,6 @@ export function fetchFirestoreUser(uid) {
         dispatch({ type: ActionTypes.FETCH_USER, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
-      });
-  };
-}
-
-// Get partner ID
-export function fetchPartnerId(uid) {
-  // axios get
-  return (dispatch) => {
-    axios.get(`${apiUrl}/pairs/partner/${uid}`)
-      .then((response) => {
-        dispatch({ type: ActionTypes.UPDATE_USER, payload: response.data });
-      }).catch((error) => {
-        console.log('error fetching partner ID: ', error);
       });
   };
 }

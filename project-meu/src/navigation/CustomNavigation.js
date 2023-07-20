@@ -29,7 +29,7 @@ function HomeScreenNavigator() {
         name="Home"
         component={Home}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="HomeCalendar"
         component={HomeCalendar}
       />
@@ -48,7 +48,7 @@ function HomeScreenNavigator() {
       <Stack.Screen
         name="SettingNotificationPage"
         component={SettingNotificationPage}
-      /> */}
+      />
     </Stack.Navigator>
   );
 }
