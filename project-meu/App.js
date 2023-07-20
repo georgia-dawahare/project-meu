@@ -152,7 +152,7 @@ function App() {
               tabBarInactiveTintColor: '#111827',
             }}
           >
-            {/* <Tab.Screen
+            <Tab.Screen
               name="CheckinTab"
               component={CheckinScreenNavigator}
               headerTitle=""
@@ -164,8 +164,8 @@ function App() {
                 ),
 
               }}
-            /> */}
-            <Tab.Screen
+            />
+            {/* <Tab.Screen
               name="HomeTab"
               component={HomeScreenNavigator}
               options={{
@@ -174,7 +174,7 @@ function App() {
                   <Icon name="home-outline" type="ionicon" color={color} size={size} />
                 ),
               }}
-            />
+            /> */}
             {/* <Tab.Screen
               name="PenguinsTab"
               component={PenguinsScreenNavigator}
