@@ -17,12 +17,20 @@ import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
 // import { onAuthStateChanged } from 'firebase/auth';
+import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
+// import { useSelector } from 'react-redux';
+
+import { fetchUserById } from '../../actions/UserActions';
 
 function CheckinPage({ navigation }) {
+  // georgia
+  const usertest = useSelector((state) => state.userState.userData);
+  console.log('usertest :      ', usertest);
+
   const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
 
@@ -44,68 +52,85 @@ function CheckinPage({ navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
   const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userState.userData);
+  // const pair = useSelector((state) => state.pairState.pairData);
+  const currUserId = user._id;
+  const partnerID = user.pairId;
+  console.log('currID            ', currUserId);
+  console.log('partnerId:     ', partnerID);
+
   useEffect(() => {
-    const getUser = async () => {
-      const user = await axios.get(`${apiUrl}/users/${userId}`);
-      const userInfo = user.data;
-      if (userInfo) {
-        setUserDoc(userInfo);
+    async function checkPartner() {
+      if (currUserId) {
+        dispatch(fetchUserById(currUserId));
       }
-    };
-    setUserId(auth?.currentUser?.uid);
-    if (userId) {
-      getUser();
     }
-  }, [partnerId]);
+    checkPartner();
+  }, []);
 
-  useEffect(() => {
-    const getPartnerId = async () => {
-      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
-      const returnedPartnerId = response.data;
-      if (returnedPartnerId) {
-        setPartnerId(returnedPartnerId);
-      }
-    };
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const user = await axios.get(`${apiUrl}/users/${userId}`);
+  //     const userInfo = user.data;
+  //     if (userInfo) {
+  //       setUserDoc(userInfo);
+  //     }
+  //   };
+  //   setUserId(auth?.currentUser?.uid);
+  //   if (userId) {
+  //     getUser();
+  //   }
+  // }, [partnerId]);
 
-    if (userId) {
-      getPartnerId();
-    }
-  }, [userId]);
+  // useEffect(() => {
+  //   const getPartnerId = async () => {
+  //     const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
+  //     const returnedPartnerId = response.data;
+  //     if (returnedPartnerId) {
+  //       setPartnerId(returnedPartnerId);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const getPartner = async () => {
-      const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
-      const partnerInfo = partner.data;
-      if (partnerInfo) {
-        setPartnerDoc(partnerInfo);
-      }
-    };
-    if (partnerId) {
-      getPartner();
-    }
-  }, [partnerId]);
+  //   if (userId) {
+  //     getPartnerId();
+  //   }
+  // }, [userId]);
 
-  useEffect(() => {
-    refreshData();
-  }, [refreshing, userDoc, partnerDoc]);
+  // useEffect(() => {
+  //   const getPartner = async () => {
+  //     const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
+  //     const partnerInfo = partner.data;
+  //     if (partnerInfo) {
+  //       setPartnerDoc(partnerInfo);
+  //     }
+  //   };
+  //   if (partnerId) {
+  //     getPartner();
+  //   }
+  // }, [partnerId]);
 
-  useEffect(() => {
-    const getNames = async () => {
-      const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
-      const name1 = response1.data;
-      if (name1) {
-        setUserName(name1[0]);
-      }
+  // useEffect(() => {
+  //   refreshData();
+  // }, [refreshing, userDoc, partnerDoc]);
 
-      const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
-      const name2 = response2.data;
-      if (name2) {
-        setPartnerName(name2[0]);
-      }
-    };
+  // useEffect(() => {
+  //   const getNames = async () => {
+  //     const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
+  //     const name1 = response1.data;
+  //     if (name1) {
+  //       setUserName(name1[0]);
+  //     }
 
-    getNames();
-  }, [partnerId]);
+  //     const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
+  //     const name2 = response2.data;
+  //     if (name2) {
+  //       setPartnerName(name2[0]);
+  //     }
+  //   };
+
+  //   getNames();
+  // }, [partnerId]);
 
   useEffect(() => {
     async function loadFont() {
