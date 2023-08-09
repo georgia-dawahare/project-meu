@@ -69,7 +69,6 @@ function CheckinPage({ navigation }) {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
-        // dispatch(fetchQuestios)
       }
     }
     checkPartner();
