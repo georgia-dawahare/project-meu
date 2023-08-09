@@ -25,6 +25,7 @@ import Button from '../../components/Button';
 // import { useSelector } from 'react-redux';
 
 import { fetchUserById } from '../../actions/UserActions';
+import { fetchQuestions } from '../../actions/QuestionsActions';
 
 function CheckinPage({ navigation }) {
   // georgia
@@ -67,6 +68,7 @@ function CheckinPage({ navigation }) {
     async function checkPartner() {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
+        dispatch(fetchQuestions());
         // dispatch(fetchQuestios)
       }
     }

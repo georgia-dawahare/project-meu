@@ -7,6 +7,7 @@ import responseRoutes from './routers/ResponseRouter';
 import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
+import questionsRoutes from './routers/QuestionsRouter';
 
 // initialize
 const app = express();
@@ -36,6 +37,7 @@ app.use('/response_groups', responseGroupRoutes);
 app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
+app.use('/questions',questionsRoutes);
 
 // default index route
 app.get('/', (req, res) => {

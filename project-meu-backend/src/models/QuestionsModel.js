@@ -11,4 +11,4 @@ export const QuestionsSchema = new Schema({
 
 const QuestionsModel = mongoose.model('Questions', QuestionsSchema);
 
-export default QuestionsModel; nmb
+export default QuestionsModel;

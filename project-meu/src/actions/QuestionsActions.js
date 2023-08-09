@@ -9,13 +9,14 @@ export const ActionTypes = {
 
 // Fetch response group
 // need to be fixed
-export function fetchQuestios(responseGroupId) {
+// export function fetchQuestios(responseGroupId) {
+export function fetchQuestions() {
   return (dispatch) => {
-    axios.get(`${apiUrl}/response_groups/${responseGroupId}`)
+    axios.get(`${apiUrl}/questions`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUP, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_QUESTIONS, payload: response.data });
       }).catch((error) => {
-        console.log('error fetching user: ', error);
+        console.log('error fetching questions: ', error);
       });
   };
 }
