@@ -74,69 +74,6 @@ function CheckinPage({ navigation }) {
     checkPartner();
   }, []);
 
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     const user = await axios.get(`${apiUrl}/users/${userId}`);
-  //     const userInfo = user.data;
-  //     if (userInfo) {
-  //       setUserDoc(userInfo);
-  //     }
-  //   };
-  //   setUserId(auth?.currentUser?.uid);
-  //   if (userId) {
-  //     getUser();
-  //   }
-  // }, [partnerId]);
-
-  // useEffect(() => {
-  //   const getPartnerId = async () => {
-  //     const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
-  //     const returnedPartnerId = response.data;
-  //     if (returnedPartnerId) {
-  //       setPartnerId(returnedPartnerId);
-  //     }
-  //   };
-
-  //   if (userId) {
-  //     getPartnerId();
-  //   }
-  // }, [userId]);
-
-  // useEffect(() => {
-  //   const getPartner = async () => {
-  //     const partner = await axios.get(`${apiUrl}/users/${partnerId}`);
-  //     const partnerInfo = partner.data;
-  //     if (partnerInfo) {
-  //       setPartnerDoc(partnerInfo);
-  //     }
-  //   };
-  //   if (partnerId) {
-  //     getPartner();
-  //   }
-  // }, [partnerId]);
-
-  // useEffect(() => {
-  //   refreshData();
-  // }, [refreshing, userDoc, partnerDoc]);
-
-  // useEffect(() => {
-  //   const getNames = async () => {
-  //     const response1 = await axios.get(`${apiUrl}/users/name/${userId}`);
-  //     const name1 = response1.data;
-  //     if (name1) {
-  //       setUserName(name1[0]);
-  //     }
-
-  //     const response2 = await axios.get(`${apiUrl}/users/name/${partnerId}`);
-  //     const name2 = response2.data;
-  //     if (name2) {
-  //       setPartnerName(name2[0]);
-  //     }
-  //   };
-
-  //   getNames();
-  // }, [partnerId]);
-
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
