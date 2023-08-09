@@ -19,7 +19,7 @@ import axios from 'axios';
 // import { onAuthStateChanged } from 'firebase/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
-import auth from '../../services/datastore';
+// import auth from '../../services/datastore';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 // import { useSelector } from 'react-redux';
@@ -28,8 +28,8 @@ import { fetchUserById } from '../../actions/UserActions';
 
 function CheckinPage({ navigation }) {
   // georgia
-  const usertest = useSelector((state) => state.userState.userData);
-  console.log('usertest :      ', usertest);
+  const userdata = useSelector((state) => state.userState.userData);
+  console.log('usertest :      ', userdata);
 
   const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -54,7 +54,10 @@ function CheckinPage({ navigation }) {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userState.userData);
-  // const pair = useSelector((state) => state.pairState.pairData);
+
+  const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  console.log('questiosTEST:           ', questionsTest);
+
   const currUserId = user._id;
   const partnerID = user.pairId;
   console.log('currID            ', currUserId);
@@ -64,6 +67,7 @@ function CheckinPage({ navigation }) {
     async function checkPartner() {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
+        // dispatch(fetchQuestios)
       }
     }
     checkPartner();
