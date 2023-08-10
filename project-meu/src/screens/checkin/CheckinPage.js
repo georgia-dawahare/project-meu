@@ -32,6 +32,9 @@ function CheckinPage({ navigation }) {
   const userdata = useSelector((state) => state.userState.userData);
   console.log('usertest :      ', userdata);
 
+  const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  console.log('questiosTEST:           ', questionsTest);
+
   const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
 
@@ -56,8 +59,8 @@ function CheckinPage({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.userState.userData);
 
-  const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  console.log('questiosTEST:           ', questionsTest);
+  // const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  // console.log('questiosTEST:           ', questionsTest);
 
   const currUserId = user._id;
   const partnerID = user.pairId;

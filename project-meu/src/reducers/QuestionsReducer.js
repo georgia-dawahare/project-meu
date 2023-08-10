@@ -3,7 +3,7 @@ import { ActionTypes } from '../actions/QuestionsActions';
 const initialState = {
   questionsData: {
     // uid: '',
-    _id: '',
+    id: '',
     quesion: '',
     type: '',
   },
