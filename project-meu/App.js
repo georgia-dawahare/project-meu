@@ -162,7 +162,6 @@ function App() {
                 tabBarIcon: ({ color, size }) => (
                   <Icon name="create-outline" type="ionicon" color={color} size={size} />
                 ),
-
               }}
             /> */}
             <Tab.Screen

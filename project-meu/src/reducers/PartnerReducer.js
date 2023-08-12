@@ -20,9 +20,9 @@ const initialState = {
 
 const PartnerReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case ActionTypes.UPDATE_USER:
+    case ActionTypes.UPDATE_PARTNER:
       return { ...state, userData: { ...state.userData, ...action.payload } };
-    case ActionTypes.FETCH_USER:
+    case ActionTypes.FETCH_PARTNER:
       return { ...state, ...action.payload };
     default:
       return state;

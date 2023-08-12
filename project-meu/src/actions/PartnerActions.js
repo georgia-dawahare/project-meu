@@ -7,6 +7,10 @@ export const ActionTypes = {
   FETCH_PARTNER: 'FETCH_PARTNER',
 };
 
+// logged in user ID userID -> fetchPartnerId(userID) ->
+// Populate partner object in redux -> fetchPartnerById(partner._id) ->
+// Populate entire object
+
 // Get partner ID using current user ID
 export function fetchPartnerId(uid) {
   // axios get
@@ -20,12 +24,12 @@ export function fetchPartnerId(uid) {
   };
 }
 
-// Fetch partner by partner ID
+// Fetch partner object by partner ID
 export function fetchPartnerById(uid) {
   return (dispatch) => {
     axios.get(`${apiUrl}/users/${uid}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_PARTNER, payload: response.data });
+        dispatch({ type: ActionTypes.UPDATE_PARTNER, payload: response.data });
       }).catch((error) => {
         console.log('error fetching partner: ', error);
       });

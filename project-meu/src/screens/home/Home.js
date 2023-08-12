@@ -22,13 +22,11 @@ function Home({ navigation }) {
   const [isMenuVisible, setMenuVisible] = useState(false);
   const user = useSelector((state) => state.userState.userData);
   const partner = useSelector((state) => state.partnerState.partnerData);
-
   const dispatch = useDispatch();
+  console.log('LOGGED IN', user);
 
   useEffect(() => {
-    console.log('here');
     async function setUserBackground() {
-      console.log('use', user);
       dispatch(fetchUserById(user._id));
       if (user && user.backgroundPhoto) {
         setUserBackgroundImage(user.backgroundPhoto);
@@ -48,8 +46,8 @@ function Home({ navigation }) {
 
     setUserBackground();
     setPartnerBackground();
-    console.log(userBackgroundImage);
-    console.log(partnerBackgroundImage);
+    console.log('user', user);
+    console.log('partner', partner);
   }, []);
 
   const toggleMenu = () => {
@@ -105,13 +103,13 @@ const styles = StyleSheet.create({
     width: 124,
     margin: 10,
     borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 4,
   },
   clockWidget: {
     flex: 1,

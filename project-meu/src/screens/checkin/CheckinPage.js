@@ -15,7 +15,7 @@ import {
 import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
 import moment from 'moment';
-import axios from 'axios';
+// import axios from 'axios';
 // import { onAuthStateChanged } from 'firebase/auth';
 import { apiUrl } from '../../constants/constants';
 import auth from '../../services/datastore';
@@ -25,7 +25,6 @@ import Button from '../../components/Button';
 function CheckinPage({ navigation }) {
   const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
-
   const [question, setQuestion] = useState('');
   const [userResponseTime, setUserResponseTime] = useState('');
   const [partnerResponseTime, setPartnerResponseTime] = useState('');
