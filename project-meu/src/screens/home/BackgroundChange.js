@@ -5,15 +5,18 @@ import {
 } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
-import { apiUrl } from '../../constants/constants';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUser } from '../../actions/UserActions';
 
 const { width } = Dimensions.get('window');
 
 function BackgroundChange({
-  background, uid, toggleMenu, setMenuVisible, isMenuVisible,
+  toggleMenu, setMenuVisible, isMenuVisible,
 }) {
   const [backgroundImage, setBackgroundImage] = useState('');
+  const partner = useSelector((state) => state.partnerState.partnerData);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -28,50 +31,20 @@ function BackgroundChange({
     })();
   }, []);
 
+  // Set partner background
   useEffect(() => {
     if (!backgroundImage) {
-      setBackgroundImage(background);
+      setBackgroundImage(partner.backgroundPhoto);
     }
-  }, [background]);
+  }, []);
 
   const updatePartnerBackground = async (photoUri) => {
-    let userDoc, pair, pairId, pairDoc, partnerDoc, partnerId;
-
     setBackgroundImage(photoUri);
 
-    // Get user from Firestore
-    if (uid) {
-      userDoc = await axios.get(`${apiUrl}/users/${uid}`);
-      pairId = userDoc?.data?.pair_id;
-    }
-
-    // Get pair from Firestore
-    if (pairId) {
-      pairDoc = await axios.get(`${apiUrl}/pairs/${pairId}`);
-      pair = pairDoc.data;
-    }
-
-    // Get partner from Firestore
-    if (pair) {
-      // Figure out which user the current user is
-      if (uid === pair.user1_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user2_id}`);
-        partnerId = pair.user2_id;
-      } else if (uid === pair.user2_id) {
-        partnerDoc = await axios.get(`${apiUrl}/users/${pair.user1_id}`);
-        partnerId = pair.user1_id;
-      } else {
-        console.log('Could not find partner');
-      }
-    }
-    // Update partner's background in Firestore
-    if (partnerDoc) {
-      const updatedFields = { background_photo: photoUri };
-      partnerDoc = await axios.patch(`${apiUrl}/users/${partnerId}`, updatedFields);
-    }
-
+    // Update partner's background in MongoDB & Redux
+    const updatedPhoto = { backgroundPhoto: photoUri };
+    dispatch(updateUser(partner._id, updatedPhoto));
     toggleMenu();
-    return pair;
   };
 
   const handleMenuOptionClick = async (option) => {

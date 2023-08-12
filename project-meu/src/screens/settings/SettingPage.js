@@ -12,7 +12,6 @@ import {
 import * as Font from 'expo-font';
 import { getAuth, signOut } from 'firebase/auth';
 import { RadioButton } from 'react-native-paper';
-// import { CurrentRenderContext } from '@react-navigation/native';
 
 const SignOutContent = [
   // {
@@ -26,7 +25,6 @@ const SignOutContent = [
 ];
 
 function SettingPage({ navigation }) {
-  // const { navigation } = route.params;
   const [fontLoaded, setFontLoaded] = useState(false);
   const [temperatureUnit, setTemperatureUnit] = useState('Celsius');
 
@@ -107,7 +105,7 @@ function SettingPage({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('TempHome')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Image
             source={require('../../../assets/icons/back-arrow.png')}
             style={styles.Icon}

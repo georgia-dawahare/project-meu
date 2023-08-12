@@ -12,42 +12,63 @@ import { useDispatch, useSelector } from 'react-redux';
 import HomeHeader from '../../components/HomeHeader';
 import ClockAndLocation from '../../components/ClockAndLocation';
 import BackgroundChange from './BackgroundChange';
-// import { apiUrl } from '../../constants/constants';
-import { fetchUserById, updateUser } from '../../actions/UserActions';
-import { fetchPartnerById, fetchPartnerId, updatePartner } from '../../actions/PartnerActions';
+import auth from '../../services/datastore';
+import { fetchFirestoreUser } from '../../actions/UserActions';
+import { fetchPartner } from '../../actions/PartnerActions';
+import { fetchPair } from '../../actions/PairActions';
 
 function Home({ navigation }) {
   const [userBackgroundImage, setUserBackgroundImage] = useState('');
-  const [partnerBackgroundImage, setPartnerBackgroundImage] = useState('');
   const [isMenuVisible, setMenuVisible] = useState(false);
+  const [userFirestoreID, setUserFirestoreID] = useState('');
   const user = useSelector((state) => state.userState.userData);
   const partner = useSelector((state) => state.partnerState.partnerData);
   const dispatch = useDispatch();
-  console.log('LOGGED IN', user);
 
+  const pair = useSelector((state) => state.pairState.pairData);
+
+  // Get user ID
   useEffect(() => {
-    async function setUserBackground() {
-      dispatch(fetchUserById(user._id));
-      if (user && user.backgroundPhoto) {
+    setUserFirestoreID(auth?.currentUser?.uid);
+  }, []);
+
+  // Fetch user
+  // BUG: Not fetching correctly
+  useEffect(() => {
+    async function getUser() {
+      dispatch(fetchFirestoreUser(userFirestoreID));
+    }
+
+    if (userFirestoreID) getUser();
+    console.log('LOGGED IN', user);
+    console.log('PARTNER: ', partner);
+  }, [userFirestoreID]);
+
+  // Fetch partner
+  // BUG: Not fetching correctly
+  useEffect(() => {
+    async function getPartner(userId) {
+      dispatch(fetchPartner(userId));
+    }
+    if (user._id) getPartner(user._id);
+  }, [user]);
+
+  // Fetch pair
+  useEffect(() => {
+    async function getPair(userId) {
+      dispatch(fetchPair(userId));
+    }
+    if (user._id) getPair(user._id);
+    console.log('PAIR', pair);
+  }, []);
+
+  // TODO: Test if works
+  useEffect(() => {
+    if (partner._id && user._id) {
+      if (user.backgroundPhoto) {
         setUserBackgroundImage(user.backgroundPhoto);
       }
     }
-
-    async function setPartnerBackground() {
-      dispatch(fetchPartnerId(user._id));
-
-      if (partner._id) {
-        dispatch(fetchPartnerById(partner._id));
-        if (partner.backgroundPhoto) {
-          setPartnerBackgroundImage(partner.backgroundPhoto);
-        }
-      }
-    }
-
-    setUserBackground();
-    setPartnerBackground();
-    console.log('user', user);
-    console.log('partner', partner);
   }, []);
 
   const toggleMenu = () => {
@@ -74,15 +95,15 @@ function Home({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <HomeHeader navigation={navigation} /> */}
+      <HomeHeader navigation={navigation} />
       <View style={styles.separate}>
         <TouchableOpacity style={styles.partnerWidget} onPress={toggleMenu}>
-          {/* <BackgroundChange background={partnerBackgroundImage} uid={userId} toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} /> */}
+          <BackgroundChange toggleMenu={toggleMenu} setMenuVisible={setMenuVisible} isMenuVisible={isMenuVisible} />
         </TouchableOpacity>
         {renderBackground()}
         <View />
         <View style={styles.clockWidget}>
-          {/* <ClockAndLocation /> */}
+          <ClockAndLocation />
         </View>
       </View>
     </SafeAreaView>
@@ -103,23 +124,23 @@ const styles = StyleSheet.create({
     width: 124,
     margin: 10,
     borderRadius: 15,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   clockWidget: {
     flex: 1,
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
     justifyContent: 'flex-end',
   },
   defaultImage: {

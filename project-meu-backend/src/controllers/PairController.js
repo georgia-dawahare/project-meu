@@ -138,6 +138,17 @@ export async function findPartnerId(uid) {
     }
 }
 
+// Find partner object by current user ID
+export async function findPartner(uid) {
+    try {
+        const partnerId = await findPartnerId(uid);
+        const partner = await Users.findUserById(partnerId);
+        return partner;
+    } catch (error) {
+        throw new Error(`find partner error: ${error}`);
+    }
+}
+
 // Find relationship start by user ID
 export async function findRelationshipStart(uid) {
     try {

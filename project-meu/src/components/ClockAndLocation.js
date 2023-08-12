@@ -9,33 +9,26 @@ import {
 // using the package expo-location to prompt the user to allow location access
 import * as Location from 'expo-location';
 import * as Font from 'expo-font';
-import axios from 'axios';
-import { getAuth } from 'firebase/auth';
-import { apiUrl } from '../constants/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateUser } from '../actions/UserActions';
 
 function ClockAndLocation() {
-  const auth = getAuth();
-
   // used the following video tutorial for the open weather API code, with a few modifications for our specific usage\
   // https://youtu.be/NiNLPZsRruY -- tutorial found on medium.com
   // basically showing me how to make api calls and such
 
   // api stuff
+  // TODO: Move this to a credentials file
   const openWeatherKey = '7e003b98d369635004c7ffdcee85e4db';
   const starterUrl = 'https://api.openweathermap.org/data/2.5/weather?';
 
-  // font
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.userState.userData);
+  const partner = useSelector((state) => state.partnerState.partnerData);
   const [fontLoaded, setFontLoaded] = useState(false);
 
   // user and partner data below:
-  const [userID, setUserID] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userCity, setUserCity] = useState('');
   const [userTemp, setUserTemp] = useState();
-  const [partnerID, setPartnerID] = useState();
-  const [partnerName, setPartnerName] = useState('');
-  const [partnerCity, setPartnerCity] = useState('');
-  const [partnerCountry, setPartnerCountry] = useState('');
   const [partnerTemp, setPartnerTemp] = useState(0);
   const [pTime, setPTime] = useState();
 
@@ -45,85 +38,32 @@ function ClockAndLocation() {
   // find this in redux -- this will be a future change to implement
   const units = 'imperial';
 
-  useEffect(() => {
-    setUserID(auth?.currentUser?.uid);
-  }, [userID, partnerID]);
-
-  useEffect(() => {
-    const getPartnerID = async () => {
-      const response = await axios.get(`${apiUrl}/users/partner/${userID}`);
-      const returnedPartnerId = response.data;
-      setPartnerID(returnedPartnerId);
-    };
-    getPartnerID();
-  }, [partnerID, userID]);
-
-  useEffect(() => {
-    const getUserData = async () => {
-      // getting and setting user data
-      if (userID) {
-        const userResponse = await axios.get(`${apiUrl}/users/${userID}`);
-        const user = userResponse.data;
-
-        setUserName(user.first_name);
-        setUserCity(user.city);
-      }
-    };
-
-    const getPartnerData = async () => {
-      if (partnerID) {
-        // getting and setting partner data
-        const partnerResponse = await axios.get(`${apiUrl}/users/${partnerID}`);
-        const partner = partnerResponse.data;
-
-        setPartnerName(partner.first_name);
-        if (partner.city && partner.country_code) {
-          setPartnerCity(partner.city);
-          setPartnerCountry(partner.country_code);
-        }
-      }
-    };
-
-    getUserData();
-    getPartnerData();
-  }, [partnerID, userID]);
-
-  // again, from video tutorial
-  // use this to load in weather data & some time data
-  const loadForecast = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-
-    if (status !== 'granted') {
-      Alert.alert('Location Denied.');
-    }
-
-    // using expo-location to grab user location
-    const location = await Location.getCurrentPositionAsync({});
-
+  function getUserWeather(location) {
     // refresher for .then and catching errors: https://www.geeksforgeeks.org/find-what-caused-possible-unhandled-promise-rejection-in-react-native/#
     // make an api call to get the weather
     fetch(`${starterUrl}units=${units}&lat=${location.coords.latitude.toFixed(2)}&lon=${location.coords.longitude.toFixed(2)}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         // sending firebase the user's city and country data
-        const newUserData = {
+        const userLocData = {
           city: data.name,
           country_code: data.sys.country,
         };
 
-        if (userID) {
-          axios.patch(`${apiUrl}/users/${userID}`, newUserData);
-        }
+        dispatch(updateUser(user._id, userLocData));
+        // }
 
-        setUserCity(data.name);
+        // setUserCity(data.name);
         setUserTemp(data?.main?.temp?.toFixed(0));
       })
       .catch((error) => {
         console.error(error);
       });
+  }
 
+  function getPartnerWeather() {
     // now, moving onto the partner's data -- make an API call based on the city name
     // to implement -- country code
-    fetch(`${starterUrl}units=${units}&q=${partnerCity},${partnerCountry}&appid=${openWeatherKey}`)
+    fetch(`${starterUrl}units=${units}&q=${partner.city},${partner.countryCode}&appid=${openWeatherKey}`)
       .then((response) => response.json()).then((data) => {
         setPartnerTemp(data?.main?.temp?.toFixed(0));
 
@@ -139,15 +79,31 @@ function ClockAndLocation() {
       .catch((error) => {
         console.error(error);
       });
+  }
 
-    setLoading(false);
+  // again, from video tutorial
+  // use this to load in weather data & some time data
+  const loadForecast = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+
+    if (status !== 'granted') {
+      Alert.alert('Location Denied.');
+    }
+
+    // using expo-location to grab user location
+    const location = await Location.getCurrentPositionAsync({});
+
+    getUserWeather(location);
+    getPartnerWeather();
+
+    if (userTemp) setLoading(false);
   };
 
   // changed useEffect to depend on partner country because it is the last
   // const we grab before the api call
   useEffect(() => {
     loadForecast();
-  }, [userID, partnerID, partnerCountry]);
+  }, []);
 
   // used documentation from react-native-analog-clock to set up timer
   // basically updates seconds minutes and hours using the nowDate
@@ -246,9 +202,9 @@ function ClockAndLocation() {
           </Text>
         </View>
         <View style={styles.list}>
-          <Text>{userName}</Text>
+          <Text>{user.firstName}</Text>
           <Text>
-            {userCity}
+            {user.city}
           </Text>
           <Text>
             {userTemp}
@@ -261,9 +217,9 @@ function ClockAndLocation() {
 
       <View style={styles.subSection}>
         <View style={styles.list}>
-          <Text style={{ textAlign: 'right' }}>{partnerName}</Text>
-          <Text style={{ textAlign: 'right' }}>{partnerCity}</Text>
-          <Text style={{ textAlign: 'right' }}>
+          <Text style={styles.partnerInfo}>{partner.name}</Text>
+          <Text style={styles.partnerInfo}>{partner.city}</Text>
+          <Text style={styles.partnerInfo}>
             {partnerTemp}
             {partnerTemp ? ('\u00b0F') : null}
           </Text>
@@ -350,6 +306,9 @@ const styles = StyleSheet.create({
   city: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  partnerInfo: {
+    textAlign: 'right',
   },
 });
 

@@ -62,7 +62,7 @@ export function fetchPair(uid) {
     axios.get(`${apiUrl}/pairs/${uid}`)
       .then((response) => {
         if (response) {
-          dispatch({ type: ActionTypes.FETCH_PAIR, payload: response.data });
+          dispatch({ type: ActionTypes.UPDATE_PAIR, payload: response.data });
         } else {
           // Need to add error catching
           console.log(response.data);

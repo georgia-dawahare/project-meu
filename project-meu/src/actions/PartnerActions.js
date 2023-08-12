@@ -4,15 +4,14 @@ import { apiUrl } from '../constants/constants';
 // keys for actiontypes
 export const ActionTypes = {
   UPDATE_PARTNER: 'UPDATE_PARTNER',
-  FETCH_PARTNER: 'FETCH_PARTNER',
 };
 
 // logged in user ID userID -> fetchPartnerId(userID) ->
 // Populate partner object in redux -> fetchPartnerById(partner._id) ->
 // Populate entire object
 
-// Get partner ID using current user ID
-export function fetchPartnerId(uid) {
+// Get partner object using current user ID
+export function fetchPartner(uid) {
   // axios get
   return (dispatch) => {
     axios.get(`${apiUrl}/pairs/partner/${uid}`)

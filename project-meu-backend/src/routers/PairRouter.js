@@ -48,12 +48,12 @@ const handleGetPairByUserId = async (req, res) => {
     }
 };
 
-// Get partner ID
-const handleGetPartnerId = async (req, res) => {
+// Get partner object using current user ID
+const handleGetPartner = async (req, res) => {
     const userId = req.params.id;
     try {
-        const partnerId = await Pairs.findPartnerId(userId);
-        res.json(partnerId);
+        const partner = await Pairs.findPartner(userId);
+        res.json(partner);
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -111,7 +111,7 @@ router.route('/:id')
     .get(handleGetPairByUserId);
 
 router.route('/partner/:id')
-    .get(handleGetPartnerId);
+    .get(handleGetPartner);
 
 router.route('/primary/:id')
     .get(handleGetPrimaryUser);

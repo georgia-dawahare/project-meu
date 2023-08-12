@@ -12,8 +12,6 @@ const initialState = {
 
 const PairReducer = (state = initialState, action = {}) => {
   switch (action.type) {
-    case ActionTypes.FETCH_PAIR:
-      return { ...state, ...action.payload };
     case ActionTypes.UPDATE_PAIR:
       return { ...state, pairData: { ...state.pairData, ...action.payload } };
     default:
