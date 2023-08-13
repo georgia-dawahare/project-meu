@@ -217,7 +217,7 @@ function ClockAndLocation() {
 
       <View style={styles.subSection}>
         <View style={styles.list}>
-          <Text style={styles.partnerInfo}>{partner.name}</Text>
+          <Text style={styles.partnerInfo}>{partner.firstName}</Text>
           <Text style={styles.partnerInfo}>{partner.city}</Text>
           <Text style={styles.partnerInfo}>
             {partnerTemp}

@@ -32,44 +32,32 @@ function Home({ navigation }) {
     setUserFirestoreID(auth?.currentUser?.uid);
   }, []);
 
-  // Fetch user
-  // BUG: Not fetching correctly
+  // Fetch user, partner, and pair
   useEffect(() => {
     async function getUser() {
       dispatch(fetchFirestoreUser(userFirestoreID));
     }
 
-    if (userFirestoreID) getUser();
-    console.log('LOGGED IN', user);
-    console.log('PARTNER: ', partner);
-  }, [userFirestoreID]);
-
-  // Fetch partner
-  // BUG: Not fetching correctly
-  useEffect(() => {
     async function getPartner(userId) {
       dispatch(fetchPartner(userId));
     }
-    if (user._id) getPartner(user._id);
-  }, [user]);
 
-  // Fetch pair
-  useEffect(() => {
     async function getPair(userId) {
       dispatch(fetchPair(userId));
     }
-    if (user._id) getPair(user._id);
-    console.log('PAIR', pair);
-  }, []);
 
-  // TODO: Test if works
+    if (userFirestoreID) getUser();
+    if (user._id) getPartner(user._id);
+    if (user._id) getPair(user._id);
+
+    console.log('LOGGED IN', user);
+    console.log('PARTNER: ', partner);
+    console.log('PAIR', pair);
+  }, [user._id, partner._id, pair._id]);
+
   useEffect(() => {
-    if (partner._id && user._id) {
-      if (user.backgroundPhoto) {
-        setUserBackgroundImage(user.backgroundPhoto);
-      }
-    }
-  }, []);
+    setUserBackgroundImage(user.backgroundPhoto);
+  }, [user._id]);
 
   const toggleMenu = () => {
     setMenuVisible(!isMenuVisible);
