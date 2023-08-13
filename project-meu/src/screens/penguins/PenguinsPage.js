@@ -4,8 +4,16 @@ import {
   Text, Button, TouchableOpacity, SafeAreaView, StyleSheet, View, Image, Dimensions, Modal, Platform,
 } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
+
+/*************************Things*I*changed*on*7/20***************************/
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchPartnerId, fetchPartnerById } from '../../actions/PartnerActions';
+import { connectPair, fetchPair } from '../../actions/PairActions';
+
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
+/*************************Things*I*changed*on*7/20***************************/
+
 import * as Notifications from 'expo-notifications';
 // import expoPushTokensApi from './src/api/expoPushTokens';
 import * as Device from 'expo-device';
@@ -31,7 +39,11 @@ function PenguinsPage() {
 
   const [selectedIcon, setSelectedIcon] = useState(null);
 
+  /*************************Things*I*changed*on*7/20***************************/
+  // need to comment this out
   const [userId, setUserId] = useState('');
+  /*************************Things*I*changed*on*7/20***************************/
+  
   const [userDoc, setUserDoc] = useState('');
   const [userName, setUserName] = useState('');
   const [partnerId, setPartnerId] = useState('');
@@ -50,36 +62,149 @@ function PenguinsPage() {
   const notificationListener = useRef();
   const responseListener = useRef();
 
+  /*************************Things*I*changed*on*7/20***************************/
   const auth = getAuth();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await axios.get(`${apiUrl}/users/${userId}`);
-      const userInfo = user.data;
-      if (userInfo) {
-        setUserDoc(userInfo);
-      }
-    };
-    setUserId(auth?.currentUser?.uid);
-    if (userId) {
-      getUser();
-    }
-  }, [partnerId]);
+  const dispatch = useDispatch();
+
+  const user1 = useSelector((state) => state.userState.userData); // user1 = userDoc
+  const currUserId = user1._id; // currUserId = userId
+
+  // don't use pair
+  // const pair = useSelector((state) => state.pairState.pairData); // pairDoc, pair information
+
+  // const pairId = pair._id;
+  
 
   useEffect(() => {
-    const getPartnerId = async () => {
-      const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
-      const returnedPartnerId = response.data;
-      if (returnedPartnerId) {
-        setPartnerId(returnedPartnerId);
-      }
-    };
+    console.log("This is user1", user1);
 
-    if (userId) {
-      getPartnerId();
+    console.log("This is userID", currUserId);
+
+    // console.log("This is pair doc", pair);
+    // console.log("This is pair Id", pairId);
+  }, [user1])
+
+
+
+  // Fetch partner ID when the user ID changes
+  useEffect(() => {
+    dispatch(fetchPartnerId(currUserId));
+  }, [dispatch, currUserId]);
+
+  // Access the partner ID from the Redux store using useSelector
+  const currPartnerId = useSelector((state) => state.partnerState.partnerData);
+
+  // Fetch partner data when the partner ID changes
+  useEffect(() => {
+    if (currPartnerId) { // Check if currPartnerId is defined before dispatching
+      dispatch(fetchPartnerById(currPartnerId));
     }
-  }, [userId]);
+  }, [dispatch, currPartnerId]);
 
+  // Access the partner data from the Redux store using useSelector
+  const currPartner = useSelector((state) => state.partnerState.partnerData);
+
+  // Log partner data when it changes
+  useEffect(() => {
+    console.log("This is partner before", currPartnerId);
+    console.log("This is partner", currPartner);
+  }, [currPartnerId, currPartner]);
+
+
+  // ***** how do I get partnerID using fetchPartnerId ? **********//
+  // ***** or should I just use the primaryUserId/secondaryUserId logic here? ******//
+
+  // Wrong way of getting partnerID
+
+  // useEffect(() => {
+  //   // Dispatch the fetchPartnerId action when the component mounts
+  //   dispatch(fetchPartnerId(userId));
+  // }, [dispatch, userId]);
+
+  // // Access the partner ID from the Redux store using useSelector
+  // let currPartnerId = useSelector((state) => state.partnerState); // Adjust the state path as needed
+
+  // useEffect(() => {
+  //   console.log("This is partner Id", currPartnerId);
+  // }, []);
+
+  // ************* still couldn't figure it out, so this is just the basic switch // 
+
+  // useEffect(() => {
+  //   if (currUserId == pair.primaryUserId) {
+  //     currPartnerId = pair.secondaryUserId;
+  //   } else {
+  //     currPartnerId = pair.primaryUserId;
+  //   }
+  
+  //   console.log("This is user Id", currUserId);
+  //   console.log("This is partner Id", currPartnerId);
+  // }, []);
+
+  // ************* //
+
+
+  // we have userId & userDoc now, userDoc = user1, userid = currUserId
+  // we also have the pairId & partnerId
+
+  //*********deleting*these************/
+  // so this function really just helps me set up userID & userDoc
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const user = await axios.get(`${apiUrl}/users/${userId}`);
+  //     const userInfo = user.data;
+  //     if (userInfo) {c
+  //       setUserDoc(userInfo);
+  //     }
+  //   };
+  //   setUserId(auth?.currentUser?.uid);
+  //   if (userId) {
+  //     getUser();
+  //   }
+  // }, [partnerId]);
+
+  // // this function helps me set up partnerID
+  // useEffect(() => {
+  //   const getPartnerId = async () => {
+  //     const response = await axios.get(`${apiUrl}/users/partner/${userId}`);
+  //     const returnedPartnerId = response.data;
+  //     if (returnedPartnerId) {
+  //       setPartnerId(returnedPartnerId);
+  //     }
+  //   };
+
+  //   if (userId) {
+  //     getPartnerId();
+  //   }
+  // }, [userId]);
+  //*********deleting*these************/
+
+  // const currPartner = useSelector((state) => state.partnerState.partnerData); // Assuming this is how you access the partner ID from the Redux store
+
+  // // Fetch partner data when component mounts
+  // useEffect(() => {
+  //   console.log("This is partner before", currPartnerId);
+  //   dispatch(fetchPartnerId(currUserId));
+    
+  //   dispatch(fetchPartnerById(currPartnerId));
+  //   console.log("This is partner here", currPartnerId);
+
+  //   console.log("This is partner", currPartner);
+  // }, []); // currPartnerId is changing, first iteration is not populating well, feeding in nothing, can figure out through print statement, or feed empty data
+
+  // 1. make sure order I'm calling this is correct, don't overuse useEffect ###
+  // figure out why the id is changing so much, what I'm putting in, what order I'm putting them in
+  // 2. Get into redux, and follow the functions i'm calling, and go into the body of them, console logging them
+  // 3. Go to the backend, how I'm passing the parameters
+
+  // minimize use effect, but use effect 
+  // 1 use effect from user (userId in dependency array), one for partner (userId in dependency array)
+
+  /*************************Things*I*changed*on*7/20***************************/
+
+
+  // this function helps me set up PartnerDoc, which has access to the partner's name, emotion, and color
   useEffect(() => {
     const getPartner = async () => {
       const partner = await axios.get(`${apiUrl}/users/${partnerId}`);

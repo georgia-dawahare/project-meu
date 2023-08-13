@@ -14,15 +14,19 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import {useDispatch, useSelector} from 'react-redux';
 import SignUpGraphic from '../../components/SignUpGraphic';
 import Button from '../../components/Button';
+import {fetchFirestoreUser} from '../../actions/UserActions';
 
 function SignIn({ navigation }) {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [fontLoaded, setFontLoaded] = useState(false);
+  const currUser = useSelector((state) => state.userState.userData);
 
   useEffect(() => {
     async function loadFont() {
@@ -40,7 +44,9 @@ function SignIn({ navigation }) {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
-        // const { user } = userCredential;
+        const { user } = userCredential;
+        console.log("BEFORE", currUser);
+        dispatch(fetchFirestoreUser(user.uid));
       })
       .catch((error) => {
         const errorCode = error.code;

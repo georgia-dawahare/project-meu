@@ -27,7 +27,7 @@ export function fetchUserById(uid) {
   return (dispatch) => {
     axios.get(`${apiUrl}/users/${uid}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_USER, payload: response.data });
+        dispatch({ type: ActionTypes.UPDATE_USER, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
@@ -47,7 +47,7 @@ export function fetchFirestoreUser(uid) {
   return (dispatch) => {
     axios.get(`${apiUrl}/users/firestore/${uid}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_USER, payload: response.data });
+        dispatch({ type: ActionTypes.UPDATE_USER, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
