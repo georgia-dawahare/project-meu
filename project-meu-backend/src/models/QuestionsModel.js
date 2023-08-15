@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export const QuestionsSchema = new Schema({
-    _Id: { type: Number, required: true },
+    _id: { type: Number, required: true },
     questions: { type: Schema.Types.String, required: true },
     type: { type: Schema.Types.String, required: true },
 }, {

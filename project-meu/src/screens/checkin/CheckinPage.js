@@ -16,37 +16,25 @@ import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
 import moment from 'moment';
 import axios from 'axios';
-// import { onAuthStateChanged } from 'firebase/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
-// import auth from '../../services/datastore';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
-// import { useSelector } from 'react-redux';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
+import { findPairById } from '../../actions/PairActions';
+import { createResponse } from '../../actions/ResponseActions';
 
 function CheckinPage({ navigation }) {
-  // georgia
-  const userdata = useSelector((state) => state.userState.userData);
-  console.log('usertest :      ', userdata);
-
-  const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  console.log('questiosTEST:           ', questionsTest);
-
-  const questionData = require('../../../assets/data/questions.json');
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  const [question, setQuestion] = useState('');
   const [userResponseTime, setUserResponseTime] = useState('');
   const [partnerResponseTime, setPartnerResponseTime] = useState('');
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
-  const [userId, setUserId] = useState('');
-  const [userName, setUserName] = useState('');
-  const [partnerId, setPartnerId] = useState('');
+  // const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState('');
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
@@ -57,21 +45,41 @@ function CheckinPage({ navigation }) {
   const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   const dispatch = useDispatch();
+  // const user = useSelector((state) => state.userState.userData);
+
+  // userData
   const user = useSelector((state) => state.userState.userData);
-
-  // const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  // console.log('questiosTEST:           ', questionsTest);
-
   const currUserId = user._id;
-  const partnerID = user.pairId;
+  const currUserFirstName = user.firstName;
+  const currUserUid = user.uid;
+  const currUserPairId = user.pairId;
   console.log('currID            ', currUserId);
-  console.log('partnerId:     ', partnerID);
+  console.log('partnerId:     ', currUserPairId);
+  console.log('user :      ', user);
+
+  // partner Data
+  const pair = useSelector((state) => state.pairState.pairData);
+  let partnerId;
+  if (pair.primaryUserId === currUserId) {
+    partnerId = pair.secondaryUserId;
+  } else if (pair.secondaryUserId === currUserId) {
+    partnerId = pair.primaryUserId;
+  }
+  console.log('partnerID', partnerId);
+
+  // questions Data
+  const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  // console.log('questiosTEST:           ', questionsTest);
+  // for testing
+  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
+  console.log('first Q :       ', firstQuestion);
 
   useEffect(() => {
     async function checkPartner() {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
+        dispatch(findPairById(currUserPairId));
       }
     }
     checkPartner();
@@ -164,10 +172,12 @@ function CheckinPage({ navigation }) {
     }
 
     // Current user is pair creator
-    if (userId === p1Response?.user_id || partnerId === p2Response?.user_id) {
+    if (currUserId === p1Response?.user_id || partnerId === p2Response?.user_id) {
       //  Add user response
       if (p1Response) {
-        setUserResponse(p1Response.response);
+        // here
+        // setUserResponse(p1Response.response);
+        createResponse(currUserUid, p1Response);
         setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
       }
       // Add partner response
@@ -177,7 +187,7 @@ function CheckinPage({ navigation }) {
         setPartnerResponse(p2Response.response);
       }
       // Current user is p2
-    } else if (userId === p2Response?.user_id || partnerId === p1Response?.user_id) {
+    } else if (currUserId === p2Response?.user_id || partnerId === p1Response?.user_id) {
       // Add user response
       if (p2Response) {
         setUserResponse(p2Response.response);
@@ -214,9 +224,6 @@ function CheckinPage({ navigation }) {
           } else {
             return;
           }
-
-          // Set daily question
-          setQuestion(questionData.questions[responseGroupData.question_id].question);
         }
       } catch (error) {
         console.error('Error occurred during data refresh:', error);
@@ -238,7 +245,7 @@ function CheckinPage({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
+          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Text style={styles.buttonTxt}>Submit a Response</Text>
           </TouchableOpacity>
@@ -252,7 +259,8 @@ function CheckinPage({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
+          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
+          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
@@ -285,11 +293,13 @@ function CheckinPage({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
+          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
+          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{userName}</Text>
+                {/* <Text style={styles.leftText}>{userName}</Text> */}
+                <Text style={styles.leftText}>{currUserFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
               <Image style={styles.profileImg}
@@ -321,7 +331,8 @@ function CheckinPage({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{question}</Card.Title>
+          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
+          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
@@ -363,7 +374,7 @@ function CheckinPage({ navigation }) {
           <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{userName}</Text>
+                <Text style={styles.leftText}>{currUserFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
               <Image style={styles.profileImg}
