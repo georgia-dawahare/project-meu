@@ -23,7 +23,7 @@ import Button from '../../components/Button';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { findPairById } from '../../actions/PairActions';
+import { fetchPair } from '../../actions/PairActions';
 import { createResponse } from '../../actions/ResponseActions';
 
 function CheckinPage({ navigation }) {
@@ -34,7 +34,6 @@ function CheckinPage({ navigation }) {
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
-  // const [partnerId, setPartnerId] = useState('');
   const [partnerName, setPartnerName] = useState('');
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
@@ -45,27 +44,29 @@ function CheckinPage({ navigation }) {
   const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   const dispatch = useDispatch();
-  // const user = useSelector((state) => state.userState.userData);
 
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
   const currUserUid = user.uid;
-  const currUserPairId = user.pairId;
-  console.log('currID            ', currUserId);
-  console.log('partnerId:     ', currUserPairId);
-  console.log('user :      ', user);
+  // console.log('currID            ', currUserId);
+  // console.log('currUID            ', currUserUid);
+  // console.log('user :      ', user);
 
   // partner Data
   const pair = useSelector((state) => state.pairState.pairData);
-  let partnerId;
-  if (pair.primaryUserId === currUserId) {
-    partnerId = pair.secondaryUserId;
-  } else if (pair.secondaryUserId === currUserId) {
-    partnerId = pair.primaryUserId;
-  }
-  console.log('partnerID', partnerId);
+  // let partnerId;
+  // if (currUserPairId === pair._id) {
+  //   if (pair.primaryUserId === currUserId) {
+  //     partnerId = pair.secondaryUserId;
+  //   } else if (pair.secondaryUserId === currUserId) {
+  //     partnerId = pair.primaryUserId;
+  //   } else {
+  //     partnerId = 'no';
+  //   }
+  // }
+  console.log('pair', pair);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
@@ -79,7 +80,8 @@ function CheckinPage({ navigation }) {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
-        dispatch(findPairById(currUserPairId));
+        dispatch(fetchPair(currUserId));
+        // dispatch(fetchUserById(currUserPairUid));
       }
     }
     checkPartner();
