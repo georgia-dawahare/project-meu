@@ -67,7 +67,11 @@ function CheckinPage({ navigation }) {
     }
   }
   console.log('partnerId :     ', partnerId);
-  // console.log('pair', pair);
+
+  // partner Data
+  const partner = useSelector((state) => state.partnerState.partnerData);
+  // const partnerFirstName = partner.firstName;
+  console.log('partner Info : ', partner);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
@@ -94,6 +98,15 @@ function CheckinPage({ navigation }) {
     }
     pairData();
   }, [currUserId]);
+
+  useEffect(() => {
+    async function fetchPartnerData() {
+      if (partnerId) {
+        dispatch(fetchUserById(partnerId));
+      }
+    }
+    fetchPartnerData();
+  }, [partnerId]);
 
   useEffect(() => {
     async function loadFont() {
