@@ -23,8 +23,8 @@ import Button from '../../components/Button';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchPair } from '../../actions/PairActions';
 import { createResponse } from '../../actions/ResponseActions';
+import { fetchPair } from '../../actions/PairActions';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -50,23 +50,24 @@ function CheckinPage({ navigation }) {
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
   const currUserUid = user.uid;
+  const currUserPairId = user.pairId;
   // console.log('currID            ', currUserId);
   // console.log('currUID            ', currUserUid);
-  // console.log('user :      ', user);
+  // console.log('userCurrentPair', currUserPairId);
+  console.log('user :      ', user);
 
-  // partner Data
-  const pair = useSelector((state) => state.pairState.pairData);
-  // let partnerId;
-  // if (currUserPairId === pair._id) {
-  //   if (pair.primaryUserId === currUserId) {
-  //     partnerId = pair.secondaryUserId;
-  //   } else if (pair.secondaryUserId === currUserId) {
-  //     partnerId = pair.primaryUserId;
-  //   } else {
-  //     partnerId = 'no';
-  //   }
-  // }
-  console.log('pair', pair);
+  // To get partnerId from pairs
+  const pairs = useSelector((state) => state.pairState.pairData);
+  let partnerId;
+  if (currUserPairId === pairs._id) {
+    if (pairs.primaryUserId === currUserId) {
+      partnerId = pairs.secondaryUserId;
+    } else if (pairs.secondaryUserId === currUserId) {
+      partnerId = pairs.primaryUserId;
+    }
+  }
+  console.log('partnerId :     ', partnerId);
+  // console.log('pair', pair);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
@@ -76,16 +77,23 @@ function CheckinPage({ navigation }) {
   console.log('first Q :       ', firstQuestion);
 
   useEffect(() => {
-    async function checkPartner() {
+    async function fetchData() {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
-        dispatch(fetchPair(currUserId));
-        // dispatch(fetchUserById(currUserPairUid));
       }
     }
-    checkPartner();
-  }, []);
+    fetchData();
+  }, [currUserId]);
+
+  useEffect(() => {
+    async function pairData() {
+      if (currUserId) {
+        await dispatch(fetchPair(currUserId));
+      }
+    }
+    pairData();
+  }, [currUserId]);
 
   useEffect(() => {
     async function loadFont() {

@@ -58,18 +58,19 @@ export function deletePair(pairId) {
 // Get pair by user ID
 export function fetchPair(uid) {
   // axios get
-  return (dispatch) => {
-    axios.get(`${apiUrl}/pairs/${uid}`)
-      .then((response) => {
-        if (response) {
-          dispatch({ type: ActionTypes.FETCH_PAIR, payload: response.data });
-        } else {
-          // Need to add error catching
-          console.log(response.data);
-        }
-      }).catch((error) => {
-        console.log('error fetching pair: ', error);
-      });
+  return async (dispatch) => { // Use async function
+    try {
+      const response = await axios.get(`${apiUrl}/pairs/${uid}`);
+      if (response) {
+        dispatch({ type: ActionTypes.FETCH_PAIR, payload: response.data });
+        // console.log('Pair data fetched successfully:', response.data);
+      } else {
+        // Need to add error catching
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.log('error fetching pair: ', error);
+    }
   };
 }
 
