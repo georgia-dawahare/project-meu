@@ -46,6 +46,16 @@ const handleGetUser = async (req, res) => {
     }
 };
 
+const handleGetPartner = async(req,res)=>{
+    const partnerId = req.params.id;
+    try {
+        const partner = await Users.findPartnerById(partnerId);
+        res.json(partner);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 // Get user by Firestore UID
 const handlGetFirestoreUser = async (req, res) => {
     const firestoreUid = req.params.id;
@@ -107,8 +117,10 @@ router.route('/')
 
 router.route('/:id')
     .get(handleGetUser)
+    .get(handleGetPartner)
     .patch(handleUpdateUsesr)
     .delete(handleDeleteUser);
+
 
 router.route('/emotion/:id')
     .get(handleGetUserEmotion);

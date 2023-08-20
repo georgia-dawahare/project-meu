@@ -17,6 +17,22 @@ const initialState = {
     city: '',
     asdf: '',
   },
+  partnerData: {
+    uid: '',
+    email: '',
+    firstName: '',
+    lastName: '',
+    birthday: '',
+    penguinColor: '',
+    userLastEmotion: 0,
+    partnerLastEmotion: 0,
+    pairCode: '',
+    pairId: '',
+    backgroundPhoto: '',
+    countryCode: '',
+    city: '',
+    asdf: '',
+  },
 };
 
 const UserReducer = (state = initialState, action = {}) => {
@@ -25,6 +41,8 @@ const UserReducer = (state = initialState, action = {}) => {
       return { ...state, userData: { ...state.userData, ...action.payload } };
     case ActionTypes.FETCH_USER:
       return { ...state, ...action.payload };
+    case ActionTypes.FETCH_PARTNER:
+      return { ...state, partnerData: { ...state.partnerData, ...action.payload } };
     default:
       return state;
   }

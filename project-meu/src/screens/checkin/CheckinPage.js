@@ -21,7 +21,7 @@ import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
-import { fetchUserById } from '../../actions/UserActions';
+import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { createResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
@@ -34,7 +34,6 @@ function CheckinPage({ navigation }) {
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
-  const [partnerName, setPartnerName] = useState('');
   const [userDoc, setUserDoc] = useState('');
   const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
@@ -51,10 +50,7 @@ function CheckinPage({ navigation }) {
   const currUserFirstName = user.firstName;
   const currUserUid = user.uid;
   const currUserPairId = user.pairId;
-  // console.log('currID            ', currUserId);
-  // console.log('currUID            ', currUserUid);
-  // console.log('userCurrentPair', currUserPairId);
-  console.log('user :      ', user);
+  // console.log('user :      ', user);
 
   // To get partnerId from pairs
   const pairs = useSelector((state) => state.pairState.pairData);
@@ -69,9 +65,10 @@ function CheckinPage({ navigation }) {
   console.log('partnerId :     ', partnerId);
 
   // partner Data
-  const partner = useSelector((state) => state.partnerState.partnerData);
-  // const partnerFirstName = partner.firstName;
+  const partner = useSelector((state) => state.userState.partnerData);
+  const partnerFirstName = partner.firstName;
   console.log('partner Info : ', partner);
+  // console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
@@ -102,7 +99,7 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     async function fetchPartnerData() {
       if (partnerId) {
-        dispatch(fetchUserById(partnerId));
+        await dispatch(fetchPartnerDataById(partnerId));
       }
     }
     fetchPartnerData();
@@ -290,7 +287,7 @@ function CheckinPage({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
               />
               <View style={styles.partnerNameTxt}>
-                <Text>{partnerName}</Text>
+                <Text>{partnerFirstName}</Text>
                 <Text>{partnerResponseTime}</Text>
               </View>
             </View>
@@ -362,7 +359,7 @@ function CheckinPage({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
               />
               <View style={styles.partnerNameTxt}>
-                <Text>{partnerName}</Text>
+                <Text>{partnerFirstName}</Text>
                 <Text>{partnerResponseTime}</Text>
               </View>
               {/* added */}

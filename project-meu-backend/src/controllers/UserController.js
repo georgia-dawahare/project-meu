@@ -44,6 +44,12 @@ export async function findUserById(uid) {
     return user;
 };
 
+//Get Partner by ID
+export async function findPartnerById(uid) {
+    const partner = await User.findById(uid);
+    return partner;
+};
+
 // Get user by Firestore UID
 export async function findFirestoreUser(firestoreUid) {
     const user = await User.findOne({ "uid": firestoreUid });

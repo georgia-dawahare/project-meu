@@ -5,6 +5,7 @@ import { apiUrl } from '../constants/constants';
 export const ActionTypes = {
   UPDATE_USER: 'UPDATE_USER',
   FETCH_USER: 'FETCH_USER',
+  FETCH_PARTNER: 'FETCH_PARTNER',
 };
 
 // Create new user
@@ -30,6 +31,18 @@ export function fetchUserById(uid) {
         dispatch({ type: ActionTypes.FETCH_USER, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
+      });
+  };
+}
+
+// Fetch partner by ID
+export function fetchPartnerDataById(uid) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/users/${uid}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_PARTNER, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching parter data: ', error);
       });
   };
 }
