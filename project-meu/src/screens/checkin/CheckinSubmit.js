@@ -63,18 +63,18 @@ function CheckinSubmit({ navigation }) {
   }, [currUserId, userDoc]);
 
   // by Soo
-  useEffect(() => {
-    async function createUserResponse() {
-      if (submit) {
-        dispatch(createResponse(currUserUid, {
-          response: textAnswer,
-          userId: currUserUid,
-        }));
-        setSubmit(false);
-      }
-    }
-    createUserResponse();
-  }, [submit]);
+  // useEffect(() => {
+  //   async function createUserResponse() {
+  //     if (textAnswer) {
+  //       dispatch(createResponse(currUserUid, {
+  //         response: textAnswer,
+  //         userId: currUserId,
+  //       }));
+  //       // setSubmit(false);
+  //     }
+  //   }
+  //   createUserResponse();
+  // }, [textAnswer]);
 
   // const updateResponse = async (currResponseId, updatedResponse) => {
   //   const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
@@ -131,31 +131,51 @@ function CheckinSubmit({ navigation }) {
 
   const handleOnSubmit = async () => {
     // const groupId = userDoc.pair_id + moment().format('MMDDYY');
-    try {
-      if (newResponse) {
-        setSubmit(true);
-        // dispatch(createResponse(currUserId, newResponse));
-        // createResponse(currUserId, newResponse);
+  //   try {
+  //     if (newResponse) {
+  //       setSubmit(true);
+  //     } else {
+  //       updateResponse(
+  //         currUserId,
+  //         {
+  //           response: textAnswer,
+  //           user_id: currUserId,
+  //         },
+  //       );
+  //     }
+  //     navigation.navigate('Checkin');
+  //   } catch (e) {
+  //     console.log('Failed to submit response: ', e);
+  //   }
+  // };
 
-        // previous code
-        // addResponse({
-        //   response: textAnswer,
-        //   user_id: currUserId,
-        // }, userDoc.pair_id, groupId);
-      } else {
-        updateResponse(
-          currUserId,
-          {
-            response: textAnswer,
-            user_id: currUserId,
-          },
-        );
+    // by GPT
+    try {
+      // 여기에서 submit 버튼을 누를 때만 동작하도록 변경
+      if (newResponse) {
+        // 현재 textAnswer가 비어있지 않고, newResponse가 false일 때만 실행
+        // if (newResponse) {
+        await dispatch(createResponse(currUserUid, {
+          response: textAnswer,
+          userId: currUserId,
+        }));
+        setSubmit(true);
+        // } else {
+        //   await updateResponse(
+        //     currUserId,
+        //     {
+        //       response: textAnswer,
+        //       user_id: currUserId,
+        //     },
+        //   );
+        // }
+        navigation.navigate('Checkin');
       }
-      navigation.navigate('Checkin');
     } catch (e) {
       console.log('Failed to submit response: ', e);
     }
   };
+
   return (
 
     <KeyboardAvoidingView
