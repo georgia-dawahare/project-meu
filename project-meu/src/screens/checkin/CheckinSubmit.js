@@ -38,7 +38,7 @@ function CheckinSubmit({ navigation }) {
   const currUserId = user._id;
   // const currUserFirstName = user.firstName;
   const currUserUid = user.uid;
-  // const currUserPairId = user.pairId;
+  const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
   // questions Data
@@ -155,9 +155,10 @@ function CheckinSubmit({ navigation }) {
       if (newResponse) {
         // 현재 textAnswer가 비어있지 않고, newResponse가 false일 때만 실행
         // if (newResponse) {
-        await dispatch(createResponse(currUserUid, {
+        await dispatch(createResponse(currUserId, {
           response: textAnswer,
           userId: currUserId,
+          responseGroupId: currUserPairId,
         }));
         setSubmit(true);
         // } else {

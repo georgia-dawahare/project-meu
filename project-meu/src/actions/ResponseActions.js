@@ -12,6 +12,7 @@ export const ActionTypes = {
 // TODO
 
 // Create responses
+// need to user currUserId instead of uid
 export function createResponse(uid, responseData) {
   // axios post
   return () => {
