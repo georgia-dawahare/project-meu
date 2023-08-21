@@ -14,7 +14,7 @@ import {
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-import moment from 'moment';
+// import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
@@ -23,8 +23,9 @@ import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { createResponse } from '../../actions/ResponseActions';
+// import { createResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
+import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -34,10 +35,9 @@ function CheckinPage({ navigation }) {
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
-  const [userDoc, setUserDoc] = useState('');
-  const [partnerDoc, setPartnerDoc] = useState('');
+  // const [userDoc, setUserDoc] = useState('');
+  // const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  // added
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const emojis = ['💖', '😜', '😘', '‼️', '😢'];
@@ -62,21 +62,26 @@ function CheckinPage({ navigation }) {
       partnerId = pairs.primaryUserId;
     }
   }
-  console.log('partnerId :     ', partnerId);
+  // console.log('partnerId :     ', partnerId);
 
   // partner Data
   const partner = useSelector((state) => state.userState.partnerData);
   const partnerFirstName = partner.firstName;
-  console.log('partner Info : ', partner);
-  // console.log('partner Info : ', partnerFirstName);
+  // console.log('partner Info : ', partner);
+  console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
   // console.log('questiosTEST:           ', questionsTest);
   // for testing
   const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  console.log('first Q :       ', firstQuestion);
+  // console.log('first Q :       ', firstQuestion);
 
+  // get reponses of the pair
+  const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
+  console.log('currUserREsponses', currUserResponses);
+
+  // fetch Data
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
@@ -105,6 +110,26 @@ function CheckinPage({ navigation }) {
     fetchPartnerData();
   }, [partnerId]);
 
+  // useEffect(() => {
+  //   async function fetchResponses() {
+  //     if (partnerId) {
+  //       await dispatch(fetchResponse(currUserId, currUserResponse));
+  //     }
+  //   }
+  //   fetchResponses();
+  // }, [partnerId]);
+
+  useEffect(() => {
+    async function fetchGroupResponses() {
+      if (currUserPairId) {
+        await dispatch(fetchResponseGroup(currUserPairId));
+      }
+    }
+    fetchGroupResponses();
+    console.log('GroupResponses');
+  }, [currUserPairId]);
+
+  // fetch Font
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
@@ -117,7 +142,7 @@ function CheckinPage({ navigation }) {
     loadFont();
   }, []);
 
-  // added
+  // for emoji
   const openModal = () => {
     setModalVisible(true);
   };
@@ -131,6 +156,7 @@ function CheckinPage({ navigation }) {
     closeModal();
   };
 
+  // scrollable page refresh 0.5s
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
@@ -138,127 +164,157 @@ function CheckinPage({ navigation }) {
     }, 500);
   }, []);
 
-  const addResponseGroup = async (groupData, groupId) => {
-    const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
-    return id;
+  const getResponseGrouptest = async (pairId) => {
+    // get responses of the pair from mongo
+    // find the highest number +1
+    // find the question id and assign
+    fetchResponseGroup(pairId);
+
+    //   let questionId = Math.round(Math.random() * 100);
+    //   // Ignore all image questions until we have a way to display them
+    //   while (questionData.questions[questionId].type === 'image') {
+    //     questionId = Math.round(Math.random() * 100);
+    //   }
+    //   await addResponseGroup(
+    //     {
+    //       p1_response_id: '',
+    //       p2_response_id: '',
+    //       question_id: questionId,
+    //     },
+    //     pairId,
+    //   );
+    //   // Set responseGroup to newly created response group
+    //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
+    // };
   };
+
+  getResponseGrouptest(currUserPairId);
+
+  // const addResponseGroup = async (groupData, groupId) => {
+  //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
+  //   return id;
+  // };
 
   const getResponse = async (id) => {
     const response = await axios.get(`${apiUrl}/responses/${id}`);
     return response.data;
   };
 
-  const getResponseGroup = async (groupId) => {
-    return axios.get(`${apiUrl}/responses/group/${groupId}`);
-  };
+  // const getResponseGroup = async (groupId) => {
+  //   return axios.get(`${apiUrl}/responses/group/${groupId}`);
+  // };
 
-  const createResponseGroup = async (groupId) => {
-    let questionId = Math.round(Math.random() * 100);
-    // Ignore all image questions until we have a way to display them
-    while (questionData.questions[questionId].type === 'image') {
-      questionId = Math.round(Math.random() * 100);
-    }
-    await addResponseGroup(
-      {
-        p1_response_id: '',
-        p2_response_id: '',
-        question_id: questionId,
-      },
-      groupId,
-    );
-    // Set responseGroup to newly created response group
-    return axios.get(`${apiUrl}/responses/group/${groupId}`);
-  };
+  // const createResponseGroup = async (pairId) => {
+  //   // get responses of the pair from mongo
+  //   // find the highest number +1
+  //   // find the question id and assign
+  //   fetchResponseGroup(pairId);
+
+  //   let questionId = Math.round(Math.random() * 100);
+  //   // Ignore all image questions until we have a way to display them
+  //   while (questionData.questions[questionId].type === 'image') {
+  //     questionId = Math.round(Math.random() * 100);
+  //   }
+  //   await addResponseGroup(
+  //     {
+  //       p1_response_id: '',
+  //       p2_response_id: '',
+  //       question_id: questionId,
+  //     },
+  //     pairId,
+  //   );
+  //   // Set responseGroup to newly created response group
+  //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
+  // };
 
   const getDailyResponses = async (responseGroupData) => {
-    let p1Response, p2Response, p1Date, p2Date;
+    let currUserResponse, partnerResponse, p1Date, p2Date;
 
     // Populate partner responses if they exist
 
-    if (responseGroupData.p1_response_id) {
-      p1Response = await getResponse(responseGroupData.p1_response_id);
+    if (responseGroupData.currUserId) {
+      currUserResponse = await getResponse(responseGroupData.currUserId);
     }
-    if (responseGroupData.p2_response_id) {
-      p2Response = await getResponse(responseGroupData.p2_response_id);
+    if (responseGroupData.partnerId) {
+      partnerResponse = await getResponse(responseGroupData.partnerId);
     }
 
-    if (p1Response) {
-      const p1Timestamp = p1Response.timestamp._seconds * 1000 + Math.floor(p1Response.timestamp._nanoseconds / 1000000);
+    if (currUserResponse) {
+      const p1Timestamp = currUserResponse.timestamp._seconds * 1000 + Math.floor(currUserResponse.timestamp._nanoseconds / 1000000);
       p1Date = new Date(p1Timestamp);
     }
-    if (p2Response) {
-      const p2Timestamp = p2Response.timestamp._seconds * 1000 + Math.floor(p2Response.timestamp._nanoseconds / 1000000);
+    if (partnerResponse) {
+      const p2Timestamp = partnerResponse.timestamp._seconds * 1000 + Math.floor(partnerResponse.timestamp._nanoseconds / 1000000);
       p2Date = new Date(p2Timestamp);
     }
 
     // Current user is pair creator
-    if (currUserId === p1Response?.user_id || partnerId === p2Response?.user_id) {
+    if (currUserId === currUserResponse?.user_id || partnerId === partnerResponse?.user_id) {
       //  Add user response
-      if (p1Response) {
-        // here
-        // setUserResponse(p1Response.response);
-        createResponse(currUserUid, p1Response);
+      if (currUserResponse) {
+        setUserResponse(currUserResponse.response);
+        // createResponse(currUserUid, currUserResponse);
         setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
       }
       // Add partner response
-      if (p2Response) {
+      if (partnerResponse) {
         const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
         setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
-        setPartnerResponse(p2Response.response);
+        setPartnerResponse(partnerResponse.response);
       }
       // Current user is p2
-    } else if (currUserId === p2Response?.user_id || partnerId === p1Response?.user_id) {
+    } else if (currUserId === partnerResponse?.user_id || partnerId === currUserResponse?.user_id) {
       // Add user response
-      if (p2Response) {
-        setUserResponse(p2Response.response);
+      if (partnerResponse) {
+        setUserResponse(partnerResponse.response);
         setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
       }
       // Add partner response
-      if (p1Response) {
+      if (currUserResponse) {
         setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setPartnerResponse(p1Response.response);
+        setPartnerResponse(currUserResponse.response);
       }
     }
   };
 
-  const refreshData = async () => {
-    if (userDoc && partnerDoc) {
-      let responseGroup, responseGroupData, groupId;
-      try {
-        // Fetch user ID & user doc
-        const pairId = userDoc.pair_id;
-        groupId = pairId + moment().format('MMDDYY');
-        responseGroup = await getResponseGroup(groupId);
-      } catch (error) {
-        console.error('Error occurred during data refresh:', error);
-      }
-      try {
-        if (groupId) {
-        // if there is no response group, create a new one!
-          if (responseGroup.status === 202) {
-            responseGroup = await createResponseGroup(groupId);
-          }
+  // const refreshData = async () => {
+  //   if (userDoc && partnerDoc) {
+  //     let responseGroup, responseGroupData, groupId;
+  //     try {
+  //       // Fetch user ID & user doc
+  //       const pairId = userDoc.pair_id;
+  //       groupId = pairId + moment().format('MMDDYY');
+  //       responseGroup = await getResponseGroup(groupId);
+  //     } catch (error) {
+  //       console.error('Error occurred during data refresh:', error);
+  //     }
+  //     try {
+  //       if (groupId) {
+  //       // if there is no response group, create a new one!
+  //         if (responseGroup.status === 202) {
+  //           responseGroup = await createResponseGroup(groupId);
+  //         }
 
-          if (responseGroup) {
-            responseGroupData = responseGroup.data;
-          } else {
-            return;
-          }
-        }
-      } catch (error) {
-        console.error('Error occurred during data refresh:', error);
-      }
+  //         if (responseGroup) {
+  //           responseGroupData = responseGroup.data;
+  //         } else {
+  //           return;
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error('Error occurred during data refresh:', error);
+  //     }
 
-      try {
-        if (responseGroupData) {
-        // Retrieve couple responses
-          await getDailyResponses(responseGroupData);
-        }
-      } catch (error) {
-        console.error('Error occurred during data refresh:', error);
-      }
-    }
-  };
+  //     try {
+  //       if (responseGroupData) {
+  //       // Retrieve couple responses
+  //         await getDailyResponses(responseGroupData);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error occurred during data refresh:', error);
+  //     }
+  //   }
+  // };
 
   const displayNoResponses = () => {
     return (
@@ -279,7 +335,6 @@ function CheckinPage({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
           <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
@@ -331,7 +386,6 @@ function CheckinPage({ navigation }) {
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image
               source={require('../../../assets/images/editButton.png')}
-              // source={require('../../../assets/icons/checkin-answer.png')}
               style={styles.editImg}
             />
           </TouchableOpacity>

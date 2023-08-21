@@ -37,9 +37,21 @@ export function updateResponseGroup(responseGroupId, updatedFields) {
 }
 
 // Fetch response group
-export function fetchResponseGroup(responseGroupId) {
+// export function fetchResponseGroup(responseGroupId) {
+//   return (dispatch) => {
+//     axios.get(`${apiUrl}/response_groups/${responseGroupId}`)
+//       .then((response) => {
+//         dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUP, payload: response.data });
+//       }).catch((error) => {
+//         console.log('error fetching user: ', error);
+//       });
+//   };
+// }
+
+// fetch response group bySoo
+export function fetchResponseGroup(pairId) {
   return (dispatch) => {
-    axios.get(`${apiUrl}/response_groups/${responseGroupId}`)
+    axios.get(`${apiUrl}/response_groups/${pairId}`)
       .then((response) => {
         dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUP, payload: response.data });
       }).catch((error) => {

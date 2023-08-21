@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -15,50 +15,76 @@ import {
 import {
   Card, Input,
 } from 'react-native-elements';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
-import auth from '../../services/datastore';
+// import auth from '../../services/datastore';
 import { apiUrl } from '../../constants/constants';
 
+import { fetchQuestions } from '../../actions/QuestionsActions';
+import { fetchUserById } from '../../actions/UserActions';
+import { createResponse, updateResponse } from '../../actions/ResponseActions';
+
 function CheckinSubmit({ navigation }) {
-  const questionData = require('../../../assets/data/questions.json');
-  const [question, setQuestion] = useState('');
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
-  const [responseId, setResponseId] = useState('');
-  const [userId, setUserId] = useState('');
   const [userDoc, setUserDoc] = useState('');
+  const [submit, setSubmit] = useState(false);
+
+  const dispatch = useDispatch();
+
+  // userData
+  const user = useSelector((state) => state.userState.userData);
+  const currUserId = user._id;
+  // const currUserFirstName = user.firstName;
+  const currUserUid = user.uid;
+  // const currUserPairId = user.pairId;
+  // console.log('user :      ', user);
+
+  // questions Data
+  const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  // console.log('questiosTEST:           ', questionsTest);
+  // for testing
+  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
+  // console.log('first Q :       ', firstQuestion);
 
   useEffect(() => {
-    setUserId(auth?.currentUser?.uid);
-  }, [userDoc]);
-
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await axios.get(`${apiUrl}/users/${userId}`);
-      const userInfo = user.data;
-      if (userInfo) {
-        setUserDoc(userInfo);
+    async function fetchData() {
+      if (currUserId) {
+        dispatch(fetchUserById(currUserId));
+        dispatch(fetchQuestions());
       }
-    };
-    if (userId) {
-      getUser();
     }
-  }, [userId]);
+    fetchData();
+  }, [currUserId]);
 
   useEffect(() => {
     refreshData();
-  }, [userId, userDoc]);
+  }, [currUserId, userDoc]);
 
-  const updateResponse = async (currResponseId, updatedResponse) => {
-    const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
-    return id;
-  };
+  // by Soo
+  useEffect(() => {
+    async function createUserResponse() {
+      if (submit) {
+        dispatch(createResponse(currUserUid, {
+          response: textAnswer,
+          userId: currUserUid,
+        }));
+        setSubmit(false);
+      }
+    }
+    createUserResponse();
+  }, [submit]);
 
-  const addResponse = async (responseData, currPairId, groupId) => {
-    const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
-    return id;
-  };
+  // const updateResponse = async (currResponseId, updatedResponse) => {
+  //   const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
+  //   return id;
+  // };
+
+  // const addResponse = async (responseData, currPairId, groupId) => {
+  //   const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
+  //   return id;
+  // };
 
   const getPair = async () => {
     return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
@@ -79,15 +105,15 @@ function CheckinSubmit({ navigation }) {
         const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
         const responseGroupData = responseGroup.data;
         const pairCreatorId = pair?.data?.pair_creator_id;
-        if (userId === pairCreatorId) {
+        if (currUserId === pairCreatorId) {
           if (responseGroupData.p1_response_id) {
             userResponse = await getResponse(responseGroupData.p1_response_id);
-            setResponseId(responseGroupData?.p1_response_id);
+            // setResponseId(responseGroupData?.p1_response_id);
           }
-        } else if (userId !== pairCreatorId) {
+        } else if (currUserId !== pairCreatorId) {
           if (responseGroupData.p2_response_id) {
             userResponse = await getResponse(responseGroupData.p2_response_id);
-            setResponseId(responseGroupData?.p2_response_id);
+            // setResponseId(responseGroupData?.p2_response_id);
           }
         }
         if (userResponse) {
@@ -96,7 +122,7 @@ function CheckinSubmit({ navigation }) {
         }
 
         // Set daily question
-        setQuestion(questionData.questions[responseGroupData.question_id].question);
+        // setQuestion(questionData.questions[responseGroupData.question_id].question);
       }
     } catch (error) {
       console.error('Error occurred during data refresh:', error);
@@ -104,19 +130,24 @@ function CheckinSubmit({ navigation }) {
   };
 
   const handleOnSubmit = async () => {
-    const groupId = userDoc.pair_id + moment().format('MMDDYY');
+    // const groupId = userDoc.pair_id + moment().format('MMDDYY');
     try {
       if (newResponse) {
-        addResponse({
-          response: textAnswer,
-          user_id: userId,
-        }, userDoc.pair_id, groupId);
+        setSubmit(true);
+        // dispatch(createResponse(currUserId, newResponse));
+        // createResponse(currUserId, newResponse);
+
+        // previous code
+        // addResponse({
+        //   response: textAnswer,
+        //   user_id: currUserId,
+        // }, userDoc.pair_id, groupId);
       } else {
         updateResponse(
-          responseId,
+          currUserId,
           {
             response: textAnswer,
-            user_id: userId,
+            user_id: currUserId,
           },
         );
       }
@@ -142,7 +173,7 @@ function CheckinSubmit({ navigation }) {
             </TouchableOpacity>
             <Card containerStyle={styles.cardContainer}>
               <Text>Daily Question</Text>
-              <Card.Title style={styles.question}>{question}</Card.Title>
+              <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
               <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
                 <Text style={styles.buttonText}>
