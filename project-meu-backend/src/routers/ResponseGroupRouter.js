@@ -5,10 +5,17 @@ const router = Router();
 
 // Create response group
 const handleCreateResponseGroup = async (req, res) => {
-    const questionId = req.body.questionId;
+    const questionID = req.body.quesId;
+    const pairID = req.body.pair;
+    console.log(req.body);
     try {
-        const newResponseGroup = await ResponseGroups.createResponseGroup(questionId);
+        // const newResponseGroup = await ResponseGroups.createResponseGroup(questionId);
+        // res.json(newResponseGroup);
+        console.log("here2");
+        const newResponseGroup = await ResponseGroups.createResponseGroup2(questionID, pairID);
+        console.log("here?3");
         res.json(newResponseGroup);
+        console.log("here?4");
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -38,7 +45,7 @@ const handleGetResponseGroup = async (req, res) => {
     }
 }
 
-router.route('/')
+router.route('/addgroups')
     .post(handleCreateResponseGroup);
 
 router.route('/:id')

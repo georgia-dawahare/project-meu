@@ -23,7 +23,10 @@ export async function createResponse(userId, responseGroupId, responseContent) {
         } else if (userId === secondaryUserId.toString()) {
             await ResponseGroups.updateResponseGroup(responseGroupId, { responseId2: savedResponse._id });
         }
+        console.log('saved response');
+        console.log(savedResponse);
         return savedResponse;
+        
     } catch (error) {
         throw new Error(`create response error: ${error}`);
     }

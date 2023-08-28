@@ -9,10 +9,30 @@ export const ActionTypes = {
 };
 
 // Create response group
-export function createResponseGroup(questionId) {
+// export function createResponseGroup(questionId) {
+//   // axios post
+//   return () => {
+//     axios.post(`${apiUrl}/response_groups/`, questionId)
+//       .then(() => {
+//         console.log('Successfully created response group');
+//       }).catch((error) => {
+//         // Need to add error actions
+//         console.log('error creating response group: ', error);
+//       });
+//   };
+// }
+
+// Try
+// from here
+export function createResponseGroup2(pairId, questionId) {
   // axios post
+
   return () => {
-    axios.post(`${apiUrl}/response_groups/`, questionId)
+    const body = {
+      pair: pairId,
+      quesId: questionId,
+    };
+    axios.post(`${apiUrl}/response_groups/addgroups`, body)
       .then(() => {
         console.log('Successfully created response group');
       }).catch((error) => {
@@ -21,6 +41,22 @@ export function createResponseGroup(questionId) {
       });
   };
 }
+
+// try by Soo
+// export function createResponseGroup2(questionId, pairId, responseData) {
+//   // by GPT
+//   // axios post
+//   console.log('wehere?1');
+//   return axios.post(`${apiUrl}/response_groups/${pairId}/${questionId}`, responseData)
+//     .then(() => {
+//       console.log('wehere?2');
+//       console.log('Successfully created group response');
+//       console.log('wehere?3');
+//     }).catch((error) => {
+//       console.log('error creating response group: ', error);
+//       throw error;
+//     });
+// }
 
 // Update response group
 export function updateResponseGroup(responseGroupId, updatedFields) {

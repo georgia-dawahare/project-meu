@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 const ResponseSchema = new Schema({
+    // questionId: { type: Number, required: true },
     response: { type: String, required: true },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     emote: { type: String }

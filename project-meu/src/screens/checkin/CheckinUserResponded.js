@@ -12,22 +12,22 @@ import {
 import {
   Card,
 } from 'react-native-elements';
-import Modal from 'react-native-modal';
+// import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
 // import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-// import { createResponseGroup } from 'me-u-backend/src/controllers/ResponseGroupController';
 import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
-import Button from '../../components/Button';
+// import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
+import { fetchResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup, createResponseGroup2 } from '../../actions/ResponseGroupActions';
+import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
-function CheckinPage({ navigation }) {
+function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [userResponseTime, setUserResponseTime] = useState('');
@@ -35,6 +35,8 @@ function CheckinPage({ navigation }) {
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
+  // const [userDoc, setUserDoc] = useState('');
+  // const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -46,7 +48,6 @@ function CheckinPage({ navigation }) {
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
-  // const currUserUid = user.uid;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
@@ -70,89 +71,61 @@ function CheckinPage({ navigation }) {
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // console.log('questiosTEST:           ', questionsTest);
   // for testing
-  // const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  // const firstQuestion = questionsTest.length > 0 ? questionsTest[currentQuestionIndex].question : null;
-  const firstQuestion = questionsTest.length > 0
-    ? questionsTest[currentQuestionIndex % questionsTest.length]?.question
-    : null;
-
+  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
   // console.log('first Q :       ', firstQuestion);
 
   // get reponses of the pair
-  // const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
-  // console.log('currUserREsponses', currUserResponses);
+  const currUserResponses = useSelector((state) => state.responseState.responseData);
+  console.log('currUserResponses', currUserResponses);
 
   // fetch Data
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
-        dispatch(fetchUserById(currUserId));
-        dispatch(fetchQuestions());
+        await dispatch(fetchUserById(currUserId));
+        await dispatch(fetchQuestions());
+        await dispatch(fetchPair(currUserId));
       }
     }
     fetchData();
   }, [currUserId]);
 
-  useEffect(() => {
-    async function pairData() {
-      if (currUserId) {
-        await dispatch(fetchPair(currUserId));
-      }
-    }
-    pairData();
-  }, [currUserId]);
+  // useEffect(() => {
+  //   async function pairData() {
+  //     if (currUserId) {
+  //       await dispatch(fetchPair(currUserId));
+  //     }
+  //   }
+  //   pairData();
+  // }, [currUserId]);
 
   useEffect(() => {
     async function fetchPartnerData() {
-      if (partnerId) {
+      if (partnerId && currUserId) {
         await dispatch(fetchPartnerDataById(partnerId));
+        // await dispatch(fetchResponse(currUserId));
       }
     }
     fetchPartnerData();
-  }, [partnerId]);
+  }, [partnerId, currUserId]);
 
   useEffect(() => {
-    async function fetchGroupResponses() {
-      if (currUserPairId) {
-        await dispatch(fetchResponseGroup(currUserPairId));
+    async function fetchResponses() {
+      if (currUserResponses) {
+        console.log('here');
+        try {
+          const response = await dispatch(fetchResponse(currUserId));
+          console.log('Fetched user responses:', response);
+        } catch (error) {
+          console.log('Error fetching user responses:', error);
+        }
       }
     }
-    fetchGroupResponses();
+    fetchResponses();
     console.log('GroupResponses');
-  }, [currUserPairId]);
-
-  // REfresh questions everyday by GPT
-  useEffect(() => {
-    const updateQuestionOnTime = () => {
-      const currentDate = new Date();
-      if (currentDate.getHours() === 22 && currentDate.getMinutes() === 56) {
-        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questionsTest.length);
-
-        // dispatch(createResponseGroup2(
-        //   currentQuestionIndex,
-        //   currUserPairId,
-        //   // {
-        //   //   questionId: currentQuestionIndex,
-        //   //   pairId: currUserPairId,
-        //   // },
-        // ));
-      }
-
-      // 다음 날에도 업데이트되도록 다음 날의 해당 시간에 setTimeout 설정
-      const nextDay = new Date(currentDate);
-      nextDay.setDate(currentDate.getDate() + 1);
-      nextDay.setHours(22);
-      nextDay.setMinutes(7);
-      const timeUntilNextUpdate = nextDay - currentDate;
-      setTimeout(updateQuestionOnTime, timeUntilNextUpdate);
-    };
-
-    // 최초 1회 실행
-    updateQuestionOnTime();
-  }, [questionsTest]);
+  }, [currUserResponses]);
 
   // fetch Font
   useEffect(() => {
@@ -212,8 +185,6 @@ function CheckinPage({ navigation }) {
     //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
     // };
   };
-
-  getResponseGrouptest(currUserPairId);
 
   // const addResponseGroup = async (groupData, groupId) => {
   //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
@@ -341,53 +312,6 @@ function CheckinPage({ navigation }) {
   //   }
   // };
 
-  const displayNoResponses = () => {
-    return (
-      <View>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Text style={styles.buttonTxt}>Submit a Response</Text>
-          </TouchableOpacity>
-        </Card>
-      </View>
-    );
-  };
-
-  const displayPartnerResponded = () => {
-    return (
-      <View>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
-              </View>
-            </View>
-            <Text style={styles.blurText}>{partnerResponse}</Text>
-          </View>
-          <View style={styles.seeMoreButtonWrapper}>
-            <TouchableOpacity style={styles.seeMoreButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-              <Text style={styles.seeMoreButtonTxt}>
-                Answer to see
-              </Text>
-              <Image style={styles.chevronRight}
-                source={require('../../../assets/icons/chevron-right.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        </Card>
-      </View>
-    );
-  };
-
   const displayUserResponse = () => {
     return (
       <View style={styles.responseWrapper}>
@@ -425,137 +349,22 @@ function CheckinPage({ navigation }) {
     );
   };
 
-  const displayBothResponses = () => {
-    return (
-      <View style={styles.responseWrapper}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
-              </View>
-              {/* added */}
-              <TouchableOpacity
-                style={styles.responseHeader}
-                onLongPress={openModal}
-              >
-                {selectedEmoji ? (
-                  <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
-                ) : (
-                  <Text style={styles.defaultEmoji}>+</Text>
-                )}
-              </TouchableOpacity>
-
-              <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-                <View style={styles.modalContainer}>
-                  {emojis.map((emoji, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.emojiOption}
-                      onPress={() => selectEmoji(emoji)}
-                    >
-                      <Text style={styles.emoji}>{emoji}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </Modal>
-
-            </View>
-            <Text>{partnerResponse}</Text>
-          </View>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
-              </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
-            </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Image
-              style={styles.editButtonContainer}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
-        </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
-
   if (!fontLoaded) {
     return <Text>Loading...</Text>;
   }
 
-  if (userResponse && partnerResponse) {
-    return (
-      <View style={styles.container}>
-        <TitleHeader title="Check-In" />
-        <ScrollView contentContainerStyle={styles.contentContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  return (
+    <View style={styles.container}>
+      <TitleHeader title="Check-In" />
+      <ScrollView contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-        >
-          {displayBothResponses()}
-        </ScrollView>
-      </View>
-    );
-  } else if (userResponse) {
-    return (
-      <View style={styles.container}>
-        <TitleHeader title="Check-In" />
-        <ScrollView contentContainerStyle={styles.contentContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {displayUserResponse()}
-        </ScrollView>
-      </View>
-    );
-  } else if (partnerResponse) {
-    return (
-      <View style={styles.container}>
-        <TitleHeader title="Check-In" />
-        <ScrollView contentContainerStyle={styles.contentContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {displayPartnerResponded()}
-        </ScrollView>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <TitleHeader title="Check-In" />
-        <ScrollView contentContainerStyle={styles.contentContainer}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {displayNoResponses()}
-          <View />
-        </ScrollView>
-      </View>
-    );
-  }
+      >
+        {displayUserResponse()}
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -671,4 +480,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckinPage;
+export default CheckinUserResponeded;

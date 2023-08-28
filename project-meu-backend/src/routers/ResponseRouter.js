@@ -5,9 +5,11 @@ const router = Router();
 
 // Create response
 const handleCreateResponse = async (req, res) => {
+    
     const userId = req.params.id;
     const responseGroupId = req.body.responseGroupId;
     const response = req.body.response;
+    // const questionId=req.body.questionId;
     try {
         const newResponse = await Responses.createResponse(userId, responseGroupId, response);
         res.json(newResponse);

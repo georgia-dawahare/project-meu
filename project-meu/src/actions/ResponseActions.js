@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { apiUrl } from '../constants/constants';
 
 // keys for actiontypes
@@ -15,6 +14,8 @@ export const ActionTypes = {
 // need to user currUserId instead of uid
 export function createResponse(uid, responseData) {
   // axios post
+  console.log('data');
+  console.log(responseData);
   return () => {
     axios.post(`${apiUrl}/responses/${uid}`, responseData)
       .then(() => {

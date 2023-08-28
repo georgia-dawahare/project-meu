@@ -23,13 +23,14 @@ import { apiUrl } from '../../constants/constants';
 
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
-import { createResponse, updateResponse } from '../../actions/ResponseActions';
+import { createResponse, fetchResponse } from '../../actions/ResponseActions';
+import { createResponseGroup2 } from '../../actions/ResponseGroupActions';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
   const [userDoc, setUserDoc] = useState('');
-  const [submit, setSubmit] = useState(false);
+  // const [submit, setSubmit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -37,7 +38,7 @@ function CheckinSubmit({ navigation }) {
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
   // const currUserFirstName = user.firstName;
-  const currUserUid = user.uid;
+  // const currUserUid = user.uid;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
@@ -45,14 +46,21 @@ function CheckinSubmit({ navigation }) {
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
   // console.log('questiosTEST:           ', questionsTest);
   // for testing
+  const questionNr = 1;
   const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
   // console.log('first Q :       ', firstQuestion);
+
+  // response Data
+  const response = useSelector((state) => state.responseState.responseData);
+  // const userR = response.userId;
+  console.log('RE: ', response);
 
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
-        dispatch(fetchUserById(currUserId));
-        dispatch(fetchQuestions());
+        await dispatch(fetchUserById(currUserId));
+        await dispatch(fetchQuestions());
+        await dispatch(fetchResponse(currUserId));
       }
     }
     fetchData();
@@ -85,14 +93,13 @@ function CheckinSubmit({ navigation }) {
   //   const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
   //   return id;
   // };
-
   const getPair = async () => {
     return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
   };
 
   const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response.data;
+    const response1 = await axios.get(`${apiUrl}/responses/${id}`);
+    return response1.data;
   };
 
   const refreshData = async () => {
@@ -149,18 +156,38 @@ function CheckinSubmit({ navigation }) {
   //   }
   // };
 
-    // by GPT
     try {
-      // 여기에서 submit 버튼을 누를 때만 동작하도록 변경
       if (newResponse) {
-        // 현재 textAnswer가 비어있지 않고, newResponse가 false일 때만 실행
-        // if (newResponse) {
         await dispatch(createResponse(currUserId, {
           response: textAnswer,
           userId: currUserId,
           responseGroupId: currUserPairId,
+          // questionId: questionNr,
         }));
-        setSubmit(true);
+
+        // await dispatch(createResponseGroup2(questionNr, currUserPairId, {
+        //   questionId: questionNr,
+        //   pairId: currUserPairId,
+        // }));
+
+        // by GPT
+        await dispatch(createResponseGroup2(
+          currUserPairId,
+          questionNr,
+          // {
+          //   questionId: questionNr,
+          //   pairId: currUserPairId,
+          // },
+        ));
+
+        // temporary
+        // await dispatch(createResponseGroup(questionNr));
+        // setSubmit(true);
+
+        if (!newResponse) {
+          // update Response
+
+        }
         // } else {
         //   await updateResponse(
         //     currUserId,
@@ -170,7 +197,7 @@ function CheckinSubmit({ navigation }) {
         //     },
         //   );
         // }
-        navigation.navigate('Checkin');
+        navigation.navigate('CheckinUserResponded');
       }
     } catch (e) {
       console.log('Failed to submit response: ', e);

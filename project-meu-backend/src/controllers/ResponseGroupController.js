@@ -1,13 +1,20 @@
 import ResponseGroup from '../models/ResponseGroupModel';
 
 // Create response group
-export async function createResponseGroup(questionId) {
+export async function createResponseGroup2(questionId,pairId) {
+    // console.log('qid :   ',questionId);
+    // console.log('pid :   ',pairId);
+    // console.log(questionId);
     const responseGroup = new ResponseGroup();
     responseGroup.questionId = questionId;
-
+    //added by soo
+    responseGroup.pairId = pairId;
+    console.log(responseGroup);
     try {
         // await save to db
         const savedResponseGroup = await responseGroup.save();
+        console.log('group_data');
+        console.log(savedResponseGroup);
         return savedResponseGroup;
     } catch (error) {
         throw new Error(`create response group error: ${error}`);
