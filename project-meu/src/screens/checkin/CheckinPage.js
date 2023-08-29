@@ -14,10 +14,8 @@ import {
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-// import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-// import { createResponseGroup } from 'me-u-backend/src/controllers/ResponseGroupController';
 import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
@@ -25,7 +23,8 @@ import Button from '../../components/Button';
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup, createResponseGroup2 } from '../../actions/ResponseGroupActions';
+import { fetchResponseGroupByPairId, createResponseGroup } from '../../actions/ResponseGroupActions';
+// import { createResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -46,7 +45,6 @@ function CheckinPage({ navigation }) {
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
-  // const currUserUid = user.uid;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
@@ -65,36 +63,38 @@ function CheckinPage({ navigation }) {
   // partner Data
   const partner = useSelector((state) => state.userState.partnerData);
   const partnerFirstName = partner.firstName;
-  // console.log('partner Info : ', partner);
   console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  // console.log('questiosTEST:           ', questionsTest);
-  // for testing
-  // const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  // const firstQuestion = questionsTest.length > 0 ? questionsTest[currentQuestionIndex].question : null;
-  const firstQuestion = questionsTest.length > 0
+
+  const currQuestion = questionsTest.length > 0
     ? questionsTest[currentQuestionIndex % questionsTest.length]?.question
     : null;
-
-  // console.log('first Q :       ', firstQuestion);
+  // console.log('questiosTEST:           ', questionsTest);
+  // console.log('first Q :       ', currQuestion);
 
   // get reponses of the pair
   // const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
   // console.log('currUserREsponses', currUserResponses);
 
+  // fetch ResponseGroupData
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.responseGroupData);
+  // console.log(currUserResponseGroup);
+
   // fetch Data
   useEffect(() => {
     async function fetchData() {
-      if (currUserId) {
-        dispatch(fetchUserById(currUserId));
-        dispatch(fetchQuestions());
+      if (currUserId && currUserPairId) {
+        await dispatch(fetchUserById(currUserId));
+        await dispatch(fetchQuestions());
+        await dispatch(fetchResponseGroupByPairId(currUserPairId));
       }
+      console.log(currUserResponseGroup);
     }
     fetchData();
-  }, [currUserId]);
+  }, [currUserId, currUserPairId]);
 
   useEffect(() => {
     async function pairData() {
@@ -114,34 +114,31 @@ function CheckinPage({ navigation }) {
     fetchPartnerData();
   }, [partnerId]);
 
-  useEffect(() => {
-    async function fetchGroupResponses() {
-      if (currUserPairId) {
-        await dispatch(fetchResponseGroup(currUserPairId));
-      }
-    }
-    fetchGroupResponses();
-    console.log('GroupResponses');
-  }, [currUserPairId]);
+  // useEffect(() => {
+  //   async function fetchGroupResponses() {
+  //     if (currUserPairId) {
+  //       await dispatch(fetchResponseGroup(currUserPairId));
+  //     }
+  //   }
+  //   fetchGroupResponses();
+  //   console.log('currUserResponseGroup :  ', currUserResponseGroup);
+  // }, [currUserPairId]);
 
   // REfresh questions everyday by GPT
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 22 && currentDate.getMinutes() === 56) {
+      if (currentDate.getHours() === 12 && currentDate.getMinutes() === 54) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questionsTest.length);
 
-        // dispatch(createResponseGroup2(
-        //   currentQuestionIndex,
-        //   currUserPairId,
-        //   // {
-        //   //   questionId: currentQuestionIndex,
-        //   //   pairId: currUserPairId,
-        //   // },
-        // ));
+        // by C
+        dispatch(createResponseGroup(
+          currUserPairId,
+          currentQuestionIndex,
+
+        ));
       }
 
-      // 다음 날에도 업데이트되도록 다음 날의 해당 시간에 setTimeout 설정
       const nextDay = new Date(currentDate);
       nextDay.setDate(currentDate.getDate() + 1);
       nextDay.setHours(22);
@@ -193,7 +190,7 @@ function CheckinPage({ navigation }) {
     // get responses of the pair from mongo
     // find the highest number +1
     // find the question id and assign
-    fetchResponseGroup(pairId);
+    // fetchResponseGroup(pairId);
 
     //   let questionId = Math.round(Math.random() * 100);
     //   // Ignore all image questions until we have a way to display them
@@ -346,7 +343,7 @@ function CheckinPage({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Text style={styles.buttonTxt}>Submit a Response</Text>
           </TouchableOpacity>
@@ -360,7 +357,7 @@ function CheckinPage({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
@@ -394,7 +391,7 @@ function CheckinPage({ navigation }) {
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
           {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
@@ -431,7 +428,7 @@ function CheckinPage({ navigation }) {
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
           {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}

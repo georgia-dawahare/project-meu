@@ -9,13 +9,8 @@ const handleCreateResponseGroup = async (req, res) => {
     const pairID = req.body.pair;
     console.log(req.body);
     try {
-        // const newResponseGroup = await ResponseGroups.createResponseGroup(questionId);
-        // res.json(newResponseGroup);
-        console.log("here2");
-        const newResponseGroup = await ResponseGroups.createResponseGroup2(questionID, pairID);
-        console.log("here?3");
+        const newResponseGroup = await ResponseGroups.createResponseGroup(questionID, pairID);
         res.json(newResponseGroup);
-        console.log("here?4");
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -36,10 +31,25 @@ const handleUpdateResponseGroup = async (req, res) => {
 
 // Get response group
 const handleGetResponseGroup = async (req, res) => {
+    
     const responseGroupId = req.params.id;
+    console.log('handelgetresponse: GroupId ',responseGroupId);
     try {
         const responseGroup = await ResponseGroups.findResponseGroupById(responseGroupId);
         res.json(responseGroup);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
+const handleGetResponseGroupByPairId = async (req, res) => {
+    const pairId = req.params.pairId;
+    console.log('handelgetresponse PId: ',pairId);
+    try {
+        const responseGroups = await ResponseGroups.findResponseGroupByPairId(pairId);
+        console.log(responseGroups);
+        res.json(responseGroups);
+        
     } catch (error) {
         res.status(500).json({ error });
     }
@@ -50,6 +60,9 @@ router.route('/addgroups')
 
 router.route('/:id')
     .patch(handleUpdateResponseGroup)
-    .get(handleGetResponseGroup);
+    .get(handleGetResponseGroup)
+
+router.route('/pair/:pairId')
+    .get(handleGetResponseGroupByPairId);
 
 export default router;

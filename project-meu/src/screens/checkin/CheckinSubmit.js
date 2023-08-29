@@ -24,7 +24,7 @@ import { apiUrl } from '../../constants/constants';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
 import { createResponse, fetchResponse } from '../../actions/ResponseActions';
-import { createResponseGroup2 } from '../../actions/ResponseGroupActions';
+import { createResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
@@ -162,27 +162,14 @@ function CheckinSubmit({ navigation }) {
           response: textAnswer,
           userId: currUserId,
           responseGroupId: currUserPairId,
-          // questionId: questionNr,
         }));
 
-        // await dispatch(createResponseGroup2(questionNr, currUserPairId, {
-        //   questionId: questionNr,
-        //   pairId: currUserPairId,
-        // }));
+        // by C
+        // await dispatch(createResponseGroup(
+        //   currUserPairId,
+        //   questionNr,
 
-        // by GPT
-        await dispatch(createResponseGroup2(
-          currUserPairId,
-          questionNr,
-          // {
-          //   questionId: questionNr,
-          //   pairId: currUserPairId,
-          // },
-        ));
-
-        // temporary
-        // await dispatch(createResponseGroup(questionNr));
-        // setSubmit(true);
+        // ));
 
         if (!newResponse) {
           // update Response

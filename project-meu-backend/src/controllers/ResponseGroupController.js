@@ -1,7 +1,7 @@
 import ResponseGroup from '../models/ResponseGroupModel';
 
 // Create response group
-export async function createResponseGroup2(questionId,pairId) {
+export async function createResponseGroup(questionId,pairId) {
     // console.log('qid :   ',questionId);
     // console.log('pid :   ',pairId);
     // console.log(questionId);
@@ -30,6 +30,18 @@ export async function findResponseGroupById(responseGroupId) {
         throw new Error(`get response group error: ${error}`);
     }
 }
+
+// Get response group by pair Id
+export async function findResponseGroupByPairId(pairId) {
+    try {
+    // const pId = mongoose.Types.ObjectId(pairId);
+     
+      const responseGroup = await ResponseGroup.find({pairId})
+      return responseGroup;
+    } catch (error) {
+      throw new Error(`get response group error: ${error}`);
+    }
+  }
 
 
 // Update response group
