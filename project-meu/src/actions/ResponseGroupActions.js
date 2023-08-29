@@ -52,8 +52,6 @@ export function fetchResponseGroup(responseGroupId) {
 }
 
 // Fetch all response groups for a user
-// To do
-
 // fetch response group by pairId
 export function fetchResponseGroupByPairId(pairId) {
   return (dispatch) => {
@@ -61,7 +59,7 @@ export function fetchResponseGroupByPairId(pairId) {
       .then((response) => {
         dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUPS, payload: response.data });
       }).catch((error) => {
-        console.log('error fetching user: ', error);
+        console.log('error fetching user by Pair Id: ', error);
       });
   };
 }

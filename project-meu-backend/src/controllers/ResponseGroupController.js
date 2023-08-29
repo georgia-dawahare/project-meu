@@ -37,6 +37,7 @@ export async function findResponseGroupByPairId(pairId) {
     // const pId = mongoose.Types.ObjectId(pairId);
      
       const responseGroup = await ResponseGroup.find({pairId})
+    //   console.log(responseGroup);
       return responseGroup;
     } catch (error) {
       throw new Error(`get response group error: ${error}`);

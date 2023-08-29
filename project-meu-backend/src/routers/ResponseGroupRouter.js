@@ -33,7 +33,6 @@ const handleUpdateResponseGroup = async (req, res) => {
 const handleGetResponseGroup = async (req, res) => {
     
     const responseGroupId = req.params.id;
-    console.log('handelgetresponse: GroupId ',responseGroupId);
     try {
         const responseGroup = await ResponseGroups.findResponseGroupById(responseGroupId);
         res.json(responseGroup);
@@ -44,10 +43,9 @@ const handleGetResponseGroup = async (req, res) => {
 
 const handleGetResponseGroupByPairId = async (req, res) => {
     const pairId = req.params.pairId;
-    console.log('handelgetresponse PId: ',pairId);
     try {
         const responseGroups = await ResponseGroups.findResponseGroupByPairId(pairId);
-        console.log(responseGroups);
+        // console.log(responseGroups);
         res.json(responseGroups);
         
     } catch (error) {

@@ -24,7 +24,6 @@ import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchPair } from '../../actions/PairActions';
 import { fetchResponseGroupByPairId, createResponseGroup } from '../../actions/ResponseGroupActions';
-// import { createResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -46,7 +45,7 @@ function CheckinPage({ navigation }) {
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
   const currUserPairId = user.pairId;
-  // console.log('user :      ', user);
+  console.log('user :      ', user);
 
   // To get partnerId from pairs
   const pairs = useSelector((state) => state.pairState.pairData);
@@ -63,7 +62,7 @@ function CheckinPage({ navigation }) {
   // partner Data
   const partner = useSelector((state) => state.userState.partnerData);
   const partnerFirstName = partner.firstName;
-  console.log('partner Info : ', partnerFirstName);
+  // console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
@@ -75,24 +74,21 @@ function CheckinPage({ navigation }) {
   // console.log('questiosTEST:           ', questionsTest);
   // console.log('first Q :       ', currQuestion);
 
-  // get reponses of the pair
-  // const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
-  // console.log('currUserREsponses', currUserResponses);
-
   // fetch ResponseGroupData
-  const currUserResponseGroup = useSelector((state) => state.responseGroupState.responseGroupData);
-  // console.log(currUserResponseGroup);
-
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  console.log('A:     ', currUserResponseGroup);
   // fetch Data
   useEffect(() => {
     async function fetchData() {
-      if (currUserId && currUserPairId) {
+      if (currUserId) {
         await dispatch(fetchUserById(currUserId));
         await dispatch(fetchQuestions());
         await dispatch(fetchResponseGroupByPairId(currUserPairId));
+
+        // console.log('currUserResponseGroup :  ', responseGroups);
       }
-      console.log(currUserResponseGroup);
     }
+
     fetchData();
   }, [currUserId, currUserPairId]);
 
@@ -117,18 +113,25 @@ function CheckinPage({ navigation }) {
   // useEffect(() => {
   //   async function fetchGroupResponses() {
   //     if (currUserPairId) {
-  //       await dispatch(fetchResponseGroup(currUserPairId));
+  //       await dispatch(fetchResponseGroupByPairId(currUserPairId));
+  //       // console.log('currUserResponseGroup :  ', currUserResponseGroup);
   //     }
   //   }
   //   fetchGroupResponses();
-  //   console.log('currUserResponseGroup :  ', currUserResponseGroup);
   // }, [currUserPairId]);
+
+  // useEffect(() => {
+  //   // This useEffect should trigger when currUserResponseGroup updates
+  //   if (currUserResponseGroup) {
+  //     console.log('currUserResponseGroup: ', currUserResponseGroup);
+  //   }
+  // }, [currUserResponseGroup]);
 
   // REfresh questions everyday by GPT
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 12 && currentDate.getMinutes() === 54) {
+      if (currentDate.getHours() === 0 && currentDate.getMinutes() === 4) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questionsTest.length);
 
         // by C
@@ -141,8 +144,8 @@ function CheckinPage({ navigation }) {
 
       const nextDay = new Date(currentDate);
       nextDay.setDate(currentDate.getDate() + 1);
-      nextDay.setHours(22);
-      nextDay.setMinutes(7);
+      nextDay.setHours(0);
+      nextDay.setMinutes(4);
       const timeUntilNextUpdate = nextDay - currentDate;
       setTimeout(updateQuestionOnTime, timeUntilNextUpdate);
     };
