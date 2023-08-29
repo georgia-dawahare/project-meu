@@ -24,7 +24,7 @@ import { apiUrl } from '../../constants/constants';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
 import { createResponse, fetchResponse } from '../../actions/ResponseActions';
-import { createResponseGroup } from '../../actions/ResponseGroupActions';
+import { updateResponseGroup, fetchResponseGroupByPairId, fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
@@ -37,23 +37,41 @@ function CheckinSubmit({ navigation }) {
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
-  // const currUserFirstName = user.firstName;
-  // const currUserUid = user.uid;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  // console.log('questiosTEST:           ', questionsTest);
-  // for testing
-  const questionNr = 1;
-  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  // console.log('first Q :       ', firstQuestion);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const currQuestion = questionsTest.length > 0
+    ? questionsTest[currentQuestionIndex % questionsTest.length]?.question
+    : null;
+
+  // fetch ResponseGroupData
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  // const currUserResponseGroupId = currUserResponseGroup._id;
+
+  // console.log('currUserResponseGroup:     ', currUserResponseGroup);
+  let latestQuestionId = 0;
+  let currUserResponseGroupId = '';
+  if (currUserResponseGroup.length > 0) {
+    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponseGroup = sortedResponseGroup[0];
+    latestQuestionId = latestResponseGroup.questionId;
+    currUserResponseGroupId = latestResponseGroup._id;
+
+    console.log('latestQId : ', latestQuestionId);
+    console.log('currUserREsponseGroupId: ', currUserResponseGroupId);
+    // console.log('latestResponseGroup', latestResponseGroup);
+  }
 
   // response Data
-  const response = useSelector((state) => state.responseState.responseData);
+  // const response = useSelector((state) => state.responseState.responseData);
   // const userR = response.userId;
-  console.log('RE: ', response);
 
   useEffect(() => {
     async function fetchData() {
@@ -61,6 +79,8 @@ function CheckinSubmit({ navigation }) {
         await dispatch(fetchUserById(currUserId));
         await dispatch(fetchQuestions());
         await dispatch(fetchResponse(currUserId));
+        await dispatch(fetchResponseGroupByPairId(currUserPairId));
+        await dispatch(fetchResponseGroup());
       }
     }
     fetchData();
@@ -69,20 +89,6 @@ function CheckinSubmit({ navigation }) {
   useEffect(() => {
     refreshData();
   }, [currUserId, userDoc]);
-
-  // by Soo
-  // useEffect(() => {
-  //   async function createUserResponse() {
-  //     if (textAnswer) {
-  //       dispatch(createResponse(currUserUid, {
-  //         response: textAnswer,
-  //         userId: currUserId,
-  //       }));
-  //       // setSubmit(false);
-  //     }
-  //   }
-  //   createUserResponse();
-  // }, [textAnswer]);
 
   // const updateResponse = async (currResponseId, updatedResponse) => {
   //   const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
@@ -164,12 +170,7 @@ function CheckinSubmit({ navigation }) {
           responseGroupId: currUserPairId,
         }));
 
-        // by C
-        // await dispatch(createResponseGroup(
-        //   currUserPairId,
-        //   questionNr,
-
-        // ));
+        // await dispatch(updateResponseGroup(currUserResponseGroupId,))
 
         if (!newResponse) {
           // update Response
@@ -208,7 +209,7 @@ function CheckinSubmit({ navigation }) {
             </TouchableOpacity>
             <Card containerStyle={styles.cardContainer}>
               <Text>Daily Question</Text>
-              <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+              <Card.Title style={styles.question}>{currQuestion}</Card.Title>
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
               <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
                 <Text style={styles.buttonText}>

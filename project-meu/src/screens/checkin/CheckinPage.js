@@ -45,7 +45,7 @@ function CheckinPage({ navigation }) {
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
   const currUserPairId = user.pairId;
-  console.log('user :      ', user);
+  // console.log('user :      ', user);
 
   // To get partnerId from pairs
   const pairs = useSelector((state) => state.pairState.pairData);
@@ -76,7 +76,21 @@ function CheckinPage({ navigation }) {
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  console.log('A:     ', currUserResponseGroup);
+  // console.log('currUserResponseGroup:     ', currUserResponseGroup);
+  let latestQuestionId = 0;
+  if (currUserResponseGroup.length > 0) {
+    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponseGroup = sortedResponseGroup[0];
+    latestQuestionId = latestResponseGroup.questionId;
+
+    console.log('latestQId : ', latestQuestionId);
+    console.log('latestResponseGroup', latestResponseGroup);
+  }
+  const nextQuestionId = latestQuestionId + 1;
+
   // fetch Data
   useEffect(() => {
     async function fetchData() {
@@ -84,11 +98,8 @@ function CheckinPage({ navigation }) {
         await dispatch(fetchUserById(currUserId));
         await dispatch(fetchQuestions());
         await dispatch(fetchResponseGroupByPairId(currUserPairId));
-
-        // console.log('currUserResponseGroup :  ', responseGroups);
       }
     }
-
     fetchData();
   }, [currUserId, currUserPairId]);
 
@@ -110,35 +121,17 @@ function CheckinPage({ navigation }) {
     fetchPartnerData();
   }, [partnerId]);
 
-  // useEffect(() => {
-  //   async function fetchGroupResponses() {
-  //     if (currUserPairId) {
-  //       await dispatch(fetchResponseGroupByPairId(currUserPairId));
-  //       // console.log('currUserResponseGroup :  ', currUserResponseGroup);
-  //     }
-  //   }
-  //   fetchGroupResponses();
-  // }, [currUserPairId]);
-
-  // useEffect(() => {
-  //   // This useEffect should trigger when currUserResponseGroup updates
-  //   if (currUserResponseGroup) {
-  //     console.log('currUserResponseGroup: ', currUserResponseGroup);
-  //   }
-  // }, [currUserResponseGroup]);
-
-  // REfresh questions everyday by GPT
+  // Refresh questions everyday
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 0 && currentDate.getMinutes() === 4) {
+      if (currentDate.getHours() === 17 && currentDate.getMinutes() === 8) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questionsTest.length);
 
         // by C
         dispatch(createResponseGroup(
           currUserPairId,
-          currentQuestionIndex,
-
+          nextQuestionId,
         ));
       }
 
@@ -150,7 +143,6 @@ function CheckinPage({ navigation }) {
       setTimeout(updateQuestionOnTime, timeUntilNextUpdate);
     };
 
-    // 최초 1회 실행
     updateQuestionOnTime();
   }, [questionsTest]);
 
@@ -188,37 +180,6 @@ function CheckinPage({ navigation }) {
       setRefreshing(false);
     }, 500);
   }, []);
-
-  const getResponseGrouptest = async (pairId) => {
-    // get responses of the pair from mongo
-    // find the highest number +1
-    // find the question id and assign
-    // fetchResponseGroup(pairId);
-
-    //   let questionId = Math.round(Math.random() * 100);
-    //   // Ignore all image questions until we have a way to display them
-    //   while (questionData.questions[questionId].type === 'image') {
-    //     questionId = Math.round(Math.random() * 100);
-    //   }
-    //   await addResponseGroup(
-    //     {
-    //       p1_response_id: '',
-    //       p2_response_id: '',
-    //       question_id: questionId,
-    //     },
-    //     pairId,
-    //   );
-    //   // Set responseGroup to newly created response group
-    //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-    // };
-  };
-
-  getResponseGrouptest(currUserPairId);
-
-  // const addResponseGroup = async (groupData, groupId) => {
-  //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
-  //   return id;
-  // };
 
   const getResponse = async (id) => {
     const response = await axios.get(`${apiUrl}/responses/${id}`);
@@ -393,12 +354,10 @@ function CheckinPage({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
           <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
-                {/* <Text style={styles.leftText}>{userName}</Text> */}
                 <Text style={styles.leftText}>{currUserFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
