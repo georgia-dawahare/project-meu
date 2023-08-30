@@ -21,6 +21,7 @@
     "delay": "1500"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.353.0",
     "@babel/cli": "^7.21.5",
     "@babel/core": "^7.21.8",
     "@babel/node": "^7.20.7",
@@ -33,6 +34,8 @@
     "express": "^4.18.2",
     "firebase": "^9.22.1",
     "firebase-admin": "^11.8.0",
+    "mongodb": "^5.6.0",
+    "mongoose": "^7.3.0",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

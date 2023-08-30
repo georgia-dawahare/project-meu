@@ -5,12 +5,15 @@ import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
+import CheckinUserResponeded from '../screens/checkin/CheckinUserResponded';
+import CheckinPartnerResponeded from '../screens/checkin/CheckinPartnerResponded';
+import CheckinBothResponeded from '../screens/checkin/CheckinBothResponded';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
 // import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
 import SettingNotificationPage from '../screens/settings/SettingNotificationPage';
-import TempHome from '../screens/home/TempHome';
+import Home from '../screens/home/Home';
 import OnboardingPage from '../screens/authentication/OnboardingPage';
 import SignUpSignIn from '../screens/authentication/SignUpSignIn';
 import RegisterEmailPassword from '../screens/authentication/RegisterEmailPassword';
@@ -26,8 +29,8 @@ function HomeScreenNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
-        name="TempHome"
-        component={TempHome}
+        name="Home"
+        component={Home}
       />
       <Stack.Screen
         name="HomeCalendar"
@@ -65,6 +68,18 @@ function CheckinScreenNavigator() {
       <Stack.Screen
         name="CheckinSubmit"
         component={CheckinSubmit}
+      />
+      <Stack.Screen
+        name="CheckinUserResponded"
+        component={CheckinUserResponeded}
+      />
+      <Stack.Screen
+        name="CheckinPartnerResponeded"
+        component={CheckinPartnerResponeded}
+      />
+      <Stack.Screen
+        name="CheckinBothResponeded"
+        component={CheckinBothResponeded}
       />
       <Stack.Screen
         name="CheckinHistory"

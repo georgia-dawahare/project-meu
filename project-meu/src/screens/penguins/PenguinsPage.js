@@ -6,11 +6,13 @@ import {
 import Carousel from 'react-native-snap-carousel';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
-import { apiUrl } from '../../constants/constants';
 import * as Notifications from 'expo-notifications';
 // import expoPushTokensApi from './src/api/expoPushTokens';
 import * as Device from 'expo-device';
-import { iconData, gifDataBlack, gifDataPink, gifDataMap } from './EmotionsData';
+import { apiUrl } from '../../constants/constants';
+import {
+  iconData, gifDataBlack, gifDataPink, gifDataMap,
+} from './EmotionsData';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -18,7 +20,7 @@ Notifications.setNotificationHandler({
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
- });
+});
 
 function PenguinsPage() {
   const screenWidth = Dimensions.get('window').width;
@@ -145,11 +147,11 @@ function PenguinsPage() {
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log("Expo push token:", token);
+      console.log('Expo push token:', token);
     } else {
       // alert('Must use physical device for Push Notifications');
     }
-   
+
     if (Platform.OS === 'android') {
       Notifications.setNotificationChannelAsync('default', {
         name: 'default',
@@ -158,13 +160,13 @@ function PenguinsPage() {
         lightColor: '#FF231F7C',
       });
     }
-   
+
     return token;
   }
-   
+
   async function sendPushNotification(expoPushToken) {
     let notificationBody = '';
-  
+
     if (userNewEmotionSent) {
       notificationBody = 'Your new emotion has been sent to your partner';
       setUserNewEmotionSent(false);
@@ -173,55 +175,55 @@ function PenguinsPage() {
       notificationBody = 'Your partner has sent you a message, go check it out!';
       setPartnerNewEmotionSent(false);
     }
-  
-     const message = {
-       to: expoPushToken,
-       sound: 'default',
-       title: 'Emotion sent',
-       body: notificationBody,
-       data: { userLastEmotion },
-     };
-    
-     await fetch('https://exp.host/--/api/v2/push/send', {
-       method: 'POST',
-       headers: {
-         Accept: 'application/json',
-         'Accept-encoding': 'gzip, deflate',
-         'Content-Type': 'application/json',
-       },
-       body: JSON.stringify(message),
-     });
-  } 
+
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Emotion sent',
+      body: notificationBody,
+      data: { userLastEmotion },
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
- 
+    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => { //need async here?
-        console.log('--- notification received ---');
-        console.log(notification);
-        setNotification(notification);
-        console.log('------');
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => { // need async here?
+      console.log('--- notification received ---');
+      console.log(notification);
+      setNotification(notification);
+      console.log('------');
 
-        // Check if the notification contains partner's emotion data
-        const partnerEmotionData = notification.notification.request.content.data.userLastEmotion; 
-        // at this point user last emotion is the partner's last emotion
-        // this may be problematic later on...
+      // Check if the notification contains partner's emotion data
+      const partnerEmotionData = notification.notification.request.content.data.userLastEmotion;
+      // at this point user last emotion is the partner's last emotion
+      // this may be problematic later on...
 
-        // in either case, if the new PartnerEmotionData gathered is a different one, we detect a new emotion sent from the parnter
-        if (partnerEmotionData != partnerLastEmotion) {
-          setPartnerNewEmotionSent(true);
-        }
+      // in either case, if the new PartnerEmotionData gathered is a different one, we detect a new emotion sent from the parnter
+      if (partnerEmotionData != partnerLastEmotion) {
+        setPartnerNewEmotionSent(true);
+      }
     });
- 
+
     // This listener is fired whenever a user taps on or interacts with a notification
     // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => { //need async here?
-        console.log('--- notification tapped ---');
-        console.log(response);
-        console.log('------');
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => { // need async here?
+      console.log('--- notification tapped ---');
+      console.log(response);
+      console.log('------');
     });
- 
+
     // Unsubscribe from events
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
@@ -237,7 +239,7 @@ function PenguinsPage() {
     return (
       <Image
         source={item}
-        style={[styles.icon, itemStyle]} //, { marginLeft }]}
+        style={[styles.icon, itemStyle]} // , { marginLeft }]}
       />
     );
   };
@@ -268,7 +270,7 @@ function PenguinsPage() {
   const handleButtonPress = () => {
     setCarouselSpun(false);
     if (selectedIcon !== null && selectedIcon !== '') {
-      setUserLastEmotion(selectedIcon) // update this page's user's last sent emotion
+      setUserLastEmotion(selectedIcon); // update this page's user's last sent emotion
       updateBothEmotion(selectedIcon); // update both users' render emotion based on sender's emotion in backend
       setModalVisible(true);
       setUserNewEmotionSent(true); // user has sent new emotion to partner
@@ -309,7 +311,7 @@ function PenguinsPage() {
 
       <View style={styles.mainContent}>
         <View style={styles.carouselContainer}>
-          <View style={styles.circle}/>
+          <View style={styles.circle} />
           <Carousel
             data={iconData}
             renderItem={renderIconItem}

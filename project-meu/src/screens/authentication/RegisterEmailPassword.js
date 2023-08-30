@@ -16,23 +16,46 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import { useDispatch } from 'react-redux';
-import Button from '../../components/Button';
-import { updateUser } from '../../actions';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUser } from '../../actions/UserActions';
+import { updatePassword } from '../../actions/PasswordActions';
 
 function RegisterEmailPassword({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
+  const auth = getAuth();
 
-  const handleNext = async () => {
-    // I know it's bad to store password, but it's 5 am and I'm hacking it
-    const newUser = {
-      email,
-      password,
-    };
-    dispatch(updateUser(newUser));
-    navigation.navigate('ProfileInfo');
+  const handleRegister = async () => {
+    let userId;
+    if (email && password) {
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Signed in
+          setError('');
+          const { user } = userCredential;
+          if (user) {
+            userId = user.uid;
+            const newUser = {
+              uid: userId,
+              email,
+            };
+            dispatch(createUser(newUser));
+          }
+        })
+        .catch((e) => {
+          const errorMessage = e.message;
+          // Format error message
+          const message = errorMessage.split(':')[1].split('(')[0].trim();
+          setError(message);
+        });
+    }
+    if (userId) {
+      dispatch(updatePassword(password));
+      navigation.navigate('CreatePair');
+    }
   };
 
   useEffect(() => {
@@ -92,10 +115,11 @@ function RegisterEmailPassword({ navigation }) {
                   style={styles.input}
                   secureTextEntry
                 />
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
               </View>
               <View style={styles.buttonWrapper}>
-                <TouchableOpacity onPress={handleNext}>
-                  <Button title="Next" buttonStyle={{ backgroundColor: password && email ? '#E62B85' : '#FFB2D7' }} />
+                <TouchableOpacity onPress={handleRegister} style={password && email ? styles.activeButton : styles.inactiveButton}>
+                  <Text style={styles.buttonTxt}>Next</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -131,6 +155,29 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     marginTop: 50,
+  },
+  activeButton: {
+    backgroundColor: '#E62B85',
+    height: 56,
+    width: 300,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+  },
+  inactiveButton: {
+    backgroundColor: '#FFB2D7',
+    height: 56,
+    width: 300,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 15,
+  },
+  buttonTxt: {
+    color: 'white',
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontSize: 20,
   },
   inputWrapper: {
     alignItems: 'center',

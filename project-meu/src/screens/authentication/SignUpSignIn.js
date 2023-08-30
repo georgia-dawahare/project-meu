@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import * as Font from 'expo-font';
 import SignUpGraphic from '../../components/SignUpGraphic';
-import Button from '../../components/Button';
 
 function SignUpSignIn({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -41,9 +40,9 @@ function SignUpSignIn({ navigation }) {
   return (
     <View style={styles.container}>
       <SignUpGraphic />
-      <View style={styles.buttonContainer}>
+      <View style={styles.contentWrapper}>
         <TouchableOpacity onPress={handleSignUp} style={styles.button}>
-          <Button title="Sign Up" />
+          <Text style={styles.buttonTxt}>Sign Up</Text>
         </TouchableOpacity>
         <View style={styles.signInPress}>
           <Text style={styles.buttonOutLineText}>
@@ -54,6 +53,7 @@ function SignUpSignIn({ navigation }) {
           </Text>
         </View>
       </View>
+
       <View />
     </View>
   );
@@ -65,14 +65,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
   },
-  buttonContainer: {
+  contentWrapper: {
+    justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
-    padding: 28,
+    backgroundColor: 'rgba(230, 43, 133, 1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 56,
+    width: 300,
+    borderRadius: 15,
+  },
+  buttonTxt: {
+    fontFamily: 'SF-Pro-Display-Semibold',
+    color: 'white',
+    fontSize: 20,
   },
   signInPress: {
-    marginTop: 24,
+    margin: 24,
   },
   buttonOutLineText: {
     fontFamily: 'SF-Pro-Display-Regular',

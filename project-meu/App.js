@@ -5,13 +5,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Provider } from 'react-redux';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import axios from 'axios';
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
+// import * as Device from 'expo-device';
 // import {
 //   Text, View, Button, Platform,
 // } from 'react-native';
-import Alert from 'react-native';
+// import Alert from 'react-native';
+import axios from 'axios';
 import {
   CheckinScreenNavigator,
   PenguinsScreenNavigator,
@@ -30,64 +30,63 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function registerForPushNotificationsAsync() {
-  let token;
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      Alert.alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log('Expo push token:', token);
-  } else {
-    Alert.alert('Must use physical device for Push Notifications');
-  }
+// async function registerForPushNotificationsAsync() {
+//   let token;
+//   if (Device.isDevice) {
+//     const { status: existingStatus } = await Notifications.getPermissionsAsync();
+//     let finalStatus = existingStatus;
+//     if (existingStatus !== 'granted') {
+//       const { status } = await Notifications.requestPermissionsAsync();
+//       finalStatus = status;
+//     }
+//     if (finalStatus !== 'granted') {
+//       Alert.alert('Failed to get push token for push notification!');
+//       return;
+//     }
+//     token = (await Notifications.getExpoPushTokenAsync()).data;
+//     console.log('Expo push token:', token);
+//   } else {
+//     Alert.alert('Must use physical device for Push Notifications');
+//   }
 
-  // if (Platform.OS === 'android') {
-  //   Notifications.setNotificationChannelAsync('default', {
-  //     name: 'default',
-  //     importance: Notifications.AndroidImportance.MAX,
-  //     vibrationPattern: [0, 250, 250, 250],
-  //     lightColor: '#FF231F7C',
-  //   });
-  // }
+// if (Platform.OS === 'android') {
+//   Notifications.setNotificationChannelAsync('default', {
+//     name: 'default',
+//     importance: Notifications.AndroidImportance.MAX,
+//     vibrationPattern: [0, 250, 250, 250],
+//     lightColor: '#FF231F7C',
+//   });
+// }
 
-  return token;
-}
+//   return token;
+// }
 
-async function sendPushNotification(expoPushToken) {
-  const message = {
-    to: expoPushToken,
-    sound: 'default',
-    title: 'Test title',
-    body: 'Test body 2',
-    data: { testData: 'test data' },
-  };
+// async function sendPushNotification(expoPushToken) {
+//   const message = {
+//     to: expoPushToken,
+//     sound: 'default',
+//     title: 'Test title',
+//     body: 'Test body 2',
+//     data: { testData: 'test data' },
+//   };
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
-}
+//   await fetch('https://exp.host/--/api/v2/push/send', {
+//     method: 'POST',
+//     headers: {
+//       Accept: 'application/json',
+//       'Accept-encoding': 'gzip, deflate',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(message),
+//   });
+// }
 
 function App() {
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  // const setExpoPushToken = useState('');
+  const setNotification = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const auth = getAuth();
   const Tab = createBottomTabNavigator();
 
@@ -95,8 +94,8 @@ function App() {
     async function checkPartner(uid) {
       let pairId;
       if (uid) {
-        const userDoc = await axios.get(`${apiUrl}/users/${uid}`);
-        pairId = userDoc?.data?.pair_id;
+        const userDoc = await axios.get(`${apiUrl}/users/firestore/${uid}`);
+        pairId = userDoc?.data?.pairId;
         if (pairId) {
           setIsLoggedIn(true);
         } else {
@@ -115,7 +114,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
+    // registerForPushNotificationsAsync().then((token) => setExpoPushToken(token));
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener((notification2) => {
@@ -163,10 +162,9 @@ function App() {
                 tabBarIcon: ({ color, size }) => (
                   <Icon name="create-outline" type="ionicon" color={color} size={size} />
                 ),
-
               }}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
               name="HomeTab"
               component={HomeScreenNavigator}
               options={{
@@ -175,8 +173,8 @@ function App() {
                   <Icon name="home-outline" type="ionicon" color={color} size={size} />
                 ),
               }}
-            />
-            <Tab.Screen
+            /> */}
+            {/* <Tab.Screen
               name="PenguinsTab"
               component={PenguinsScreenNavigator}
               options={{
@@ -185,7 +183,7 @@ function App() {
                   <Icon name="heart-outline" type="ionicon" color={color} size={size} />
                 ),
               }}
-            />
+            /> */}
           </Tab.Navigator>
         ) : (<OnboardingScreenNavigator />)}
       </NavigationContainer>
