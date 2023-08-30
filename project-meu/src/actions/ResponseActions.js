@@ -66,3 +66,15 @@ export function fetchResponse(responseId) {
       });
   };
 }
+
+// fetch responses by userId
+export function fetchResponseByUserId(userId) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/responses/userId/${userId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_RESPONSES, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching user: ', error);
+      });
+  };
+}

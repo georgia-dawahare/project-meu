@@ -14,18 +14,16 @@ import {
 } from 'react-native-elements';
 // import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-// import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
-// import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchResponse } from '../../actions/ResponseActions';
+import { fetchResponseByUserId } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
+// import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -78,7 +76,29 @@ function CheckinUserResponeded({ navigation }) {
 
   // get reponses of the pair
   const currUserResponses = useSelector((state) => state.responseState.responseData);
-  console.log('currUserResponses', currUserResponses);
+  // console.log('currUserResponses', currUserResponses);
+
+  // response Data
+  const responses = useSelector((state) => state.responseState.allResponses);
+  let LatestCurrUserResponseText = '';
+  let LatestResponseId = '';
+  let LatestResponseTimeStamp = '';
+  if (responses) {
+    const sortedResponses = Object.values(responses).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      LatestCurrUserResponseText = latestResponse.response;
+      LatestResponseId = latestResponse._id;
+      LatestResponseTimeStamp = latestResponse.createdAt;
+
+      console.log('latestResponseText', LatestCurrUserResponseText);
+      console.log('responseId : ', LatestResponseId);
+      console.log('TimeStamp : ', LatestResponseTimeStamp);
+    }
+  }
 
   // fetch Data
   useEffect(() => {
@@ -87,45 +107,36 @@ function CheckinUserResponeded({ navigation }) {
         await dispatch(fetchUserById(currUserId));
         await dispatch(fetchQuestions());
         await dispatch(fetchPair(currUserId));
+        await dispatch(fetchResponseByUserId(currUserId));
       }
     }
     fetchData();
   }, [currUserId]);
 
-  // useEffect(() => {
-  //   async function pairData() {
-  //     if (currUserId) {
-  //       await dispatch(fetchPair(currUserId));
-  //     }
-  //   }
-  //   pairData();
-  // }, [currUserId]);
-
   useEffect(() => {
     async function fetchPartnerData() {
       if (partnerId && currUserId) {
         await dispatch(fetchPartnerDataById(partnerId));
-        // await dispatch(fetchResponse(currUserId));
       }
     }
     fetchPartnerData();
   }, [partnerId, currUserId]);
 
-  useEffect(() => {
-    async function fetchResponses() {
-      if (currUserResponses) {
-        console.log('here');
-        try {
-          const response = await dispatch(fetchResponse(currUserId));
-          console.log('Fetched user responses:', response);
-        } catch (error) {
-          console.log('Error fetching user responses:', error);
-        }
-      }
-    }
-    fetchResponses();
-    console.log('GroupResponses');
-  }, [currUserResponses]);
+  // useEffect(() => {
+  //   async function fetchResponses() {
+  //     if (currUserResponses) {
+  //       console.log('here');
+  //       try {
+  //         const response = await dispatch(fetchResponse(currUserId));
+  //         console.log('Fetched user responses:', response);
+  //       } catch (error) {
+  //         console.log('Error fetching user responses:', error);
+  //       }
+  //     }
+  //   }
+  //   fetchResponses();
+  //   console.log('GroupResponses');
+  // }, [currUserResponses]);
 
   // fetch Font
   useEffect(() => {
@@ -162,66 +173,26 @@ function CheckinUserResponeded({ navigation }) {
     }, 500);
   }, []);
 
-  const getResponseGrouptest = async (pairId) => {
-    // get responses of the pair from mongo
-    // find the highest number +1
-    // find the question id and assign
-    fetchResponseGroup(pairId);
+  // reformatting Timestamp
+  const TimeFormat = async (timestamp) => {
+    const createdAtValue = new Date(timestamp);
+    const userTimezoneOffset = -5 * 60; // EST TomeZone:  UTC-5
+    const userCreatedAt = new Date(createdAtValue.getTime() + userTimezoneOffset * 60 * 1000);
 
-    //   let questionId = Math.round(Math.random() * 100);
-    //   // Ignore all image questions until we have a way to display them
-    //   while (questionData.questions[questionId].type === 'image') {
-    //     questionId = Math.round(Math.random() * 100);
-    //   }
-    //   await addResponseGroup(
-    //     {
-    //       p1_response_id: '',
-    //       p2_response_id: '',
-    //       question_id: questionId,
-    //     },
-    //     pairId,
-    //   );
-    //   // Set responseGroup to newly created response group
-    //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-    // };
+    // Need to be fixed. Temporary EST Time zone
+    const formattedUserCreatedAt = userCreatedAt.toLocaleString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/New_York',
+    });
+
+    return formattedUserCreatedAt;
+
+    // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
   };
 
-  // const addResponseGroup = async (groupData, groupId) => {
-  //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
-  //   return id;
-  // };
-
-  const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response.data;
-  };
-
-  // const getResponseGroup = async (groupId) => {
-  //   return axios.get(`${apiUrl}/responses/group/${groupId}`);
-  // };
-
-  // const createResponseGroup = async (pairId) => {
-  //   // get responses of the pair from mongo
-  //   // find the highest number +1
-  //   // find the question id and assign
-  //   fetchResponseGroup(pairId);
-
-  //   let questionId = Math.round(Math.random() * 100);
-  //   // Ignore all image questions until we have a way to display them
-  //   while (questionData.questions[questionId].type === 'image') {
-  //     questionId = Math.round(Math.random() * 100);
-  //   }
-  //   await addResponseGroup(
-  //     {
-  //       p1_response_id: '',
-  //       p2_response_id: '',
-  //       question_id: questionId,
-  //     },
-  //     pairId,
-  //   );
-  //   // Set responseGroup to newly created response group
-  //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-  // };
+  const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp);
 
   const getDailyResponses = async (responseGroupData) => {
     let currUserResponse, partnerResponse, p1Date, p2Date;
@@ -330,7 +301,7 @@ function CheckinUserResponeded({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
               />
             </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
+            <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
           </View>
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image

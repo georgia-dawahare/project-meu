@@ -51,10 +51,24 @@ const handleGetResponse = async (req, res) => {
     }
 }
 
+// Get responses by UserId
+const handleGetResponsesByUserId = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const response = await Responses.findResponsesByUserId(userId);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 router.route('/:id')
     .post(handleCreateResponse)
     .patch(handleUpdateResponse)
     .delete(handleDeleteResponse)
     .get(handleGetResponse);
+
+router.route('/userId/:id')
+.get(handleGetResponsesByUserId);
 
 export default router;

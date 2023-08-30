@@ -23,14 +23,14 @@ import { apiUrl } from '../../constants/constants';
 
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
-import { createResponse, fetchResponse } from '../../actions/ResponseActions';
-import { updateResponseGroup, fetchResponseGroupByPairId, fetchResponseGroup } from '../../actions/ResponseGroupActions';
+import { createResponse, fetchResponse, fetchResponseByUserId } from '../../actions/ResponseActions';
+import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
   const [userDoc, setUserDoc] = useState('');
-  // const [submit, setSubmit] = useState(false);
+  const [submit, setSubmit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -51,9 +51,7 @@ function CheckinSubmit({ navigation }) {
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   // const currUserResponseGroupId = currUserResponseGroup._id;
-
-  // console.log('currUserResponseGroup:     ', currUserResponseGroup);
-  let latestQuestionId = 0;
+  // console.log('currUserResponseGroup:     ', currUserResponseGroup)
   let currUserResponseGroupId = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
@@ -61,17 +59,33 @@ function CheckinSubmit({ navigation }) {
     });
 
     const latestResponseGroup = sortedResponseGroup[0];
-    latestQuestionId = latestResponseGroup.questionId;
+    // latestQuestionId = latestResponseGroup.questionId;
     currUserResponseGroupId = latestResponseGroup._id;
 
-    console.log('latestQId : ', latestQuestionId);
-    console.log('currUserREsponseGroupId: ', currUserResponseGroupId);
+    // console.log('latestQId : ', latestQuestionId);
+    // console.log('currUserREsponseGroupId: ', currUserResponseGroupId);
     // console.log('latestResponseGroup', latestResponseGroup);
   }
 
   // response Data
-  // const response = useSelector((state) => state.responseState.responseData);
-  // const userR = response.userId;
+  const responses = useSelector((state) => state.responseState.allResponses);
+  let LatestCurrUserResponseText = '';
+  let LatestResponseId = '';
+  if (responses) {
+    const sortedResponses = Object.values(responses).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      LatestCurrUserResponseText = latestResponse.response;
+      LatestResponseId = latestResponse._id;
+
+      console.log('latestResponseText', LatestCurrUserResponseText);
+      console.log('responseId : ', LatestResponseId);
+    }
+  }
+  // console.log('userResponses', responses);
 
   useEffect(() => {
     async function fetchData() {
@@ -80,7 +94,7 @@ function CheckinSubmit({ navigation }) {
         await dispatch(fetchQuestions());
         await dispatch(fetchResponse(currUserId));
         await dispatch(fetchResponseGroupByPairId(currUserPairId));
-        await dispatch(fetchResponseGroup());
+        // await dispatch(fetchResponseByUserId(currUserId));
       }
     }
     fetchData();
@@ -170,7 +184,10 @@ function CheckinSubmit({ navigation }) {
           responseGroupId: currUserPairId,
         }));
 
-        // await dispatch(updateResponseGroup(currUserResponseGroupId,))
+        await dispatch(updateResponseGroup(currUserResponseGroupId, {
+          // need to be fixed
+          responseId1: LatestResponseId,
+        }));
 
         if (!newResponse) {
           // update Response
@@ -185,12 +202,23 @@ function CheckinSubmit({ navigation }) {
         //     },
         //   );
         // }
+        setSubmit(true);
         navigation.navigate('CheckinUserResponded');
+        setSubmit(false);
       }
     } catch (e) {
       console.log('Failed to submit response: ', e);
     }
   };
+
+  useEffect(() => {
+    async function fetchResponseData() {
+      if (submit) {
+        await dispatch(fetchResponseByUserId(currUserId));
+      }
+    }
+    fetchResponseData();
+  }, [submit]);
 
   return (
 

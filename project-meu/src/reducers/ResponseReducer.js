@@ -2,7 +2,7 @@ import { ActionTypes } from '../actions/ResponseActions';
 
 const initialState = {
   allResponses: {},
-  currResponse: {},
+  // currResponse: {},
 };
 
 const ResponseReducer = (state = initialState, action = {}) => {
@@ -10,7 +10,7 @@ const ResponseReducer = (state = initialState, action = {}) => {
     case ActionTypes.FETCH_RESPONSE:
       return { ...state, allResponses: action.payload };
     case ActionTypes.FETCH_RESPONSES:
-      return { ...state, currResponse: action.payload };
+      return { ...state, allResponses: action.payload };
     default:
       return state;
   }

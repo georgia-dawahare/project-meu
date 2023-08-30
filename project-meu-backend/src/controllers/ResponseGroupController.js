@@ -2,12 +2,8 @@ import ResponseGroup from '../models/ResponseGroupModel';
 
 // Create response group
 export async function createResponseGroup(questionId,pairId) {
-    // console.log('qid :   ',questionId);
-    // console.log('pid :   ',pairId);
-    // console.log(questionId);
     const responseGroup = new ResponseGroup();
     responseGroup.questionId = questionId;
-    //added by soo
     responseGroup.pairId = pairId;
     console.log(responseGroup);
     try {
