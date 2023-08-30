@@ -1,9 +1,10 @@
 import ResponseGroup from '../models/ResponseGroupModel';
 
 // Create response group
-export async function createResponseGroup(questionId) {
+export async function createResponseGroup(questionId, pairId) {
     const responseGroup = new ResponseGroup();
     responseGroup.questionId = questionId;
+    responseGroup.pairId = pairId;
 
     try {
         // await save to db
@@ -24,6 +25,18 @@ export async function findResponseGroupById(responseGroupId) {
     }
 }
 
+// Get response group by pair Id
+export async function findResponseGroupByPairId(pairId) {
+    try {
+        // const pId = mongoose.Types.ObjectId(pairId);
+
+        const responseGroup = await ResponseGroup.find({ pairId })
+        //   console.log(responseGroup);
+        return responseGroup;
+    } catch (error) {
+        throw new Error(`get response group error: ${error}`);
+    }
+}
 
 // Update response group
 export async function updateResponseGroup(responseGroupId, updatedFields) {

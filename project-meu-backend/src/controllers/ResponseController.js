@@ -61,3 +61,13 @@ export async function findResponseById(responseId) {
         throw new Error(`find response by ID error: ${error}`);
     }
 };
+
+// fetch responses by userId
+export async function findResponsesByUserId(userId) {
+    try {
+        const Responses = await Response.find({ userId })
+        return Responses;
+    } catch (error) {
+        throw new Error(`get responses by userId error: ${error}`);
+    }
+}
