@@ -49,10 +49,6 @@ function Home({ navigation }) {
     if (userFirestoreID) getUser();
     if (user._id) getPartner(user._id);
     if (user._id) getPair(user._id);
-
-    console.log('LOGGED IN', user);
-    console.log('PARTNER: ', partner);
-    console.log('PAIR', pair);
   }, [user._id, partner._id, pair._id]);
 
   useEffect(() => {
