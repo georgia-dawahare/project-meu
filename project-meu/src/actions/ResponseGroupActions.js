@@ -9,16 +9,19 @@ export const ActionTypes = {
 };
 
 // Create response group
-export function createResponseGroup(questionId) {
+export function createResponseGroup(pairId, questionId) {
   // axios post
   return () => {
-    axios.post(`${apiUrl}/response_groups/`, questionId)
-      .then(() => {
-        console.log('Successfully created response group');
-      }).catch((error) => {
-        // Need to add error actions
-        console.log('error creating response group: ', error);
-      });
+    const body = {
+      pair: pairId,
+      quesId: questionId,
+    };
+    axios.post(`${apiUrl}/response_groups/addgroups`, body).then(() => {
+      console.log('Successfully created response group');
+    }).catch((error) => {
+      // Need to add error actions
+      console.log('error creating response group: ', error);
+    });
   };
 }
 
@@ -36,7 +39,7 @@ export function updateResponseGroup(responseGroupId, updatedFields) {
   };
 }
 
-// Fetch response group
+// Fetch response group by responseGroupId
 export function fetchResponseGroup(responseGroupId) {
   return (dispatch) => {
     axios.get(`${apiUrl}/response_groups/${responseGroupId}`)
@@ -48,5 +51,14 @@ export function fetchResponseGroup(responseGroupId) {
   };
 }
 
-// Fetch all response groups for a user
-// To do
+// fetch all response groups by pairId
+export function fetchResponseGroupByPairId(pairId) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/response_groups/pair/${pairId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUPS, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching user by Pair Id: ', error);
+      });
+  };
+}

@@ -9,6 +9,7 @@ import ResponseGroupReducer from './ResponseGroupReducer';
 import EventReducer from './EventReducer';
 import PasswordReducer from './PasswordReducer';
 import PartnerReducer from './PartnerReducer';
+import QuestionsReducer from './QuestionsReducer';
 
 const rootReducer = combineReducers({
   userState: UserReducer,
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   eventState: EventReducer,
   passwordState: PasswordReducer,
   partnerState: PartnerReducer,
+  questionsState: QuestionsReducer,
 });
 
 export default rootReducer;

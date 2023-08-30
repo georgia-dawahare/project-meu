@@ -22,25 +22,12 @@ import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
-
 import { fetchQuestions } from '../../actions/QuestionsActions';
 // import { createResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup, updateResponseGroup } from '../../actions/ResponseGroupActions';
+import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinBothResponeded({ navigation }) {
-  // GEORGIA EXAMPLE CODE
-
-  // retrieve partner data
-  const partnerObj = useSelector((state) => state.partnerState.partnerData);
-
-  // retrieve partner ID
-  const partnerID = partnerObj._id;
-
-  console.log(partnerID);
-
-  // END OF GEORGIA EXAMPLE CODE
-
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [userResponseTime, setUserResponseTime] = useState('');
@@ -74,7 +61,6 @@ function CheckinBothResponeded({ navigation }) {
       partnerId = pairs.primaryUserId;
     }
   }
-  // console.log('partnerId :     ', partnerId);
 
   // partner Data
   const partner = useSelector((state) => state.userState.partnerData);

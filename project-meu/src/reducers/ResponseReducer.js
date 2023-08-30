@@ -2,15 +2,15 @@ import { ActionTypes } from '../actions/ResponseActions';
 
 const initialState = {
   allResponses: {},
-  currResponse: {},
+  // currResponse: {},
 };
 
 const ResponseReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case ActionTypes.FETCH_RESPONSE:
-      return { ...state, allResponses: action.payload };
-    case ActionTypes.FETCH_RESPONSES:
       return { ...state, currResponse: action.payload };
+    case ActionTypes.FETCH_RESPONSES:
+      return { ...state, allResponses: action.payload };
     default:
       return state;
   }

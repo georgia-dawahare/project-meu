@@ -12,35 +12,20 @@ import {
 import {
   Card,
 } from 'react-native-elements';
-import Modal from 'react-native-modal';
+// import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-// import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
-import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
-
 import { fetchQuestions } from '../../actions/QuestionsActions';
-// import { createResponse } from '../../actions/ResponseActions';
+import { fetchResponseByUserId } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup, updateResponseGroup } from '../../actions/ResponseGroupActions';
+// import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
 
-function CheckinBothResponeded({ navigation }) {
-  // GEORGIA EXAMPLE CODE
-
-  // retrieve partner data
-  const partnerObj = useSelector((state) => state.partnerState.partnerData);
-
-  // retrieve partner ID
-  const partnerID = partnerObj._id;
-
-  console.log(partnerID);
-
-  // END OF GEORGIA EXAMPLE CODE
-
+function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [userResponseTime, setUserResponseTime] = useState('');
@@ -90,47 +75,68 @@ function CheckinBothResponeded({ navigation }) {
   // console.log('first Q :       ', firstQuestion);
 
   // get reponses of the pair
-  const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
-  console.log('currUserREsponses', currUserResponses);
+  const currUserResponses = useSelector((state) => state.responseState.responseData);
+  // console.log('currUserResponses', currUserResponses);
+
+  // response Data
+  const responses = useSelector((state) => state.responseState.allResponses);
+  let LatestCurrUserResponseText = '';
+  let LatestResponseId = '';
+  let LatestResponseTimeStamp = '';
+  if (responses) {
+    const sortedResponses = Object.values(responses).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      LatestCurrUserResponseText = latestResponse.response;
+      LatestResponseId = latestResponse._id;
+      LatestResponseTimeStamp = latestResponse.createdAt;
+
+      console.log('latestResponseText', LatestCurrUserResponseText);
+      console.log('responseId : ', LatestResponseId);
+      console.log('TimeStamp : ', LatestResponseTimeStamp);
+    }
+  }
 
   // fetch Data
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
-        dispatch(fetchUserById(currUserId));
-        dispatch(fetchQuestions());
+        await dispatch(fetchUserById(currUserId));
+        await dispatch(fetchQuestions());
+        await dispatch(fetchPair(currUserId));
+        await dispatch(fetchResponseByUserId(currUserId));
       }
     }
     fetchData();
   }, [currUserId]);
 
   useEffect(() => {
-    async function pairData() {
-      if (currUserId) {
-        await dispatch(fetchPair(currUserId));
-      }
-    }
-    pairData();
-  }, [currUserId]);
-
-  useEffect(() => {
     async function fetchPartnerData() {
-      if (partnerId) {
+      if (partnerId && currUserId) {
         await dispatch(fetchPartnerDataById(partnerId));
       }
     }
     fetchPartnerData();
-  }, [partnerId]);
+  }, [partnerId, currUserId]);
 
-  useEffect(() => {
-    async function fetchGroupResponses() {
-      if (currUserPairId) {
-        await dispatch(fetchResponseGroup(currUserPairId));
-      }
-    }
-    fetchGroupResponses();
-    console.log('GroupResponses');
-  }, [currUserPairId]);
+  // useEffect(() => {
+  //   async function fetchResponses() {
+  //     if (currUserResponses) {
+  //       console.log('here');
+  //       try {
+  //         const response = await dispatch(fetchResponse(currUserId));
+  //         console.log('Fetched user responses:', response);
+  //       } catch (error) {
+  //         console.log('Error fetching user responses:', error);
+  //       }
+  //     }
+  //   }
+  //   fetchResponses();
+  //   console.log('GroupResponses');
+  // }, [currUserResponses]);
 
   // fetch Font
   useEffect(() => {
@@ -167,69 +173,26 @@ function CheckinBothResponeded({ navigation }) {
     }, 500);
   }, []);
 
-  const getResponseGrouptest = async (pairId) => {
-    // get responses of the pair from mongo
-    // find the highest number +1
-    // find the question id and assign
-    fetchResponseGroup(pairId);
+  // reformatting Timestamp
+  const TimeFormat = async (timestamp) => {
+    const createdAtValue = new Date(timestamp);
+    const userTimezoneOffset = -5 * 60; // EST TomeZone:  UTC-5
+    const userCreatedAt = new Date(createdAtValue.getTime() + userTimezoneOffset * 60 * 1000);
 
-    //   let questionId = Math.round(Math.random() * 100);
-    //   // Ignore all image questions until we have a way to display them
-    //   while (questionData.questions[questionId].type === 'image') {
-    //     questionId = Math.round(Math.random() * 100);
-    //   }
-    //   await addResponseGroup(
-    //     {
-    //       p1_response_id: '',
-    //       p2_response_id: '',
-    //       question_id: questionId,
-    //     },
-    //     pairId,
-    //   );
-    //   // Set responseGroup to newly created response group
-    //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-    // };
+    // Need to be fixed. Temporary EST Time zone
+    const formattedUserCreatedAt = userCreatedAt.toLocaleString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/New_York',
+    });
+
+    return formattedUserCreatedAt;
+
+    // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
   };
 
-  const test = getResponseGrouptest(currUserPairId);
-  console.log('test', test);
-
-  // const addResponseGroup = async (groupData, groupId) => {
-  //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
-  //   return id;
-  // };
-
-  const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response.data;
-  };
-
-  // const getResponseGroup = async (groupId) => {
-  //   return axios.get(`${apiUrl}/responses/group/${groupId}`);
-  // };
-
-  // const createResponseGroup = async (pairId) => {
-  //   // get responses of the pair from mongo
-  //   // find the highest number +1
-  //   // find the question id and assign
-  //   fetchResponseGroup(pairId);
-
-  //   let questionId = Math.round(Math.random() * 100);
-  //   // Ignore all image questions until we have a way to display them
-  //   while (questionData.questions[questionId].type === 'image') {
-  //     questionId = Math.round(Math.random() * 100);
-  //   }
-  //   await addResponseGroup(
-  //     {
-  //       p1_response_id: '',
-  //       p2_response_id: '',
-  //       question_id: questionId,
-  //     },
-  //     pairId,
-  //   );
-  //   // Set responseGroup to newly created response group
-  //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-  // };
+  const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp);
 
   const getDailyResponses = async (responseGroupData) => {
     let currUserResponse, partnerResponse, p1Date, p2Date;
@@ -320,7 +283,7 @@ function CheckinBothResponeded({ navigation }) {
   //   }
   // };
 
-  const displayBothResponse = () => {
+  const displayUserResponse = () => {
     return (
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
@@ -328,46 +291,9 @@ function CheckinBothResponeded({ navigation }) {
           {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
           <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
-              </View>
-              {/* added */}
-              <TouchableOpacity
-                style={styles.responseHeader}
-                onLongPress={openModal}
-              >
-                {selectedEmoji ? (
-                  <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
-                ) : (
-                  <Text style={styles.defaultEmoji}>+</Text>
-                )}
-              </TouchableOpacity>
-
-              <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-                <View style={styles.modalContainer}>
-                  {emojis.map((emoji, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.emojiOption}
-                      onPress={() => selectEmoji(emoji)}
-                    >
-                      <Text style={styles.emoji}>{emoji}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </Modal>
-
-            </View>
-            <Text>{partnerResponse}</Text>
-          </View>
-          <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
+                {/* <Text style={styles.leftText}>{userName}</Text> */}
                 <Text style={styles.leftText}>{currUserFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>
@@ -375,20 +301,21 @@ function CheckinBothResponeded({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
               />
             </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
+            <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
           </View>
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Image
-              style={styles.editButtonContainer}
               source={require('../../../assets/images/editButton.png')}
+              style={styles.editImg}
             />
           </TouchableOpacity>
         </Card>
         <View style={styles.viewMoreButtonWrapper}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
+            <Text style={styles.buttonTxt}>View More</Text>
           </TouchableOpacity>
         </View>
+        <View />
       </View>
     );
   };
@@ -405,7 +332,7 @@ function CheckinBothResponeded({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
       >
-        {displayBothResponse()}
+        {displayUserResponse()}
       </ScrollView>
     </View>
   );
@@ -524,4 +451,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckinBothResponeded;
+export default CheckinUserResponeded;

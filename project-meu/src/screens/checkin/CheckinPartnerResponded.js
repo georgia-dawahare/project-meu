@@ -22,25 +22,12 @@ import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
 import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
-
 import { fetchQuestions } from '../../actions/QuestionsActions';
 // import { createResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
 import { fetchResponseGroup, updateResponseGroup } from '../../actions/ResponseGroupActions';
 
-function CheckinBothResponeded({ navigation }) {
-  // GEORGIA EXAMPLE CODE
-
-  // retrieve partner data
-  const partnerObj = useSelector((state) => state.partnerState.partnerData);
-
-  // retrieve partner ID
-  const partnerID = partnerObj._id;
-
-  console.log(partnerID);
-
-  // END OF GEORGIA EXAMPLE CODE
-
+function CheckinPartnerResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [userResponseTime, setUserResponseTime] = useState('');
@@ -320,12 +307,11 @@ function CheckinBothResponeded({ navigation }) {
   //   }
   // };
 
-  const displayBothResponse = () => {
+  const displayPartnerResponse = () => {
     return (
-      <View style={styles.responseWrapper}>
+      <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
           <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
@@ -336,59 +322,20 @@ function CheckinBothResponeded({ navigation }) {
                 <Text>{partnerFirstName}</Text>
                 <Text>{partnerResponseTime}</Text>
               </View>
-              {/* added */}
-              <TouchableOpacity
-                style={styles.responseHeader}
-                onLongPress={openModal}
-              >
-                {selectedEmoji ? (
-                  <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
-                ) : (
-                  <Text style={styles.defaultEmoji}>+</Text>
-                )}
-              </TouchableOpacity>
-
-              <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-                <View style={styles.modalContainer}>
-                  {emojis.map((emoji, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.emojiOption}
-                      onPress={() => selectEmoji(emoji)}
-                    >
-                      <Text style={styles.emoji}>{emoji}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </Modal>
-
             </View>
-            <Text>{partnerResponse}</Text>
+            <Text style={styles.blurText}>{partnerResponse}</Text>
           </View>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
-              </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+          <View style={styles.seeMoreButtonWrapper}>
+            <TouchableOpacity style={styles.seeMoreButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+              <Text style={styles.seeMoreButtonTxt}>
+                Answer to see
+              </Text>
+              <Image style={styles.chevronRight}
+                source={require('../../../assets/icons/chevron-right.png')}
               />
-            </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Image
-              style={styles.editButtonContainer}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
         </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };
@@ -405,7 +352,7 @@ function CheckinBothResponeded({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
       >
-        {displayBothResponse()}
+        {displayPartnerResponse()}
       </ScrollView>
     </View>
   );
@@ -524,4 +471,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckinBothResponeded;
+export default CheckinPartnerResponeded;

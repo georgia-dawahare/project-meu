@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   SafeAreaView,
@@ -15,58 +15,111 @@ import {
 import {
   Card, Input,
 } from 'react-native-elements';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
-import auth from '../../services/datastore';
+// import auth from '../../services/datastore';
 import { apiUrl } from '../../constants/constants';
 
+import { fetchQuestions } from '../../actions/QuestionsActions';
+import { fetchUserById } from '../../actions/UserActions';
+import { createResponse, fetchResponse, fetchResponseByUserId } from '../../actions/ResponseActions';
+import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
+
 function CheckinSubmit({ navigation }) {
-  const questionData = require('../../../assets/data/questions.json');
-  const [question, setQuestion] = useState('');
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
-  const [responseId, setResponseId] = useState('');
-  const [userId, setUserId] = useState('');
   const [userDoc, setUserDoc] = useState('');
+  const [submit, setSubmit] = useState(false);
 
-  useEffect(() => {
-    setUserId(auth?.currentUser?.uid);
-  }, [userDoc]);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const user = await axios.get(`${apiUrl}/users/${userId}`);
-      const userInfo = user.data;
-      if (userInfo) {
-        setUserDoc(userInfo);
-      }
-    };
-    if (userId) {
-      getUser();
+  // userData
+  const user = useSelector((state) => state.userState.userData);
+  const currUserId = user._id;
+  const currUserPairId = user.pairId;
+  // console.log('user :      ', user);
+
+  // questions Data
+  const questionsTest = useSelector((state) => state.questionsState.questionsData);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const currQuestion = questionsTest.length > 0
+    ? questionsTest[currentQuestionIndex % questionsTest.length]?.question
+    : null;
+
+  // fetch ResponseGroupData
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  // const currUserResponseGroupId = currUserResponseGroup._id;
+  // console.log('currUserResponseGroup:     ', currUserResponseGroup)
+  let currUserResponseGroupId = '';
+  if (currUserResponseGroup.length > 0) {
+    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponseGroup = sortedResponseGroup[0];
+    // latestQuestionId = latestResponseGroup.questionId;
+    currUserResponseGroupId = latestResponseGroup._id;
+
+    // console.log('latestQId : ', latestQuestionId);
+    // console.log('currUserREsponseGroupId: ', currUserResponseGroupId);
+    // console.log('latestResponseGroup', latestResponseGroup);
+  }
+
+  // response Data
+  const responses = useSelector((state) => state.responseState.allResponses);
+  let LatestCurrUserResponseText = '';
+  let LatestResponseId = '';
+  if (responses) {
+    const sortedResponses = Object.values(responses).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      LatestCurrUserResponseText = latestResponse.response;
+      LatestResponseId = latestResponse._id;
+
+      console.log('latestResponseText', LatestCurrUserResponseText);
+      console.log('responseId : ', LatestResponseId);
     }
-  }, [userId]);
+  }
+  // console.log('userResponses', responses);
+
+  useEffect(() => {
+    async function fetchData() {
+      if (currUserId) {
+        await dispatch(fetchUserById(currUserId));
+        await dispatch(fetchQuestions());
+        await dispatch(fetchResponse(currUserId));
+        await dispatch(fetchResponseGroupByPairId(currUserPairId));
+        // await dispatch(fetchResponseByUserId(currUserId));
+      }
+    }
+    fetchData();
+  }, [currUserId]);
 
   useEffect(() => {
     refreshData();
-  }, [userId, userDoc]);
+  }, [currUserId, userDoc]);
 
-  const updateResponse = async (currResponseId, updatedResponse) => {
-    const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
-    return id;
-  };
+  // const updateResponse = async (currResponseId, updatedResponse) => {
+  //   const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
+  //   return id;
+  // };
 
-  const addResponse = async (responseData, currPairId, groupId) => {
-    const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
-    return id;
-  };
-
+  // const addResponse = async (responseData, currPairId, groupId) => {
+  //   const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
+  //   return id;
+  // };
   const getPair = async () => {
     return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
   };
 
   const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response.data;
+    const response1 = await axios.get(`${apiUrl}/responses/${id}`);
+    return response1.data;
   };
 
   const refreshData = async () => {
@@ -79,15 +132,15 @@ function CheckinSubmit({ navigation }) {
         const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
         const responseGroupData = responseGroup.data;
         const pairCreatorId = pair?.data?.pair_creator_id;
-        if (userId === pairCreatorId) {
+        if (currUserId === pairCreatorId) {
           if (responseGroupData.p1_response_id) {
             userResponse = await getResponse(responseGroupData.p1_response_id);
-            setResponseId(responseGroupData?.p1_response_id);
+            // setResponseId(responseGroupData?.p1_response_id);
           }
-        } else if (userId !== pairCreatorId) {
+        } else if (currUserId !== pairCreatorId) {
           if (responseGroupData.p2_response_id) {
             userResponse = await getResponse(responseGroupData.p2_response_id);
-            setResponseId(responseGroupData?.p2_response_id);
+            // setResponseId(responseGroupData?.p2_response_id);
           }
         }
         if (userResponse) {
@@ -96,7 +149,7 @@ function CheckinSubmit({ navigation }) {
         }
 
         // Set daily question
-        setQuestion(questionData.questions[responseGroupData.question_id].question);
+        // setQuestion(questionData.questions[responseGroupData.question_id].question);
       }
     } catch (error) {
       console.error('Error occurred during data refresh:', error);
@@ -104,27 +157,69 @@ function CheckinSubmit({ navigation }) {
   };
 
   const handleOnSubmit = async () => {
-    const groupId = userDoc.pair_id + moment().format('MMDDYY');
+    // const groupId = userDoc.pair_id + moment().format('MMDDYY');
+  //   try {
+  //     if (newResponse) {
+  //       setSubmit(true);
+  //     } else {
+  //       updateResponse(
+  //         currUserId,
+  //         {
+  //           response: textAnswer,
+  //           user_id: currUserId,
+  //         },
+  //       );
+  //     }
+  //     navigation.navigate('Checkin');
+  //   } catch (e) {
+  //     console.log('Failed to submit response: ', e);
+  //   }
+  // };
+
     try {
       if (newResponse) {
-        addResponse({
+        await dispatch(createResponse(currUserId, {
           response: textAnswer,
-          user_id: userId,
-        }, userDoc.pair_id, groupId);
-      } else {
-        updateResponse(
-          responseId,
-          {
-            response: textAnswer,
-            user_id: userId,
-          },
-        );
+          userId: currUserId,
+          responseGroupId: currUserPairId,
+        }));
+
+        await dispatch(updateResponseGroup(currUserResponseGroupId, {
+          // need to be fixed
+          responseId1: LatestResponseId,
+        }));
+
+        if (!newResponse) {
+          // update Response
+
+        }
+        // } else {
+        //   await updateResponse(
+        //     currUserId,
+        //     {
+        //       response: textAnswer,
+        //       user_id: currUserId,
+        //     },
+        //   );
+        // }
+        setSubmit(true);
+        navigation.navigate('CheckinUserResponded');
+        setSubmit(false);
       }
-      navigation.navigate('Checkin');
     } catch (e) {
       console.log('Failed to submit response: ', e);
     }
   };
+
+  useEffect(() => {
+    async function fetchResponseData() {
+      if (submit) {
+        await dispatch(fetchResponseByUserId(currUserId));
+      }
+    }
+    fetchResponseData();
+  }, [submit]);
+
   return (
 
     <KeyboardAvoidingView
@@ -142,7 +237,7 @@ function CheckinSubmit({ navigation }) {
             </TouchableOpacity>
             <Card containerStyle={styles.cardContainer}>
               <Text>Daily Question</Text>
-              <Card.Title style={styles.question}>{question}</Card.Title>
+              <Card.Title style={styles.question}>{currQuestion}</Card.Title>
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
               <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
                 <Text style={styles.buttonText}>

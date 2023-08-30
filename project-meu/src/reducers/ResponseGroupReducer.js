@@ -2,7 +2,7 @@ import { ActionTypes } from '../actions/ResponseGroupActions';
 
 const initialState = {
   allResponseGroups: {},
-  currResponseGroup: {},
+  // currResponseGroup: {},
 };
 
 const ResponseGroupReducer = (state = initialState, action = {}) => {
