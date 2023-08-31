@@ -62,21 +62,32 @@ function CheckinUserResponeded({ navigation }) {
   // console.log('partnerId :     ', partnerId);
 
   // partner Data
-  const partner = useSelector((state) => state.userState.partnerData);
+  const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
   // console.log('partner Info : ', partner);
   console.log('partner Info : ', partnerFirstName);
 
   // questions Data
-  const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  // console.log('questiosTEST:           ', questionsTest);
-  // for testing
-  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  // console.log('first Q :       ', firstQuestion);
+  const questions = useSelector((state) => state.questionsState.questionsData);
 
-  // get reponses of the pair
-  const currUserResponses = useSelector((state) => state.responseState.responseData);
-  // console.log('currUserResponses', currUserResponses);
+  // get reponseGroups of the pair
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let currQuestionId = '';
+  // let currQuestionresponse1 = '';
+  // let currQuestionresponse2 = '';
+  if (currUserResponseGroup.length > 0) {
+    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+      return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
+    });
+
+    const latestResonseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResonseGroup.questionId;
+    // currQuestionresponse1 = latestResonseGroup.responseId1;
+    // currQuestionresponse2 = latestResonseGroup.responseId2;
+    // console.log('latestResonseGroup', latestResonseGroup);
+  }
+
+  const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
 
   // response Data
   const responses = useSelector((state) => state.responseState.allResponses);
@@ -288,12 +299,10 @@ function CheckinUserResponeded({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
-                {/* <Text style={styles.leftText}>{userName}</Text> */}
                 <Text style={styles.leftText}>{currUserFirstName}</Text>
                 <Text style={styles.leftText}>{userResponseTime}</Text>
               </View>

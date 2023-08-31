@@ -14,33 +14,20 @@ import {
 } from 'react-native-elements';
 import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-// import moment from 'moment';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
 import Button from '../../components/Button';
 
-import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
-
+import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-// import { createResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-import { fetchResponseGroup, updateResponseGroup } from '../../actions/ResponseGroupActions';
+import { fetchPartner } from '../../actions/PartnerActions';
+import { fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
+import { fetchResponse } from '../../actions/ResponseActions';
 
 function CheckinBothResponeded({ navigation }) {
-  // GEORGIA EXAMPLE CODE
-
-  // retrieve partner data
-  const partnerObj = useSelector((state) => state.partnerState.partnerData);
-
-  // retrieve partner ID
-  const partnerID = partnerObj._id;
-
-  console.log(partnerID);
-
-  // END OF GEORGIA EXAMPLE CODE
-
   const [fontLoaded, setFontLoaded] = useState(false);
 
   const [userResponseTime, setUserResponseTime] = useState('');
@@ -48,8 +35,6 @@ function CheckinBothResponeded({ navigation }) {
   const [userResponse, setUserResponse] = useState('');
   const [partnerResponse, setPartnerResponse] = useState('');
 
-  // const [userDoc, setUserDoc] = useState('');
-  // const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -77,21 +62,37 @@ function CheckinBothResponeded({ navigation }) {
   // console.log('partnerId :     ', partnerId);
 
   // partner Data
-  const partner = useSelector((state) => state.userState.partnerData);
+  const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
+  // console.log('partner Info : ', partnerFirstName);
   // console.log('partner Info : ', partner);
-  console.log('partner Info : ', partnerFirstName);
+  // console.log('partner: ', partner);
 
   // questions Data
-  const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  // console.log('questiosTEST:           ', questionsTest);
-  // for testing
-  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
-  // console.log('first Q :       ', firstQuestion);
+  const questions = useSelector((state) => state.questionsState.questionsData);
 
-  // get reponses of the pair
-  const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
-  console.log('currUserREsponses', currUserResponses);
+  // get reponseGroups of the pair
+  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let currQuestionId = '';
+  let currQuestionresponse1 = '';
+  let currQuestionresponse2 = '';
+  if (currUserResponseGroup.length > 0) {
+    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+      return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
+    });
+
+    const latestResonseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResonseGroup.questionId;
+    currQuestionresponse1 = latestResonseGroup.responseId1;
+    currQuestionresponse2 = latestResonseGroup.responseId2;
+    // console.log('latestResonseGroup', latestResonseGroup);
+  }
+
+  const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
+
+  // get responses
+  const response1 = useSelector((state) => state.responseState.allResponses);
+  // console.log('response1', response1);
 
   // fetch Data
   useEffect(() => {
@@ -99,6 +100,7 @@ function CheckinBothResponeded({ navigation }) {
       if (currUserId) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
+        dispatch(fetchPartner(currUserId));
       }
     }
     fetchData();
@@ -114,23 +116,31 @@ function CheckinBothResponeded({ navigation }) {
   }, [currUserId]);
 
   useEffect(() => {
-    async function fetchPartnerData() {
-      if (partnerId) {
-        await dispatch(fetchPartnerDataById(partnerId));
-      }
-    }
-    fetchPartnerData();
-  }, [partnerId]);
-
-  useEffect(() => {
     async function fetchGroupResponses() {
       if (currUserPairId) {
-        await dispatch(fetchResponseGroup(currUserPairId));
+        await dispatch(fetchResponseGroupByPairId(currUserPairId));
       }
     }
     fetchGroupResponses();
-    console.log('GroupResponses');
   }, [currUserPairId]);
+
+  useEffect(() => {
+    async function fetchLatestResponse1() {
+      if (currQuestionresponse1) {
+        await dispatch(fetchResponse(currQuestionresponse1));
+      }
+    }
+    fetchLatestResponse1();
+  }, [currQuestionresponse1]);
+
+  useEffect(() => {
+    async function fetchLatestResponse2() {
+      if (currQuestionresponse2) {
+        await dispatch(fetchResponse(currQuestionresponse2));
+      }
+    }
+    fetchLatestResponse2();
+  }, [currQuestionresponse2]);
 
   // fetch Font
   useEffect(() => {
@@ -167,69 +177,15 @@ function CheckinBothResponeded({ navigation }) {
     }, 500);
   }, []);
 
-  const getResponseGrouptest = async (pairId) => {
-    // get responses of the pair from mongo
-    // find the highest number +1
-    // find the question id and assign
-    fetchResponseGroup(pairId);
-
-    //   let questionId = Math.round(Math.random() * 100);
-    //   // Ignore all image questions until we have a way to display them
-    //   while (questionData.questions[questionId].type === 'image') {
-    //     questionId = Math.round(Math.random() * 100);
-    //   }
-    //   await addResponseGroup(
-    //     {
-    //       p1_response_id: '',
-    //       p2_response_id: '',
-    //       question_id: questionId,
-    //     },
-    //     pairId,
-    //   );
-    //   // Set responseGroup to newly created response group
-    //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-    // };
-  };
-
-  const test = getResponseGrouptest(currUserPairId);
-  console.log('test', test);
-
-  // const addResponseGroup = async (groupData, groupId) => {
-  //   const id = await axios.post(`${apiUrl}/responses/group`, { groupData, groupId });
-  //   return id;
-  // };
+  // navigate pages
+  if (currQuestionresponse1 && currQuestionresponse2) {
+    navigation.navigate('CheckinBothResponded');
+  }
 
   const getResponse = async (id) => {
     const response = await axios.get(`${apiUrl}/responses/${id}`);
     return response.data;
   };
-
-  // const getResponseGroup = async (groupId) => {
-  //   return axios.get(`${apiUrl}/responses/group/${groupId}`);
-  // };
-
-  // const createResponseGroup = async (pairId) => {
-  //   // get responses of the pair from mongo
-  //   // find the highest number +1
-  //   // find the question id and assign
-  //   fetchResponseGroup(pairId);
-
-  //   let questionId = Math.round(Math.random() * 100);
-  //   // Ignore all image questions until we have a way to display them
-  //   while (questionData.questions[questionId].type === 'image') {
-  //     questionId = Math.round(Math.random() * 100);
-  //   }
-  //   await addResponseGroup(
-  //     {
-  //       p1_response_id: '',
-  //       p2_response_id: '',
-  //       question_id: questionId,
-  //     },
-  //     pairId,
-  //   );
-  //   // Set responseGroup to newly created response group
-  //   return axios.get(`${apiUrl}/responses/group/${pairId}`);
-  // };
 
   const getDailyResponses = async (responseGroupData) => {
     let currUserResponse, partnerResponse, p1Date, p2Date;
@@ -281,52 +237,26 @@ function CheckinBothResponeded({ navigation }) {
     }
   };
 
-  // const refreshData = async () => {
-  //   if (userDoc && partnerDoc) {
-  //     let responseGroup, responseGroupData, groupId;
-  //     try {
-  //       // Fetch user ID & user doc
-  //       const pairId = userDoc.pair_id;
-  //       groupId = pairId + moment().format('MMDDYY');
-  //       responseGroup = await getResponseGroup(groupId);
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-  //     try {
-  //       if (groupId) {
-  //       // if there is no response group, create a new one!
-  //         if (responseGroup.status === 202) {
-  //           responseGroup = await createResponseGroup(groupId);
-  //         }
-
-  //         if (responseGroup) {
-  //           responseGroupData = responseGroup.data;
-  //         } else {
-  //           return;
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-
-  //     try {
-  //       if (responseGroupData) {
-  //       // Retrieve couple responses
-  //         await getDailyResponses(responseGroupData);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-  //   }
-  // };
+  const displayNoResponses = () => {
+    return (
+      <View>
+        <Card containerStyle={styles.cardContainer}>
+          <Text style={styles.cardTitle}>Daily Question</Text>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+            <Text style={styles.buttonTxt}>Submit a Response</Text>
+          </TouchableOpacity>
+        </Card>
+      </View>
+    );
+  };
 
   const displayBothResponse = () => {
     return (
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-          <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
               <Image style={styles.profileImg}
@@ -405,7 +335,7 @@ function CheckinBothResponeded({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
       >
-        {displayBothResponse()}
+        {displayNoResponses()}
       </ScrollView>
     </View>
   );

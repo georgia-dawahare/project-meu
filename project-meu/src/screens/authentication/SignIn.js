@@ -45,7 +45,7 @@ function SignIn({ navigation }) {
       .then((userCredential) => {
         // Signed in
         const { user } = userCredential;
-        console.log('BEFORE', curUser);
+        // console.log('BEFORE', curUser);
         dispatch(fetchFirestoreUser(user.uid));
       })
       .catch((error) => {

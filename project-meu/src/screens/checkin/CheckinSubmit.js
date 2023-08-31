@@ -41,31 +41,26 @@ function CheckinSubmit({ navigation }) {
   // console.log('user :      ', user);
 
   // questions Data
-  const questionsTest = useSelector((state) => state.questionsState.questionsData);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-
-  const currQuestion = questionsTest.length > 0
-    ? questionsTest[currentQuestionIndex % questionsTest.length]?.question
-    : null;
+  const questions = useSelector((state) => state.questionsState.questionsData);
+  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  // const currUserResponseGroupId = currUserResponseGroup._id;
-  // console.log('currUserResponseGroup:     ', currUserResponseGroup)
+  let currQuestionId = '';
   let currUserResponseGroupId = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
 
-    const latestResponseGroup = sortedResponseGroup[0];
-    // latestQuestionId = latestResponseGroup.questionId;
-    currUserResponseGroupId = latestResponseGroup._id;
-
-    // console.log('latestQId : ', latestQuestionId);
-    // console.log('currUserREsponseGroupId: ', currUserResponseGroupId);
-    // console.log('latestResponseGroup', latestResponseGroup);
+    const latestResonseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResonseGroup.questionId;
+    currUserResponseGroupId = latestResonseGroup._id;
+    console.log('currUserResponseGroupId', currUserResponseGroupId);
   }
+
+  const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
+  console.log('currQuestion', currQuestion);
 
   // response Data
   const responses = useSelector((state) => state.responseState.allResponses);
@@ -81,8 +76,8 @@ function CheckinSubmit({ navigation }) {
       LatestCurrUserResponseText = latestResponse.response;
       LatestResponseId = latestResponse._id;
 
-      console.log('latestResponseText', LatestCurrUserResponseText);
-      console.log('responseId : ', LatestResponseId);
+      // console.log('latestResponseText', LatestCurrUserResponseText);
+      // console.log('responseId : ', LatestResponseId);
     }
   }
   // console.log('userResponses', responses);
@@ -157,25 +152,6 @@ function CheckinSubmit({ navigation }) {
   };
 
   const handleOnSubmit = async () => {
-    // const groupId = userDoc.pair_id + moment().format('MMDDYY');
-  //   try {
-  //     if (newResponse) {
-  //       setSubmit(true);
-  //     } else {
-  //       updateResponse(
-  //         currUserId,
-  //         {
-  //           response: textAnswer,
-  //           user_id: currUserId,
-  //         },
-  //       );
-  //     }
-  //     navigation.navigate('Checkin');
-  //   } catch (e) {
-  //     console.log('Failed to submit response: ', e);
-  //   }
-  // };
-
     try {
       if (newResponse) {
         await dispatch(createResponse(currUserId, {
