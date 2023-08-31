@@ -6,6 +6,7 @@ import { apiUrl } from '../constants/constants';
 export const ActionTypes = {
   FETCH_RESPONSES: 'FETCH_RESPONSES',
   FETCH_RESPONSE: 'FETCH_RESPONSE',
+  FETCH_RESPONSE_PARTNER: 'FETCH_RESPONSE_PARTNER',
 };
 
 // Fetch all responses for a user
@@ -26,10 +27,10 @@ export function createResponse(uid, responseData) {
 }
 
 // Update response
-export function updateResponse(responseId, updatedFields) {
+export function updateResponse(responseGroupId, updatedFields) {
   // axios patch
   return () => {
-    axios.patch(`${apiUrl}/responses/${responseId}`, updatedFields)
+    axios.patch(`${apiUrl}/responses/${responseGroupId}`, updatedFields)
       .then(() => {
         console.log('Successfully updated response');
       }).catch((error) => {
@@ -73,6 +74,18 @@ export function fetchResponseByUserId(userId) {
         dispatch({ type: ActionTypes.FETCH_RESPONSES, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
+      });
+  };
+}
+
+// fetch response by PartnerId
+export function fetchResponseByPartnerId(partnerId) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/responses/partnerId/${partnerId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_RESPONSE_PARTNER, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching partner by partner Id: ', error);
       });
   };
 }

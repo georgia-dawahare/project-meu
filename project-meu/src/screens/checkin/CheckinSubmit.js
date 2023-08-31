@@ -48,6 +48,8 @@ function CheckinSubmit({ navigation }) {
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
   let currUserResponseGroupId = '';
+  let latestResponseId1 = '';
+  let latestResponseId2 = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
@@ -56,11 +58,14 @@ function CheckinSubmit({ navigation }) {
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
     currUserResponseGroupId = latestResonseGroup._id;
-    console.log('currUserResponseGroupId', currUserResponseGroupId);
+    latestResponseId1 = latestResonseGroup.responseId1;
+    latestResponseId2 = latestResonseGroup.responseId2;
+    console.log('latestResponseId1', latestResponseId1);
+    console.log('latestResponseId2', latestResponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
-  console.log('currQuestion', currQuestion);
+  // console.log('currQuestion', currQuestion);
 
   // response Data
   const responses = useSelector((state) => state.responseState.allResponses);
@@ -99,15 +104,6 @@ function CheckinSubmit({ navigation }) {
     refreshData();
   }, [currUserId, userDoc]);
 
-  // const updateResponse = async (currResponseId, updatedResponse) => {
-  //   const id = await axios.put(`${apiUrl}/responses/group`, { currResponseId, updatedResponse });
-  //   return id;
-  // };
-
-  // const addResponse = async (responseData, currPairId, groupId) => {
-  //   const id = await axios.post(`${apiUrl}/responses/`, { responseData, currPairId, groupId });
-  //   return id;
-  // };
   const getPair = async () => {
     return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
   };
@@ -152,40 +148,67 @@ function CheckinSubmit({ navigation }) {
   };
 
   const handleOnSubmit = async () => {
-    try {
-      if (newResponse) {
-        await dispatch(createResponse(currUserId, {
-          response: textAnswer,
-          userId: currUserId,
-          responseGroupId: currUserPairId,
-        }));
+    // try {
+    // if (newResponse) {
+    //   await dispatch(createResponse(currUserId, {
+    //     response: textAnswer,
+    //     userId: currUserId,
+    //     responseGroupId: currUserPairId,
+    //   }));
+    // console.log('currUserResponseGroupId', currUserResponseGroupId);
+    const createdResponse = await dispatch(createResponse(currUserId, {
+      response: textAnswer,
+      userId: currUserId,
+      responseGroupId: currUserPairId,
+    }));
 
-        await dispatch(updateResponseGroup(currUserResponseGroupId, {
-          // need to be fixed
-          responseId1: LatestResponseId,
-        }));
+    // Update the response group with the new response
+    if (createdResponse?._id) {
+      const updatedResponseGroup = {
+        responseId1: latestResponseId1 || createdResponse._id,
+        responseId2: latestResponseId1 ? createdResponse._id : latestResponseId2,
+      };
 
-        if (!newResponse) {
-          // update Response
-
-        }
-        // } else {
-        //   await updateResponse(
-        //     currUserId,
-        //     {
-        //       response: textAnswer,
-        //       user_id: currUserId,
-        //     },
-        //   );
-        // }
-        setSubmit(true);
-        navigation.navigate('CheckinUserResponded');
-        setSubmit(false);
-      }
-    } catch (e) {
-      console.log('Failed to submit response: ', e);
+      await dispatch(updateResponseGroup(currUserResponseGroupId, updatedResponseGroup));
     }
+
+    // await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    //   // need to be fixed
+    //   responseId2: '64cb119616340a8f7439781',
+    // }));
+
+    // if (latestResponseId1) {
+    //   await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    //     // need to be fixed
+    //     responseId2: '64cb119616340a8f7439781',
+    //   }));
+    // } else if (!latestResponseId1) {
+    //   await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    //     responseId1: LatestResponseId,
+    //   }));
+    // }
+
+    if (!newResponse) {
+      // update Response
+
+    }
+    // } else {
+    //   await updateResponse(
+    //     currUserId,
+    //     {
+    //       response: textAnswer,
+    //       user_id: currUserId,
+    //     },
+    //   );
+    // }
+    setSubmit(true);
+    navigation.navigate('CheckinUserResponded');
+    setSubmit(false);
   };
+  // } catch (e) {
+  //   console.log('Failed to submit response: ', e);
+  // }
+  // };
 
   useEffect(() => {
     async function fetchResponseData() {

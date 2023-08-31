@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Image,
   View,
   RefreshControl,
   ScrollView,
@@ -12,46 +11,37 @@ import {
 import {
   Card,
 } from 'react-native-elements';
-import Modal from 'react-native-modal';
+// import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
-import Button from '../../components/Button';
+// import Button from '../../components/Button';
+// import { apiUrl } from '../../constants/constants';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchPair } from '../../actions/PairActions';
 import { fetchPartner } from '../../actions/PartnerActions';
-import { fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
+import { createResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 import { fetchResponse } from '../../actions/ResponseActions';
 
 function CheckinBothResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-
-  const [userResponseTime, setUserResponseTime] = useState('');
-  const [partnerResponseTime, setPartnerResponseTime] = useState('');
-  const [userResponse, setUserResponse] = useState('');
-  const [partnerResponse, setPartnerResponse] = useState('');
-
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const emojis = ['💖', '😜', '😘', '‼️', '😢'];
+  const [hasCreatedResponse, setHasCreatedResponse] = useState(false);
 
   const dispatch = useDispatch();
 
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
-  const currUserFirstName = user.firstName;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
-  // To get partnerId from pairs
+  // Partner Data
   const pairs = useSelector((state) => state.pairState.pairData);
-  let partnerId;
+  let partnerId = '';
   if (currUserPairId === pairs._id) {
     if (pairs.primaryUserId === currUserId) {
       partnerId = pairs.secondaryUserId;
@@ -59,14 +49,12 @@ function CheckinBothResponeded({ navigation }) {
       partnerId = pairs.primaryUserId;
     }
   }
-  // console.log('partnerId :     ', partnerId);
+  console.log('partnerId :     ', partnerId);
 
   // partner Data
   const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
-  // console.log('partner Info : ', partnerFirstName);
-  // console.log('partner Info : ', partner);
-  // console.log('partner: ', partner);
+  console.log('partnerFirstName :     ', partnerFirstName);
 
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
@@ -76,6 +64,7 @@ function CheckinBothResponeded({ navigation }) {
   let currQuestionId = '';
   let currQuestionresponse1 = '';
   let currQuestionresponse2 = '';
+
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
@@ -85,14 +74,46 @@ function CheckinBothResponeded({ navigation }) {
     currQuestionId = latestResonseGroup.questionId;
     currQuestionresponse1 = latestResonseGroup.responseId1;
     currQuestionresponse2 = latestResonseGroup.responseId2;
-    // console.log('latestResonseGroup', latestResonseGroup);
+    // console.log('currQuestionresponse1', currQuestionresponse1);
+    // console.log('currQuestionresponse2', currQuestionresponse2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
+  const nextQuestionId = currQuestionId + 1;
 
-  // get responses
+  // get response1
   const response1 = useSelector((state) => state.responseState.allResponses);
   // console.log('response1', response1);
+  let LatestCurrUserResponseId = '';
+  // const LatestCurrUserResponseText = '';
+  let LatestPartnerResponseText = '';
+  if (response1 && response1.userId === currUserId) {
+    const sortedResponses = Object.values(response1).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      // LatestCurrUserResponseText = response1.response;
+      LatestCurrUserResponseId = response1._id;
+
+      // console.log('LatestCurrUserResponseText', LatestCurrUserResponseText);
+      // console.log('LatestCurrUserResponseId', LatestCurrUserResponseId);
+    }
+  } else if (response1 && response1.userId !== currUserId) {
+    const sortedResponses = Object.values(response1).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    const latestResponse = sortedResponses[0];
+    if (latestResponse) {
+      LatestPartnerResponseText = response1.response;
+      LatestCurrUserResponseId = response1._id;
+      console.log('LatestPartnerResponseText', LatestPartnerResponseText);
+      console.log('LatestCurrUserResponseId', LatestCurrUserResponseId);
+    }
+  }
+
+  // get response2
+  // const response2 = useSelector((state) => state.responseState.partnerResponse);
 
   // fetch Data
   useEffect(() => {
@@ -142,6 +163,31 @@ function CheckinBothResponeded({ navigation }) {
     fetchLatestResponse2();
   }, [currQuestionresponse2]);
 
+  // Refresh questions everyday
+  useEffect(() => {
+    const updateQuestionOnTime = () => {
+      const currentDate = new Date();
+      if (currentDate.getHours() === 13 && currentDate.getMinutes() === 24) {
+        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
+
+        // by C
+        dispatch(createResponseGroup(
+          currUserPairId,
+          nextQuestionId,
+        ));
+      }
+
+      const nextDay = new Date(currentDate);
+      nextDay.setDate(currentDate.getDate() + 1);
+      nextDay.setHours(0);
+      nextDay.setMinutes(4);
+      const timeUntilNextUpdate = nextDay - currentDate;
+      setTimeout(updateQuestionOnTime, timeUntilNextUpdate);
+    };
+
+    updateQuestionOnTime();
+  }, [questions]);
+
   // fetch Font
   useEffect(() => {
     async function loadFont() {
@@ -155,20 +201,6 @@ function CheckinBothResponeded({ navigation }) {
     loadFont();
   }, []);
 
-  // for emoji
-  const openModal = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  const selectEmoji = (emoji) => {
-    setSelectedEmoji(emoji);
-    closeModal();
-  };
-
   // scrollable page refresh 0.5s
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -178,64 +210,50 @@ function CheckinBothResponeded({ navigation }) {
   }, []);
 
   // navigate pages
-  if (currQuestionresponse1 && currQuestionresponse2) {
-    navigation.navigate('CheckinBothResponded');
-  }
+  // if (currQuestionresponse1 && currQuestionresponse2) {
+  //   navigation.navigate('CheckinBothResponded');
+  // }
 
-  const getResponse = async (id) => {
-    const response = await axios.get(`${apiUrl}/responses/${id}`);
-    return response.data;
-  };
+  // const getDailyResponses = async (responseGroupData) => {
+  //   let currUserResponse, p1Date, p2Date;
 
-  const getDailyResponses = async (responseGroupData) => {
-    let currUserResponse, partnerResponse, p1Date, p2Date;
+  //   if (currUserResponse) {
+  //     const p1Timestamp = currUserResponse.timestamp._seconds * 1000 + Math.floor(currUserResponse.timestamp._nanoseconds / 1000000);
+  //     p1Date = new Date(p1Timestamp);
+  //   }
+  //   if (partnerResponse) {
+  //     const p2Timestamp = partnerResponse.timestamp._seconds * 1000 + Math.floor(partnerResponse.timestamp._nanoseconds / 1000000);
+  //     p2Date = new Date(p2Timestamp);
+  //   }
 
-    // Populate partner responses if they exist
-
-    if (responseGroupData.currUserId) {
-      currUserResponse = await getResponse(responseGroupData.currUserId);
-    }
-    if (responseGroupData.partnerId) {
-      partnerResponse = await getResponse(responseGroupData.partnerId);
-    }
-
-    if (currUserResponse) {
-      const p1Timestamp = currUserResponse.timestamp._seconds * 1000 + Math.floor(currUserResponse.timestamp._nanoseconds / 1000000);
-      p1Date = new Date(p1Timestamp);
-    }
-    if (partnerResponse) {
-      const p2Timestamp = partnerResponse.timestamp._seconds * 1000 + Math.floor(partnerResponse.timestamp._nanoseconds / 1000000);
-      p2Date = new Date(p2Timestamp);
-    }
-
-    // Current user is pair creator
-    if (currUserId === currUserResponse?.user_id || partnerId === partnerResponse?.user_id) {
-      //  Add user response
-      if (currUserResponse) {
-        setUserResponse(currUserResponse.response);
-        // createResponse(currUserUid, currUserResponse);
-        setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-      }
-      // Add partner response
-      if (partnerResponse) {
-        const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
-        setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
-        setPartnerResponse(partnerResponse.response);
-      }
-      // Current user is p2
-    } else if (currUserId === partnerResponse?.user_id || partnerId === currUserResponse?.user_id) {
-      // Add user response
-      if (partnerResponse) {
-        setUserResponse(partnerResponse.response);
-        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-      }
-      // Add partner response
-      if (currUserResponse) {
-        setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setPartnerResponse(currUserResponse.response);
-      }
-    }
-  };
+  //   // Current user is pair creator
+  //   if (currUserId === currUserResponse?.user_id || partnerId === partnerResponse?.user_id) {
+  //     //  Add user response
+  //     if (currUserResponse) {
+  //       setUserResponse(currUserResponse.response);
+  //       // createResponse(currUserUid, currUserResponse);
+  //       setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+  //     }
+  //     // Add partner response
+  //     if (partnerResponse) {
+  //       const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
+  //       setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
+  //       setPartnerResponse(partnerResponse.response);
+  //     }
+  //     // Current user is p2
+  //   } else if (currUserId === partnerResponse?.user_id || partnerId === currUserResponse?.user_id) {
+  //     // Add user response
+  //     if (partnerResponse) {
+  //       setUserResponse(partnerResponse.response);
+  //       setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
+  //     }
+  //     // Add partner response
+  //     if (currUserResponse) {
+  //       setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
+  //       setPartnerResponse(currUserResponse.response);
+  //     }
+  //   }
+  // };
 
   const displayNoResponses = () => {
     return (
@@ -247,78 +265,6 @@ function CheckinBothResponeded({ navigation }) {
             <Text style={styles.buttonTxt}>Submit a Response</Text>
           </TouchableOpacity>
         </Card>
-      </View>
-    );
-  };
-
-  const displayBothResponse = () => {
-    return (
-      <View style={styles.responseWrapper}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{partnerResponseTime}</Text>
-              </View>
-              {/* added */}
-              <TouchableOpacity
-                style={styles.responseHeader}
-                onLongPress={openModal}
-              >
-                {selectedEmoji ? (
-                  <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
-                ) : (
-                  <Text style={styles.defaultEmoji}>+</Text>
-                )}
-              </TouchableOpacity>
-
-              <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-                <View style={styles.modalContainer}>
-                  {emojis.map((emoji, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={styles.emojiOption}
-                      onPress={() => selectEmoji(emoji)}
-                    >
-                      <Text style={styles.emoji}>{emoji}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              </Modal>
-
-            </View>
-            <Text>{partnerResponse}</Text>
-          </View>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
-              </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
-            </View>
-            <Text style={styles.leftText}>{userResponse}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Image
-              style={styles.editButtonContainer}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
-        </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Button title="View  More" />
-          </TouchableOpacity>
-        </View>
       </View>
     );
   };

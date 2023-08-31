@@ -10,7 +10,7 @@ const ResponseGroupReducer = (state = initialState, action = {}) => {
     case ActionTypes.FETCH_RESPONSE_GROUPS:
       return { ...state, allResponseGroups: action.payload };
     case ActionTypes.FETCH_RESPONSE_GROUP:
-      return { ...state, currResponseGroup: action.payload };
+      return { ...state, allResponseGroups: action.payload };
     default:
       return state;
   }

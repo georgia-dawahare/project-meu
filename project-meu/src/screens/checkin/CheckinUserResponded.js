@@ -94,6 +94,10 @@ function CheckinUserResponeded({ navigation }) {
   let LatestCurrUserResponseText = '';
   let LatestResponseId = '';
   let LatestResponseTimeStamp = '';
+  // if (responses) {
+  //   const sortedResponses = Object.values(responses).sort((a, b) => {
+  //     return new Date(b.createdAt) - new Date(a.createdAt);
+  //   });
   if (responses) {
     const sortedResponses = Object.values(responses).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -185,8 +189,8 @@ function CheckinUserResponeded({ navigation }) {
   }, []);
 
   // reformatting Timestamp
-  const TimeFormat = async (timestamp) => {
-    const createdAtValue = new Date(timestamp);
+  const TimeFormat = async (TimeStamp) => {
+    const createdAtValue = new Date(TimeStamp);
     const userTimezoneOffset = -5 * 60; // EST TomeZone:  UTC-5
     const userCreatedAt = new Date(createdAtValue.getTime() + userTimezoneOffset * 60 * 1000);
 
@@ -197,63 +201,13 @@ function CheckinUserResponeded({ navigation }) {
       hour12: false,
       timeZone: 'America/New_York',
     });
+    console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
 
     return formattedUserCreatedAt;
-
-    // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
   };
 
-  const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp);
-
-  const getDailyResponses = async (responseGroupData) => {
-    let currUserResponse, partnerResponse, p1Date, p2Date;
-
-    // Populate partner responses if they exist
-
-    if (responseGroupData.currUserId) {
-      currUserResponse = await getResponse(responseGroupData.currUserId);
-    }
-    if (responseGroupData.partnerId) {
-      partnerResponse = await getResponse(responseGroupData.partnerId);
-    }
-
-    if (currUserResponse) {
-      const p1Timestamp = currUserResponse.timestamp._seconds * 1000 + Math.floor(currUserResponse.timestamp._nanoseconds / 1000000);
-      p1Date = new Date(p1Timestamp);
-    }
-    if (partnerResponse) {
-      const p2Timestamp = partnerResponse.timestamp._seconds * 1000 + Math.floor(partnerResponse.timestamp._nanoseconds / 1000000);
-      p2Date = new Date(p2Timestamp);
-    }
-
-    // Current user is pair creator
-    if (currUserId === currUserResponse?.user_id || partnerId === partnerResponse?.user_id) {
-      //  Add user response
-      if (currUserResponse) {
-        setUserResponse(currUserResponse.response);
-        // createResponse(currUserUid, currUserResponse);
-        setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-      }
-      // Add partner response
-      if (partnerResponse) {
-        const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
-        setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
-        setPartnerResponse(partnerResponse.response);
-      }
-      // Current user is p2
-    } else if (currUserId === partnerResponse?.user_id || partnerId === currUserResponse?.user_id) {
-      // Add user response
-      if (partnerResponse) {
-        setUserResponse(partnerResponse.response);
-        setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-      }
-      // Add partner response
-      if (currUserResponse) {
-        setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-        setPartnerResponse(currUserResponse.response);
-      }
-    }
-  };
+  const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp)._j;
+  console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
 
   // const refreshData = async () => {
   //   if (userDoc && partnerDoc) {
@@ -304,7 +258,7 @@ function CheckinUserResponeded({ navigation }) {
             <View style={styles.myResponseHeader}>
               <View style={styles.userNameTxt}>
                 <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{userResponseTime}</Text>
+                <Text style={styles.leftText}>{CurrFormattedTimeStamp}</Text>
               </View>
               <Image style={styles.profileImg}
                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}

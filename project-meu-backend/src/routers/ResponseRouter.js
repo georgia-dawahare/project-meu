@@ -18,9 +18,9 @@ const handleCreateResponse = async (req, res) => {
 
 // Update response
 const handleUpdateResponse = async (req, res) => {
-    const responseId = req.params.id;
+    const responseGroupId = req.params.id;
     try {
-        const updatedResponse = await Responses.updateResponse(responseId, req.body);
+        const updatedResponse = await Responses.updateResponse(responseGroupId, req.body);
         res.json(updatedResponse);
     } catch (error) {
         res.status(500).json({ error });
@@ -60,6 +60,16 @@ const handleGetResponsesByUserId = async (req, res) => {
     }
 }
 
+const handleGetResponsesByPartnerId = async (req, res) => {
+    const partnerId = req.params.id;
+    try {
+        const response = await Responses.findResponsesByUserId(partnerId);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 router.route('/:id')
     .post(handleCreateResponse)
     .patch(handleUpdateResponse)
@@ -68,4 +78,7 @@ router.route('/:id')
 
 router.route('/userId/:id')
     .get(handleGetResponsesByUserId);
+
+router.route('partnerId/:id')
+    .get(handleGetResponsesByPartnerId);
 export default router;
