@@ -11,12 +11,9 @@ import {
 import {
   Card,
 } from 'react-native-elements';
-// import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
 import { useSelector, useDispatch } from 'react-redux';
 import TitleHeader from '../../components/TitleHeader';
-// import Button from '../../components/Button';
-// import { apiUrl } from '../../constants/constants';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
@@ -39,23 +36,6 @@ function CheckinBothResponeded({ navigation }) {
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
-  // Partner Data
-  const pairs = useSelector((state) => state.pairState.pairData);
-  let partnerId = '';
-  if (currUserPairId === pairs._id) {
-    if (pairs.primaryUserId === currUserId) {
-      partnerId = pairs.secondaryUserId;
-    } else if (pairs.secondaryUserId === currUserId) {
-      partnerId = pairs.primaryUserId;
-    }
-  }
-  console.log('partnerId :     ', partnerId);
-
-  // partner Data
-  const partner = useSelector((state) => state.partnerState.partnerData);
-  const partnerFirstName = partner.firstName;
-  console.log('partnerFirstName :     ', partnerFirstName);
-
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
 
@@ -69,12 +49,11 @@ function CheckinBothResponeded({ navigation }) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
-
     const latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId;
-    currQuestionresponse1 = latestResonseGroup.responseId1;
-    currQuestionresponse2 = latestResonseGroup.responseId2;
-    // console.log('currQuestionresponse1', currQuestionresponse1);
+    currQuestionId = latestResonseGroup.questionId; // 11
+    currQuestionresponse1 = latestResonseGroup.responseId1;// undefined
+    currQuestionresponse2 = latestResonseGroup.responseId2;// undefined
+    console.log('latestResonseGroup', latestResonseGroup);
     // console.log('currQuestionresponse2', currQuestionresponse2);
   }
 
@@ -85,7 +64,6 @@ function CheckinBothResponeded({ navigation }) {
   const response1 = useSelector((state) => state.responseState.allResponses);
   // console.log('response1', response1);
   let LatestCurrUserResponseId = '';
-  // const LatestCurrUserResponseText = '';
   let LatestPartnerResponseText = '';
   if (response1 && response1.userId === currUserId) {
     const sortedResponses = Object.values(response1).sort((a, b) => {
@@ -167,7 +145,7 @@ function CheckinBothResponeded({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 13 && currentDate.getMinutes() === 24) {
+      if (currentDate.getHours() === 0 && currentDate.getMinutes() === 44) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -213,6 +191,7 @@ function CheckinBothResponeded({ navigation }) {
   // if (currQuestionresponse1 && currQuestionresponse2) {
   //   navigation.navigate('CheckinBothResponded');
   // }
+  // else if(currQuestionresponse1 && )
 
   // const getDailyResponses = async (responseGroupData) => {
   //   let currUserResponse, p1Date, p2Date;

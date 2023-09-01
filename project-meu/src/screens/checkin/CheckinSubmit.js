@@ -18,7 +18,6 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import axios from 'axios';
-// import auth from '../../services/datastore';
 import { apiUrl } from '../../constants/constants';
 
 import { fetchQuestions } from '../../actions/QuestionsActions';
@@ -39,6 +38,23 @@ function CheckinSubmit({ navigation }) {
   const currUserId = user._id;
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
+
+  // // Partner Data
+  // const pairs = useSelector((state) => state.pairState.pairData);
+  // let partnerId = '';
+  // if (currUserPairId === pairs._id) {
+  //   if (pairs.primaryUserId === currUserId) {
+  //     partnerId = pairs.secondaryUserId;
+  //   } else if (pairs.secondaryUserId === currUserId) {
+  //     partnerId = pairs.primaryUserId;
+  //   }
+  // }
+  // console.log('partnerId :     ', partnerId);
+
+  // // partner Data
+  // const partner = useSelector((state) => state.partnerState.partnerData);
+  // const partnerFirstName = partner.firstName;
+  // console.log('partnerFirstName :     ', partnerFirstName);
 
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
@@ -156,11 +172,18 @@ function CheckinSubmit({ navigation }) {
     //     responseGroupId: currUserPairId,
     //   }));
     // console.log('currUserResponseGroupId', currUserResponseGroupId);
-    const createdResponse = await dispatch(createResponse(currUserId, {
-      response: textAnswer,
-      userId: currUserId,
-      responseGroupId: currUserPairId,
-    }));
+    if (!latestResponseId1 && !latestResponseId2) {
+      await dispatch(createResponse(currUserId, {
+        response: textAnswer,
+        userId: currUserId,
+        responseGroupId: currUserPairId,
+      }));
+    }
+    // else if (latestResponseId1 && !latestResponseId2) {
+    //   await dispatch(updateResponseGroup(LatestResponseId, {
+    //     responseId2: LatestResponseId,
+    //   }));
+    // }
 
     // Update the response group with the new response
     if (createdResponse?._id) {
