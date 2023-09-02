@@ -20,13 +20,13 @@ import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchPair } from '../../actions/PairActions';
 import { fetchPartner } from '../../actions/PartnerActions';
 import { createResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
-import { fetchResponse } from '../../actions/ResponseActions';
+import { fetchResponseByUserId, fetchResponseByPartnerId } from '../../actions/ResponseActions';
 
 function CheckinBothResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
-  const [hasCreatedResponse, setHasCreatedResponse] = useState(false);
+  // const [hasCreatedResponse, setHasCreatedResponse] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -36,14 +36,19 @@ function CheckinBothResponeded({ navigation }) {
   const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
+  // partner Data
+  const partner = useSelector((state) => state.partnerState.partnerData);
+  const partnerId = partner._id;
+  // console.log('partnerId', partnerId);
+
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
 
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
-  let currQuestionresponse1 = '';
-  let currQuestionresponse2 = '';
+  // let currQuestionresponseId1 = '';
+  // let currQuestionresponseId2 = '';
 
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
@@ -51,47 +56,54 @@ function CheckinBothResponeded({ navigation }) {
     });
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId; // 11
-    currQuestionresponse1 = latestResonseGroup.responseId1;// undefined
-    currQuestionresponse2 = latestResonseGroup.responseId2;// undefined
-    console.log('latestResonseGroup', latestResonseGroup);
-    // console.log('currQuestionresponse2', currQuestionresponse2);
+    // currQuestionresponseId1 = latestResonseGroup.responseId1;// undefined
+    // currQuestionresponseId2 = latestResonseGroup.responseId2;// undefined
+    // console.log('latestResonseGroup', latestResonseGroup);
+    // console.log('currQuestionresponseId2', currQuestionresponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
   const nextQuestionId = currQuestionId + 1;
 
-  // get response1
-  const response1 = useSelector((state) => state.responseState.allResponses);
-  // console.log('response1', response1);
-  let LatestCurrUserResponseId = '';
-  let LatestPartnerResponseText = '';
-  if (response1 && response1.userId === currUserId) {
-    const sortedResponses = Object.values(response1).sort((a, b) => {
+  // get User's Response
+  const currUserResponse = useSelector((state) => state.responseState.allResponses);
+  let latestUserResponse = '';
+  let sortedUserResponse;
+  let currUserResponseText = '';
+  let currUserResponseId = '';
+  if (currUserResponse) {
+    sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-    const latestResponse = sortedResponses[0];
-    if (latestResponse) {
-      // LatestCurrUserResponseText = response1.response;
-      LatestCurrUserResponseId = response1._id;
+    latestUserResponse = sortedUserResponse[0];
+    if (latestUserResponse) {
+      currUserResponseText = latestUserResponse.response;
+      currUserResponseId = latestUserResponse._id;
+    }
 
-      // console.log('LatestCurrUserResponseText', LatestCurrUserResponseText);
-      // console.log('LatestCurrUserResponseId', LatestCurrUserResponseId);
-    }
-  } else if (response1 && response1.userId !== currUserId) {
-    const sortedResponses = Object.values(response1).sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-    const latestResponse = sortedResponses[0];
-    if (latestResponse) {
-      LatestPartnerResponseText = response1.response;
-      LatestCurrUserResponseId = response1._id;
-      console.log('LatestPartnerResponseText', LatestPartnerResponseText);
-      console.log('LatestCurrUserResponseId', LatestCurrUserResponseId);
-    }
+    console.log('latestUserResponse', latestUserResponse);
   }
 
-  // get response2
-  // const response2 = useSelector((state) => state.responseState.partnerResponse);
+  // get partnerResponse
+  const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
+  let latestPartnerResponse = '';
+  let sortedPartnerResponse = '';
+  // let partnerResponseText = '';
+  let partnerResponseId = '';
+  if (partnerResponse.length > 0) {
+    sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    latestPartnerResponse = sortedPartnerResponse[0];
+    console.log('latestPartnerResponse', latestPartnerResponse);
+
+    if (latestPartnerResponse) {
+      // partnerResponseText = latestPartnerResponse.response;
+      partnerResponseId = latestPartnerResponse._id;
+    }
+
+    // console.log('partnerResponseId', partnerResponseId);
+  }
 
   // fetch Data
   useEffect(() => {
@@ -100,6 +112,8 @@ function CheckinBothResponeded({ navigation }) {
         dispatch(fetchUserById(currUserId));
         dispatch(fetchQuestions());
         dispatch(fetchPartner(currUserId));
+        dispatch(fetchResponseByUserId(currUserId));
+        // dispatch(fetchResponseByPartnerId(currUserId));
       }
     }
     fetchData();
@@ -124,28 +138,37 @@ function CheckinBothResponeded({ navigation }) {
   }, [currUserPairId]);
 
   useEffect(() => {
-    async function fetchLatestResponse1() {
-      if (currQuestionresponse1) {
-        await dispatch(fetchResponse(currQuestionresponse1));
+    async function fetchPartnerResponse() {
+      if (partnerId) {
+        await dispatch(fetchResponseByPartnerId(partnerId));
       }
     }
-    fetchLatestResponse1();
-  }, [currQuestionresponse1]);
+    fetchPartnerResponse();
+  }, [partnerId]);
 
-  useEffect(() => {
-    async function fetchLatestResponse2() {
-      if (currQuestionresponse2) {
-        await dispatch(fetchResponse(currQuestionresponse2));
-      }
-    }
-    fetchLatestResponse2();
-  }, [currQuestionresponse2]);
+  // useEffect(() => {
+  //   async function fetchLatestResponse1() {
+  //     if (currQuestionresponseId1) {
+  //       await dispatch(fetchResponse(currQuestionresponseId1));
+  //     }
+  //   }
+  //   fetchLatestResponse1();
+  // }, [currQuestionresponseId1]);
+
+  // useEffect(() => {
+  //   async function fetchLatestResponse2() {
+  //     if (currQuestionresponseId2) {
+  //       await dispatch(fetchResponse(currQuestionresponseId2));
+  //     }
+  //   }
+  //   fetchLatestResponse2();
+  // }, [currQuestionresponseId2]);
 
   // Refresh questions everyday
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 0 && currentDate.getMinutes() === 44) {
+      if (currentDate.getHours() === 17 && currentDate.getMinutes() === 16) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -188,10 +211,13 @@ function CheckinBothResponeded({ navigation }) {
   }, []);
 
   // navigate pages
-  // if (currQuestionresponse1 && currQuestionresponse2) {
+  // if (currUserResponseText && partnerResponseText) {
   //   navigation.navigate('CheckinBothResponded');
+  // } else if (!currUserResponseText && partnerResponseText) {
+  //   navigation.navigate('CheckinPartnerResponded');
+  // } else if (currUserResponseText && !partnerResponseText) {
+  //   navigation.navigate('CheckinUserResponded');
   // }
-  // else if(currQuestionresponse1 && )
 
   // const getDailyResponses = async (responseGroupData) => {
   //   let currUserResponse, p1Date, p2Date;

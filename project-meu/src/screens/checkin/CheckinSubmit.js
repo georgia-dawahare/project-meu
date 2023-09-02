@@ -186,10 +186,10 @@ function CheckinSubmit({ navigation }) {
     // }
 
     // Update the response group with the new response
-    if (createdResponse?._id) {
+    if (latestResponseId1) {
       const updatedResponseGroup = {
-        responseId1: latestResponseId1 || createdResponse._id,
-        responseId2: latestResponseId1 ? createdResponse._id : latestResponseId2,
+        responseId1: latestResponseId1 || createResponse._id,
+        responseId2: latestResponseId1 ? createResponse._id : latestResponseId2,
       };
 
       await dispatch(updateResponseGroup(currUserResponseGroupId, updatedResponseGroup));

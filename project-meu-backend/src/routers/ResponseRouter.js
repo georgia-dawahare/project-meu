@@ -79,6 +79,6 @@ router.route('/:id')
 router.route('/userId/:id')
     .get(handleGetResponsesByUserId);
 
-router.route('partnerId/:id')
+router.route('/partnerId/:id')
     .get(handleGetResponsesByPartnerId);
 export default router;

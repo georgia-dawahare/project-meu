@@ -71,3 +71,14 @@ export async function findResponsesByUserId(userId) {
         throw new Error(`get responses by userId error: ${error}`);
     }
 }
+
+// fetch responses by partnerId
+export async function findResponsesByPartnerId(partnerId) {
+    try {
+        const Responses = await Response.find({ partnerId })
+        console.log('responsecontroller',Responses);
+        return Responses;
+    } catch (error) {
+        throw new Error(`get responses by partner error: ${error}`);
+    }
+}
