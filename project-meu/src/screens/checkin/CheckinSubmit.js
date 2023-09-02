@@ -16,9 +16,6 @@ import {
   Card, Input,
 } from 'react-native-elements';
 import { useSelector, useDispatch } from 'react-redux';
-import moment from 'moment';
-import axios from 'axios';
-import { apiUrl } from '../../constants/constants';
 
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
@@ -28,7 +25,7 @@ import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/R
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
   const [newResponse, setNewResponse] = useState(true);
-  const [userDoc, setUserDoc] = useState('');
+  // const [userDoc, setUserDoc] = useState('');
   const [submit, setSubmit] = useState(false);
 
   const dispatch = useDispatch();
@@ -40,21 +37,9 @@ function CheckinSubmit({ navigation }) {
   // console.log('user :      ', user);
 
   // // Partner Data
-  // const pairs = useSelector((state) => state.pairState.pairData);
-  // let partnerId = '';
-  // if (currUserPairId === pairs._id) {
-  //   if (pairs.primaryUserId === currUserId) {
-  //     partnerId = pairs.secondaryUserId;
-  //   } else if (pairs.secondaryUserId === currUserId) {
-  //     partnerId = pairs.primaryUserId;
-  //   }
-  // }
-  // console.log('partnerId :     ', partnerId);
-
-  // // partner Data
   // const partner = useSelector((state) => state.partnerState.partnerData);
-  // const partnerFirstName = partner.firstName;
-  // console.log('partnerFirstName :     ', partnerFirstName);
+  // const partnerId = partner._id;
+  // console.log('partnerId', partnerId);
 
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
@@ -76,32 +61,52 @@ function CheckinSubmit({ navigation }) {
     currUserResponseGroupId = latestResonseGroup._id;
     latestResponseId1 = latestResonseGroup.responseId1;
     latestResponseId2 = latestResonseGroup.responseId2;
-    console.log('latestResponseId1', latestResponseId1);
-    console.log('latestResponseId2', latestResponseId2);
+    // console.log('latestResponseId1', latestResponseId1);
+    // console.log('latestResponseId2', latestResponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
   // console.log('currQuestion', currQuestion);
 
   // response Data
-  const responses = useSelector((state) => state.responseState.allResponses);
-  let LatestCurrUserResponseText = '';
-  let LatestResponseId = '';
-  if (responses) {
-    const sortedResponses = Object.values(responses).sort((a, b) => {
+  // get User's Response
+  const currUserResponse = useSelector((state) => state.responseState.allResponses);
+  let latestUserResponse = '';
+  // const currUserResponseText = '';
+  // let currUserResponseId = '';
+  let currUserResponseCreatedAt = '';
+  if (currUserResponse) {
+    const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-
-    const latestResponse = sortedResponses[0];
-    if (latestResponse) {
-      LatestCurrUserResponseText = latestResponse.response;
-      LatestResponseId = latestResponse._id;
-
-      // console.log('latestResponseText', LatestCurrUserResponseText);
-      // console.log('responseId : ', LatestResponseId);
+    latestUserResponse = sortedUserResponse[0];
+    console.log('latestUserResponse', latestUserResponse);
+    if (latestUserResponse) {
+      // currUserResponseText = latestUserResponse.response;
+      // currUserResponseId = latestUserResponse._id;
+      currUserResponseCreatedAt = latestUserResponse.createdAt;
     }
+
+    console.log('currUserResponseCreatedAt', currUserResponseCreatedAt);
   }
-  // console.log('userResponses', responses);
+  // const responses = useSelector((state) => state.responseState.allResponses);
+  // let LatestCurrUserResponseText = '';
+  // let LatestResponseId = '';
+  // if (responses) {
+  //   const sortedResponses = Object.values(responses).sort((a, b) => {
+  //     return new Date(b.createdAt) - new Date(a.createdAt);
+  //   });
+
+  //   const latestResponse = sortedResponses[0];
+  //   if (latestResponse) {
+  //     LatestCurrUserResponseText = latestResponse.response;
+  //     LatestResponseId = latestResponse._id;
+
+  //     // console.log('latestResponseText', LatestCurrUserResponseText);
+  //     // console.log('responseId : ', LatestResponseId);
+  //   }
+  // }
+  // // console.log('userResponses', responses);
 
   useEffect(() => {
     async function fetchData() {
@@ -110,68 +115,62 @@ function CheckinSubmit({ navigation }) {
         await dispatch(fetchQuestions());
         await dispatch(fetchResponse(currUserId));
         await dispatch(fetchResponseGroupByPairId(currUserPairId));
-        // await dispatch(fetchResponseByUserId(currUserId));
       }
     }
     fetchData();
   }, [currUserId]);
 
   useEffect(() => {
-    refreshData();
-  }, [currUserId, userDoc]);
-
-  const getPair = async () => {
-    return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
-  };
-
-  const getResponse = async (id) => {
-    const response1 = await axios.get(`${apiUrl}/responses/${id}`);
-    return response1.data;
-  };
-
-  const refreshData = async () => {
-    try {
-    // Fetch user ID & user doc
-      if (userDoc) {
-        let userResponse;
-        const pair = await getPair();
-        const groupId = userDoc.pair_id + moment().format('MMDDYY');
-        const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-        const responseGroupData = responseGroup.data;
-        const pairCreatorId = pair?.data?.pair_creator_id;
-        if (currUserId === pairCreatorId) {
-          if (responseGroupData.p1_response_id) {
-            userResponse = await getResponse(responseGroupData.p1_response_id);
-            // setResponseId(responseGroupData?.p1_response_id);
-          }
-        } else if (currUserId !== pairCreatorId) {
-          if (responseGroupData.p2_response_id) {
-            userResponse = await getResponse(responseGroupData.p2_response_id);
-            // setResponseId(responseGroupData?.p2_response_id);
-          }
-        }
-        if (userResponse) {
-          setTextAnswer(userResponse.response);
-          setNewResponse(false);
-        }
-
-        // Set daily question
-        // setQuestion(questionData.questions[responseGroupData.question_id].question);
+    async function fetchRepsonseData() {
+      if (currUserId) {
+        await dispatch(fetchResponse(currUserId));
       }
-    } catch (error) {
-      console.error('Error occurred during data refresh:', error);
     }
-  };
+    fetchRepsonseData();
+  }, [currUserId, createResponse]);
 
+  // const getPair = async () => {
+  //   return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
+  // };
+
+  // const getResponse = async (id) => {
+  //   const response1 = await axios.get(`${apiUrl}/responses/${id}`);
+  //   return response1.data;
+  // };
+
+  // const refreshData = async () => {
+  //   try {
+  //   // Fetch user ID & user doc
+  //     if (userDoc) {
+  //       let userResponse;
+  //       // const pair = await getPair();
+  //       const groupId = userDoc.pair_id + moment().format('MMDDYY');
+  //       const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
+  //       const responseGroupData = responseGroup.data;
+  //       const pairCreatorId = pair?.data?.pair_creator_id;
+  //       if (currUserId === pairCreatorId) {
+  //         if (responseGroupData.p1_response_id) {
+  //           userResponse = await getResponse(responseGroupData.p1_response_id);
+  //           // setResponseId(responseGroupData?.p1_response_id);
+  //         }
+  //       } else if (currUserId !== pairCreatorId) {
+  //         if (responseGroupData.p2_response_id) {
+  //           userResponse = await getResponse(responseGroupData.p2_response_id);
+  //           // setResponseId(responseGroupData?.p2_response_id);
+  //         }
+  //       }
+  //       if (userResponse) {
+  //         setTextAnswer(userResponse.response);
+  //         setNewResponse(false);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error occurred during data refresh:', error);
+  //   }
+  // };
+
+  // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
-    // try {
-    // if (newResponse) {
-    //   await dispatch(createResponse(currUserId, {
-    //     response: textAnswer,
-    //     userId: currUserId,
-    //     responseGroupId: currUserPairId,
-    //   }));
-    // console.log('currUserResponseGroupId', currUserResponseGroupId);
     if (!latestResponseId1 && !latestResponseId2) {
       await dispatch(createResponse(currUserId, {
         response: textAnswer,

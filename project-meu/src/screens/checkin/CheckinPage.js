@@ -22,7 +22,7 @@ import { fetchPartner } from '../../actions/PartnerActions';
 import { createResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 import { fetchResponseByUserId, fetchResponseByPartnerId } from '../../actions/ResponseActions';
 
-function CheckinBothResponeded({ navigation }) {
+function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
@@ -69,11 +69,7 @@ function CheckinBothResponeded({ navigation }) {
     if (latestResonseGroup) {
       currQuestionId = latestResonseGroup.questionId; // 11
     }
-
-    // currQuestionresponseId1 = latestResonseGroup.responseId1;// undefined
-    // currQuestionresponseId2 = latestResonseGroup.responseId2;// undefined
     console.log('latestResonseGroup', latestResonseGroup);
-    // console.log('currQuestionresponseId2', currQuestionresponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId] : null;
@@ -86,7 +82,7 @@ function CheckinBothResponeded({ navigation }) {
   // get User's Response
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
   let latestUserResponse = '';
-  let currUserResponseText = '';
+  // const currUserResponseText = '';
   // let currUserResponseId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
@@ -95,7 +91,7 @@ function CheckinBothResponeded({ navigation }) {
     });
     latestUserResponse = sortedUserResponse[0];
     if (latestUserResponse) {
-      currUserResponseText = latestUserResponse.response;
+      // currUserResponseText = latestUserResponse.response;
       // currUserResponseId = latestUserResponse._id;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
     }
@@ -108,7 +104,7 @@ function CheckinBothResponeded({ navigation }) {
   let latestPartnerResponse = '';
   let sortedPartnerResponse = '';
   let partnerResponseCreatedAt = '';
-  let partnerResponseText = '';
+  // const partnerResponseText = '';
   // const partnerResponseId = '';
   if (partnerResponse.length > 0) {
     sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
@@ -118,7 +114,7 @@ function CheckinBothResponeded({ navigation }) {
     // console.log('latestPartnerResponse', latestPartnerResponse);
 
     if (latestPartnerResponse) {
-      partnerResponseText = latestPartnerResponse.response;
+      // partnerResponseText = latestPartnerResponse.response;
       // partnerResponseId = latestPartnerResponse._id;
       partnerResponseCreatedAt = latestPartnerResponse.createdAt;
     }
@@ -139,7 +135,6 @@ function CheckinBothResponeded({ navigation }) {
         dispatch(fetchQuestions());
         dispatch(fetchPartner(currUserId));
         dispatch(fetchResponseByUserId(currUserId));
-        // dispatch(fetchResponseByPartnerId(currUserId));
       }
     }
     fetchData();
@@ -172,29 +167,11 @@ function CheckinBothResponeded({ navigation }) {
     fetchPartnerResponse();
   }, [partnerId]);
 
-  // useEffect(() => {
-  //   async function fetchLatestResponse1() {
-  //     if (currQuestionresponseId1) {
-  //       await dispatch(fetchResponse(currQuestionresponseId1));
-  //     }
-  //   }
-  //   fetchLatestResponse1();
-  // }, [currQuestionresponseId1]);
-
-  // useEffect(() => {
-  //   async function fetchLatestResponse2() {
-  //     if (currQuestionresponseId2) {
-  //       await dispatch(fetchResponse(currQuestionresponseId2));
-  //     }
-  //   }
-  //   fetchLatestResponse2();
-  // }, [currQuestionresponseId2]);
-
   // Refresh questions everyday
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 17 && currentDate.getMinutes() === 16) {
+      if (currentDate.getHours() === 19 && currentDate.getMinutes() === 28) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -237,55 +214,14 @@ function CheckinBothResponeded({ navigation }) {
   }, []);
 
   // navigate pages
-  // if (currUserResponseText && partnerResponseText && userResponseCheck && partnerResponseCheck) {
+  // if (userResponseCheck && partnerResponseCheck) {
   //   navigation.navigate('CheckinBothResponeded');
   //   // navigation.navigate('CheckinUserResponded');
-  // } else if (!currUserResponseText && partnerResponseText && partnerResponseCheck) {
+  // } else if (!userResponseCheck && partnerResponseCheck) {
   //   navigation.navigate('CheckinPartnerResponded');
-  // } else if (currUserResponseText && !partnerResponseText && userResponseCheck) {
+  // } else if (userResponseCheck && !partnerResponseCheck) {
   //   navigation.navigate('CheckinUserResponded');
   // }
-
-  // const getDailyResponses = async (responseGroupData) => {
-  //   let currUserResponse, p1Date, p2Date;
-
-  //   if (currUserResponse) {
-  //     const p1Timestamp = currUserResponse.timestamp._seconds * 1000 + Math.floor(currUserResponse.timestamp._nanoseconds / 1000000);
-  //     p1Date = new Date(p1Timestamp);
-  //   }
-  //   if (partnerResponse) {
-  //     const p2Timestamp = partnerResponse.timestamp._seconds * 1000 + Math.floor(partnerResponse.timestamp._nanoseconds / 1000000);
-  //     p2Date = new Date(p2Timestamp);
-  //   }
-
-  //   // Current user is pair creator
-  //   if (currUserId === currUserResponse?.user_id || partnerId === partnerResponse?.user_id) {
-  //     //  Add user response
-  //     if (currUserResponse) {
-  //       setUserResponse(currUserResponse.response);
-  //       // createResponse(currUserUid, currUserResponse);
-  //       setUserResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-  //     }
-  //     // Add partner response
-  //     if (partnerResponse) {
-  //       const minutes = ((p2Date.getMinutes() < 10 ? '0' : '') + p2Date.getMinutes()).toString();
-  //       setPartnerResponseTime(`${p2Date.getHours().toString()}:${minutes}`);
-  //       setPartnerResponse(partnerResponse.response);
-  //     }
-  //     // Current user is p2
-  //   } else if (currUserId === partnerResponse?.user_id || partnerId === currUserResponse?.user_id) {
-  //     // Add user response
-  //     if (partnerResponse) {
-  //       setUserResponse(partnerResponse.response);
-  //       setUserResponseTime(`${p2Date.getHours().toString()}:${p2Date.getMinutes().toString()}`);
-  //     }
-  //     // Add partner response
-  //     if (currUserResponse) {
-  //       setPartnerResponseTime(`${p1Date.getHours().toString()}:${p1Date.getMinutes().toString()}`);
-  //       setPartnerResponse(currUserResponse.response);
-  //     }
-  //   }
-  // };
 
   const displayNoResponses = () => {
     return (
@@ -432,4 +368,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckinBothResponeded;
+export default CheckinPage;
