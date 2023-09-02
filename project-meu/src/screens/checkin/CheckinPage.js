@@ -30,6 +30,13 @@ function CheckinBothResponeded({ navigation }) {
 
   const dispatch = useDispatch();
 
+  // check if it's within 24hrs
+  const isResponseWithin24Hours = (responseCreatedAt) => {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
+    return new Date(responseCreatedAt) >= twentyFourHoursAgo;
+  };
+
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
@@ -47,63 +54,82 @@ function CheckinBothResponeded({ navigation }) {
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
+  let latestResonseGroup = '';
   // let currQuestionresponseId1 = '';
   // let currQuestionresponseId2 = '';
 
-  if (currUserResponseGroup.length > 0) {
+  if (currUserResponseGroup) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
-    const latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId; // 11
+    if (sortedResponseGroup) {
+      latestResonseGroup = sortedResponseGroup[0];
+    }
+
+    if (latestResonseGroup) {
+      currQuestionId = latestResonseGroup.questionId; // 11
+    }
+
     // currQuestionresponseId1 = latestResonseGroup.responseId1;// undefined
     // currQuestionresponseId2 = latestResonseGroup.responseId2;// undefined
-    // console.log('latestResonseGroup', latestResonseGroup);
+    console.log('latestResonseGroup', latestResonseGroup);
     // console.log('currQuestionresponseId2', currQuestionresponseId2);
   }
 
-  const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
+  const currQuestion = questions.length > 0 ? questions[currQuestionId] : null;
+  let currQuestionText = '';
+  if (currQuestion) {
+    currQuestionText = currQuestion.question;
+  }
   const nextQuestionId = currQuestionId + 1;
 
   // get User's Response
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
   let latestUserResponse = '';
-  let sortedUserResponse;
   let currUserResponseText = '';
-  let currUserResponseId = '';
+  // let currUserResponseId = '';
+  let currUserResponseCreatedAt = '';
   if (currUserResponse) {
-    sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
+    const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     latestUserResponse = sortedUserResponse[0];
     if (latestUserResponse) {
       currUserResponseText = latestUserResponse.response;
-      currUserResponseId = latestUserResponse._id;
+      // currUserResponseId = latestUserResponse._id;
+      currUserResponseCreatedAt = latestUserResponse.createdAt;
     }
 
-    console.log('latestUserResponse', latestUserResponse);
+    console.log('currUserResponseCreatedAt', currUserResponseCreatedAt);
   }
 
   // get partnerResponse
   const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
   let latestPartnerResponse = '';
   let sortedPartnerResponse = '';
-  // let partnerResponseText = '';
-  let partnerResponseId = '';
+  let partnerResponseCreatedAt = '';
+  let partnerResponseText = '';
+  // const partnerResponseId = '';
   if (partnerResponse.length > 0) {
     sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     latestPartnerResponse = sortedPartnerResponse[0];
-    console.log('latestPartnerResponse', latestPartnerResponse);
+    // console.log('latestPartnerResponse', latestPartnerResponse);
 
     if (latestPartnerResponse) {
-      // partnerResponseText = latestPartnerResponse.response;
-      partnerResponseId = latestPartnerResponse._id;
+      partnerResponseText = latestPartnerResponse.response;
+      // partnerResponseId = latestPartnerResponse._id;
+      partnerResponseCreatedAt = latestPartnerResponse.createdAt;
     }
 
     // console.log('partnerResponseId', partnerResponseId);
   }
+  const userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
+  const partnerResponseCheck = isResponseWithin24Hours(partnerResponseCreatedAt);
+
+  console.log('userResponseCheck', userResponseCheck);
+  console.log('partnerResponseCheck', partnerResponseCheck);
 
   // fetch Data
   useEffect(() => {
@@ -211,11 +237,12 @@ function CheckinBothResponeded({ navigation }) {
   }, []);
 
   // navigate pages
-  // if (currUserResponseText && partnerResponseText) {
-  //   navigation.navigate('CheckinBothResponded');
-  // } else if (!currUserResponseText && partnerResponseText) {
+  // if (currUserResponseText && partnerResponseText && userResponseCheck && partnerResponseCheck) {
+  //   navigation.navigate('CheckinBothResponeded');
+  //   // navigation.navigate('CheckinUserResponded');
+  // } else if (!currUserResponseText && partnerResponseText && partnerResponseCheck) {
   //   navigation.navigate('CheckinPartnerResponded');
-  // } else if (currUserResponseText && !partnerResponseText) {
+  // } else if (currUserResponseText && !partnerResponseText && userResponseCheck) {
   //   navigation.navigate('CheckinUserResponded');
   // }
 
@@ -265,7 +292,7 @@ function CheckinBothResponeded({ navigation }) {
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
+          <Card.Title style={styles.question}>{currQuestionText}</Card.Title>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Text style={styles.buttonTxt}>Submit a Response</Text>
           </TouchableOpacity>

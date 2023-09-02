@@ -64,15 +64,15 @@ function CheckinBothResponeded({ navigation }) {
 
   // partner Data
   const partner = useSelector((state) => state.userState.partnerData);
-  const partnerFirstName = partner.firstName;
+  // const partnerFirstName = partner.firstName;
   // console.log('partner Info : ', partner);
-  console.log('partner Info : ', partnerFirstName);
+  // console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questionsTest = useSelector((state) => state.questionsState.questionsData);
   // console.log('questiosTEST:           ', questionsTest);
   // for testing
-  const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
+  // const firstQuestion = questionsTest.length > 0 ? questionsTest[0].question : null;
   // console.log('first Q :       ', firstQuestion);
 
   // get reponses of the pair
@@ -319,7 +319,7 @@ function CheckinBothResponeded({ navigation }) {
                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
               />
               <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
+                {/* <Text>{partnerFirstName}</Text> */}
                 <Text>{partnerResponseTime}</Text>
               </View>
               {/* added */}
