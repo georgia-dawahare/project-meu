@@ -24,10 +24,11 @@ import {
 } from '../../actions/ResponseActions';
 import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
-function CheckinSubmit({ navigation }) {
+function CheckinEdit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
   const [setHandleonSubmit, HandleonSumbit] = useState(false);
   const [newResponse, setNewResponse] = useState(true);
+  // const [userDoc, setUserDoc] = useState('');
   const [submit, setSubmit] = useState(false);
   let userResponseCheck = '';
   let partnerResponseCheck = '';
@@ -270,7 +271,7 @@ function CheckinSubmit({ navigation }) {
     //   );
     // }
     setSubmit(true);
-    navigation.navigate('CheckinUserResponded');
+    // navigation.navigate('CheckinUserResponded');
     setSubmit(false);
   };
   // } catch (e) {
@@ -319,7 +320,7 @@ function CheckinSubmit({ navigation }) {
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
               <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
                 <Text style={styles.buttonText}>
-                  Submit
+                  Edit the Answer
                 </Text>
               </TouchableOpacity>
             </Card>
@@ -373,4 +374,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default CheckinSubmit;
+export default CheckinEdit;

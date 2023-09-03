@@ -18,24 +18,14 @@ import TitleHeader from '../../components/TitleHeader';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchResponseByUserId } from '../../actions/ResponseActions';
+import { fetchResponseByUserId, fetchResponse } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
 import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  // const [userResponseTime, setUserResponseTime] = useState('');
-  // const [partnerResponseTime, setPartnerResponseTime] = useState('');
-  // const [userResponse, setUserResponse] = useState('');
-  // const [partnerResponse, setPartnerResponse] = useState('');
-
-  // const [userDoc, setUserDoc] = useState('');
-  // const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  // const [selectedEmoji, setSelectedEmoji] = useState(null);
-  // const [isModalVisible, setModalVisible] = useState(false);
-  // const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   const dispatch = useDispatch();
 
@@ -59,8 +49,8 @@ function CheckinUserResponeded({ navigation }) {
   // console.log('partnerId :     ', partnerId);
 
   // partner Data
-  const partner = useSelector((state) => state.partnerState.partnerData);
-  const partnerFirstName = partner.firstName;
+  // const partner = useSelector((state) => state.partnerState.partnerData);
+  // const partnerFirstName = partner.firstName;
   // console.log('partner Info : ', partner);
   // console.log('partner Info : ', partnerFirstName);
 
@@ -71,8 +61,8 @@ function CheckinUserResponeded({ navigation }) {
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
   let latestResponseGroupId = '';
-  let currQuestionresponse1 = '';
-  let currQuestionresponse2 = '';
+  let currQuestionresponseId1 = '';
+  let currQuestionresponseId2 = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
@@ -81,10 +71,10 @@ function CheckinUserResponeded({ navigation }) {
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
     latestResponseGroupId = latestResonseGroup._id;
-    currQuestionresponse1 = latestResonseGroup.responseId1;
-    currQuestionresponse2 = latestResonseGroup.responseId2;
+    currQuestionresponseId1 = latestResonseGroup.responseId1;
+    currQuestionresponseId2 = latestResonseGroup.responseId2;
 
-    // console.log('latestResponseGroupId', latestResponseGroupId);
+    console.log('latestResponseGroupId', latestResponseGroupId);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
@@ -95,10 +85,7 @@ function CheckinUserResponeded({ navigation }) {
   let LatestResponseId = '';
   let LatestResponseTimeStamp = '';
   let LatestResponseUserId = '';
-  // if (responses) {
-  //   const sortedResponses = Object.values(responses).sort((a, b) => {
-  //     return new Date(b.createdAt) - new Date(a.createdAt);
-  //   });
+
   if (responses) {
     const sortedResponses = Object.values(responses).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -111,11 +98,41 @@ function CheckinUserResponeded({ navigation }) {
       LatestResponseTimeStamp = latestResponse.createdAt;
       LatestResponseUserId = latestResponse.userId;
 
-      // console.log('latestResponseText', LatestCurrUserResponseText);
+      console.log('latestResponse', latestResponse);
       // console.log('responseId : ', LatestResponseId);
       // console.log('TimeStamp : ', LatestResponseTimeStamp);
     }
   }
+
+  // fetch responseId1 Response
+  const Id1Response = useSelector((state) => state.responseState.currResponse);
+  let Id1UserId;
+  if (Id1Response) {
+    Id1UserId = Id1Response.userId;
+    console.log('Id1UserId', Id1UserId);
+  }
+
+  // let LatestCurrUserResponseText = '';
+  // let LatestResponseId = '';
+  // let LatestResponseTimeStamp = '';
+  // let LatestResponseUserId = '';
+
+  // if (responses) {
+  //   const sortedResponses = Object.values(responses).sort((a, b) => {
+  //     return new Date(b.createdAt) - new Date(a.createdAt);
+  //   });
+
+  //   const latestResponse = sortedResponses[0];
+  //   if (latestResponse) {
+  //     LatestCurrUserResponseText = latestResponse.response;
+  //     LatestResponseId = latestResponse._id;
+  //     LatestResponseTimeStamp = latestResponse.createdAt;
+  //     LatestResponseUserId = latestResponse.userId;
+
+  //     console.log('latestResponse', latestResponse);
+
+  //   }
+  // }
 
   // async function updateResponseGroupData() {
   //   console.log('latestResponseGroupId222222222', latestResponseGroupId);
@@ -157,14 +174,41 @@ function CheckinUserResponeded({ navigation }) {
     fetchData();
   }, [currUserId]);
 
-  // useEffect(() => {
-  //   async function fetchPartnerData() {
-  //     if (partnerId && currUserId) {
-  //       await dispatch(fetchPartnerDataById(partnerId));
-  //     }
-  //   }
-  //   fetchPartnerData();
-  // }, [partnerId, currUserId]);
+  useEffect(() => {
+    async function updateResponseGroupData() {
+      if (!currQuestionresponseId1 && !currQuestionresponseId2 && latestResponseGroupId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId1: LatestResponseId,
+        }));
+      } else if (currQuestionresponseId1 && latestResponseGroupId && LatestResponseId === Id1UserId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId1: LatestResponseId,
+        }));
+      } else if (currQuestionresponseId1 && latestResponseGroupId && LatestResponseId !== Id1UserId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId2: LatestResponseId,
+        }));
+      } else if (currQuestionresponseId2 && latestResponseGroupId && LatestResponseId === Id1UserId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId2: LatestResponseId,
+        }));
+      } else if (currQuestionresponseId2 && latestResponseGroupId && LatestResponseId !== Id1UserId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId1: LatestResponseId,
+        }));
+      }
+    }
+    updateResponseGroupData();
+  }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
+
+  useEffect(() => {
+    async function fetchId1Response() {
+      if (currQuestionresponseId1) {
+        await dispatch(fetchResponse(currQuestionresponseId1));
+      }
+    }
+    fetchId1Response();
+  }, [currQuestionresponseId1]);
 
   // useEffect(() => {
   //   async function updateResponseGroupData() {
@@ -309,7 +353,7 @@ function CheckinUserResponeded({ navigation }) {
             </View>
             <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
             <Image
               source={require('../../../assets/images/editButton.png')}
               style={styles.editImg}
