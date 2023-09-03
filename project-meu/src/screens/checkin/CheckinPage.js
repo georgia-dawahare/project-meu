@@ -222,6 +222,9 @@ function CheckinPage({ navigation }) {
   // } else if (userResponseCheck && !partnerResponseCheck) {
   //   navigation.navigate('CheckinUserResponded');
   // }
+  if (userResponseCheck && !partnerResponseCheck) {
+    navigation.navigate('CheckinUserResponded');
+  }
 
   const displayNoResponses = () => {
     return (

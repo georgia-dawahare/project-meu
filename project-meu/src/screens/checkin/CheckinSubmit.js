@@ -19,16 +19,28 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
-import { createResponse, fetchResponse, fetchResponseByUserId } from '../../actions/ResponseActions';
+import {
+  createResponse, fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId,
+} from '../../actions/ResponseActions';
 import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
 function CheckinSubmit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
+  const [setHandleonSubmit, HandleonSumbit] = useState(false);
   const [newResponse, setNewResponse] = useState(true);
   // const [userDoc, setUserDoc] = useState('');
   const [submit, setSubmit] = useState(false);
+  let userResponseCheck = '';
+  let partnerResponseCheck = '';
 
   const dispatch = useDispatch();
+
+  // check if it's within 24hrs
+  const isResponseWithin24Hours = (responseCreatedAt) => {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
+    return new Date(responseCreatedAt) >= twentyFourHoursAgo;
+  };
 
   // userData
   const user = useSelector((state) => state.userState.userData);
@@ -37,8 +49,8 @@ function CheckinSubmit({ navigation }) {
   // console.log('user :      ', user);
 
   // // Partner Data
-  // const partner = useSelector((state) => state.partnerState.partnerData);
-  // const partnerId = partner._id;
+  const partner = useSelector((state) => state.partnerState.partnerData);
+  const partnerId = partner._id;
   // console.log('partnerId', partnerId);
 
   // questions Data
@@ -48,7 +60,7 @@ function CheckinSubmit({ navigation }) {
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
-  let currUserResponseGroupId = '';
+  let currUserResponseGroupId12 = '';
   let latestResponseId1 = '';
   let latestResponseId2 = '';
   if (currUserResponseGroup.length > 0) {
@@ -58,10 +70,10 @@ function CheckinSubmit({ navigation }) {
 
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
-    currUserResponseGroupId = latestResonseGroup._id;
+    currUserResponseGroupId12 = latestResonseGroup._id;
     latestResponseId1 = latestResonseGroup.responseId1;
     latestResponseId2 = latestResonseGroup.responseId2;
-    // console.log('latestResponseId1', latestResponseId1);
+    // console.log('currUserResponseGroupId', currUserResponseGroupId);
     // console.log('latestResponseId2', latestResponseId2);
   }
 
@@ -71,42 +83,63 @@ function CheckinSubmit({ navigation }) {
   // response Data
   // get User's Response
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
-  let latestUserResponse = '';
+  let latestUserResponse;
   // const currUserResponseText = '';
-  // let currUserResponseId = '';
+  let currUserResponseId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
     const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-    latestUserResponse = sortedUserResponse[0];
+
     console.log('latestUserResponse', latestUserResponse);
     if (latestUserResponse) {
       // currUserResponseText = latestUserResponse.response;
-      // currUserResponseId = latestUserResponse._id;
+      currUserResponseId = latestUserResponse._id;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
+      userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
+
+      if (userResponseCheck) {
+        latestUserResponse = sortedUserResponse[0];
+      }
     }
-
-    console.log('currUserResponseCreatedAt', currUserResponseCreatedAt);
   }
-  // const responses = useSelector((state) => state.responseState.allResponses);
-  // let LatestCurrUserResponseText = '';
-  // let LatestResponseId = '';
-  // if (responses) {
-  //   const sortedResponses = Object.values(responses).sort((a, b) => {
-  //     return new Date(b.createdAt) - new Date(a.createdAt);
-  //   });
 
-  //   const latestResponse = sortedResponses[0];
-  //   if (latestResponse) {
-  //     LatestCurrUserResponseText = latestResponse.response;
-  //     LatestResponseId = latestResponse._id;
+  // get partnerResponse
+  const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
+  let latestPartnerResponse = '';
+  let sortedPartnerResponse = '';
+  let partnerResponseCreatedAt = '';
+  // const partnerResponseText = '';
+  // const partnerResponseId = '';
+  if (partnerResponse) {
+    sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    latestPartnerResponse = sortedPartnerResponse[0];
+    // console.log('latestPartnerResponse', latestPartnerResponse);
 
-  //     // console.log('latestResponseText', LatestCurrUserResponseText);
-  //     // console.log('responseId : ', LatestResponseId);
-  //   }
+    if (latestPartnerResponse) {
+      // partnerResponseText = latestPartnerResponse.response;
+      // partnerResponseId = latestPartnerResponse._id;
+      partnerResponseCreatedAt = latestPartnerResponse.createdAt;
+      partnerResponseCheck = isResponseWithin24Hours(partnerResponseCreatedAt);
+
+      if (partnerResponseCheck) {
+        latestPartnerResponse = sortedPartnerResponse[0];
+      }
+    }
+  }
+
+  // navigate pages
+  // if (userResponseCheck && partnerResponseCheck) {
+  //   navigation.navigate('CheckinBothResponeded');
+  //   // navigation.navigate('CheckinUserResponded');
+  // } else if (!userResponseCheck && partnerResponseCheck) {
+  //   navigation.navigate('CheckinPartnerResponded');
+  // } else if (userResponseCheck && !partnerResponseCheck) {
+  //   navigation.navigate('CheckinUserResponded');
   // }
-  // // console.log('userResponses', responses);
 
   useEffect(() => {
     async function fetchData() {
@@ -128,6 +161,15 @@ function CheckinSubmit({ navigation }) {
     }
     fetchRepsonseData();
   }, [currUserId, createResponse]);
+
+  useEffect(() => {
+    async function fetchPartnerResponse() {
+      if (partnerId) {
+        await dispatch(fetchResponseByPartnerId(partnerId));
+      }
+    }
+    fetchPartnerResponse();
+  }, [partnerId]);
 
   // const getPair = async () => {
   //   return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
@@ -171,13 +213,20 @@ function CheckinSubmit({ navigation }) {
 
   // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
-    if (!latestResponseId1 && !latestResponseId2) {
+    if (!userResponseCheck && !partnerResponseCheck) {
       await dispatch(createResponse(currUserId, {
         response: textAnswer,
         userId: currUserId,
         responseGroupId: currUserPairId,
       }));
+
+
+
+      // await dispatch(updateResponseGroup(currUserResponseGroupId12, {
+      //   responseId1: currUserResponseId,
+      // }));
     }
+
     // else if (latestResponseId1 && !latestResponseId2) {
     //   await dispatch(updateResponseGroup(LatestResponseId, {
     //     responseId2: LatestResponseId,
@@ -185,14 +234,14 @@ function CheckinSubmit({ navigation }) {
     // }
 
     // Update the response group with the new response
-    if (latestResponseId1) {
-      const updatedResponseGroup = {
-        responseId1: latestResponseId1 || createResponse._id,
-        responseId2: latestResponseId1 ? createResponse._id : latestResponseId2,
-      };
+    // if (latestResponseId1) {
+    //   const updatedResponseGroup = {
+    //     responseId1: latestResponseId1 || createResponse._id,
+    //     responseId2: latestResponseId1 ? createResponse._id : latestResponseId2,
+    //   };
 
-      await dispatch(updateResponseGroup(currUserResponseGroupId, updatedResponseGroup));
-    }
+    //   await dispatch(updateResponseGroup(currUserResponseGroupId, updatedResponseGroup));
+    // }
 
     // await dispatch(updateResponseGroup(currUserResponseGroupId, {
     //   // need to be fixed
@@ -240,6 +289,17 @@ function CheckinSubmit({ navigation }) {
     }
     fetchResponseData();
   }, [submit]);
+
+  useEffect(() => {
+    async function updateRG() {
+      if (currUserResponseId) {
+        await dispatch(updateResponseGroup(currUserResponseGroupId12, {
+          responseId1: currUserResponseId,
+        }));
+      }
+    }
+    updateRG();
+  }, [HandleonSumbit]);
 
   return (
 

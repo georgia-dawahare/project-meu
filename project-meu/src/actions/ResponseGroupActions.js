@@ -29,6 +29,8 @@ export function createResponseGroup(pairId, questionId) {
 export function updateResponseGroup(responseGroupId, updatedFields) {
   // axios patch
   return () => {
+    console.log('responseGroupIdActions', responseGroupId);
+    console.log('updatedFieldsActions', updatedFields);
     axios.patch(`${apiUrl}/response_groups/${responseGroupId}`, updatedFields)
       .then(() => {
         console.log('Successfully updated response group');

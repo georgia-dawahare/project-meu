@@ -42,6 +42,8 @@ export async function findResponseGroupByPairId(pairId) {
 export async function updateResponseGroup(responseGroupId, updatedFields) {
     try {
         const updatedResponseGroup = await ResponseGroup.findOneAndUpdate({ _id: responseGroupId }, updatedFields, { returnOriginal: false });
+        console.log('responseGroupIdController',responseGroupId);
+        console.log('updatedFieldsController',updatedFields);
         return updatedResponseGroup;
     } catch (error) {
         throw new Error(`update response group error: ${error}`);

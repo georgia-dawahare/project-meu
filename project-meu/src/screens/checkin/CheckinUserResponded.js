@@ -12,33 +12,30 @@ import {
 import {
   Card,
 } from 'react-native-elements';
-// import Modal from 'react-native-modal';
 import * as Font from 'expo-font';
-import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { apiUrl } from '../../constants/constants';
 import TitleHeader from '../../components/TitleHeader';
 
-import { fetchUserById, fetchPartnerDataById } from '../../actions/UserActions';
+import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchResponseByUserId } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
-// import { fetchResponseGroup } from '../../actions/ResponseGroupActions';
+import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
 
-  const [userResponseTime, setUserResponseTime] = useState('');
-  const [partnerResponseTime, setPartnerResponseTime] = useState('');
-  const [userResponse, setUserResponse] = useState('');
-  const [partnerResponse, setPartnerResponse] = useState('');
+  // const [userResponseTime, setUserResponseTime] = useState('');
+  // const [partnerResponseTime, setPartnerResponseTime] = useState('');
+  // const [userResponse, setUserResponse] = useState('');
+  // const [partnerResponse, setPartnerResponse] = useState('');
 
   // const [userDoc, setUserDoc] = useState('');
   // const [partnerDoc, setPartnerDoc] = useState('');
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedEmoji, setSelectedEmoji] = useState(null);
-  const [isModalVisible, setModalVisible] = useState(false);
-  const emojis = ['💖', '😜', '😘', '‼️', '😢'];
+  // const [selectedEmoji, setSelectedEmoji] = useState(null);
+  // const [isModalVisible, setModalVisible] = useState(false);
+  // const emojis = ['💖', '😜', '😘', '‼️', '😢'];
 
   const dispatch = useDispatch();
 
@@ -46,26 +43,26 @@ function CheckinUserResponeded({ navigation }) {
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
   const currUserFirstName = user.firstName;
-  const currUserPairId = user.pairId;
+  // const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
   // To get partnerId from pairs
-  const pairs = useSelector((state) => state.pairState.pairData);
-  let partnerId;
-  if (currUserPairId === pairs._id) {
-    if (pairs.primaryUserId === currUserId) {
-      partnerId = pairs.secondaryUserId;
-    } else if (pairs.secondaryUserId === currUserId) {
-      partnerId = pairs.primaryUserId;
-    }
-  }
+  // const pairs = useSelector((state) => state.pairState.pairData);
+  // let partnerId;
+  // if (currUserPairId === pairs._id) {
+  //   if (pairs.primaryUserId === currUserId) {
+  //     partnerId = pairs.secondaryUserId;
+  //   } else if (pairs.secondaryUserId === currUserId) {
+  //     partnerId = pairs.primaryUserId;
+  //   }
+  // }
   // console.log('partnerId :     ', partnerId);
 
   // partner Data
   const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
   // console.log('partner Info : ', partner);
-  console.log('partner Info : ', partnerFirstName);
+  // console.log('partner Info : ', partnerFirstName);
 
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
@@ -73,8 +70,9 @@ function CheckinUserResponeded({ navigation }) {
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
-  // let currQuestionresponse1 = '';
-  // let currQuestionresponse2 = '';
+  let latestResponseGroupId = '';
+  let currQuestionresponse1 = '';
+  let currQuestionresponse2 = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
@@ -82,9 +80,11 @@ function CheckinUserResponeded({ navigation }) {
 
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
-    // currQuestionresponse1 = latestResonseGroup.responseId1;
-    // currQuestionresponse2 = latestResonseGroup.responseId2;
-    // console.log('latestResonseGroup', latestResonseGroup);
+    latestResponseGroupId = latestResonseGroup._id;
+    currQuestionresponse1 = latestResonseGroup.responseId1;
+    currQuestionresponse2 = latestResonseGroup.responseId2;
+
+    // console.log('latestResponseGroupId', latestResponseGroupId);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
@@ -94,6 +94,7 @@ function CheckinUserResponeded({ navigation }) {
   let LatestCurrUserResponseText = '';
   let LatestResponseId = '';
   let LatestResponseTimeStamp = '';
+  let LatestResponseUserId = '';
   // if (responses) {
   //   const sortedResponses = Object.values(responses).sort((a, b) => {
   //     return new Date(b.createdAt) - new Date(a.createdAt);
@@ -108,12 +109,40 @@ function CheckinUserResponeded({ navigation }) {
       LatestCurrUserResponseText = latestResponse.response;
       LatestResponseId = latestResponse._id;
       LatestResponseTimeStamp = latestResponse.createdAt;
+      LatestResponseUserId = latestResponse.userId;
 
-      console.log('latestResponseText', LatestCurrUserResponseText);
-      console.log('responseId : ', LatestResponseId);
-      console.log('TimeStamp : ', LatestResponseTimeStamp);
+      // console.log('latestResponseText', LatestCurrUserResponseText);
+      // console.log('responseId : ', LatestResponseId);
+      // console.log('TimeStamp : ', LatestResponseTimeStamp);
     }
   }
+
+  // async function updateResponseGroupData() {
+  //   console.log('latestResponseGroupId222222222', latestResponseGroupId);
+  //   if (!currQuestionresponse1 && !currQuestionresponse2) {
+  //     await updateResponseGroup(latestResponseGroupId, {
+  //       responseId1: LatestResponseId,
+  //     });
+  //   } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId === LatestResponseUserId) {
+  //     await updateResponseGroup(latestResponseGroupId, {
+  //       responseId1: LatestResponseId,
+  //     });
+  //   } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId !== LatestResponseUserId) {
+  //     await updateResponseGroup(latestResponseGroupId, {
+  //       responseId2: LatestResponseId,
+  //     });
+  //   } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId === LatestResponseUserId) {
+  //     await updateResponseGroup(latestResponseGroupId, {
+  //       responseId2: LatestResponseId,
+  //     });
+  //   } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId !== LatestResponseUserId) {
+  //     await updateResponseGroup(latestResponseGroupId, {
+  //       responseId1: LatestResponseId,
+  //     });
+  //   }
+  // }
+
+  // updateResponseGroupData();
 
   // fetch Data
   useEffect(() => {
@@ -128,14 +157,42 @@ function CheckinUserResponeded({ navigation }) {
     fetchData();
   }, [currUserId]);
 
-  useEffect(() => {
-    async function fetchPartnerData() {
-      if (partnerId && currUserId) {
-        await dispatch(fetchPartnerDataById(partnerId));
-      }
-    }
-    fetchPartnerData();
-  }, [partnerId, currUserId]);
+  // useEffect(() => {
+  //   async function fetchPartnerData() {
+  //     if (partnerId && currUserId) {
+  //       await dispatch(fetchPartnerDataById(partnerId));
+  //     }
+  //   }
+  //   fetchPartnerData();
+  // }, [partnerId, currUserId]);
+
+  // useEffect(() => {
+  //   async function updateResponseGroupData() {
+  //     if (!currQuestionresponse1 && !currQuestionresponse2) {
+  //       await updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       });
+  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId === LatestResponseUserId) {
+  //       await updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       });
+  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId !== LatestResponseUserId) {
+  //       await updateResponseGroup(latestResponseGroupId, {
+  //         responseId2: LatestResponseId,
+  //       });
+  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId === LatestResponseUserId) {
+  //       await updateResponseGroup(latestResponseGroupId, {
+  //         responseId2: LatestResponseId,
+  //       });
+  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId !== LatestResponseUserId) {
+  //       await updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       });
+  //     }
+  //   }
+
+  //   updateResponseGroupData();
+  // }, [LatestResponseId]);
 
   // useEffect(() => {
   //   async function fetchResponses() {
@@ -166,20 +223,6 @@ function CheckinUserResponeded({ navigation }) {
     loadFont();
   }, []);
 
-  // for emoji
-  const openModal = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-
-  const selectEmoji = (emoji) => {
-    setSelectedEmoji(emoji);
-    closeModal();
-  };
-
   // scrollable page refresh 0.5s
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -201,13 +244,13 @@ function CheckinUserResponeded({ navigation }) {
       hour12: false,
       timeZone: 'America/New_York',
     });
-    console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
+    // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
 
     return formattedUserCreatedAt;
   };
 
   const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp)._j;
-  console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
+  // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
 
   // const refreshData = async () => {
   //   if (userDoc && partnerDoc) {

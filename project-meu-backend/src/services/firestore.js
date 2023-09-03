@@ -425,7 +425,7 @@ const updateResponseGroup = async (groupId, updatedFields) => {
       return true;
     })
     .catch((error) => {
-      console.error('Error updating response group:', error);
+      console.error('Error updating response group firestore:', error);
       return false;
     });
 };
