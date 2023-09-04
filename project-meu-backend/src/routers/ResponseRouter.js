@@ -48,6 +48,16 @@ const handleGetResponse = async (req, res) => {
         res.status(500).json({ error });
     }
 }
+// Get response by ID
+const handleGetResponse2 = async (req, res) => {
+    const responseId = req.params.id;
+    try {
+        const response = await Responses.findResponseById(responseId);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
 
 // Get responses by UserId
 const handleGetResponsesByUserId = async (req, res) => {
@@ -81,4 +91,7 @@ router.route('/userId/:id')
 
 router.route('/partnerId/:id')
     .get(handleGetResponsesByPartnerId);
+
+router.route('/anotherResponse/:id')
+    .get(handleGetResponse2);
 export default router;

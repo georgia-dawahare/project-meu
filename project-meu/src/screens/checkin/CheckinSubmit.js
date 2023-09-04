@@ -212,23 +212,20 @@ function CheckinSubmit({ navigation }) {
 
   // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
-    if (!userResponseCheck && !partnerResponseCheck) {
-      await dispatch(createResponse(currUserId, {
-        response: textAnswer,
-        userId: currUserId,
-        responseGroupId: currUserPairId,
-      }));
-
-      // await dispatch(updateResponseGroup(currUserResponseGroupId12, {
-      //   responseId1: currUserResponseId,
-      // }));
-    }
-
-    // else if (latestResponseId1 && !latestResponseId2) {
-    //   await dispatch(updateResponseGroup(LatestResponseId, {
-    //     responseId2: LatestResponseId,
+    // it works
+    // if (!userResponseCheck && !partnerResponseCheck) {
+    //   await dispatch(createResponse(currUserId, {
+    //     response: textAnswer,
+    //     userId: currUserId,
+    //     responseGroupId: currUserPairId,
     //   }));
     // }
+
+    await dispatch(createResponse(currUserId, {
+      response: textAnswer,
+      userId: currUserId,
+      responseGroupId: currUserPairId,
+    }));
 
     // Update the response group with the new response
     // if (latestResponseId1) {

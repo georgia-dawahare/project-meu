@@ -72,11 +72,12 @@ export function fetchResponse(responseId) {
 // Fetch response2
 export function fetchResponse2(responseId) {
   return (dispatch) => {
+    console.log('fetchREsponse2 ResponseAction: ', responseId);
     axios.get(`${apiUrl}/responses/anotherResponse/${responseId}`)
       .then((response) => {
         dispatch({ type: ActionTypes.FETCH_ANOTHER_RESPONSE, payload: response.data });
       }).catch((error) => {
-        console.log('error fetching user: ', error);
+        console.log('error fetching user FetchResponse2: ', error);
       });
   };
 }

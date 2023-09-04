@@ -25,6 +25,7 @@ import {
 import { fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
 function CheckinEdit({ navigation }) {
+  // need to be fixed : navigate to the right pages depends on the state
   const [textAnswer, setTextAnswer] = useState('');
   const [submit, setSubmit] = useState(false);
 

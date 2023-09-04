@@ -20,7 +20,9 @@ import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchPair } from '../../actions/PairActions';
 import { fetchPartner } from '../../actions/PartnerActions';
 import { createResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
-import { fetchResponseByUserId, fetchResponseByPartnerId } from '../../actions/ResponseActions';
+import {
+  fetchResponseByUserId, fetchResponseByPartnerId, fetchResponse, fetchResponse2,
+} from '../../actions/ResponseActions';
 
 function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -85,7 +87,7 @@ function CheckinPage({ navigation }) {
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
   let latestUserResponse = '';
   // const currUserResponseText = '';
-  let currUserResponseId = '';
+  let currUserResponseUserId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
     const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
@@ -94,11 +96,11 @@ function CheckinPage({ navigation }) {
     latestUserResponse = sortedUserResponse[0];
     if (latestUserResponse) {
       // currUserResponseText = latestUserResponse.response;
-      currUserResponseId = latestUserResponse._id;
+      currUserResponseUserId = latestUserResponse.userId;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
     }
-
-    console.log('currUserResponseCreatedAt', currUserResponseCreatedAt);
+    console.log('latestUserResponse', latestUserResponse);
+    console.log('currUserResponseId', currUserResponseUserId);
   }
 
   // get partnerResponse
@@ -128,6 +130,22 @@ function CheckinPage({ navigation }) {
 
   console.log('userResponseCheck', userResponseCheck);
   console.log('partnerResponseCheck', partnerResponseCheck);
+
+  // fetch responseId1 Response
+  const Id1Response = useSelector((state) => state.responseState.currResponse);
+  let Id1UserId;
+  if (Id1Response) {
+    Id1UserId = Id1Response.userId;
+    console.log('Id1UserId', Id1UserId);
+  }
+
+  // fetch responseId2 Response
+  const Id2Response = useSelector((state) => state.responseState.anotherResponse);
+  let Id2UserId = '';
+  if (Id2Response) {
+    Id2UserId = Id2Response.userId;
+  }
+  console.log(Id2Response);
 
   // fetch Data
   useEffect(() => {
@@ -168,6 +186,24 @@ function CheckinPage({ navigation }) {
     }
     fetchPartnerResponse();
   }, [partnerId]);
+
+  useEffect(() => {
+    async function fetchId1Response() {
+      if (currQuestionresponseId1) {
+        await dispatch(fetchResponse(currQuestionresponseId1));
+      }
+    }
+    fetchId1Response();
+  }, [currQuestionresponseId1]);
+
+  useEffect(() => {
+    async function fetchId2Response() {
+      if (currQuestionresponseId2) {
+        await dispatch(fetchResponse2(currQuestionresponseId2));
+      }
+    }
+    fetchId2Response();
+  }, [currQuestionresponseId2]);
 
   // Refresh questions everyday
   useEffect(() => {
@@ -215,20 +251,16 @@ function CheckinPage({ navigation }) {
     }, 500);
   }, []);
 
-  // navigate pages
-  // if (userResponseCheck && partnerResponseCheck) {
-  //   navigation.navigate('CheckinBothResponeded');
-  //   // navigation.navigate('CheckinUserResponded');
-  // } else if (!userResponseCheck && partnerResponseCheck) {
-  //   navigation.navigate('CheckinPartnerResponded');
-  // } else if (userResponseCheck && !partnerResponseCheck) {
-  //   navigation.navigate('CheckinUserResponded');
-  // }
-
   // need to be fixed
-  // if (userResponseCheck && !partnerResponseCheck && (currUserResponseId === currQuestionresponseId1 || currUserResponseId === currQuestionresponseId2)) {
-  //   // here by Soo
-  //   navigation.navigate('CheckinUserResponded');
+  console.log('currQuestionresponseId133333', currQuestionresponseId1);
+  console.log('currQuestionresponseId233333', currQuestionresponseId2);
+  if (currQuestionresponseId1 && currQuestionresponseId2) {
+    navigation.navigate('CheckinBothResponeded');
+  }
+  // else if ((currQuestionresponseId1 && !currQuestionresponseId2 && Id1UserId === currUserResponseUserId) || (!currQuestionresponseId1 && currQuestionresponseId2 && Id2UserId === currUserResponseUserId)) {
+  // navigation.navigate('CheckinUserResponded');
+  // } else if ((currQuestionresponseId1 && !currQuestionresponseId2 && Id1UserId === partnerId) || (!currQuestionresponseId1 && currQuestionresponseId2 && Id2UserId === partnerId)) {
+  //   navigation.navigate('CheckinPartnerResponded');
   // }
 
   const displayNoResponses = () => {

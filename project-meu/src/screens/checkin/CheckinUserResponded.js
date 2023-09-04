@@ -24,7 +24,6 @@ import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinUserResponeded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
-
   const [refreshing, setRefreshing] = useState(false);
 
   const dispatch = useDispatch();
