@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
 import {
-  fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId,
+  fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId, updateResponse,
 } from '../../actions/ResponseActions';
 import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
@@ -29,19 +29,12 @@ function CheckinEdit({ navigation }) {
   const [textAnswer, setTextAnswer] = useState('');
   const [setHandleonSubmit, HandleonSumbit] = useState(false);
   const [newResponse, setNewResponse] = useState(true);
-  // const [userDoc, setUserDoc] = useState('');
   const [submit, setSubmit] = useState(false);
-  let userResponseCheck = '';
-  let partnerResponseCheck = '';
+  const [edit, setEdit] = useState(false);
+  const userResponseCheck = '';
+  const partnerResponseCheck = '';
 
   const dispatch = useDispatch();
-
-  // check if it's within 24hrs
-  const isResponseWithin24Hours = (responseCreatedAt) => {
-    const twentyFourHoursAgo = new Date();
-    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
-    return new Date(responseCreatedAt) >= twentyFourHoursAgo;
-  };
 
   // userData
   const user = useSelector((state) => state.userState.userData);
@@ -61,7 +54,7 @@ function CheckinEdit({ navigation }) {
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
-  let currUserResponseGroupId12 = '';
+  let currUserResponseGroupId = '';
   let latestResponseId1 = '';
   let latestResponseId2 = '';
   if (currUserResponseGroup.length > 0) {
@@ -71,39 +64,33 @@ function CheckinEdit({ navigation }) {
 
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
-    currUserResponseGroupId12 = latestResonseGroup._id;
+    currUserResponseGroupId = latestResonseGroup._id;
     latestResponseId1 = latestResonseGroup.responseId1;
     latestResponseId2 = latestResonseGroup.responseId2;
+    // console.log('latestResonseGroup', latestResonseGroup);
     // console.log('currUserResponseGroupId', currUserResponseGroupId);
-    // console.log('latestResponseId2', latestResponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
-  // console.log('currQuestion', currQuestion);
 
   // response Data
   // get User's Response
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
-  let latestUserResponse;
-  // const currUserResponseText = '';
+  let latestUserResponse = '';
   let currUserResponseId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
     const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-
-    console.log('latestUserResponse', latestUserResponse);
+    latestUserResponse = sortedUserResponse[0];
     if (latestUserResponse) {
       // currUserResponseText = latestUserResponse.response;
       currUserResponseId = latestUserResponse._id;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
-      userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
-
-      if (userResponseCheck) {
-        latestUserResponse = sortedUserResponse[0];
-      }
     }
+
+    console.log('currUserResponseId222222', currUserResponseId);
   }
 
   // get partnerResponse
@@ -124,7 +111,6 @@ function CheckinEdit({ navigation }) {
       // partnerResponseText = latestPartnerResponse.response;
       // partnerResponseId = latestPartnerResponse._id;
       partnerResponseCreatedAt = latestPartnerResponse.createdAt;
-      partnerResponseCheck = isResponseWithin24Hours(partnerResponseCreatedAt);
 
       if (partnerResponseCheck) {
         latestPartnerResponse = sortedPartnerResponse[0];
@@ -162,48 +148,18 @@ function CheckinEdit({ navigation }) {
     fetchPartnerResponse();
   }, [partnerId]);
 
-  // const getPair = async () => {
-  //   return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
-  // };
+  console.log('currUserResponseId', currUserResponseId);
+  const handleOnEdit = async () => {
+    // if (currUserResponseId) {
+    // await dispatch(updateResponse(currUserResponseId, {
+    //   response: textAnswer,
+    // }));
+    // }
 
-  // const getResponse = async (id) => {
-  //   const response1 = await axios.get(`${apiUrl}/responses/${id}`);
-  //   return response1.data;
-  // };
+    await dispatch(updateResponse('64f53db6210ed4715f62b443', {
+      response: textAnswer,
+    }));
 
-  // const refreshData = async () => {
-  //   try {
-  //   // Fetch user ID & user doc
-  //     if (userDoc) {
-  //       let userResponse;
-  //       // const pair = await getPair();
-  //       const groupId = userDoc.pair_id + moment().format('MMDDYY');
-  //       const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-  //       const responseGroupData = responseGroup.data;
-  //       const pairCreatorId = pair?.data?.pair_creator_id;
-  //       if (currUserId === pairCreatorId) {
-  //         if (responseGroupData.p1_response_id) {
-  //           userResponse = await getResponse(responseGroupData.p1_response_id);
-  //           // setResponseId(responseGroupData?.p1_response_id);
-  //         }
-  //       } else if (currUserId !== pairCreatorId) {
-  //         if (responseGroupData.p2_response_id) {
-  //           userResponse = await getResponse(responseGroupData.p2_response_id);
-  //           // setResponseId(responseGroupData?.p2_response_id);
-  //         }
-  //       }
-  //       if (userResponse) {
-  //         setTextAnswer(userResponse.response);
-  //         setNewResponse(false);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error occurred during data refresh:', error);
-  //   }
-  // };
-
-  // updateResponseGroup(responseGroupId, updatedFields)
-  const handleOnSubmit = async () => {
     // if (!userResponseCheck && !partnerResponseCheck) {
     //   await dispatch(createResponse(currUserId, {
     //     response: textAnswer,
@@ -263,23 +219,23 @@ function CheckinEdit({ navigation }) {
 
   useEffect(() => {
     async function fetchResponseData() {
-      if (submit) {
+      if (currUserId) {
         await dispatch(fetchResponseByUserId(currUserId));
       }
     }
     fetchResponseData();
-  }, [submit]);
+  }, [currUserId]);
 
-  useEffect(() => {
-    async function updateRG() {
-      if (currUserResponseId) {
-        await dispatch(updateResponseGroup(currUserResponseGroupId12, {
-          responseId1: currUserResponseId,
-        }));
-      }
-    }
-    updateRG();
-  }, [HandleonSumbit]);
+  // useEffect(() => {
+  //   async function updateRG() {
+  //     if (currUserResponseId) {
+  //       await dispatch(updateResponseGroup(currUserResponseGroupId, {
+  //         responseId1: currUserResponseId,
+  //       }));
+  //     }
+  //   }
+  //   updateRG();
+  // }, [HandleonSumbit]);
 
   return (
 
@@ -300,7 +256,7 @@ function CheckinEdit({ navigation }) {
               <Text>Daily Question</Text>
               <Card.Title style={styles.question}>{currQuestion}</Card.Title>
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
-              <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
+              <TouchableOpacity style={styles.button} onPress={handleOnEdit}>
                 <Text style={styles.buttonText}>
                   Edit the Answer
                 </Text>

@@ -31,6 +31,8 @@ export function createResponse(uid, responseData) {
 export function updateResponse(responseGroupId, updatedFields) {
   // axios patch
   return () => {
+    console.log('updateResponse Actions ResponseGroupId', responseGroupId);
+    console.log('updateResponse Action updateFields : ', updatedFields);
     axios.patch(`${apiUrl}/responses/${responseGroupId}`, updatedFields)
       .then(() => {
         console.log('Successfully updated response');
