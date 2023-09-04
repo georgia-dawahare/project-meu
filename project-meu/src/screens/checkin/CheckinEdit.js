@@ -20,11 +20,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
 import {
-  createResponse, fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId,
+  fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId,
 } from '../../actions/ResponseActions';
 import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
 function CheckinEdit({ navigation }) {
+  // need to be fixed : edit answer => no create Response & update the response
   const [textAnswer, setTextAnswer] = useState('');
   const [setHandleonSubmit, HandleonSumbit] = useState(false);
   const [newResponse, setNewResponse] = useState(true);
@@ -131,16 +132,6 @@ function CheckinEdit({ navigation }) {
     }
   }
 
-  // navigate pages
-  // if (userResponseCheck && partnerResponseCheck) {
-  //   navigation.navigate('CheckinBothResponeded');
-  //   // navigation.navigate('CheckinUserResponded');
-  // } else if (!userResponseCheck && partnerResponseCheck) {
-  //   navigation.navigate('CheckinPartnerResponded');
-  // } else if (userResponseCheck && !partnerResponseCheck) {
-  //   navigation.navigate('CheckinUserResponded');
-  // }
-
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
@@ -160,7 +151,7 @@ function CheckinEdit({ navigation }) {
       }
     }
     fetchRepsonseData();
-  }, [currUserId, createResponse]);
+  }, [currUserId]);
 
   useEffect(() => {
     async function fetchPartnerResponse() {
@@ -213,17 +204,13 @@ function CheckinEdit({ navigation }) {
 
   // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
-    if (!userResponseCheck && !partnerResponseCheck) {
-      await dispatch(createResponse(currUserId, {
-        response: textAnswer,
-        userId: currUserId,
-        responseGroupId: currUserPairId,
-      }));
-
-      // await dispatch(updateResponseGroup(currUserResponseGroupId12, {
-      //   responseId1: currUserResponseId,
-      // }));
-    }
+    // if (!userResponseCheck && !partnerResponseCheck) {
+    //   await dispatch(createResponse(currUserId, {
+    //     response: textAnswer,
+    //     userId: currUserId,
+    //     responseGroupId: currUserPairId,
+    //   }));
+    // }
 
     // else if (latestResponseId1 && !latestResponseId2) {
     //   await dispatch(updateResponseGroup(LatestResponseId, {
@@ -271,13 +258,8 @@ function CheckinEdit({ navigation }) {
     //   );
     // }
     setSubmit(true);
-    // navigation.navigate('CheckinUserResponded');
     setSubmit(false);
   };
-  // } catch (e) {
-  //   console.log('Failed to submit response: ', e);
-  // }
-  // };
 
   useEffect(() => {
     async function fetchResponseData() {

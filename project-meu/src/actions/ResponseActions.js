@@ -7,6 +7,7 @@ export const ActionTypes = {
   FETCH_RESPONSES: 'FETCH_RESPONSES',
   FETCH_RESPONSE: 'FETCH_RESPONSE',
   FETCH_RESPONSE_PARTNER: 'FETCH_RESPONSE_PARTNER',
+  FETCH_ANOTHER_RESPONSE: 'FETCH_ANOTHER_RESPONSE',
 };
 
 // Fetch all responses for a user
@@ -60,6 +61,18 @@ export function fetchResponse(responseId) {
     axios.get(`${apiUrl}/responses/${responseId}`)
       .then((response) => {
         dispatch({ type: ActionTypes.FETCH_RESPONSE, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching user: ', error);
+      });
+  };
+}
+
+// Fetch response2
+export function fetchResponse2(responseId) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/responses/anotherResponse/${responseId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_ANOTHER_RESPONSE, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });

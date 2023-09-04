@@ -55,8 +55,8 @@ function CheckinPage({ navigation }) {
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
   let latestResonseGroup = '';
-  // let currQuestionresponseId1 = '';
-  // let currQuestionresponseId2 = '';
+  let currQuestionresponseId1 = '';
+  let currQuestionresponseId2 = '';
 
   if (currUserResponseGroup) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
@@ -68,6 +68,8 @@ function CheckinPage({ navigation }) {
 
     if (latestResonseGroup) {
       currQuestionId = latestResonseGroup.questionId; // 11
+      currQuestionresponseId1 = latestResonseGroup.responseId1;
+      currQuestionresponseId2 = latestResonseGroup.responseId2;
     }
     console.log('latestResonseGroup', latestResonseGroup);
   }
@@ -83,7 +85,7 @@ function CheckinPage({ navigation }) {
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
   let latestUserResponse = '';
   // const currUserResponseText = '';
-  // let currUserResponseId = '';
+  let currUserResponseId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
     const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
@@ -92,7 +94,7 @@ function CheckinPage({ navigation }) {
     latestUserResponse = sortedUserResponse[0];
     if (latestUserResponse) {
       // currUserResponseText = latestUserResponse.response;
-      // currUserResponseId = latestUserResponse._id;
+      currUserResponseId = latestUserResponse._id;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
     }
 
@@ -171,7 +173,7 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 19 && currentDate.getMinutes() === 28) {
+      if (currentDate.getHours() === 20 && currentDate.getMinutes() === 15) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -222,9 +224,12 @@ function CheckinPage({ navigation }) {
   // } else if (userResponseCheck && !partnerResponseCheck) {
   //   navigation.navigate('CheckinUserResponded');
   // }
-  if (userResponseCheck && !partnerResponseCheck) {
-    navigation.navigate('CheckinUserResponded');
-  }
+
+  // need to be fixed
+  // if (userResponseCheck && !partnerResponseCheck && (currUserResponseId === currQuestionresponseId1 || currUserResponseId === currQuestionresponseId2)) {
+  //   // here by Soo
+  //   navigation.navigate('CheckinUserResponded');
+  // }
 
   const displayNoResponses = () => {
     return (

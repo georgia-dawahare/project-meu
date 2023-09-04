@@ -18,7 +18,7 @@ import TitleHeader from '../../components/TitleHeader';
 
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchResponseByUserId, fetchResponse } from '../../actions/ResponseActions';
+import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
 import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
@@ -112,6 +112,10 @@ function CheckinUserResponeded({ navigation }) {
     console.log('Id1UserId', Id1UserId);
   }
 
+  // fetch responseId2 Response
+  const Id2Response = useSelector((state) => state.responseState.anotherResponse);
+  console.log(Id2Response);
+
   // let LatestCurrUserResponseText = '';
   // let LatestResponseId = '';
   // let LatestResponseTimeStamp = '';
@@ -176,26 +180,38 @@ function CheckinUserResponeded({ navigation }) {
 
   useEffect(() => {
     async function updateResponseGroupData() {
-      if (!currQuestionresponseId1 && !currQuestionresponseId2 && latestResponseGroupId) {
+      if (!currQuestionresponseId1 && !currQuestionresponseId2) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: LatestResponseId,
         }));
-      } else if (currQuestionresponseId1 && latestResponseGroupId && LatestResponseId === Id1UserId) {
+      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: LatestResponseId,
         }));
-      } else if (currQuestionresponseId1 && latestResponseGroupId && LatestResponseId !== Id1UserId) {
+      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId2: LatestResponseId,
         }));
-      } else if (currQuestionresponseId2 && latestResponseGroupId && LatestResponseId === Id1UserId) {
+      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id2Response) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId2: LatestResponseId,
         }));
-      } else if (currQuestionresponseId2 && latestResponseGroupId && LatestResponseId !== Id1UserId) {
+      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id2Response) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: LatestResponseId,
         }));
+      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId1: LatestResponseId,
+        }));
+      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
+        if (LatestResponseUserId === Id2Response) {
+          await dispatch(updateResponseGroup(latestResponseGroupId, {
+            responseId2: LatestResponseId,
+          }));
+        }
+      } else {
+        console.log('failed to updating Response Group in CheckinUserResponded');
       }
     }
     updateResponseGroupData();
@@ -209,6 +225,15 @@ function CheckinUserResponeded({ navigation }) {
     }
     fetchId1Response();
   }, [currQuestionresponseId1]);
+
+  useEffect(() => {
+    async function fetchId2Response() {
+      if (currQuestionresponseId2) {
+        await dispatch(fetchResponse2(currQuestionresponseId2));
+      }
+    }
+    fetchId2Response();
+  }, [currQuestionresponseId2]);
 
   // useEffect(() => {
   //   async function updateResponseGroupData() {
