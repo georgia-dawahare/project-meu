@@ -1,287 +1,3 @@
-// /* eslint-disable global-require */
-
-// function CheckinBothResponeded({ navigation }) {
-//   const [fontLoaded, setFontLoaded] = useState(false);
-//   const [refreshing, setRefreshing] = useState(false);
-
-//   const dispatch = useDispatch();
-
-//   // userData
-//   const user = useSelector((state) => state.userState.userData);
-//   const currUserId = user._id;
-//   const currUserFirstName = user.firstName;
-//   const currUserPairId = user.pairId;
-//   // console.log('user :      ', user);
-
-//   // partner Data
-//   const partner = useSelector((state) => state.partnerState.partnerData);
-//   const partnerId = partner._id;
-//   // console.log('partnerId', partnerId);
-
-//   // questions Data
-//   const questions = useSelector((state) => state.questionsState.questionsData);
-
-//   // get reponses of the pair
-//   const currUserResponses = useSelector((state) => state.responseGroupState.responseGroupData);
-//   console.log('currUserREsponses', currUserResponses);
-
-//   // fetch Data
-//   useEffect(() => {
-//     async function fetchData() {
-//       if (currUserId) {
-//         dispatch(fetchUserById(currUserId));
-//         dispatch(fetchQuestions());
-//       }
-//     }
-//     fetchData();
-//   }, [currUserId]);
-
-//   useEffect(() => {
-//     async function pairData() {
-//       if (currUserId) {
-//         await dispatch(fetchPair(currUserId));
-//       }
-//     }
-//     pairData();
-//   }, [currUserId]);
-
-//   useEffect(() => {
-//     async function fetchGroupResponses() {
-//       if (currUserPairId) {
-//         await dispatch(fetchResponseGroup(currUserPairId));
-//       }
-//     }
-//     fetchGroupResponses();
-//     console.log('GroupResponses');
-//   }, [currUserPairId]);
-
-//   // fetch Font
-//   useEffect(() => {
-//     async function loadFont() {
-//       await Font.loadAsync({
-//         'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-//         'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-//         'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
-//       });
-//       setFontLoaded(true);
-//     }
-//     loadFont();
-//   }, []);
-
-//   // scrollable page refresh 0.5s
-//   const onRefresh = useCallback(() => {
-//     setRefreshing(true);
-//     setTimeout(() => {
-//       setRefreshing(false);
-//     }, 500);
-//   }, []);
-
-//   const displayBothResponse = () => {
-//     return (
-//       <View style={styles.responseWrapper}>
-//         <Card containerStyle={styles.cardContainer}>
-//           <Text style={styles.cardTitle}>Daily Question</Text>
-//           {/* <Card.Title style={styles.question}>{question}</Card.Title> */}
-//           <Card.Title style={styles.question}>{firstQuestion}</Card.Title>
-//           <View>
-//             <View style={styles.responseHeader}>
-//               <Image style={styles.profileImg}
-//                 source={require('../../../assets/animations/neutral/neutral_black.gif')}
-//               />
-//               <View style={styles.partnerNameTxt}>
-//                 {/* <Text>{partnerFirstName}</Text> */}
-//                 <Text>{partnerResponseTime}</Text>
-//               </View>
-//               {/* added */}
-//               <TouchableOpacity
-//                 style={styles.responseHeader}
-//                 onLongPress={openModal}
-//               >
-//                 {selectedEmoji ? (
-//                   <Text style={styles.selectedEmoji}>{selectedEmoji}</Text>
-//                 ) : (
-//                   <Text style={styles.defaultEmoji}>+</Text>
-//                 )}
-//               </TouchableOpacity>
-
-//               <Modal isVisible={isModalVisible} onBackdropPress={closeModal}>
-//                 <View style={styles.modalContainer}>
-//                   {emojis.map((emoji, index) => (
-//                     <TouchableOpacity
-//                       key={index}
-//                       style={styles.emojiOption}
-//                       onPress={() => selectEmoji(emoji)}
-//                     >
-//                       <Text style={styles.emoji}>{emoji}</Text>
-//                     </TouchableOpacity>
-//                   ))}
-//                 </View>
-//               </Modal>
-
-//             </View>
-//             <Text>{partnerResponse}</Text>
-//           </View>
-//           <View>
-//             <View style={styles.myResponseHeader}>
-//               <View style={styles.userNameTxt}>
-//                 <Text style={styles.leftText}>{currUserFirstName}</Text>
-//                 <Text style={styles.leftText}>{userResponseTime}</Text>
-//               </View>
-//               <Image style={styles.profileImg}
-//                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-//               />
-//             </View>
-//             <Text style={styles.leftText}>{userResponse}</Text>
-//           </View>
-//           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-//             <Image
-//               style={styles.editButtonContainer}
-//               source={require('../../../assets/images/editButton.png')}
-//             />
-//           </TouchableOpacity>
-//         </Card>
-//         <View style={styles.viewMoreButtonWrapper}>
-//           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-//             <Button title="View  More" />
-//           </TouchableOpacity>
-//         </View>
-//       </View>
-//     );
-//   };
-
-//   if (!fontLoaded) {
-//     return <Text>Loading...</Text>;
-//   }
-
-//   return (
-//     <View style={styles.container}>
-//       <TitleHeader title="Check-In" />
-//       <ScrollView contentContainerStyle={styles.contentContainer}
-//         refreshControl={
-//           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-//           }
-//       >
-//         {displayBothResponse()}
-//       </ScrollView>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'space-around',
-//   },
-//   cardContainer: {
-//     borderRadius: 15,
-//     padding: 20,
-//     marginBottom: 100,
-//   },
-//   cardTitle: {
-//     fontFamily: 'SF-Pro-Display-Medium',
-//   },
-//   question: {
-//     textAlign: 'center',
-//     fontSize: 28,
-//     fontFamily: 'SF-Pro-Display-Bold',
-//     lineHeight: 34,
-//     margin: 30,
-//   },
-//   button: {
-//     borderRadius: 15,
-//     marginTop: 20,
-//     backgroundColor: 'rgba(230, 43, 133, 1)',
-//     height: 56,
-//     width: 300,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   buttonTxt: {
-//     fontFamily: 'SF-Pro-Display-Medium',
-//     color: 'white',
-//     fontSize: 20,
-//     lineHeight: 30,
-//   },
-//   responseHeader: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   profileImg: {
-//     width: 40,
-//     height: 80,
-//     alignSelf: 'flex-end',
-//   },
-//   partnerNameTxt: {
-//     marginLeft: 10,
-//   },
-//   blurText: {
-//     height: 3,
-//     width: '90%',
-//     shadowOpacity: 1,
-//     shadowColor: '#000',
-//     shadowOffset: { width: 10, height: 10 },
-//     shadowRadius: 5,
-//     elevation: 5,
-//     borderWidth: 0.5,
-//     borderColor: 'white',
-//     backgroundColor: 'rgba(255, 255, 255, 1)',
-//     marginBottom: 20,
-//   },
-//   seeMoreButtonWrapper: {
-//     alignSelf: 'flex-end',
-//   },
-//   seeMoreButton: {
-//     backgroundColor: 'rgba(230, 43, 133, 1)',
-//     borderRadius: 30,
-//     width: 138,
-//     height: 36,
-//     alignItems: 'center',
-//     marginTop: 20,
-//     flexDirection: 'row',
-//     justifyContent: 'space-evenly',
-//   },
-//   seeMoreButtonTxt: {
-//     fontFamily: 'SF-Pro-Display-Medium',
-//     color: 'white',
-//     fontSize: 14,
-//     lineHeight: 21,
-//   },
-//   myResponseHeader: {
-//     justifyContent: 'flex-end',
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   userNameTxt: {
-//     marginRight: 10,
-//   },
-//   leftText: {
-//     textAlign: 'right',
-//   },
-//   editButton: {
-//     marginTop: 10,
-//     alignSelf: 'flex-end',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   editImg: {
-//     width: 45,
-//     height: 45,
-//   },
-//   viewMoreButtonWrapper: {
-//     alignItems: 'center',
-//   },
-//   responseWrapper: {
-//     flex: 1,
-//     justifyContent: 'center',
-//   },
-//   editButtonContainer: {
-//     width: 45,
-//     height: 45,
-//   },
-// });
-
-// export default CheckinBothResponeded;
-
 /* eslint-disable global-require */
 import React, { useEffect, useState, useCallback } from 'react';
 import {
@@ -321,7 +37,6 @@ function CheckiBothResponeded({ navigation }) {
   const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
   const partnerId = partner._id;
-  // console.log('partnerFirstName', partnerFirstName);
   console.log('partnerId  : ', partnerId);
 
   // questions Data
@@ -367,10 +82,6 @@ function CheckiBothResponeded({ navigation }) {
       LatestResponseId = latestResponse._id;
       LatestResponseTimeStamp = latestResponse.createdAt;
       LatestResponseUserId = latestResponse.userId;
-
-      // console.log('latestResponse', latestResponse);
-      // console.log('responseId : ', LatestResponseId);
-      // console.log('TimeStamp : ', LatestResponseTimeStamp);
     }
   }
 
@@ -396,28 +107,6 @@ function CheckiBothResponeded({ navigation }) {
     console.log('Id2UserId', Id2UserId);
   }
   console.log('Id2Response', Id2Response);
-
-  // let LatestCurrUserResponseText = '';
-  // let LatestResponseId = '';
-  // let LatestResponseTimeStamp = '';
-  // let LatestResponseUserId = '';
-
-  // if (responses) {
-  //   const sortedResponses = Object.values(responses).sort((a, b) => {
-  //     return new Date(b.createdAt) - new Date(a.createdAt);
-  //   });
-
-  //   const latestResponse = sortedResponses[0];
-  //   if (latestResponse) {
-  //     LatestCurrUserResponseText = latestResponse.response;
-  //     LatestResponseId = latestResponse._id;
-  //     LatestResponseTimeStamp = latestResponse.createdAt;
-  //     LatestResponseUserId = latestResponse.userId;
-
-  //     console.log('latestResponse', latestResponse);
-
-  //   }
-  // }
 
   // fetch Data
   useEffect(() => {
@@ -489,63 +178,6 @@ function CheckiBothResponeded({ navigation }) {
     fetchId2Response();
   }, [currQuestionresponseId2]);
 
-  // useEffect(() => {
-  //   async function updateResponseGroupData() {
-  //     if (!currQuestionresponse1 && !currQuestionresponse2) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId2: LatestResponseId,
-  //       });
-  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId2: LatestResponseId,
-  //       });
-  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     }
-  //   }
-
-  //   updateResponseGroupData();
-  // }, [LatestResponseId]);
-
-  // useEffect(() => {
-  //   async function fetchResponses() {
-  //     if (currUserResponses) {
-  //       console.log('here');
-  //       try {
-  //         const response = await dispatch(fetchResponse(currUserId));
-  //         console.log('Fetched user responses:', response);
-  //       } catch (error) {
-  //         console.log('Error fetching user responses:', error);
-  //       }
-  //     }
-  //   }
-  //   fetchResponses();
-  //   console.log('GroupResponses');
-  // }, [currUserResponses]);
-
-  // fetch Font
-  // useEffect(() => {
-  //   async function loadFont() {
-  //     await Font.loadAsync({
-  //       'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-  //       'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-  //       'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
-  //     });
-  //     setFontLoaded(true);
-  //   }
-  //   loadFont();
-  // }, []);
-
   // fetch Font
   useEffect(() => {
     async function loadFont() {
@@ -558,6 +190,10 @@ function CheckiBothResponeded({ navigation }) {
     }
     loadFont();
   }, []);
+
+  if (!fontLoaded) {
+    return <Text>Loading...</Text>;
+  }
 
   // scrollable page refresh 0.5s
   const onRefresh = useCallback(() => {
@@ -633,7 +269,6 @@ function CheckiBothResponeded({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Text style={styles.cardTitle}>Heloooooooo CheckinBothResponded</Text>
           <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
@@ -675,45 +310,6 @@ function CheckiBothResponeded({ navigation }) {
       </View>
     );
   };
-
-  const displayUserResponse = () => {
-    return (
-      <View style={styles.responseWrapper}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{CurrUserFormattedTimeStamp}</Text>
-              </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
-            </View>
-            <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
-            <Image
-              source={require('../../../assets/images/editButton.png')}
-              style={styles.editImg}
-            />
-          </TouchableOpacity>
-        </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Text style={styles.buttonTxt}>View More</Text>
-          </TouchableOpacity>
-        </View>
-        <View />
-      </View>
-    );
-  };
-
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <View style={styles.container}>
