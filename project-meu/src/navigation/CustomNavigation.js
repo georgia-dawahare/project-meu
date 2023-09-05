@@ -7,8 +7,8 @@ import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 import CheckinEdit from '../screens/checkin/CheckinEdit';
 import CheckinUserResponeded from '../screens/checkin/CheckinUserResponded';
-import CheckinPartnerResponeded from '../screens/checkin/CheckinPartnerResponded';
-import CheckinBothResponeded from '../screens/checkin/CheckinBothResponded';
+import CheckinPartnerResponded from '../screens/checkin/CheckinPartnerResponded';
+import CheckinBothResponded from '../screens/checkin/CheckinBothResponded';
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
 // import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
@@ -79,12 +79,12 @@ function CheckinScreenNavigator() {
         component={CheckinUserResponeded}
       />
       <Stack.Screen
-        name="CheckinPartnerResponeded"
-        component={CheckinPartnerResponeded}
+        name="CheckinPartnerResponded"
+        component={CheckinPartnerResponded}
       />
       <Stack.Screen
-        name="CheckinBothResponeded"
-        component={CheckinBothResponeded}
+        name="CheckinBothResponded"
+        component={CheckinBothResponded}
       />
       <Stack.Screen
         name="CheckinHistory"

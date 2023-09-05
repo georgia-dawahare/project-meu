@@ -125,27 +125,36 @@ function CheckinPage({ navigation }) {
 
     // console.log('partnerResponseId', partnerResponseId);
   }
-  const userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
-  const partnerResponseCheck = isResponseWithin24Hours(partnerResponseCreatedAt);
-
-  console.log('userResponseCheck', userResponseCheck);
-  console.log('partnerResponseCheck', partnerResponseCheck);
 
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
-  let Id1UserId;
+  let Id1UserId = '';
+  let Id1CreatedAt = '';
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
-    console.log('Id1UserId', Id1UserId);
+    Id1CreatedAt = Id1Response.createdAt;
+    console.log('Id1Response', Id1Response);
   }
 
   // fetch responseId2 Response
   const Id2Response = useSelector((state) => state.responseState.anotherResponse);
   let Id2UserId = '';
+  let Id2CreatedAt = '';
   if (Id2Response) {
     Id2UserId = Id2Response.userId;
+    Id2CreatedAt = Id2Response.createdAt;
   }
-  console.log(Id2Response);
+  console.log('Id2Response', Id2Response);
+
+  // within24hr Check
+  let Id1ResponseCheck = false;
+  let Id2ResponseCheck = false;
+  if (Id1CreatedAt !== '') {
+    Id1ResponseCheck = isResponseWithin24Hours(Id1CreatedAt);
+  }
+  if (Id2CreatedAt !== '') {
+    Id2ResponseCheck = isResponseWithin24Hours(Id2CreatedAt);
+  }
 
   // fetch Data
   useEffect(() => {
@@ -209,7 +218,7 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 20 && currentDate.getMinutes() === 15) {
+      if (currentDate.getHours() === 18 && currentDate.getMinutes() === 3) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -254,9 +263,27 @@ function CheckinPage({ navigation }) {
   // need to be fixed
   console.log('currQuestionresponseId133333', currQuestionresponseId1);
   console.log('currQuestionresponseId233333', currQuestionresponseId2);
-  if (currQuestionresponseId1 && currQuestionresponseId2) {
-    navigation.navigate('CheckinBothResponeded');
+
+  // navigate checkinpage
+
+  if (Id1Response && !Id2Response && Id1UserId === currUserId) {
+    navigation.navigate('CheckinUserResponded');
+  } else if (Id1Response && Id2Response !== '' && Id1UserId === partnerId && Id1ResponseCheck) {
+    navigation.navigate('CheckinPartnerResponded');
+  } else if (Id1Response !== '' && Id2Response && Id2UserId === currUserId && Id2ResponseCheck) {
+    navigation.navigate('CheckinUserResponded');
+  } else if (Id1Response !== '' && Id2Response && Id2UserId === partnerId && Id1ResponseCheck && Id2ResponseCheck) {
+    navigation.navigate('CheckinPartnerResponded');
+  } else if (Id1Response && Id2Response) {
+    if ((Id1UserId === currUserId && Id2UserId === partnerId && Id1ResponseCheck && Id2ResponseCheck) || (Id1UserId === partnerId && Id2UserId === currUserId && Id1ResponseCheck && Id2ResponseCheck)) {
+      navigation.navigate('CheckinBothResponded');
+    }
+  } else {
+    console.log('navigation pages error in CheckinPage');
   }
+  // if (currQuestionresponseId1 && currQuestionresponseId2) {
+  //   navigation.navigate('CheckinBothResponeded');
+  // }
   // else if ((currQuestionresponseId1 && !currQuestionresponseId2 && Id1UserId === currUserResponseUserId) || (!currQuestionresponseId1 && currQuestionresponseId2 && Id2UserId === currUserResponseUserId)) {
   // navigation.navigate('CheckinUserResponded');
   // } else if ((currQuestionresponseId1 && !currQuestionresponseId2 && Id1UserId === partnerId) || (!currQuestionresponseId1 && currQuestionresponseId2 && Id2UserId === partnerId)) {

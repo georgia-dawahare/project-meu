@@ -20,7 +20,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchUserById } from '../../actions/UserActions';
 import {
-  createResponse, fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId,
+  createResponse, fetchResponse, fetchResponseByUserId, fetchResponseByPartnerId, fetchResponse2,
 } from '../../actions/ResponseActions';
 import { updateResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
 
@@ -60,8 +60,8 @@ function CheckinSubmit({ navigation }) {
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
   let currUserResponseGroupId12 = '';
-  let latestResponseId1 = '';
-  let latestResponseId2 = '';
+  let currQuestionresponseId1 = '';
+  let currQuestionresponseId2 = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
@@ -70,8 +70,8 @@ function CheckinSubmit({ navigation }) {
     const latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
     currUserResponseGroupId12 = latestResonseGroup._id;
-    latestResponseId1 = latestResonseGroup.responseId1;
-    latestResponseId2 = latestResonseGroup.responseId2;
+    currQuestionresponseId1 = latestResonseGroup.responseId1;
+    currQuestionresponseId2 = latestResonseGroup.responseId2;
     // console.log('currUserResponseGroupId', currUserResponseGroupId);
     // console.log('latestResponseId2', latestResponseId2);
   }
@@ -130,6 +130,23 @@ function CheckinSubmit({ navigation }) {
     }
   }
 
+  // fetch responseId1 Response
+  const Id1Response = useSelector((state) => state.responseState.currResponse);
+  let Id1UserId;
+  if (Id1Response) {
+    Id1UserId = Id1Response.userId;
+    console.log('Id1UserId', Id1UserId);
+  }
+
+  // fetch responseId2 Response
+  const Id2Response = useSelector((state) => state.responseState.anotherResponse);
+  let Id2UserId = '';
+  if (Id2Response) {
+    Id2UserId = Id2Response.userId;
+  }
+  console.log(Id2Response);
+  console.log('Id2Response', Id2Response);
+
   // navigate pages
   // if (userResponseCheck && partnerResponseCheck) {
   //   navigation.navigate('CheckinBothResponeded');
@@ -169,6 +186,47 @@ function CheckinSubmit({ navigation }) {
     }
     fetchPartnerResponse();
   }, [partnerId]);
+
+  useEffect(() => {
+    async function fetchId1Response() {
+      if (currQuestionresponseId1) {
+        await dispatch(fetchResponse(currQuestionresponseId1));
+      }
+    }
+    fetchId1Response();
+  }, [currQuestionresponseId1]);
+
+  useEffect(() => {
+    async function fetchId2Response() {
+      if (currQuestionresponseId2) {
+        await dispatch(fetchResponse2(currQuestionresponseId2));
+      }
+    }
+    fetchId2Response();
+  }, [currQuestionresponseId2]);
+
+  // useEffect(() => {
+  //   async function navigatePages() {
+  //     if (submit) {
+  //       if (Id1Response && !Id2Response && Id1UserId === currUserId) {
+  //         navigation.navigate('CheckinUserResponded');
+  //       } else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
+  //         navigation.navigate('CheckinPartnerResponded');
+  //       } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
+  //         navigation.navigate('CheckinUserResponded');
+  //       } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
+  //         navigation.navigate('CheckinPartnerResponded');
+  //       } else if (Id1Response && Id2Response) {
+  //         if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
+  //           navigation.navigate('CheckinBothResponded');
+  //         }
+  //       } else {
+  //         console.log('navigation pages error in CheckinPage');
+  //       }
+  //     }
+  //   }
+  //   navigatePages();
+  // }, [submit]);
 
   // const getPair = async () => {
   //   return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
@@ -267,7 +325,26 @@ function CheckinSubmit({ navigation }) {
     //   );
     // }
     setSubmit(true);
-    navigation.navigate('CheckinUserResponded');
+    navigation.navigate('Checkin');
+    // navigate checkinpage
+    // if (Id1Response && !Id2Response && Id1UserId === currUserId) {
+    //   navigation.navigate('CheckinUserResponded');
+    // }
+    // else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
+    //   navigation.navigate('CheckinPartnerResponded');
+    // } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
+    //   navigation.navigate('CheckinUserResponded');
+    // } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
+    //   navigation.navigate('CheckinPartnerResponded');
+    // }
+    // else if (Id1Response && Id2Response) {
+    //   if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
+    //     navigation.navigate('CheckinBothResponded');
+    //   }
+    // }
+    // else {
+    //   console.log('navigation pages error in CheckinPage');
+    // }
     setSubmit(false);
   };
   // } catch (e) {

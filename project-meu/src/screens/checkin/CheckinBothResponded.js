@@ -22,7 +22,7 @@ import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../acti
 import { fetchPair } from '../../actions/PairActions';
 import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
-function CheckiBothResponeded({ navigation }) {
+function CheckinBothResponded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -191,10 +191,6 @@ function CheckiBothResponeded({ navigation }) {
     loadFont();
   }, []);
 
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>;
-  }
-
   // scrollable page refresh 0.5s
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -269,6 +265,7 @@ function CheckiBothResponeded({ navigation }) {
       <View style={styles.responseWrapper}>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
+          <Text style={styles.cardTitle}>Heloooooooo CheckinBothResponded</Text>
           <Card.Title style={styles.question}>{currQuestion}</Card.Title>
           <View>
             <View style={styles.responseHeader}>
@@ -438,4 +435,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CheckiBothResponeded;
+export default CheckinBothResponded;
