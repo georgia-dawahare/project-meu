@@ -464,6 +464,13 @@ function CheckinPartnerResponded({ navigation }) {
 
   const dispatch = useDispatch();
 
+  // check if it's within 24hrs
+  const isResponseWithin24Hours = (responseCreatedAt) => {
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
+    return new Date(responseCreatedAt) >= twentyFourHoursAgo;
+  };
+
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
@@ -523,9 +530,11 @@ function CheckinPartnerResponded({ navigation }) {
 
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
-  let Id1UserId;
+  let Id1UserId,
+    Id1CreatedAt;
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
+    Id1CreatedAt = Id1Response.createdAt;
     // console.log('Id1UserId', Id1UserId);
   }
   // console.log('Id1Response', Id1Response);
@@ -535,14 +544,17 @@ function CheckinPartnerResponded({ navigation }) {
   console.log('Id2Response', Id2Response);
   let Id2UserId = '';
   let Id2ResponseText = '';
-  let Id2CreatedAt = '';
-  if (Id2Response) {
+  if (Id2Response && isResponseWithin24Hours(Id2Response.createdAt)) {
     Id2UserId = Id2Response.userId;
     Id2ResponseText = Id2Response.response;
-    Id2CreatedAt = Id2Response.createdAt;
+    // const Id2CreatedAt = Id2Response.createdAt;
     console.log('Id2UserId', Id2UserId);
   }
   console.log('Id2Response', Id2Response);
+
+  // 24hr check
+  // const Id2ResponseCheck = isResponseWithin24Hours(Id2CreatedAt);
+  // const Id1ResponseCheck = isResponseWithin24Hours(Id1CreatedAt);
 
   // fetch Data
   useEffect(() => {
@@ -653,7 +665,7 @@ function CheckinPartnerResponded({ navigation }) {
     return formattedUserCreatedAt;
   };
 
-  const PartnerFormattedTimeStamp = TimeFormat(Id2CreatedAt)._j;
+  // const PartnerFormattedTimeStamp = TimeFormat(Id2CreatedAt)._j;
   // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
 
   // const refreshData = async () => {
@@ -709,7 +721,7 @@ function CheckinPartnerResponded({ navigation }) {
               />
               <View style={styles.partnerNameTxt}>
                 <Text>{partnerFirstName}</Text>
-                <Text>{PartnerFormattedTimeStamp}</Text>
+                {/* <Text>{PartnerFormattedTimeStamp}</Text> */}
               </View>
 
             </View>

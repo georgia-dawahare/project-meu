@@ -58,8 +58,9 @@ function CheckinSubmit({ navigation }) {
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let latestResonseGroup = '';
   let currQuestionId = '';
-  let currUserResponseGroupId12 = '';
+  let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
   let currQuestionresponseId2 = '';
   if (currUserResponseGroup.length > 0) {
@@ -67,9 +68,9 @@ function CheckinSubmit({ navigation }) {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
 
-    const latestResonseGroup = sortedResponseGroup[0];
+    latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
-    currUserResponseGroupId12 = latestResonseGroup._id;
+    latestResponseGroupId = latestResonseGroup._id;
     currQuestionresponseId1 = latestResonseGroup.responseId1;
     currQuestionresponseId2 = latestResonseGroup.responseId2;
     // console.log('currUserResponseGroupId', currUserResponseGroupId);
@@ -205,38 +206,6 @@ function CheckinSubmit({ navigation }) {
     fetchId2Response();
   }, [currQuestionresponseId2]);
 
-  // useEffect(() => {
-  //   async function navigatePages() {
-  //     if (submit) {
-  //       if (Id1Response && !Id2Response && Id1UserId === currUserId) {
-  //         navigation.navigate('CheckinUserResponded');
-  //       } else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
-  //         navigation.navigate('CheckinPartnerResponded');
-  //       } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
-  //         navigation.navigate('CheckinUserResponded');
-  //       } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
-  //         navigation.navigate('CheckinPartnerResponded');
-  //       } else if (Id1Response && Id2Response) {
-  //         if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
-  //           navigation.navigate('CheckinBothResponded');
-  //         }
-  //       } else {
-  //         console.log('navigation pages error in CheckinPage');
-  //       }
-  //     }
-  //   }
-  //   navigatePages();
-  // }, [submit]);
-
-  // const getPair = async () => {
-  //   return axios.get(`${apiUrl}/pairs/${userDoc.pair_id}`);
-  // };
-
-  // const getResponse = async (id) => {
-  //   const response1 = await axios.get(`${apiUrl}/responses/${id}`);
-  //   return response1.data;
-  // };
-
   // const refreshData = async () => {
   //   try {
   //   // Fetch user ID & user doc
@@ -285,6 +254,43 @@ function CheckinSubmit({ navigation }) {
       responseGroupId: currUserPairId,
     }));
 
+    // async function updateResponseGroupData() {
+    //   if (!currQuestionresponseId1 && !currQuestionresponseId2) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId1: currUserResponseId,
+    //     }));
+    //   } else if (currQuestionresponseId1 && !currQuestionresponseId2 && currUserId === Id1Response) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId1: currUserResponseId,
+    //     }));
+    //   } else if (currQuestionresponseId1 && !currQuestionresponseId2 && currUserId !== Id1Response) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId2: currUserResponseId,
+    //     }));
+    //   } else if (!currQuestionresponseId1 && currQuestionresponseId2 && currUserId === Id2Response) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId2: currUserResponseId,
+    //     }));
+    //   } else if (!currQuestionresponseId1 && currQuestionresponseId2 && currUserId !== Id2Response) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId1: currUserResponseId,
+    //     }));
+    //   } else if (currQuestionresponseId1 && currQuestionresponseId2 && currUserId === Id1Response) {
+    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //       responseId1: currUserResponseId,
+    //     }));
+    //   } else if (currQuestionresponseId1 && currQuestionresponseId2 && currUserId !== Id1Response) {
+    //     if (latestResponseGroupId === Id2Response) {
+    //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //         responseId2: currUserResponseId,
+    //       }));
+    //     }
+    //   } else {
+    //     console.log('failed to updating Response Group in CheckinUserResponded');
+    //   }
+    // }
+    // updateResponseGroupData();
+
     // Update the response group with the new response
     // if (latestResponseId1) {
     //   const updatedResponseGroup = {
@@ -325,32 +331,37 @@ function CheckinSubmit({ navigation }) {
     //   );
     // }
     setSubmit(true);
-    navigation.navigate('Checkin');
-    // navigate checkinpage
-    // if (Id1Response && !Id2Response && Id1UserId === currUserId) {
-    //   navigation.navigate('CheckinUserResponded');
-    // }
-    // else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
-    //   navigation.navigate('CheckinPartnerResponded');
-    // } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
-    //   navigation.navigate('CheckinUserResponded');
-    // } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
-    //   navigation.navigate('CheckinPartnerResponded');
-    // }
-    // else if (Id1Response && Id2Response) {
-    //   if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
-    //     navigation.navigate('CheckinBothResponded');
-    //   }
-    // }
-    // else {
-    //   console.log('navigation pages error in CheckinPage');
-    // }
+    navigation.navigate('CheckinUserResponded');
+    console.log('latestResonseGroupTrueeee', latestResonseGroup);
     setSubmit(false);
   };
-  // } catch (e) {
-  //   console.log('Failed to submit response: ', e);
+  // if (currQuestionresponseId1 && currQuestionresponseId2 && submit) {
+  //   navigation.navigate('CheckinBothResponded');
+  // } else if ((currQuestionresponseId1 && !currQuestionresponseId2) || (!currQuestionresponseId1 && currQuestionresponseId2)) {
+  //   navigation.navigate('ChekcinUserResponded');
   // }
-  // };
+  // useEffect(() => {
+  //   async function navigatePages() {
+  //     if (submit) {
+  //       if (Id1Response && !Id2Response && Id1UserId === currUserId) {
+  //         navigation.navigate('CheckinUserResponded');
+  //       } else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
+  //         navigation.navigate('CheckinPartnerResponded');
+  //       } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
+  //         navigation.navigate('CheckinUserResponded');
+  //       } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
+  //         navigation.navigate('CheckinPartnerResponded');
+  //       } else if (Id1Response && Id2Response) {
+  //         if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
+  //           navigation.navigate('CheckinBothResponded');
+  //         }
+  //       } else {
+  //         console.log('navigation pages error in CheckinPage');
+  //       }
+  //     }
+  //   }
+  //   navigatePages();
+  // }, [HandleonSumbit]);
 
   useEffect(() => {
     async function fetchResponseData() {
@@ -364,9 +375,10 @@ function CheckinSubmit({ navigation }) {
   useEffect(() => {
     async function updateRG() {
       if (currUserResponseId) {
-        await dispatch(updateResponseGroup(currUserResponseGroupId12, {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: currUserResponseId,
         }));
+        await dispatch(fetchResponseGroupByPairId(fetchResponseGroupByPairId));
       }
     }
     updateRG();
