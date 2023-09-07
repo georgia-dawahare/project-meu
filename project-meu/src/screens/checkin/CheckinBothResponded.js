@@ -290,12 +290,20 @@ function CheckinBothResponded({ navigation }) {
 
   let displayBothResponse = null;
 
-  const fetchDataBeforeRendering = async () => {
-    await dispatch(fetchResponse(currQuestionresponseId1));
-    await dispatch(fetchResponse2(currQuestionresponseId2));
-  };
+  // const fetchDataBeforeRendering = async () => {
+  //   await dispatch(fetchResponse(currQuestionresponseId1));
+  //   await dispatch(fetchResponse2(currQuestionresponseId2));
+  // };
 
-  fetchDataBeforeRendering();
+  // fetchDataBeforeRendering();
+  useEffect(() => {
+    async function fetchDataBeforeRendering() {
+      await dispatch(fetchResponse(currQuestionresponseId1));
+      await dispatch(fetchResponse2(currQuestionresponseId2));
+    }
+
+    fetchDataBeforeRendering();
+  }, [Id1UserId, Id2UserId]);
 
   if (Id1UserId === currUserId) {
     displayBothResponse = () => {

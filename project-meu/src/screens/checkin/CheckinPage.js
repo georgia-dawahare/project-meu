@@ -28,7 +28,7 @@ function CheckinPage({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
-  // const [hasCreatedResponse, setHasCreatedResponse] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const dispatch = useDispatch();
 
@@ -87,49 +87,6 @@ function CheckinPage({ navigation }) {
   }
   const nextQuestionId = currQuestionId + 1;
 
-  // get User's Response
-  // const currUserResponse = useSelector((state) => state.responseState.allResponses);
-  // let latestUserResponse = '';
-  // // const currUserResponseText = '';
-  // let currUserResponseUserId = '';
-  // let currUserResponseCreatedAt = '';
-  // if (currUserResponse) {
-  //   const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
-  //     return new Date(b.createdAt) - new Date(a.createdAt);
-  //   });
-  //   latestUserResponse = sortedUserResponse[0];
-  //   if (latestUserResponse) {
-  //     // currUserResponseText = latestUserResponse.response;
-  //     currUserResponseUserId = latestUserResponse.userId;
-  //     currUserResponseCreatedAt = latestUserResponse.createdAt;
-  //   }
-  //   console.log('latestUserResponse', latestUserResponse);
-  //   console.log('currUserResponseId', currUserResponseUserId);
-  // }
-
-  // get partnerResponse
-  // const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
-  // let latestPartnerResponse = '';
-  // let sortedPartnerResponse = '';
-  // let partnerResponseCreatedAt = '';
-  // const partnerResponseText = '';
-  // const partnerResponseId = '';
-  // if (partnerResponse.length > 0) {
-  // sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
-  // return new Date(b.createdAt) - new Date(a.createdAt);
-  // });
-  // latestPartnerResponse = sortedPartnerResponse[0];
-  // console.log('latestPartnerResponse', latestPartnerResponse);
-
-  // if (latestPartnerResponse) {
-  // partnerResponseText = latestPartnerResponse.response;
-  // partnerResponseId = latestPartnerResponse._id;
-  // partnerResponseCreatedAt = latestPartnerResponse.createdAt;
-  // }
-
-  // console.log('partnerResponseId', partnerResponseId);
-  // }
-
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
   let Id1UserId = '';
@@ -151,6 +108,14 @@ function CheckinPage({ navigation }) {
   // console.log('Id2Response', Id2Response);
 
   // fetch Data
+
+  // useEffect(() => {
+  //   if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
+  //     checkConditionsAndNavigate();
+  //     setIsLoading(false); // 데이터 로딩 완료 후 isLoading 상태 업데이트
+  //   }
+  // }, [Id1Response, Id2Response, latestResponseGroup]);
+
   useEffect(() => {
     async function fetchData() {
       if (currUserId) {
@@ -212,7 +177,7 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 11 && currentDate.getMinutes() === 47) {
+      if (currentDate.getHours() === 16 && currentDate.getMinutes() === 39 && currentDate.getSeconds() === 0) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C

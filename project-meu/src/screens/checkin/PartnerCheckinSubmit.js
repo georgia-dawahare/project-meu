@@ -169,7 +169,8 @@ function PartnerCheckinSubmit({ navigation }) {
       }
     }
     fetchRepsonseData();
-  }, [currUserId, createResponse]);
+  // }, [currUserId, createResponse]);
+  }, [currUserId]);
 
   useEffect(() => {
     async function fetchPartnerResponse() {
@@ -211,24 +212,13 @@ function PartnerCheckinSubmit({ navigation }) {
     // }));
 
     setSubmit(true);
+
+    await dispatch(fetchResponseByUserId(currUserId));
+
     // navigate place
     navigation.navigate('CheckinBothResponded');
     setSubmit(false);
   };
-
-  useEffect(() => {
-    async function afterSubmit() {
-      if (submit) {
-        // await dispatch(updateResponseGroup(latestResponseGroupId, {
-        //   responseId2: currUserResponseId,
-        // }));
-        // await dispatch(fetchResponseByUserId(currUserId));
-
-        // navigation.navigate('CheckinBothResponded');
-      }
-    }
-    afterSubmit();
-  }, [submit]);
 
   // useEffect(() => {
   //   async function updateRG() {

@@ -35,24 +35,6 @@ function CheckinUserResponeded({ navigation }) {
   // const currUserPairId = user.pairId;
   // console.log('user :      ', user);
 
-  // To get partnerId from pairs
-  // const pairs = useSelector((state) => state.pairState.pairData);
-  // let partnerId;
-  // if (currUserPairId === pairs._id) {
-  //   if (pairs.primaryUserId === currUserId) {
-  //     partnerId = pairs.secondaryUserId;
-  //   } else if (pairs.secondaryUserId === currUserId) {
-  //     partnerId = pairs.primaryUserId;
-  //   }
-  // }
-  // console.log('partnerId :     ', partnerId);
-
-  // partner Data
-  // const partner = useSelector((state) => state.partnerState.partnerData);
-  // const partnerFirstName = partner.firstName;
-  // console.log('partner Info : ', partner);
-  // console.log('partner Info : ', partnerFirstName);
-
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
 
@@ -120,55 +102,6 @@ function CheckinUserResponeded({ navigation }) {
   }
   // console.log(Id2Response);
 
-  // let LatestCurrUserResponseText = '';
-  // let LatestResponseId = '';
-  // let LatestResponseTimeStamp = '';
-  // let LatestResponseUserId = '';
-
-  // if (responses) {
-  //   const sortedResponses = Object.values(responses).sort((a, b) => {
-  //     return new Date(b.createdAt) - new Date(a.createdAt);
-  //   });
-
-  //   const latestResponse = sortedResponses[0];
-  //   if (latestResponse) {
-  //     LatestCurrUserResponseText = latestResponse.response;
-  //     LatestResponseId = latestResponse._id;
-  //     LatestResponseTimeStamp = latestResponse.createdAt;
-  //     LatestResponseUserId = latestResponse.userId;
-
-  //     console.log('latestResponse', latestResponse);
-
-  //   }
-  // }
-
-  // async function updateResponseGroupData() {
-  //   console.log('latestResponseGroupId222222222', latestResponseGroupId);
-  //   if (!currQuestionresponse1 && !currQuestionresponse2) {
-  //     await updateResponseGroup(latestResponseGroupId, {
-  //       responseId1: LatestResponseId,
-  //     });
-  //   } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //     await updateResponseGroup(latestResponseGroupId, {
-  //       responseId1: LatestResponseId,
-  //     });
-  //   } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //     await updateResponseGroup(latestResponseGroupId, {
-  //       responseId2: LatestResponseId,
-  //     });
-  //   } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //     await updateResponseGroup(latestResponseGroupId, {
-  //       responseId2: LatestResponseId,
-  //     });
-  //   } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //     await updateResponseGroup(latestResponseGroupId, {
-  //       responseId1: LatestResponseId,
-  //     });
-  //   }
-  // }
-
-  // updateResponseGroupData();
-
   // fetch Data
   useEffect(() => {
     async function fetchData() {
@@ -218,50 +151,6 @@ function CheckinUserResponeded({ navigation }) {
     fetchId2Response();
   }, [currQuestionresponseId2]);
 
-  // useEffect(() => {
-  //   async function updateResponseGroupData() {
-  //     if (!currQuestionresponse1 && !currQuestionresponse2) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     } else if (currQuestionresponse1 && !currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId2: LatestResponseId,
-  //       });
-  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId === LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId2: LatestResponseId,
-  //       });
-  //     } else if (!currQuestionresponse1 && currQuestionresponse2 && currUserId !== LatestResponseUserId) {
-  //       await updateResponseGroup(latestResponseGroupId, {
-  //         responseId1: LatestResponseId,
-  //       });
-  //     }
-  //   }
-
-  //   updateResponseGroupData();
-  // }, [LatestResponseId]);
-
-  // useEffect(() => {
-  //   async function fetchResponses() {
-  //     if (currUserResponses) {
-  //       console.log('here');
-  //       try {
-  //         const response = await dispatch(fetchResponse(currUserId));
-  //         console.log('Fetched user responses:', response);
-  //       } catch (error) {
-  //         console.log('Error fetching user responses:', error);
-  //       }
-  //     }
-  //   }
-  //   fetchResponses();
-  //   console.log('GroupResponses');
-  // }, [currUserResponses]);
-
   // fetch Font
   useEffect(() => {
     async function loadFont() {
@@ -303,45 +192,6 @@ function CheckinUserResponeded({ navigation }) {
 
   const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp)._j;
   // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
-
-  // const refreshData = async () => {
-  //   if (userDoc && partnerDoc) {
-  //     let responseGroup, responseGroupData, groupId;
-  //     try {
-  //       // Fetch user ID & user doc
-  //       const pairId = userDoc.pair_id;
-  //       groupId = pairId + moment().format('MMDDYY');
-  //       responseGroup = await getResponseGroup(groupId);
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-  //     try {
-  //       if (groupId) {
-  //       // if there is no response group, create a new one!
-  //         if (responseGroup.status === 202) {
-  //           responseGroup = await createResponseGroup(groupId);
-  //         }
-
-  //         if (responseGroup) {
-  //           responseGroupData = responseGroup.data;
-  //         } else {
-  //           return;
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-
-  //     try {
-  //       if (responseGroupData) {
-  //       // Retrieve couple responses
-  //         await getDailyResponses(responseGroupData);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error occurred during data refresh:', error);
-  //     }
-  //   }
-  // };
 
   const displayUserResponse = () => {
     return (

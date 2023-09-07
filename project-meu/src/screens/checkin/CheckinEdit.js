@@ -96,6 +96,7 @@ function CheckinEdit({ navigation }) {
   }, [currUserId]);
 
   console.log('currUserResponseId', currUserResponseId);
+
   const handleOnEdit = async () => {
     await dispatch(updateResponse(currUserResponseId, {
       response: textAnswer,
