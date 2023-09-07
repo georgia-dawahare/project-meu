@@ -196,27 +196,6 @@ function CheckinUserResponeded({ navigation }) {
           responseId1: LatestResponseId,
         }));
       }
-
-      // if (currQuestionresponseId1 === LatestResponseId || currQuestionresponseId2 === LatestResponseId) {
-      //   console.log('already exists in Response Group data');
-      // } else if (currQuestionresponseId1 !== LatestResponseId && Id1UserId === currUserId) {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId1: LatestResponseId,
-      //   }));
-      // } else if (currQuestionresponseId2 !== LatestResponseId && Id2UserId === currUserId) {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId2: LatestResponseId,
-      //   }));
-      // } else if (currQuestionresponseId1 === '' && currQuestionresponseId2 === '') {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId1: LatestResponseId,
-      //   }));
-      // } else {
-      //   console.log('error updating response group in CheckinUserResponded');
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId1: LatestResponseId,
-      //   }));
-      // }
     }
     updateResponseGroupData();
   }, [latestResponseGroupId, LatestResponseId, Id1UserId]);

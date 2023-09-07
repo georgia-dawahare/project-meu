@@ -46,6 +46,7 @@ function CheckinBothResponded({ navigation }) {
 
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let latestResponseGroup = '';
   let currQuestionId = '';
   let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
@@ -55,11 +56,11 @@ function CheckinBothResponded({ navigation }) {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
 
-    const latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId;
-    latestResponseGroupId = latestResonseGroup._id;
-    currQuestionresponseId1 = latestResonseGroup.responseId1;
-    currQuestionresponseId2 = latestResonseGroup.responseId2;
+    latestResponseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResponseGroup.questionId;
+    latestResponseGroupId = latestResponseGroup._id;
+    currQuestionresponseId1 = latestResponseGroup.responseId1;
+    currQuestionresponseId2 = latestResponseGroup.responseId2;
 
     // console.log('currQuestionresponseId2', currQuestionresponseId2);
   }
@@ -68,6 +69,7 @@ function CheckinBothResponded({ navigation }) {
 
   // response Data
   const responses = useSelector((state) => state.responseState.allResponses);
+  let latestResponse = '';
   let LatestCurrUserResponseText = '';
   let LatestResponseId = '';
   let LatestResponseTimeStamp = '';
@@ -78,7 +80,7 @@ function CheckinBothResponded({ navigation }) {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
-    const latestResponse = sortedResponses[0];
+    latestResponse = sortedResponses[0];
     if (latestResponse) {
       LatestCurrUserResponseText = latestResponse.response;
       LatestResponseId = latestResponse._id;
@@ -124,6 +126,24 @@ function CheckinBothResponded({ navigation }) {
     }
     fetchData();
   }, [currUserId]);
+
+  useEffect(() => {
+    async function updateResponseGroupData() {
+      console.log('currQuestionresponseId1', currQuestionresponseId1);
+      console.log('currQuestionresponseId2', currQuestionresponseId2);
+      console.log('Id1Response', Id1Response);
+      console.log('Id2Response', Id2Response);
+      console.log('latestResponseGroup', latestResponseGroup);
+      if (currQuestionresponseId1 === LatestResponseId || currQuestionresponseId2 === LatestResponseId) {
+        console.log('already exists in Response Group data');
+      } else if (currQuestionresponseId1 !== LatestResponseId) {
+        await dispatch(updateResponseGroup(latestResponseGroupId, {
+          responseId2: LatestResponseId,
+        }));
+      }
+    }
+    updateResponseGroupData();
+  }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
 
   // useEffect(() => {
   //   async function updateResponseGroupData() {
@@ -267,7 +287,16 @@ function CheckinBothResponded({ navigation }) {
   console.log('Id1UserId', Id1UserId);
   console.log('Id2UserId', Id2UserId);
   console.log('currUserId', currUserId);
+
   let displayBothResponse = null;
+
+  const fetchDataBeforeRendering = async () => {
+    await dispatch(fetchResponse(currQuestionresponseId1));
+    await dispatch(fetchResponse2(currQuestionresponseId2));
+  };
+
+  fetchDataBeforeRendering();
+
   if (Id1UserId === currUserId) {
     displayBothResponse = () => {
       return (

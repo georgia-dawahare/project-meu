@@ -260,13 +260,10 @@ function CheckinPage({ navigation }) {
     if (Id1UserId !== undefined && Id2Response && latestResponseGroup) {
       console.log('latestResponseGroup', latestResponseGroup);
       if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
-        console.log('happening?');
         navigation.navigate('CheckinUserResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
-        // console.log('happening?');
-        console.log('need to go CheckinPartnerResponded');
+        navigation.navigate('CheckinPartnerResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
-        console.log('happening?');
         navigation.navigate('CheckinBothResponded');
       } else {
         console.log('fail to navigate to proper pages in CheckinPage');
