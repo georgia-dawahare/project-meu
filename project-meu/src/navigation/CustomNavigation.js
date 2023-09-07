@@ -5,6 +5,7 @@ import PenguinsPage from '../screens/penguins/PenguinsPage';
 import CheckinPage from '../screens/checkin/CheckinPage';
 import CheckinHistory from '../screens/checkin/CheckinHistory';
 import CheckinSubmit from '../screens/checkin/CheckinSubmit';
+import PartnerCheckinSubmit from '../screens/checkin/PartnerCheckinSubmit';
 import CheckinEdit from '../screens/checkin/CheckinEdit';
 import CheckinUserResponeded from '../screens/checkin/CheckinUserResponded';
 import CheckinPartnerResponded from '../screens/checkin/CheckinPartnerResponded';
@@ -69,6 +70,10 @@ function CheckinScreenNavigator() {
       <Stack.Screen
         name="CheckinSubmit"
         component={CheckinSubmit}
+      />
+      <Stack.Screen
+        name="PartnerCheckinSubmit"
+        component={PartnerCheckinSubmit}
       />
       <Stack.Screen
         name="CheckinEdit"

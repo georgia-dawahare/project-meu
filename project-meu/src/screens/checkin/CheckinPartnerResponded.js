@@ -268,12 +268,9 @@ function CheckinPartnerResponded({ navigation }) {
             </View>
             <Text style={styles.blurText}>{Id1ResponseText}</Text>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Text style={styles.buttonTxt}>Answer To See</Text>
-          </TouchableOpacity>
         </Card>
         <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PartnerCheckinSubmit')}>
             <Text style={styles.buttonTxt}>Answer To see</Text>
           </TouchableOpacity>
         </View>
