@@ -85,19 +85,15 @@ function PartnerCheckinSubmit({ navigation }) {
   // response Data
   // get User's Response
   const currUserResponse = useSelector((state) => state.responseState.allResponses);
-  let latestUserResponse;
+  let latestUserResponse = null;
   // const currUserResponseText = '';
-  let currUserResponseId = '';
   let currUserResponseCreatedAt = '';
   if (currUserResponse) {
     const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-
-    console.log('latestUserResponse', latestUserResponse);
     if (latestUserResponse) {
       // currUserResponseText = latestUserResponse.response;
-      currUserResponseId = latestUserResponse._id;
       currUserResponseCreatedAt = latestUserResponse.createdAt;
       userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
 
@@ -109,21 +105,14 @@ function PartnerCheckinSubmit({ navigation }) {
 
   // get partnerResponse
   const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
-  let latestPartnerResponse = '';
-  let sortedPartnerResponse = '';
+  let latestPartnerResponse = null;
   let partnerResponseCreatedAt = '';
-  // const partnerResponseText = '';
-  // const partnerResponseId = '';
   if (partnerResponse) {
-    sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
+    const sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
-    latestPartnerResponse = sortedPartnerResponse[0];
-    // console.log('latestPartnerResponse', latestPartnerResponse);
 
     if (latestPartnerResponse) {
-      // partnerResponseText = latestPartnerResponse.response;
-      // partnerResponseId = latestPartnerResponse._id;
       partnerResponseCreatedAt = latestPartnerResponse.createdAt;
       partnerResponseCheck = isResponseWithin24Hours(partnerResponseCreatedAt);
 
@@ -157,6 +146,9 @@ function PartnerCheckinSubmit({ navigation }) {
         await dispatch(fetchQuestions());
         await dispatch(fetchResponse(currUserId));
         await dispatch(fetchResponseGroupByPairId(currUserPairId));
+
+        // added
+        await dispatch(fetchResponseByPartnerId(partnerId));
       }
     }
     fetchData();
@@ -207,17 +199,19 @@ function PartnerCheckinSubmit({ navigation }) {
       responseGroupId: currUserPairId,
     }));
 
-    // await dispatch(updateResponseGroup(latestResponseGroupIdReal, {
-    //   responseId2: currUserResponseId,
-    // }));
-
     setSubmit(true);
 
-    await dispatch(fetchResponseByUserId(currUserId));
+    // await dispatch(fetchResponseByUserId(currUserId));
 
     // navigate place
-    navigation.navigate('CheckinBothResponded');
-    setSubmit(false);
+    // navigation.navigate('CheckinBothResponded');
+    // if (latestUserResponse) {
+    // console.log('latestResponseGroupId1', currQuestionresponseId1);
+    // console.log('latestResponseGroupId2', currQuestionresponseId2);
+
+    // navigation.navigate('CheckinBothResponded');
+    // }
+    // setSubmit(false);
   };
 
   // useEffect(() => {

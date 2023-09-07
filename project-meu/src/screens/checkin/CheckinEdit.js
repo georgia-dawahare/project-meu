@@ -107,6 +107,7 @@ function CheckinEdit({ navigation }) {
     console.log('latestUserResponse', latestUserResponse);
 
     await dispatch(fetchResponseByUserId(currUserId));
+
     if (latestUserResponse) {
       console.log('latestResponseGroupId1', latestResponseGroupId1);
       console.log('latestResponseGroupId2', latestResponseGroupId2);

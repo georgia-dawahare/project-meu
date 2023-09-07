@@ -32,7 +32,7 @@ function CheckinPage({ navigation }) {
 
   const dispatch = useDispatch();
 
-  console.log('***** Checkin Page **************');
+  console.log('*********** Checkin Page **************');
 
   // check if it's within 24hrs
   const isResponseWithin24Hours = (responseCreatedAt) => {
@@ -107,14 +107,13 @@ function CheckinPage({ navigation }) {
   }
   // console.log('Id2Response', Id2Response);
 
-  // fetch Data
-
-  // useEffect(() => {
-  //   if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
-  //     checkConditionsAndNavigate();
-  //     setIsLoading(false); // 데이터 로딩 완료 후 isLoading 상태 업데이트
-  //   }
-  // }, [Id1Response, Id2Response, latestResponseGroup]);
+  // here problem : // automatically change the pages depends on the conditions ,but cannot access submit response
+  useEffect(() => {
+    if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
+      checkConditionsAndNavigate();
+      setIsLoading(false);
+    }
+  }, [Id1Response, Id2Response, latestResponseGroup]);
 
   useEffect(() => {
     async function fetchData() {
@@ -177,10 +176,9 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 16 && currentDate.getMinutes() === 39 && currentDate.getSeconds() === 0) {
+      if (currentDate.getHours() === 18 && currentDate.getMinutes() === 4 && currentDate.getSeconds() === 0) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
-        // by C
         dispatch(createResponseGroup(
           currUserPairId,
           nextQuestionId,
@@ -235,14 +233,14 @@ function CheckinPage({ navigation }) {
       }
     }
   };
-  useEffect(() => {
-    if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
-      checkConditionsAndNavigate();
-      // dispatch(fetchResponse(currQuestionresponseId1));
-      // dispatch(fetchResponse2(currQuestionresponseId2));
-      // dispatch(fetchResponseGroupByPairId(currUserPairId));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
+  //     checkConditionsAndNavigate();
+  //     // dispatch(fetchResponse(currQuestionresponseId1));
+  //     // dispatch(fetchResponse2(currQuestionresponseId2));
+  //     // dispatch(fetchResponseGroupByPairId(currUserPairId));
+  //   }
+  // }, []);
 
   const displayNoResponses = () => {
     return (

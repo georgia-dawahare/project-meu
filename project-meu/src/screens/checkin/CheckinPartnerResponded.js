@@ -25,6 +25,7 @@ import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 function CheckinPartnerResponded({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [setSubmit, submit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -135,7 +136,7 @@ function CheckinPartnerResponded({ navigation }) {
       }
     }
     fetchData();
-  }, [currUserId]);
+  }, [currUserId, submit]);
 
   // useEffect(() => {
   //   async function updateResponseGroupData() {
@@ -218,6 +219,11 @@ function CheckinPartnerResponded({ navigation }) {
   const PartnerFormattedTimeStamp = TimeFormat(Id1CreatedAt)._j;
   // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
 
+  // updateResponseGroup(responseGroupId, updatedFields)
+  // const handleOnSubmit3 = async () => {
+  //   navigation.navigate('PartnerCheckinSubmit');
+  // };
+
   const displayPartnerResponse = () => {
     return (
       <View style={styles.responseWrapper}>
@@ -241,6 +247,7 @@ function CheckinPartnerResponded({ navigation }) {
         </Card>
         <View style={styles.viewMoreButtonWrapper}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PartnerCheckinSubmit')}>
+            {/* <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('PartnerCheckinSubmit', { fromRespondedPage: true })}> */}
             <Text style={styles.buttonTxt}>Answer To see</Text>
           </TouchableOpacity>
         </View>
