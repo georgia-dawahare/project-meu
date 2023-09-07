@@ -364,6 +364,14 @@ function CheckinBothResponded({ navigation }) {
         </View>
       );
     };
+  } else {
+    displayBothResponse = () => {
+      return (
+        <View style={styles.responseWrapper}>
+          <Card.Title style={styles.question}>Page Error in CheckinBothResponded</Card.Title>
+        </View>
+      );
+    };
   }
 
   return (

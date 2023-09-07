@@ -58,7 +58,7 @@ function CheckinSubmit({ navigation }) {
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  let latestResonseGroup = '';
+  let latestResponseGroup = '';
   let currQuestionId = '';
   let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
@@ -68,12 +68,12 @@ function CheckinSubmit({ navigation }) {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
 
-    latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId;
-    latestResponseGroupId = latestResonseGroup._id;
-    currQuestionresponseId1 = latestResonseGroup.responseId1;
-    currQuestionresponseId2 = latestResonseGroup.responseId2;
-    // console.log('currUserResponseGroupId', currUserResponseGroupId);
+    latestResponseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResponseGroup.questionId;
+    latestResponseGroupId = latestResponseGroup._id;
+    currQuestionresponseId1 = latestResponseGroup.responseId1;
+    currQuestionresponseId2 = latestResponseGroup.responseId2;
+    // console.log('latestResponseGroupId', latestResponseGroupId);
     // console.log('latestResponseId2', latestResponseId2);
   }
 
@@ -82,22 +82,22 @@ function CheckinSubmit({ navigation }) {
 
   // response Data
   // get User's Response
-  const currUserResponse = useSelector((state) => state.responseState.allResponses);
+  const latestResponse = useSelector((state) => state.responseState.allResponses);
   let latestUserResponse;
-  // const currUserResponseText = '';
-  let currUserResponseId = '';
-  let currUserResponseCreatedAt = '';
-  if (currUserResponse) {
-    const sortedUserResponse = Object.values(currUserResponse).sort((a, b) => {
+  // const latestResponseText = '';
+  let latestResponseId = '';
+  let latestResponseCreatedAt = '';
+  if (latestResponse) {
+    const sortedUserResponse = Object.values(latestResponse).sort((a, b) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
 
     console.log('latestUserResponse', latestUserResponse);
     if (latestUserResponse) {
-      // currUserResponseText = latestUserResponse.response;
-      currUserResponseId = latestUserResponse._id;
-      currUserResponseCreatedAt = latestUserResponse.createdAt;
-      userResponseCheck = isResponseWithin24Hours(currUserResponseCreatedAt);
+      // latestResponseText = latestUserResponse.response;
+      latestResponseId = latestUserResponse._id;
+      latestResponseCreatedAt = latestUserResponse.createdAt;
+      userResponseCheck = isResponseWithin24Hours(latestResponseCreatedAt);
 
       if (userResponseCheck) {
         latestUserResponse = sortedUserResponse[0];
@@ -239,57 +239,43 @@ function CheckinSubmit({ navigation }) {
 
   // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
-    // it works
-    // if (!userResponseCheck && !partnerResponseCheck) {
-    //   await dispatch(createResponse(currUserId, {
-    //     response: textAnswer,
-    //     userId: currUserId,
-    //     responseGroupId: currUserPairId,
-    //   }));
-    // }
-
     await dispatch(createResponse(currUserId, {
       response: textAnswer,
       userId: currUserId,
       responseGroupId: currUserPairId,
     }));
 
-    // async function updateResponseGroupData() {
-    //   if (!currQuestionresponseId1 && !currQuestionresponseId2) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId1: currUserResponseId,
-    //     }));
-    //   } else if (currQuestionresponseId1 && !currQuestionresponseId2 && currUserId === Id1Response) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId1: currUserResponseId,
-    //     }));
-    //   } else if (currQuestionresponseId1 && !currQuestionresponseId2 && currUserId !== Id1Response) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId2: currUserResponseId,
-    //     }));
-    //   } else if (!currQuestionresponseId1 && currQuestionresponseId2 && currUserId === Id2Response) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId2: currUserResponseId,
-    //     }));
-    //   } else if (!currQuestionresponseId1 && currQuestionresponseId2 && currUserId !== Id2Response) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId1: currUserResponseId,
-    //     }));
-    //   } else if (currQuestionresponseId1 && currQuestionresponseId2 && currUserId === Id1Response) {
-    //     await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //       responseId1: currUserResponseId,
-    //     }));
-    //   } else if (currQuestionresponseId1 && currQuestionresponseId2 && currUserId !== Id1Response) {
-    //     if (latestResponseGroupId === Id2Response) {
-    //       await dispatch(updateResponseGroup(latestResponseGroupId, {
-    //         responseId2: currUserResponseId,
-    //       }));
-    //     }
-    //   } else {
-    //     console.log('failed to updating Response Group in CheckinUserResponded');
-    //   }
-    // }
-    // updateResponseGroupData();
+    const updateResponseGroupData = async () => {
+      console.log('currQuestionresponseId1', currQuestionresponseId1);
+      console.log('currQuestionresponseId2', currQuestionresponseId2);
+      console.log('Id1Response', Id1Response);
+      console.log('Id2Response', Id2Response);
+      console.log('latestResponseGroup', latestResponseGroup);
+
+      // if (currQuestionresponseId1 === latestResponseId || currQuestionresponseId2 === latestResponseId) {
+      //   console.log('already exists in Response Group data');
+      // } else if (currQuestionresponseId1 !== latestResponseId && Id1UserId === currUserId) {
+      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
+      //     responseId1: latestResponseId,
+      //   }));
+      // } else if (currQuestionresponseId2 !== latestResponseId && Id2UserId === currUserId) {
+      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
+      //     responseId2: latestResponseId,
+      //   }));
+      // } else if (currQuestionresponseId1 === '' && currQuestionresponseId2 === '') {
+      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
+      //     responseId1: latestResponseId,
+      //   }));
+      // } else {
+      //   console.log('error updating response group in CheckinUserResponded');
+      // }
+      console.log('latestResponseId', latestResponseId);
+      await dispatch(updateResponseGroup(latestResponseGroupId, {
+        responseId1: latestResponseId,
+      }));
+    };
+
+    updateResponseGroupData();
 
     // Update the response group with the new response
     // if (latestResponseId1) {
@@ -298,21 +284,21 @@ function CheckinSubmit({ navigation }) {
     //     responseId2: latestResponseId1 ? createResponse._id : latestResponseId2,
     //   };
 
-    //   await dispatch(updateResponseGroup(currUserResponseGroupId, updatedResponseGroup));
+    //   await dispatch(updateResponseGroup(latestResponseGroupId, updatedResponseGroup));
     // }
 
-    // await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    // await dispatch(updateResponseGroup(latestResponseGroupId, {
     //   // need to be fixed
     //   responseId2: '64cb119616340a8f7439781',
     // }));
 
     // if (latestResponseId1) {
-    //   await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    //   await dispatch(updateResponseGroup(latestResponseGroupId, {
     //     // need to be fixed
     //     responseId2: '64cb119616340a8f7439781',
     //   }));
     // } else if (!latestResponseId1) {
-    //   await dispatch(updateResponseGroup(currUserResponseGroupId, {
+    //   await dispatch(updateResponseGroup(latestResponseGroupId, {
     //     responseId1: LatestResponseId,
     //   }));
     // }
@@ -332,7 +318,7 @@ function CheckinSubmit({ navigation }) {
     // }
     setSubmit(true);
     navigation.navigate('CheckinUserResponded');
-    console.log('latestResonseGroupTrueeee', latestResonseGroup);
+    console.log('latestResponseGroupTrueeee', latestResponseGroup);
     setSubmit(false);
   };
   // if (currQuestionresponseId1 && currQuestionresponseId2 && submit) {
@@ -372,17 +358,46 @@ function CheckinSubmit({ navigation }) {
     fetchResponseData();
   }, [submit]);
 
-  useEffect(() => {
-    async function updateRG() {
-      if (currUserResponseId) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: currUserResponseId,
-        }));
-        await dispatch(fetchResponseGroupByPairId(fetchResponseGroupByPairId));
-      }
-    }
-    updateRG();
-  }, [HandleonSumbit]);
+  // useEffect(() => {
+  //   async function updateRG() {
+  //     if (latestResponseId) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: latestResponseId,
+  //       }));
+  //       await dispatch(fetchResponseGroupByPairId(fetchResponseGroupByPairId));
+  //     }
+  //   }
+  //   updateRG();
+  // }, [HandleonSumbit]);
+
+  // useEffect(() => {
+  //   async function updateResponseGroupData() {
+  //     console.log('currQuestionresponseId1', currQuestionresponseId1);
+  //     console.log('currQuestionresponseId2', currQuestionresponseId2);
+  //     console.log('Id1Response', Id1Response);
+  //     console.log('Id2Response', Id2Response);
+  //     console.log('latestResponseGroup', latestResponseGroup);
+
+  //     if (currQuestionresponseId1 === latestResponseId || currQuestionresponseId2 === latestResponseId) {
+  //       console.log('already exists in Response Group data');
+  //     } else if (currQuestionresponseId1 !== latestResponseId && Id1UserId === currUserId) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: latestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId2 !== latestResponseId && Id2UserId === currUserId) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId2: latestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId1 === '' && currQuestionresponseId2 === '') {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: latestResponseId,
+  //       }));
+  //     } else {
+  //       console.log('error updating response group in CheckinUserResponded');
+  //     }
+  //   }
+  //   updateResponseGroupData();
+  // }, [latestResponseGroupId, latestResponseId, Id1UserId]);
 
   return (
 

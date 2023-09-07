@@ -257,10 +257,10 @@ function CheckinHistory({ navigation }) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
-        dispatch(createResponseGroup(
-          currUserPairId,
-          nextQuestionId,
-        ));
+        // dispatch(createResponseGroup(
+        //   currUserPairId,
+        //   nextQuestionId,
+        // ));
       }
 
       const nextDay = new Date(currentDate);

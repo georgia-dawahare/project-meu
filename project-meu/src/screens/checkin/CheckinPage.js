@@ -58,7 +58,7 @@ function CheckinPage({ navigation }) {
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
-  let latestResonseGroup = '';
+  let latestResponseGroup = '';
   // let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
   let currQuestionresponseId2 = '';
@@ -68,16 +68,16 @@ function CheckinPage({ navigation }) {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
     if (sortedResponseGroup) {
-      latestResonseGroup = sortedResponseGroup[0];
+      latestResponseGroup = sortedResponseGroup[0];
     }
 
-    if (latestResonseGroup) {
-      currQuestionId = latestResonseGroup.questionId; // 11
-      // latestResponseGroupId = latestResonseGroup._id;
-      currQuestionresponseId1 = latestResonseGroup.responseId1;
-      currQuestionresponseId2 = latestResonseGroup.responseId2;
+    if (latestResponseGroup) {
+      currQuestionId = latestResponseGroup.questionId; // 11
+      // latestResponseGroupId = latestResponseGroup._id;
+      currQuestionresponseId1 = latestResponseGroup.responseId1;
+      currQuestionresponseId2 = latestResponseGroup.responseId2;
     }
-    // console.log('latestResonseGroup', latestResonseGroup);
+    // console.log('latestResponseGroup', latestResponseGroup);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId] : null;
@@ -212,7 +212,7 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     const updateQuestionOnTime = () => {
       const currentDate = new Date();
-      if (currentDate.getHours() === 18 && currentDate.getMinutes() === 3) {
+      if (currentDate.getHours() === 11 && currentDate.getMinutes() === 47) {
         setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
 
         // by C
@@ -255,14 +255,15 @@ function CheckinPage({ navigation }) {
   }, []);
 
   const checkConditionsAndNavigate = () => {
-    console.log('latestResonseGroup tRYUEEE', latestResonseGroup);
+    console.log('latestResponseGroup tRYUEEE', latestResponseGroup);
 
-    if (Id1UserId !== undefined && Id2Response && latestResonseGroup) {
+    if (Id1UserId !== undefined && Id2Response && latestResponseGroup) {
+      console.log('latestResponseGroup', latestResponseGroup);
       if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
         console.log('happening?');
         navigation.navigate('CheckinUserResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
-        console.log('happening?');
+        // console.log('happening?');
         console.log('need to go CheckinPartnerResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
         console.log('happening?');
@@ -272,8 +273,11 @@ function CheckinPage({ navigation }) {
       }
     }
   };
-
-  checkConditionsAndNavigate();
+  useEffect(() => {
+    if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
+      checkConditionsAndNavigate();
+    }
+  }, []);
 
   const displayNoResponses = () => {
     return (

@@ -43,14 +43,18 @@ function CheckinEdit({ navigation }) {
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  let latestResonseGroup = '';
+  let latestResponseGroup = '';
   let currQuestionId = '';
+  let latestResponseGroupId1 = '';
+  let latestResponseGroupId2 = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
-    latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId;
+    latestResponseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResponseGroup.questionId;
+    latestResponseGroupId1 = latestResponseGroup.responseId1;
+    latestResponseGroupId2 = latestResponseGroup.responseId2;
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
@@ -68,7 +72,7 @@ function CheckinEdit({ navigation }) {
       currUserResponseId = latestUserResponse._id;
     }
   }
-  console.log('latestResonseGroup', latestResonseGroup);
+  console.log('latestResonseGroup', latestResponseGroup);
 
   useEffect(() => {
     async function fetchData() {
@@ -98,6 +102,12 @@ function CheckinEdit({ navigation }) {
     }));
 
     setSubmit(true);
+    if (latestResponseGroupId1 !== '' && latestResponseGroupId2 !== '') {
+      navigation.navigate('CheckinBothResponded');
+    }
+    if (latestResponseGroupId1 !== '' && latestResponseGroupId2 === '') {
+      navigation.navigate('CheckinUserResponded');
+    }
     setSubmit(false);
   };
 
