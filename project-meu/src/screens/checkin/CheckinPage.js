@@ -32,6 +32,8 @@ function CheckinPage({ navigation }) {
 
   const dispatch = useDispatch();
 
+  console.log('***** Checkin Page **************');
+
   // check if it's within 24hrs
   const isResponseWithin24Hours = (responseCreatedAt) => {
     const twentyFourHoursAgo = new Date();
@@ -57,7 +59,7 @@ function CheckinPage({ navigation }) {
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
   let currQuestionId = '';
   let latestResonseGroup = '';
-  let latestResponseGroupId = '';
+  // let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
   let currQuestionresponseId2 = '';
 
@@ -71,7 +73,7 @@ function CheckinPage({ navigation }) {
 
     if (latestResonseGroup) {
       currQuestionId = latestResonseGroup.questionId; // 11
-      latestResponseGroupId = latestResonseGroup._id;
+      // latestResponseGroupId = latestResonseGroup._id;
       currQuestionresponseId1 = latestResonseGroup.responseId1;
       currQuestionresponseId2 = latestResonseGroup.responseId2;
     }
@@ -106,27 +108,27 @@ function CheckinPage({ navigation }) {
   // }
 
   // get partnerResponse
-  const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
-  let latestPartnerResponse = '';
-  let sortedPartnerResponse = '';
-  let partnerResponseCreatedAt = '';
+  // const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
+  // let latestPartnerResponse = '';
+  // let sortedPartnerResponse = '';
+  // let partnerResponseCreatedAt = '';
   // const partnerResponseText = '';
   // const partnerResponseId = '';
-  if (partnerResponse.length > 0) {
-    sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
-    latestPartnerResponse = sortedPartnerResponse[0];
-    // console.log('latestPartnerResponse', latestPartnerResponse);
+  // if (partnerResponse.length > 0) {
+  // sortedPartnerResponse = Object.values(partnerResponse).sort((a, b) => {
+  // return new Date(b.createdAt) - new Date(a.createdAt);
+  // });
+  // latestPartnerResponse = sortedPartnerResponse[0];
+  // console.log('latestPartnerResponse', latestPartnerResponse);
 
-    if (latestPartnerResponse) {
-      // partnerResponseText = latestPartnerResponse.response;
-      // partnerResponseId = latestPartnerResponse._id;
-      partnerResponseCreatedAt = latestPartnerResponse.createdAt;
-    }
+  // if (latestPartnerResponse) {
+  // partnerResponseText = latestPartnerResponse.response;
+  // partnerResponseId = latestPartnerResponse._id;
+  // partnerResponseCreatedAt = latestPartnerResponse.createdAt;
+  // }
 
-    // console.log('partnerResponseId', partnerResponseId);
-  }
+  // console.log('partnerResponseId', partnerResponseId);
+  // }
 
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
@@ -252,29 +254,26 @@ function CheckinPage({ navigation }) {
     }, 500);
   }, []);
 
-  useEffect(() => {
-    async function navigatePages() {
-      // navigate checkinpage
-      // console.log('latestResonseGroup tRYUEEE', latestResonseGroup);
-      // console.log('Id1Response', Id1Response);
-      // console.log('Id2Response : ', Id2Response);
-      // console.log('currQuestionresponseId1', currQuestionresponseId1);
-      // console.log('lcurrQuestionresponseId2', currQuestionresponseId2);
+  const checkConditionsAndNavigate = () => {
+    console.log('latestResonseGroup tRYUEEE', latestResonseGroup);
+
+    if (Id1UserId !== undefined && Id2Response && latestResonseGroup) {
       if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
+        console.log('happening?');
         navigation.navigate('CheckinUserResponded');
-        // navigation.navigate('CheckinBothResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
-        navigation.navigate('CheckinPartnerResponded');
-        // navigation.navigate('CheckinBothResponded');
+        console.log('happening?');
+        console.log('need to go CheckinPartnerResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
+        console.log('happening?');
         navigation.navigate('CheckinBothResponded');
-        // navigation.navigate('CheckinUserResponded');
       } else {
         console.log('fail to navigate to proper pages in CheckinPage');
       }
     }
-    navigatePages();
-  }, [latestResonseGroup, Id1Response, Id2Response]);
+  };
+
+  checkConditionsAndNavigate();
 
   const displayNoResponses = () => {
     return (

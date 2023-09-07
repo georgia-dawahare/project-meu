@@ -31,6 +31,8 @@ function CheckinEdit({ navigation }) {
 
   const dispatch = useDispatch();
 
+  console.log('********* Checkin Edit ************');
+
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
@@ -41,12 +43,13 @@ function CheckinEdit({ navigation }) {
 
   // fetch ResponseGroupData
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let latestResonseGroup = '';
   let currQuestionId = '';
   if (currUserResponseGroup.length > 0) {
     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
-    const latestResonseGroup = sortedResponseGroup[0];
+    latestResonseGroup = sortedResponseGroup[0];
     currQuestionId = latestResonseGroup.questionId;
   }
 
@@ -65,6 +68,7 @@ function CheckinEdit({ navigation }) {
       currUserResponseId = latestUserResponse._id;
     }
   }
+  console.log('latestResonseGroup', latestResonseGroup);
 
   useEffect(() => {
     async function fetchData() {

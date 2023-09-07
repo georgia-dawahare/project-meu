@@ -10,9 +10,6 @@ export const ActionTypes = {
   FETCH_ANOTHER_RESPONSE: 'FETCH_ANOTHER_RESPONSE',
 };
 
-// Fetch all responses for a user
-// TODO
-
 // Create responses
 export function createResponse(uid, responseData) {
   // axios post

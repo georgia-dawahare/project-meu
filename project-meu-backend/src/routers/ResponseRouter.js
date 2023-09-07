@@ -94,4 +94,5 @@ router.route('/partnerId/:id')
 
 router.route('/anotherResponse/:id')
     .get(handleGetResponse2);
+    
 export default router;

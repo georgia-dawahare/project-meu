@@ -199,16 +199,7 @@ function PartnerCheckinSubmit({ navigation }) {
   }, [currQuestionresponseId2]);
 
   // updateResponseGroup(responseGroupId, updatedFields)
-  const handleOnSubmit = async () => {
-    // it works
-    // if (!userResponseCheck && !partnerResponseCheck) {
-    //   await dispatch(createResponse(currUserId, {
-    //     response: textAnswer,
-    //     userId: currUserId,
-    //     responseGroupId: currUserPairId,
-    //   }));
-    // }
-
+  const handleOnSubmit2 = async () => {
     await dispatch(createResponse(currUserId, {
       response: textAnswer,
       userId: currUserId,
@@ -328,7 +319,7 @@ function PartnerCheckinSubmit({ navigation }) {
               <Text>Daily Question</Text>
               <Card.Title style={styles.question}>{currQuestion}</Card.Title>
               <Input value={textAnswer} onChangeText={setTextAnswer} placeholder="Type your response" multiline />
-              <TouchableOpacity style={styles.button} onPress={handleOnSubmit}>
+              <TouchableOpacity style={styles.button} onPress={handleOnSubmit2}>
                 <Text style={styles.buttonText}>
                   Submit
                 </Text>

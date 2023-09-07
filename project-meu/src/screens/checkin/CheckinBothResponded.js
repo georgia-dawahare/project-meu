@@ -28,6 +28,8 @@ function CheckinBothResponded({ navigation }) {
 
   const dispatch = useDispatch();
 
+  console.log('******* CheckinBothResponded *********');
+
   // userData
   const user = useSelector((state) => state.userState.userData);
   const currUserId = user._id;
@@ -37,7 +39,7 @@ function CheckinBothResponded({ navigation }) {
   const partner = useSelector((state) => state.partnerState.partnerData);
   const partnerFirstName = partner.firstName;
   const partnerId = partner._id;
-  console.log('partnerId  : ', partnerId);
+  // console.log('partnerId  : ', partnerId);
 
   // questions Data
   const questions = useSelector((state) => state.questionsState.questionsData);
@@ -59,7 +61,7 @@ function CheckinBothResponded({ navigation }) {
     currQuestionresponseId1 = latestResonseGroup.responseId1;
     currQuestionresponseId2 = latestResonseGroup.responseId2;
 
-    console.log('currQuestionresponseId2', currQuestionresponseId2);
+    // console.log('currQuestionresponseId2', currQuestionresponseId2);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
@@ -88,15 +90,17 @@ function CheckinBothResponded({ navigation }) {
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
   let Id1UserId;
+  let Id1ResponseText = '';
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
+    Id1ResponseText = Id1Response.response;
     // console.log('Id1UserId', Id1UserId);
   }
   // console.log('Id1Response', Id1Response);
 
   // fetch responseId2 Response //partnerResponse
   const Id2Response = useSelector((state) => state.responseState.anotherResponse);
-  console.log('Id2Response', Id2Response);
+  // console.log('Id2Response', Id2Response);
   let Id2UserId = '';
   let Id2ResponseText = '';
   let Id2CreatedAt = '';
@@ -104,9 +108,9 @@ function CheckinBothResponded({ navigation }) {
     Id2UserId = Id2Response.userId;
     Id2ResponseText = Id2Response.response;
     Id2CreatedAt = Id2Response.createdAt;
-    console.log('Id2UserId', Id2UserId);
+    // console.log('Id2UserId', Id2UserId);
   }
-  console.log('Id2Response', Id2Response);
+  // console.log('Id2Response', Id2Response);
 
   // fetch Data
   useEffect(() => {
@@ -121,44 +125,44 @@ function CheckinBothResponded({ navigation }) {
     fetchData();
   }, [currUserId]);
 
-  useEffect(() => {
-    async function updateResponseGroupData() {
-      if (!currQuestionresponseId1 && !currQuestionresponseId2) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId2: LatestResponseId,
-        }));
-      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id2Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId2: LatestResponseId,
-        }));
-      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id2Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
-        if (LatestResponseUserId === Id2Response) {
-          await dispatch(updateResponseGroup(latestResponseGroupId, {
-            responseId2: LatestResponseId,
-          }));
-        }
-      } else {
-        console.log('failed to updating Response Group in CheckinUserResponded');
-      }
-    }
-    updateResponseGroupData();
-  }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
+  // useEffect(() => {
+  //   async function updateResponseGroupData() {
+  //     if (!currQuestionresponseId1 && !currQuestionresponseId2) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId2: LatestResponseId,
+  //       }));
+  //     } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id2Response) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId2: LatestResponseId,
+  //       }));
+  //     } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id2Response) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
+  //       await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //         responseId1: LatestResponseId,
+  //       }));
+  //     } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
+  //       if (LatestResponseUserId === Id2Response) {
+  //         await dispatch(updateResponseGroup(latestResponseGroupId, {
+  //           responseId2: LatestResponseId,
+  //         }));
+  //       }
+  //     } else {
+  //       console.log('failed to updating Response Group in CheckinUserResponded');
+  //     }
+  //   }
+  //   updateResponseGroupData();
+  // }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
 
   useEffect(() => {
     async function fetchId1Response() {
@@ -260,53 +264,107 @@ function CheckinBothResponded({ navigation }) {
   //   }
   // };
 
-  const displayBothResponse = () => {
-    return (
-      <View style={styles.responseWrapper}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Text style={styles.cardTitle}>Heloooooooo CheckinBothResponded</Text>
-          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
-          <View>
-            <View style={styles.responseHeader}>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_black.gif')}
-              />
-              <View style={styles.partnerNameTxt}>
-                <Text>{partnerFirstName}</Text>
-                <Text>{PartnerFormattedTimeStamp}</Text>
-              </View>
+  console.log('Id1UserId', Id1UserId);
+  console.log('Id2UserId', Id2UserId);
+  console.log('currUserId', currUserId);
+  let displayBothResponse = null;
+  if (Id1UserId === currUserId) {
+    displayBothResponse = () => {
+      return (
+        <View style={styles.responseWrapper}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text style={styles.cardTitle}>Daily Question</Text>
+            <Text style={styles.cardTitle}>Heloooooooo CheckinBothResponded</Text>
+            <Card.Title style={styles.question}>{currQuestion}</Card.Title>
+            <View>
+              <View style={styles.responseHeader}>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
+                />
+                <View style={styles.partnerNameTxt}>
+                  <Text>{partnerFirstName}</Text>
+                  <Text>{Id2ResponseText}</Text>
+                </View>
 
-            </View>
-            <Text>{Id2ResponseText}</Text>
-          </View>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{CurrUserFormattedTimeStamp}</Text>
               </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
+              <Text>{Id2ResponseText}</Text>
             </View>
-            <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
+            <View>
+              <View style={styles.myResponseHeader}>
+                <View style={styles.userNameTxt}>
+                  <Text style={styles.leftText}>{currUserFirstName}</Text>
+                  <Text style={styles.leftText}>{CurrUserFormattedTimeStamp}</Text>
+                </View>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+                />
+              </View>
+              <Text style={styles.leftText}>{Id1ResponseText}</Text>
+            </View>
+            <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
+              <Image
+                style={styles.editButtonContainer}
+                source={require('../../../assets/images/editButton.png')}
+              />
+            </TouchableOpacity>
+          </Card>
+          <View style={styles.viewMoreButtonWrapper}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+              <Text style={styles.buttonTxt}>View More</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
-            <Image
-              style={styles.editButtonContainer}
-              source={require('../../../assets/images/editButton.png')}
-            />
-          </TouchableOpacity>
-        </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Text style={styles.buttonTxt}>View More</Text>
-          </TouchableOpacity>
         </View>
-      </View>
-    );
-  };
+      );
+    };
+  } else if (Id2UserId === currUserId) {
+    displayBothResponse = () => {
+      return (
+        <View style={styles.responseWrapper}>
+          <Card containerStyle={styles.cardContainer}>
+            <Text style={styles.cardTitle}>Daily Question</Text>
+            <Text style={styles.cardTitle}>Heloooooooo CheckinBothResponded</Text>
+            <Card.Title style={styles.question}>{currQuestion}</Card.Title>
+            <View>
+              <View style={styles.responseHeader}>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_black.gif')}
+                />
+                <View style={styles.partnerNameTxt}>
+                  <Text>{partnerFirstName}</Text>
+                  <Text>{PartnerFormattedTimeStamp}</Text>
+                </View>
+
+              </View>
+              <Text>{Id1ResponseText}</Text>
+            </View>
+            <View>
+              <View style={styles.myResponseHeader}>
+                <View style={styles.userNameTxt}>
+                  <Text style={styles.leftText}>{currUserFirstName}</Text>
+                  <Text style={styles.leftText}>{CurrUserFormattedTimeStamp}</Text>
+                </View>
+                <Image style={styles.profileImg}
+                  source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+                />
+              </View>
+              <Text style={styles.leftText}>{Id2ResponseText}</Text>
+            </View>
+            <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
+              <Image
+                style={styles.editButtonContainer}
+                source={require('../../../assets/images/editButton.png')}
+              />
+            </TouchableOpacity>
+          </Card>
+          <View style={styles.viewMoreButtonWrapper}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+              <Text style={styles.buttonTxt}>View More</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    };
+  }
 
   return (
     <View style={styles.container}>
@@ -316,7 +374,8 @@ function CheckinBothResponded({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
       >
-        {displayBothResponse()}
+        {/* {displayBothResponse()} */}
+        {displayBothResponse && displayBothResponse()}
       </ScrollView>
     </View>
   );
