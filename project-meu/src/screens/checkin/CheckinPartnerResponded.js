@@ -532,9 +532,11 @@ function CheckinPartnerResponded({ navigation }) {
   const Id1Response = useSelector((state) => state.responseState.currResponse);
   let Id1UserId,
     Id1CreatedAt;
+  let Id1ResponseText = '';
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
     Id1CreatedAt = Id1Response.createdAt;
+    Id1ResponseText = Id1Response.Id1Response;
     // console.log('Id1UserId', Id1UserId);
   }
   // console.log('Id1Response', Id1Response);
@@ -725,7 +727,7 @@ function CheckinPartnerResponded({ navigation }) {
               </View>
 
             </View>
-            <Text>{Id2ResponseText}</Text>
+            <Text>{Id1ResponseText}</Text>
           </View>
           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinSubmit')}>
             {/* <Image

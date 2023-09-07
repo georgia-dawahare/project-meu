@@ -73,7 +73,7 @@ function CheckinUserResponeded({ navigation }) {
     currQuestionresponseId1 = latestResonseGroup.responseId1;
     currQuestionresponseId2 = latestResonseGroup.responseId2;
 
-    console.log('latestResponseGroupId', latestResponseGroupId);
+    // console.log('latestResponseGroupId', latestResponseGroupId);
   }
 
   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
@@ -97,7 +97,7 @@ function CheckinUserResponeded({ navigation }) {
       LatestResponseTimeStamp = latestResponse.createdAt;
       LatestResponseUserId = latestResponse.userId;
 
-      console.log('latestResponse', latestResponse);
+      // console.log('latestResponse', latestResponse);
       // console.log('responseId : ', LatestResponseId);
       // console.log('TimeStamp : ', LatestResponseTimeStamp);
     }
@@ -108,12 +108,12 @@ function CheckinUserResponeded({ navigation }) {
   let Id1UserId;
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
-    console.log('Id1UserId', Id1UserId);
+    // console.log('Id1UserId', Id1UserId);
   }
 
   // fetch responseId2 Response
   const Id2Response = useSelector((state) => state.responseState.anotherResponse);
-  console.log(Id2Response);
+  // console.log(Id2Response);
 
   // let LatestCurrUserResponseText = '';
   // let LatestResponseId = '';
@@ -179,6 +179,10 @@ function CheckinUserResponeded({ navigation }) {
 
   useEffect(() => {
     async function updateResponseGroupData() {
+      console.log('currQuestionresponseId1', currQuestionresponseId1);
+      console.log('currQuestionresponseId2', currQuestionresponseId2);
+      console.log('Id1Response', Id1Response);
+      console.log('Id2Response', Id2Response);
       if (!currQuestionresponseId1 && !currQuestionresponseId2) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: LatestResponseId,
