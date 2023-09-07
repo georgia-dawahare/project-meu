@@ -34,6 +34,8 @@ function PartnerCheckinSubmit({ navigation }) {
 
   const dispatch = useDispatch();
 
+  console.log('***************** PartnerCheckinSubmit ******************');
+
   // check if it's within 24hrs
   const isResponseWithin24Hours = (responseCreatedAt) => {
     const twentyFourHoursAgo = new Date();
@@ -196,37 +198,6 @@ function PartnerCheckinSubmit({ navigation }) {
     fetchId2Response();
   }, [currQuestionresponseId2]);
 
-  // const refreshData = async () => {
-  //   try {
-  //   // Fetch user ID & user doc
-  //     if (userDoc) {
-  //       let userResponse;
-  //       // const pair = await getPair();
-  //       const groupId = userDoc.pair_id + moment().format('MMDDYY');
-  //       const responseGroup = await axios.get(`${apiUrl}/responses/group/${groupId}`);
-  //       const responseGroupData = responseGroup.data;
-  //       const pairCreatorId = pair?.data?.pair_creator_id;
-  //       if (currUserId === pairCreatorId) {
-  //         if (responseGroupData.p1_response_id) {
-  //           userResponse = await getResponse(responseGroupData.p1_response_id);
-  //           // setResponseId(responseGroupData?.p1_response_id);
-  //         }
-  //       } else if (currUserId !== pairCreatorId) {
-  //         if (responseGroupData.p2_response_id) {
-  //           userResponse = await getResponse(responseGroupData.p2_response_id);
-  //           // setResponseId(responseGroupData?.p2_response_id);
-  //         }
-  //       }
-  //       if (userResponse) {
-  //         setTextAnswer(userResponse.response);
-  //         setNewResponse(false);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error occurred during data refresh:', error);
-  //   }
-  // };
-
   // updateResponseGroup(responseGroupId, updatedFields)
   const handleOnSubmit = async () => {
     // it works
@@ -311,47 +282,11 @@ function PartnerCheckinSubmit({ navigation }) {
       // update Response
 
     }
-    // } else {
-    //   await updateResponse(
-    //     currUserId,
-    //     {
-    //       response: textAnswer,
-    //       user_id: currUserId,
-    //     },
-    //   );
-    // }
+
     setSubmit(true);
-    // navigation.navigate('CheckinBothResponded');
     console.log('latestResonseGroupTrueeee', latestResonseGroup);
     setSubmit(false);
   };
-  // if (currQuestionresponseId1 && currQuestionresponseId2 && submit) {
-  //   navigation.navigate('CheckinBothResponded');
-  // } else if ((currQuestionresponseId1 && !currQuestionresponseId2) || (!currQuestionresponseId1 && currQuestionresponseId2)) {
-  //   navigation.navigate('ChekcinUserResponded');
-  // }
-  // useEffect(() => {
-  //   async function navigatePages() {
-  //     if (submit) {
-  //       if (Id1Response && !Id2Response && Id1UserId === currUserId) {
-  //         navigation.navigate('CheckinUserResponded');
-  //       } else if (Id1Response && !Id2Response && Id1UserId === partnerId) {
-  //         navigation.navigate('CheckinPartnerResponded');
-  //       } else if (!Id1Response && Id2Response && Id2UserId === currUserId) {
-  //         navigation.navigate('CheckinUserResponded');
-  //       } else if (!Id1Response && Id2Response && Id2UserId === partnerId) {
-  //         navigation.navigate('CheckinPartnerResponded');
-  //       } else if (Id1Response && Id2Response) {
-  //         if ((Id1UserId === currUserId && Id2UserId === partnerId) || (Id1UserId === partnerId && Id2UserId === currUserId)) {
-  //           navigation.navigate('CheckinBothResponded');
-  //         }
-  //       } else {
-  //         console.log('navigation pages error in CheckinPage');
-  //       }
-  //     }
-  //   }
-  //   navigatePages();
-  // }, [HandleonSumbit]);
 
   useEffect(() => {
     async function fetchResponseData() {

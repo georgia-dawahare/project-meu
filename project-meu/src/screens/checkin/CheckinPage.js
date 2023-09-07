@@ -262,12 +262,13 @@ function CheckinPage({ navigation }) {
       // console.log('lcurrQuestionresponseId2', currQuestionresponseId2);
       if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
         navigation.navigate('CheckinUserResponded');
+        // navigation.navigate('CheckinBothResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
         navigation.navigate('CheckinPartnerResponded');
-        // navigation.navigate('CheckinUserResponded');
-      } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
         // navigation.navigate('CheckinBothResponded');
-        navigation.navigate('CheckinUserResponded');
+      } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
+        navigation.navigate('CheckinBothResponded');
+        // navigation.navigate('CheckinUserResponded');
       } else {
         console.log('fail to navigate to proper pages in CheckinPage');
       }
