@@ -102,12 +102,20 @@ function CheckinEdit({ navigation }) {
     }));
 
     setSubmit(true);
-    if (latestResponseGroupId1 !== '' && latestResponseGroupId2 !== '') {
-      navigation.navigate('CheckinBothResponded');
+
+    console.log('latestUserResponse', latestUserResponse);
+
+    await dispatch(fetchResponseByUserId(currUserId));
+    if (latestUserResponse) {
+      console.log('latestResponseGroupId1', latestResponseGroupId1);
+      console.log('latestResponseGroupId2', latestResponseGroupId2);
+      if (latestResponseGroupId1 !== undefined && latestResponseGroupId2 !== undefined) {
+        navigation.navigate('CheckinBothResponded');
+      } else if (latestResponseGroupId1 !== undefined && latestResponseGroupId2 === undefined) {
+        navigation.navigate('CheckinUserResponded');
+      }
     }
-    if (latestResponseGroupId1 !== '' && latestResponseGroupId2 === '') {
-      navigation.navigate('CheckinUserResponded');
-    }
+
     setSubmit(false);
   };
 

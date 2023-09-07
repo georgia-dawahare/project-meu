@@ -276,6 +276,9 @@ function CheckinPage({ navigation }) {
   useEffect(() => {
     if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
       checkConditionsAndNavigate();
+      // dispatch(fetchResponse(currQuestionresponseId1));
+      // dispatch(fetchResponse2(currQuestionresponseId2));
+      // dispatch(fetchResponseGroupByPairId(currUserPairId));
     }
   }, []);
 

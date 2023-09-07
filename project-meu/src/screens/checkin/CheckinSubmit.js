@@ -245,37 +245,24 @@ function CheckinSubmit({ navigation }) {
       responseGroupId: currUserPairId,
     }));
 
-    const updateResponseGroupData = async () => {
-      console.log('currQuestionresponseId1', currQuestionresponseId1);
-      console.log('currQuestionresponseId2', currQuestionresponseId2);
-      console.log('Id1Response', Id1Response);
-      console.log('Id2Response', Id2Response);
-      console.log('latestResponseGroup', latestResponseGroup);
+    // const updateResponseGroupData = async () => {
+    //   console.log('currQuestionresponseId1', currQuestionresponseId1);
+    //   console.log('currQuestionresponseId2', currQuestionresponseId2);
+    //   console.log('Id1Response', Id1Response);
+    //   console.log('Id2Response', Id2Response);
+    //   console.log('latestResponseGroup', latestResponseGroup);
 
-      // if (currQuestionresponseId1 === latestResponseId || currQuestionresponseId2 === latestResponseId) {
-      //   console.log('already exists in Response Group data');
-      // } else if (currQuestionresponseId1 !== latestResponseId && Id1UserId === currUserId) {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId1: latestResponseId,
-      //   }));
-      // } else if (currQuestionresponseId2 !== latestResponseId && Id2UserId === currUserId) {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId2: latestResponseId,
-      //   }));
-      // } else if (currQuestionresponseId1 === '' && currQuestionresponseId2 === '') {
-      //   await dispatch(updateResponseGroup(latestResponseGroupId, {
-      //     responseId1: latestResponseId,
-      //   }));
-      // } else {
-      //   console.log('error updating response group in CheckinUserResponded');
-      // }
-      console.log('latestResponseId', latestResponseId);
-      await dispatch(updateResponseGroup(latestResponseGroupId, {
-        responseId1: latestResponseId,
-      }));
-    };
+    //   console.log('***************');
+    //   console.log('latestResponseGroupId', latestResponseGroupId);
+    //   console.log('latestResponseId', latestResponseId);
+    //   console.log('***************');
+    //   await dispatch(updateResponseGroup(latestResponseGroupId, {
+    //     responseId1: latestResponseId,
+    //   }));
+    // };
 
-    updateResponseGroupData();
+    //   updateResponseGroupData();
+
 
     // Update the response group with the new response
     // if (latestResponseId1) {
