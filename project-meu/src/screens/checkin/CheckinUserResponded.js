@@ -19,7 +19,7 @@ import TitleHeader from '../../components/TitleHeader';
 import { fetchUserById } from '../../actions/UserActions';
 import { fetchQuestions } from '../../actions/QuestionsActions';
 import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../actions/ResponseActions';
-import { fetchPair } from '../../actions/PairActions';
+// import { fetchPair } from '../../actions/PairActions';
 import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
 function CheckinUserResponeded({ navigation }) {
@@ -58,6 +58,7 @@ function CheckinUserResponeded({ navigation }) {
 
   // get reponseGroups of the pair
   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+  let latestResponseGroup = '';
   let currQuestionId = '';
   let latestResponseGroupId = '';
   let currQuestionresponseId1 = '';
@@ -67,11 +68,11 @@ function CheckinUserResponeded({ navigation }) {
       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
     });
 
-    const latestResonseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResonseGroup.questionId;
-    latestResponseGroupId = latestResonseGroup._id;
-    currQuestionresponseId1 = latestResonseGroup.responseId1;
-    currQuestionresponseId2 = latestResonseGroup.responseId2;
+    latestResponseGroup = sortedResponseGroup[0];
+    currQuestionId = latestResponseGroup.questionId;
+    latestResponseGroupId = latestResponseGroup._id;
+    currQuestionresponseId1 = latestResponseGroup.responseId1;
+    currQuestionresponseId2 = latestResponseGroup.responseId2;
 
     // console.log('latestResponseGroupId', latestResponseGroupId);
   }
@@ -83,7 +84,7 @@ function CheckinUserResponeded({ navigation }) {
   let LatestCurrUserResponseText = '';
   let LatestResponseId = '';
   let LatestResponseTimeStamp = '';
-  let LatestResponseUserId = '';
+  // let LatestResponseUserId = '';
 
   if (responses) {
     const sortedResponses = Object.values(responses).sort((a, b) => {
@@ -95,7 +96,7 @@ function CheckinUserResponeded({ navigation }) {
       LatestCurrUserResponseText = latestResponse.response;
       LatestResponseId = latestResponse._id;
       LatestResponseTimeStamp = latestResponse.createdAt;
-      LatestResponseUserId = latestResponse.userId;
+      // LatestResponseUserId = latestResponse.userId;
 
       // console.log('latestResponse', latestResponse);
       // console.log('responseId : ', LatestResponseId);
@@ -105,7 +106,7 @@ function CheckinUserResponeded({ navigation }) {
 
   // fetch responseId1 Response
   const Id1Response = useSelector((state) => state.responseState.currResponse);
-  let Id1UserId;
+  let Id1UserId = '';
   if (Id1Response) {
     Id1UserId = Id1Response.userId;
     // console.log('Id1UserId', Id1UserId);
@@ -113,6 +114,10 @@ function CheckinUserResponeded({ navigation }) {
 
   // fetch responseId2 Response
   const Id2Response = useSelector((state) => state.responseState.anotherResponse);
+  let Id2UserId = '';
+  if (Id2Response) {
+    Id2UserId = Id2Response.userId;
+  }
   // console.log(Id2Response);
 
   // let LatestCurrUserResponseText = '';
@@ -170,7 +175,7 @@ function CheckinUserResponeded({ navigation }) {
       if (currUserId) {
         await dispatch(fetchUserById(currUserId));
         await dispatch(fetchQuestions());
-        await dispatch(fetchPair(currUserId));
+        // await dispatch(fetchPair(currUserId));
         await dispatch(fetchResponseByUserId(currUserId));
       }
     }
@@ -179,42 +184,24 @@ function CheckinUserResponeded({ navigation }) {
 
   useEffect(() => {
     async function updateResponseGroupData() {
-      console.log('currQuestionresponseId1', currQuestionresponseId1);
-      console.log('currQuestionresponseId2', currQuestionresponseId2);
-      console.log('Id1Response', Id1Response);
-      console.log('Id2Response', Id2Response);
-      if (!currQuestionresponseId1 && !currQuestionresponseId2) {
+      // console.log('currQuestionresponseId1', currQuestionresponseId1);
+      // console.log('currQuestionresponseId2', currQuestionresponseId2);
+      // console.log('Id1Response', Id1Response);
+      // console.log('Id2Response', Id2Response);
+      // console.log('latestResponseGroup', latestResponseGroup);
+
+      if (currQuestionresponseId1 === LatestResponseId || currQuestionresponseId2 === LatestResponseId) {
+        console.log('already exists in Response Group data');
+      } else if (currQuestionresponseId1 !== LatestResponseId && Id1UserId === currUserId) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId1: LatestResponseId,
         }));
-      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && !currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
+      } else if (currQuestionresponseId2 !== LatestResponseId && Id2UserId === currUserId) {
         await dispatch(updateResponseGroup(latestResponseGroupId, {
           responseId2: LatestResponseId,
         }));
-      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id2Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId2: LatestResponseId,
-        }));
-      } else if (!currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id2Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId === Id1Response) {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      } else if (currQuestionresponseId1 && currQuestionresponseId2 && LatestResponseUserId !== Id1Response) {
-        if (LatestResponseUserId === Id2Response) {
-          await dispatch(updateResponseGroup(latestResponseGroupId, {
-            responseId2: LatestResponseId,
-          }));
-        }
       } else {
-        console.log('failed to updating Response Group in CheckinUserResponded');
+        console.log('error updating response group in CheckinUserResponded');
       }
     }
     updateResponseGroupData();

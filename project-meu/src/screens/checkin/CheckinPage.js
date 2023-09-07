@@ -263,8 +263,8 @@ function CheckinPage({ navigation }) {
       if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
         navigation.navigate('CheckinUserResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
-        // navigation.navigate('CheckinPartnerResponded');
-        navigation.navigate('CheckinUserResponded');
+        navigation.navigate('CheckinPartnerResponded');
+        // navigation.navigate('CheckinUserResponded');
       } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
         // navigation.navigate('CheckinBothResponded');
         navigation.navigate('CheckinUserResponded');
