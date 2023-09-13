@@ -9,7 +9,7 @@ import ResponseGroupReducer from './ResponseGroupReducer';
 import EventReducer from './EventReducer';
 import PasswordReducer from './PasswordReducer';
 import PartnerReducer from './PartnerReducer';
-import QuestionsReducer from './QuestionsReducer';
+import QuestionsReducer from './QuestionReducer';
 
 const rootReducer = combineReducers({
   userState: UserReducer,

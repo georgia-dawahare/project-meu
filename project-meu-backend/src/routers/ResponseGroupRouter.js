@@ -51,12 +51,25 @@ const handleGetResponseGroupByPairId = async (req, res) => {
     }
 }
 
+const handleCreateDailyResponseGroup = async (req, res) => {
+    const pairId = req.params.pairId;
+    try {
+        const responseGroup = await ResponseGroups.createDailyResponseGroup(pairId);
+        res.json(responseGroup);
+    } catch (error) {
+        res.status(500).json({ error });
+    }
+}
+
 router.route('/addgroups')
     .post(handleCreateResponseGroup);
 
 router.route('/:id')
     .patch(handleUpdateResponseGroup)
-    .get(handleGetResponseGroup);
+    .get(handleGetResponseGroup)
+
+router.route('/:pairId')
+    .post(handleCreateDailyResponseGroup);
 
 router.route('/pair/:pairId')
     .get(handleGetResponseGroupByPairId);

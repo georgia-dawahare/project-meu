@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import TitleHeader from '../../components/TitleHeader';
 
 import { fetchUserById } from '../../actions/UserActions';
-import { fetchQuestions } from '../../actions/QuestionsActions';
+import { fetchQuestions } from '../../actions/QuestionActions';
 import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../actions/ResponseActions';
 import { fetchPair } from '../../actions/PairActions';
 import { updateResponseGroup } from '../../actions/ResponseGroupActions';

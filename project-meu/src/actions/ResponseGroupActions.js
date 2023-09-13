@@ -9,19 +9,16 @@ export const ActionTypes = {
 };
 
 // Create response group
-export function createResponseGroup(pairId, questionId) {
+export function createDailyResponseGroup(pairId) {
   // axios post
-  return () => {
-    const body = {
-      pair: pairId,
-      quesId: questionId,
-    };
-    axios.post(`${apiUrl}/response_groups/addgroups`, body).then(() => {
-      console.log('Successfully created response group');
-    }).catch((error) => {
+  return (dispatch) => {
+    axios.post(`${apiUrl}/response_groups/${pairId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_RESPONSE_GROUP, payload: response.data });
+      }).catch((error) => {
       // Need to add error actions
-      console.log('error creating response group: ', error);
-    });
+        console.log('error creating response group: ', error);
+      });
   };
 }
 

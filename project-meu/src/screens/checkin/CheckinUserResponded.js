@@ -1,362 +1,372 @@
-/* eslint-disable global-require */
-import React, { useEffect, useState, useCallback } from 'react';
-import {
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  View,
-  RefreshControl,
-  ScrollView,
-} from 'react-native';
-import {
-  Card,
-} from 'react-native-elements';
-import * as Font from 'expo-font';
-import { useSelector, useDispatch } from 'react-redux';
-import TitleHeader from '../../components/TitleHeader';
+// /* eslint-disable global-require */
+// import React, { useEffect, useState, useCallback } from 'react';
+// import {
+//   Text,
+//   TouchableOpacity,
+//   StyleSheet,
+//   Image,
+//   View,
+//   RefreshControl,
+//   ScrollView,
+// } from 'react-native';
+// import {
+//   Card,
+// } from 'react-native-elements';
+// import * as Font from 'expo-font';
+// import { useSelector, useDispatch } from 'react-redux';
+// import TitleHeader from '../../components/TitleHeader';
 
-import { fetchUserById } from '../../actions/UserActions';
-import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../actions/ResponseActions';
-// import { fetchPair } from '../../actions/PairActions';
-import { updateResponseGroup } from '../../actions/ResponseGroupActions';
+// import { fetchUserById } from '../../actions/UserActions';
+// import { fetchQuestions } from '../../actions/QuestionsActions';
+// import { fetchResponseByUserId, fetchResponse, fetchResponse2 } from '../../actions/ResponseActions';
+// // import { fetchPair } from '../../actions/PairActions';
+// import { updateResponseGroup } from '../../actions/ResponseGroupActions';
 
-function CheckinUserResponeded({ navigation }) {
-  const [fontLoaded, setFontLoaded] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
+// function CheckinUserResponeded({ navigation }) {
+//   const [fontLoaded, setFontLoaded] = useState(false);
+//   const [refreshing, setRefreshing] = useState(false);
 
-  const dispatch = useDispatch();
+//   const dispatch = useDispatch();
 
-  // userData
-  const user = useSelector((state) => state.userState.userData);
-  const currUserId = user._id;
-  const currUserFirstName = user.firstName;
-  // const currUserPairId = user.pairId;
-  // console.log('user :      ', user);
+//   // userData
+//   const user = useSelector((state) => state.userState.userData);
+//   const currUserId = user._id;
+//   const currUserFirstName = user.firstName;
+//   // const currUserPairId = user.pairId;
+//   // console.log('user :      ', user);
 
-  // questions Data
-  const questions = useSelector((state) => state.questionsState.questionsData);
+//   // questions Data
+//   const questions = useSelector((state) => state.questionsState.questionsData);
 
-  // get reponseGroups of the pair
-  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  let latestResponseGroup = '';
-  let currQuestionId = '';
-  let latestResponseGroupId = '';
-  let currQuestionresponseId1 = '';
-  let currQuestionresponseId2 = '';
-  if (currUserResponseGroup.length > 0) {
-    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
-      return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
-    });
+//   // get reponseGroups of the pair
+//   const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
+//   let latestResponseGroup = '';
+//   let currQuestionId = '';
+//   let latestResponseGroupId = '';
+//   let currQuestionresponseId1 = '';
+//   let currQuestionresponseId2 = '';
+//   if (currUserResponseGroup.length > 0) {
+//     const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
+//       return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
+//     });
 
-    latestResponseGroup = sortedResponseGroup[0];
-    currQuestionId = latestResponseGroup.questionId;
-    latestResponseGroupId = latestResponseGroup._id;
-    currQuestionresponseId1 = latestResponseGroup.responseId1;
-    currQuestionresponseId2 = latestResponseGroup.responseId2;
+//     latestResponseGroup = sortedResponseGroup[0];
+//     currQuestionId = latestResponseGroup.questionId;
+//     latestResponseGroupId = latestResponseGroup._id;
+//     currQuestionresponseId1 = latestResponseGroup.responseId1;
+//     currQuestionresponseId2 = latestResponseGroup.responseId2;
 
-    // console.log('latestResponseGroupId', latestResponseGroupId);
-  }
+//     // console.log('latestResponseGroupId', latestResponseGroupId);
+//   }
 
-  const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
+//   const currQuestion = questions.length > 0 ? questions[currQuestionId].question : null;
 
-  // response Data
-  const responses = useSelector((state) => state.responseState.allResponses);
-  let LatestCurrUserResponseText = '';
-  let LatestResponseId = '';
-  let LatestResponseTimeStamp = '';
-  // let LatestResponseUserId = '';
+//   // response Data
+//   const responses = useSelector((state) => state.responseState.allResponses);
+//   let LatestCurrUserResponseText = '';
+//   let LatestResponseId = '';
+//   let LatestResponseTimeStamp = '';
+//   // let LatestResponseUserId = '';
 
-  if (responses) {
-    const sortedResponses = Object.values(responses).sort((a, b) => {
-      return new Date(b.createdAt) - new Date(a.createdAt);
-    });
+//   if (responses) {
+//     const sortedResponses = Object.values(responses).sort((a, b) => {
+//       return new Date(b.createdAt) - new Date(a.createdAt);
+//     });
 
-    const latestResponse = sortedResponses[0];
-    if (latestResponse) {
-      LatestCurrUserResponseText = latestResponse.response;
-      LatestResponseId = latestResponse._id;
-      LatestResponseTimeStamp = latestResponse.createdAt;
-      // LatestResponseUserId = latestResponse.userId;
+//     const latestResponse = sortedResponses[0];
+//     if (latestResponse) {
+//       LatestCurrUserResponseText = latestResponse.response;
+//       LatestResponseId = latestResponse._id;
+//       LatestResponseTimeStamp = latestResponse.createdAt;
+//       // LatestResponseUserId = latestResponse.userId;
 
-      // console.log('latestResponse', latestResponse);
-      // console.log('responseId : ', LatestResponseId);
-      // console.log('TimeStamp : ', LatestResponseTimeStamp);
-    }
-  }
+//       // console.log('latestResponse', latestResponse);
+//       // console.log('responseId : ', LatestResponseId);
+//       // console.log('TimeStamp : ', LatestResponseTimeStamp);
+//     }
+//   }
 
-  // fetch responseId1 Response
-  const Id1Response = useSelector((state) => state.responseState.currResponse);
-  let Id1UserId = '';
-  if (Id1Response) {
-    Id1UserId = Id1Response.userId;
-    // console.log('Id1UserId', Id1UserId);
-  }
+//   // fetch responseId1 Response
+//   const Id1Response = useSelector((state) => state.responseState.currResponse);
+//   let Id1UserId = '';
+//   if (Id1Response) {
+//     Id1UserId = Id1Response.userId;
+//     // console.log('Id1UserId', Id1UserId);
+//   }
 
-  // fetch responseId2 Response
-  const Id2Response = useSelector((state) => state.responseState.anotherResponse);
-  let Id2UserId = '';
-  if (Id2Response) {
-    Id2UserId = Id2Response.userId;
-  }
-  // console.log(Id2Response);
+//   // fetch responseId2 Response
+//   const Id2Response = useSelector((state) => state.responseState.anotherResponse);
+//   let Id2UserId = '';
+//   if (Id2Response) {
+//     Id2UserId = Id2Response.userId;
+//   }
+//   // console.log(Id2Response);
 
-  // fetch Data
-  useEffect(() => {
-    async function fetchData() {
-      if (currUserId) {
-        await dispatch(fetchUserById(currUserId));
-        await dispatch(fetchQuestions());
-        // await dispatch(fetchPair(currUserId));
-        await dispatch(fetchResponseByUserId(currUserId));
-      }
-    }
-    fetchData();
-  }, [currUserId]);
+//   // fetch Data
+//   useEffect(() => {
+//     async function fetchData() {
+//       if (currUserId) {
+//         await dispatch(fetchUserById(currUserId));
+//         await dispatch(fetchQuestions());
+//         // await dispatch(fetchPair(currUserId));
+//         await dispatch(fetchResponseByUserId(currUserId));
+//       }
+//     }
+//     fetchData();
+//   }, [currUserId]);
 
-  useEffect(() => {
-    async function updateResponseGroupData() {
-      console.log('currQuestionresponseId1', currQuestionresponseId1);
-      console.log('currQuestionresponseId2', currQuestionresponseId2);
-      console.log('Id1Response', Id1Response);
-      console.log('Id2Response', Id2Response);
-      console.log('latestResponseGroup', latestResponseGroup);
-      if (currQuestionresponseId1 === LatestResponseId || currQuestionresponseId2 === LatestResponseId) {
-        console.log('already exists in Response Group data');
-      } else {
-        await dispatch(updateResponseGroup(latestResponseGroupId, {
-          responseId1: LatestResponseId,
-        }));
-      }
-    }
-    updateResponseGroupData();
-  }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
+//   useEffect(() => {
+//     async function updateResponseGroupData() {
+//       console.log('currQuestionresponseId1', currQuestionresponseId1);
+//       console.log('currQuestionresponseId2', currQuestionresponseId2);
+//       console.log('Id1Response', Id1Response);
+//       console.log('Id2Response', Id2Response);
+//       console.log('latestResponseGroup', latestResponseGroup);
+//       if (currQuestionresponseId1 === LatestResponseId || currQuestionresponseId2 === LatestResponseId) {
+//         console.log('already exists in Response Group data');
+//       } else {
+//         await dispatch(updateResponseGroup(latestResponseGroupId, {
+//           responseId1: LatestResponseId,
+//         }));
+//       }
+//     }
+//     updateResponseGroupData();
+//   }, [latestResponseGroupId, LatestResponseId, Id1UserId]);
 
-  useEffect(() => {
-    async function fetchId1Response() {
-      if (currQuestionresponseId1) {
-        await dispatch(fetchResponse(currQuestionresponseId1));
-      }
-    }
-    fetchId1Response();
-  }, [currQuestionresponseId1]);
+//   useEffect(() => {
+//     async function fetchId1Response() {
+//       if (currQuestionresponseId1) {
+//         await dispatch(fetchResponse(currQuestionresponseId1));
+//       }
+//     }
+//     fetchId1Response();
+//   }, [currQuestionresponseId1]);
 
-  useEffect(() => {
-    async function fetchId2Response() {
-      if (currQuestionresponseId2) {
-        await dispatch(fetchResponse2(currQuestionresponseId2));
-      }
-    }
-    fetchId2Response();
-  }, [currQuestionresponseId2]);
+//   useEffect(() => {
+//     async function fetchId2Response() {
+//       if (currQuestionresponseId2) {
+//         await dispatch(fetchResponse2(currQuestionresponseId2));
+//       }
+//     }
+//     fetchId2Response();
+//   }, [currQuestionresponseId2]);
 
-  // fetch Font
-  useEffect(() => {
-    async function loadFont() {
-      await Font.loadAsync({
-        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
-        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
-        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
-      });
-      setFontLoaded(true);
-    }
-    loadFont();
-  }, []);
+//   // fetch Font
+//   useEffect(() => {
+//     async function loadFont() {
+//       await Font.loadAsync({
+//         'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+//         'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+//         'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+//       });
+//       setFontLoaded(true);
+//     }
+//     loadFont();
+//   }, []);
 
-  // scrollable page refresh 0.5s
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 500);
-  }, []);
+//   // scrollable page refresh 0.5s
+//   const onRefresh = useCallback(() => {
+//     setRefreshing(true);
+//     setTimeout(() => {
+//       setRefreshing(false);
+//     }, 500);
+//   }, []);
 
-  // reformatting Timestamp
-  const TimeFormat = async (TimeStamp) => {
-    const createdAtValue = new Date(TimeStamp);
-    const userTimezoneOffset = -5 * 60; // EST TomeZone:  UTC-5
-    const userCreatedAt = new Date(createdAtValue.getTime() + userTimezoneOffset * 60 * 1000);
+//   // reformatting Timestamp
+//   const TimeFormat = async (TimeStamp) => {
+//     const createdAtValue = new Date(TimeStamp);
+//     const userTimezoneOffset = -5 * 60; // EST TomeZone:  UTC-5
+//     const userCreatedAt = new Date(createdAtValue.getTime() + userTimezoneOffset * 60 * 1000);
 
-    // Need to be fixed. Temporary EST Time zone
-    const formattedUserCreatedAt = userCreatedAt.toLocaleString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-      timeZone: 'America/New_York',
-    });
-    // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
+//     // Need to be fixed. Temporary EST Time zone
+//     const formattedUserCreatedAt = userCreatedAt.toLocaleString('en-US', {
+//       hour: '2-digit',
+//       minute: '2-digit',
+//       hour12: false,
+//       timeZone: 'America/New_York',
+//     });
+//     // console.log('Formatted User Created At (EST):', formattedUserCreatedAt);
 
-    return formattedUserCreatedAt;
-  };
+//     return formattedUserCreatedAt;
+//   };
 
-  const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp)._j;
-  // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
+//   const CurrFormattedTimeStamp = TimeFormat(LatestResponseTimeStamp)._j;
+//   // console.log('CurrFormattedTimeStamp', CurrFormattedTimeStamp);
 
-  const displayUserResponse = () => {
-    return (
-      <View style={styles.responseWrapper}>
-        <Card containerStyle={styles.cardContainer}>
-          <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{currQuestion}</Card.Title>
-          <View>
-            <View style={styles.myResponseHeader}>
-              <View style={styles.userNameTxt}>
-                <Text style={styles.leftText}>{currUserFirstName}</Text>
-                <Text style={styles.leftText}>{CurrFormattedTimeStamp}</Text>
-              </View>
-              <Image style={styles.profileImg}
-                source={require('../../../assets/animations/neutral/neutral_pink.gif')}
-              />
-            </View>
-            <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
-          </View>
-          <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
-            <Image
-              source={require('../../../assets/images/editButton.png')}
-              style={styles.editImg}
-            />
-          </TouchableOpacity>
-        </Card>
-        <View style={styles.viewMoreButtonWrapper}>
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
-            <Text style={styles.buttonTxt}>View More</Text>
-          </TouchableOpacity>
-        </View>
-        <View />
-      </View>
-    );
-  };
+//   const displayUserResponse = () => {
+//     return (
+//       <View style={styles.responseWrapper}>
+//         <Card containerStyle={styles.cardContainer}>
+//           <Text style={styles.cardTitle}>Daily Question</Text>
+//           <Card.Title style={styles.question}>{currQuestion}</Card.Title>
+//           <View>
+//             <View style={styles.myResponseHeader}>
+//               <View style={styles.userNameTxt}>
+//                 <Text style={styles.leftText}>{currUserFirstName}</Text>
+//                 <Text style={styles.leftText}>{CurrFormattedTimeStamp}</Text>
+//               </View>
+//               <Image style={styles.profileImg}
+//                 source={require('../../../assets/animations/neutral/neutral_pink.gif')}
+//               />
+//             </View>
+//             <Text style={styles.leftText}>{LatestCurrUserResponseText}</Text>
+//           </View>
+//           <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('CheckinEdit')}>
+//             <Image
+//               source={require('../../../assets/images/editButton.png')}
+//               style={styles.editImg}
+//             />
+//           </TouchableOpacity>
+//         </Card>
+//         <View style={styles.viewMoreButtonWrapper}>
+//           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinHistory')}>
+//             <Text style={styles.buttonTxt}>View More</Text>
+//           </TouchableOpacity>
+//         </View>
+//         <View />
+//       </View>
+//     );
+//   };
 
-  if (!fontLoaded) {
-    return <Text>Loading...</Text>;
-  }
+//   if (!fontLoaded) {
+//     return <Text>Loading...</Text>;
+//   }
 
+//   return (
+//     <View style={styles.container}>
+//       <TitleHeader title="Check-In" />
+//       <ScrollView contentContainerStyle={styles.contentContainer}
+//         refreshControl={
+//           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+//           }
+//       >
+//         {displayUserResponse()}
+//       </ScrollView>
+//     </View>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     justifyContent: 'space-around',
+//   },
+//   cardContainer: {
+//     borderRadius: 15,
+//     padding: 20,
+//     marginBottom: 100,
+//   },
+//   cardTitle: {
+//     fontFamily: 'SF-Pro-Display-Medium',
+//   },
+//   question: {
+//     textAlign: 'center',
+//     fontSize: 28,
+//     fontFamily: 'SF-Pro-Display-Bold',
+//     lineHeight: 34,
+//     margin: 30,
+//   },
+//   button: {
+//     borderRadius: 15,
+//     marginTop: 20,
+//     backgroundColor: 'rgba(230, 43, 133, 1)',
+//     height: 56,
+//     width: 300,
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   buttonTxt: {
+//     fontFamily: 'SF-Pro-Display-Medium',
+//     color: 'white',
+//     fontSize: 20,
+//     lineHeight: 30,
+//   },
+//   responseHeader: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   profileImg: {
+//     width: 40,
+//     height: 80,
+//     alignSelf: 'flex-end',
+//   },
+//   partnerNameTxt: {
+//     marginLeft: 10,
+//   },
+//   blurText: {
+//     height: 3,
+//     width: '90%',
+//     shadowOpacity: 1,
+//     shadowColor: '#000',
+//     shadowOffset: { width: 10, height: 10 },
+//     shadowRadius: 5,
+//     elevation: 5,
+//     borderWidth: 0.5,
+//     borderColor: 'white',
+//     backgroundColor: 'rgba(255, 255, 255, 1)',
+//     marginBottom: 20,
+//   },
+//   seeMoreButtonWrapper: {
+//     alignSelf: 'flex-end',
+//   },
+//   seeMoreButton: {
+//     backgroundColor: 'rgba(230, 43, 133, 1)',
+//     borderRadius: 30,
+//     width: 138,
+//     height: 36,
+//     alignItems: 'center',
+//     marginTop: 20,
+//     flexDirection: 'row',
+//     justifyContent: 'space-evenly',
+//   },
+//   seeMoreButtonTxt: {
+//     fontFamily: 'SF-Pro-Display-Medium',
+//     color: 'white',
+//     fontSize: 14,
+//     lineHeight: 21,
+//   },
+//   myResponseHeader: {
+//     justifyContent: 'flex-end',
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+//   userNameTxt: {
+//     marginRight: 10,
+//   },
+//   leftText: {
+//     textAlign: 'right',
+//   },
+//   editButton: {
+//     marginTop: 10,
+//     alignSelf: 'flex-end',
+//     alignItems: 'center',
+//     justifyContent: 'center',
+//   },
+//   editImg: {
+//     width: 45,
+//     height: 45,
+//   },
+//   viewMoreButtonWrapper: {
+//     alignItems: 'center',
+//   },
+//   responseWrapper: {
+//     flex: 1,
+//     justifyContent: 'center',
+//   },
+//   editButtonContainer: {
+//     width: 45,
+//     height: 45,
+//   },
+// });
+
+// export default CheckinUserResponeded;
+
+import React from 'react';
+
+function CheckinUserResponded() {
   return (
-    <View style={styles.container}>
-      <TitleHeader title="Check-In" />
-      <ScrollView contentContainerStyle={styles.contentContainer}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-      >
-        {displayUserResponse()}
-      </ScrollView>
-    </View>
+    <div>CheckinUserResponded</div>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-around',
-  },
-  cardContainer: {
-    borderRadius: 15,
-    padding: 20,
-    marginBottom: 100,
-  },
-  cardTitle: {
-    fontFamily: 'SF-Pro-Display-Medium',
-  },
-  question: {
-    textAlign: 'center',
-    fontSize: 28,
-    fontFamily: 'SF-Pro-Display-Bold',
-    lineHeight: 34,
-    margin: 30,
-  },
-  button: {
-    borderRadius: 15,
-    marginTop: 20,
-    backgroundColor: 'rgba(230, 43, 133, 1)',
-    height: 56,
-    width: 300,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonTxt: {
-    fontFamily: 'SF-Pro-Display-Medium',
-    color: 'white',
-    fontSize: 20,
-    lineHeight: 30,
-  },
-  responseHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  profileImg: {
-    width: 40,
-    height: 80,
-    alignSelf: 'flex-end',
-  },
-  partnerNameTxt: {
-    marginLeft: 10,
-  },
-  blurText: {
-    height: 3,
-    width: '90%',
-    shadowOpacity: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 10, height: 10 },
-    shadowRadius: 5,
-    elevation: 5,
-    borderWidth: 0.5,
-    borderColor: 'white',
-    backgroundColor: 'rgba(255, 255, 255, 1)',
-    marginBottom: 20,
-  },
-  seeMoreButtonWrapper: {
-    alignSelf: 'flex-end',
-  },
-  seeMoreButton: {
-    backgroundColor: 'rgba(230, 43, 133, 1)',
-    borderRadius: 30,
-    width: 138,
-    height: 36,
-    alignItems: 'center',
-    marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-  },
-  seeMoreButtonTxt: {
-    fontFamily: 'SF-Pro-Display-Medium',
-    color: 'white',
-    fontSize: 14,
-    lineHeight: 21,
-  },
-  myResponseHeader: {
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  userNameTxt: {
-    marginRight: 10,
-  },
-  leftText: {
-    textAlign: 'right',
-  },
-  editButton: {
-    marginTop: 10,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editImg: {
-    width: 45,
-    height: 45,
-  },
-  viewMoreButtonWrapper: {
-    alignItems: 'center',
-  },
-  responseWrapper: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  editButtonContainer: {
-    width: 45,
-    height: 45,
-  },
-});
-
-export default CheckinUserResponeded;
+export default CheckinUserResponded;

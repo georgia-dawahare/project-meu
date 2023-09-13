@@ -5,8 +5,8 @@ import { apiUrl } from '../constants/constants';
 // keys for actiontypes
 export const ActionTypes = {
   FETCH_RESPONSES: 'FETCH_RESPONSES',
-  FETCH_RESPONSE: 'FETCH_RESPONSE',
-  FETCH_RESPONSE_PARTNER: 'FETCH_RESPONSE_PARTNER',
+  FETCH_USER_RESPONSE: 'FETCH_USER_RESPONSE',
+  FETCH_PARTNER_RESPONSE: 'FETCH_PARTNER_RESPONSE',
   FETCH_ANOTHER_RESPONSE: 'FETCH_ANOTHER_RESPONSE',
 };
 
@@ -54,12 +54,24 @@ export function deleteResponse(responseId) {
   };
 }
 
-// Fetch response
-export function fetchResponse(responseId) {
+// Fetch user response response
+export function fetchUserResponse(userResponseId) {
   return (dispatch) => {
-    axios.get(`${apiUrl}/responses/${responseId}`)
+    axios.get(`${apiUrl}/responses/${userResponseId}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_RESPONSE, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_USER_RESPONSE, payload: response.data });
+      }).catch((error) => {
+        console.log('error fetching user: ', error);
+      });
+  };
+}
+
+// Fetch partner response response
+export function fetchPartnerResponse(partnerResponseId) {
+  return (dispatch) => {
+    axios.get(`${apiUrl}/responses/${partnerResponseId}`)
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_Partner_RESPONSE, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
@@ -84,7 +96,7 @@ export function fetchResponseByUserId(userId) {
   return (dispatch) => {
     axios.get(`${apiUrl}/responses/userId/${userId}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_RESPONSES, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_USER_RESPONSE, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });
@@ -96,7 +108,7 @@ export function fetchResponseByPartnerId(partnerId) {
   return (dispatch) => {
     axios.get(`${apiUrl}/responses/partnerId/${partnerId}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_RESPONSE_PARTNER, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_PARTNER_RESPONSE, payload: response.data });
       }).catch((error) => {
         console.log('error fetching partner by partner Id: ', error);
       });

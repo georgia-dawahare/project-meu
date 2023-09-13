@@ -2,7 +2,12 @@ import { ActionTypes } from '../actions/ResponseGroupActions';
 
 const initialState = {
   allResponseGroups: {},
-  // currResponseGroup: {},
+  dailyResponseGroup: {
+    questionId: '',
+    pairId: '',
+    userResponseId: '',
+    partnerResponseId: '',
+  },
 };
 
 const ResponseGroupReducer = (state = initialState, action = {}) => {
@@ -10,7 +15,7 @@ const ResponseGroupReducer = (state = initialState, action = {}) => {
     case ActionTypes.FETCH_RESPONSE_GROUPS:
       return { ...state, allResponseGroups: action.payload };
     case ActionTypes.FETCH_RESPONSE_GROUP:
-      return { ...state, allResponseGroups: action.payload };
+      return { ...state, dailyResponseGroup: action.payload };
     default:
       return state;
   }

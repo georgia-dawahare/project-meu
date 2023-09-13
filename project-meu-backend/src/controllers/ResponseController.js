@@ -76,7 +76,7 @@ export async function findResponsesByUserId(userId) {
 export async function findResponsesByPartnerId(partnerId) {
     try {
         const Responses = await Response.find({ partnerId })
-        console.log('responsecontroller',Responses);
+        console.log('responsecontroller', Responses);
         return Responses;
     } catch (error) {
         throw new Error(`get responses by partner error: ${error}`);

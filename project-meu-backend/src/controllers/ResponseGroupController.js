@@ -42,10 +42,39 @@ export async function findResponseGroupByPairId(pairId) {
 export async function updateResponseGroup(responseGroupId, updatedFields) {
     try {
         const updatedResponseGroup = await ResponseGroup.findOneAndUpdate({ _id: responseGroupId }, updatedFields, { returnOriginal: false });
-        console.log('responseGroupIdController',responseGroupId);
-        console.log('updatedFieldsController',updatedFields);
         return updatedResponseGroup;
     } catch (error) {
         throw new Error(`update response group error: ${error}`);
+    }
+}
+
+// Try to create a new response group each day unless a daily response group already exists
+// Return new response group or existing group
+export async function createDailyResponseGroup(pairId) {
+    try {
+        // Find most recently created response group for given pair ID
+        const responseGroupRes = await ResponseGroup.find({ pairId }).sort({ createdAt: -1 }).limit(1);
+        const mostRecentResponseGroup = responseGroupRes[0]
+
+        // If previous response groups exist, create new response group or return today's response group
+        if (mostRecentResponseGroup) {
+            const mostRecentDate = mostRecentResponseGroup.createdAt;
+            const currentDate = new Date();
+            // If a response group for this pair exists for today, return existing response group 
+            if (mostRecentDate.toLocaleDateString() === currentDate.toLocaleDateString()) {
+                return mostRecentResponseGroup;
+            }
+            // Else, create a new response group, using the next question ID  
+            else {
+                const newQuestionId = mostRecentResponseGroup.questionId + 1;
+                return createResponseGroup(newQuestionId, pairId);
+            }
+        }
+
+        // Create first response group if none exist yet
+        return createResponseGroup(1, pairId);
+
+    } catch (error) {
+        throw new Error(`Create daily response group failed: ${error}`);
     }
 }

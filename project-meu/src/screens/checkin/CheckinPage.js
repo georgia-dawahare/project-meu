@@ -15,188 +15,65 @@ import * as Font from 'expo-font';
 import { useSelector, useDispatch } from 'react-redux';
 import TitleHeader from '../../components/TitleHeader';
 
-import { fetchUserById } from '../../actions/UserActions';
-import { fetchQuestions } from '../../actions/QuestionsActions';
-import { fetchPair } from '../../actions/PairActions';
-import { fetchPartner } from '../../actions/PartnerActions';
-import { createResponseGroup, fetchResponseGroupByPairId } from '../../actions/ResponseGroupActions';
-import {
-  fetchResponseByUserId, fetchResponseByPartnerId, fetchResponse, fetchResponse2,
-} from '../../actions/ResponseActions';
+import { fetchDailyQuestion } from '../../actions/QuestionActions';
+import { createDailyResponseGroup } from '../../actions/ResponseGroupActions';
+import { fetchUserResponse, fetchPartnerResponse } from '../../actions/ResponseActions';
 
 function CheckinPage({ navigation }) {
-  const [fontLoaded, setFontLoaded] = useState(false);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(1);
-  const [refreshing, setRefreshing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-
+  // Set up dispatch
   const dispatch = useDispatch();
 
-  console.log('*********** Checkin Page **************');
-
-  // check if it's within 24hrs
-  const isResponseWithin24Hours = (responseCreatedAt) => {
-    const twentyFourHoursAgo = new Date();
-    twentyFourHoursAgo.setDate(twentyFourHoursAgo.getDate() - 1);
-    return new Date(responseCreatedAt) >= twentyFourHoursAgo;
-  };
-
-  // userData
+  // Retrieve objects from redux
   const user = useSelector((state) => state.userState.userData);
-  const currUserId = user._id;
-  const currUserPairId = user.pairId;
-  // console.log('user :      ', user);
+  const dailyQuestion = useSelector((state) => state.questionsState.dailyQuestion);
+  const dailyResponseGroup = useSelector((state) => state.responseGroupState.dailyResponseGroup);
+  const partnerResponse = useSelector((state) => state.responseState.partnerResponse);
+  const userResponse = useSelector((state) => state.responseState.userResponse);
 
-  // partner Data
-  const partner = useSelector((state) => state.partnerState.partnerData);
-  const partnerId = partner._id;
-  // console.log('partnerId', partnerId);
-
-  // questions Data
-  const questions = useSelector((state) => state.questionsState.questionsData);
-
-  // get reponseGroups of the pair
-  const currUserResponseGroup = useSelector((state) => state.responseGroupState.allResponseGroups);
-  let currQuestionId = '';
-  let latestResponseGroup = '';
-  // let latestResponseGroupId = '';
-  let currQuestionresponseId1 = '';
-  let currQuestionresponseId2 = '';
-
-  if (currUserResponseGroup) {
-    const sortedResponseGroup = Object.values(currUserResponseGroup).sort((a, b) => {
-      return parseInt(b.questionId, 10) - parseInt(a.questionId, 10);
-    });
-    if (sortedResponseGroup) {
-      latestResponseGroup = sortedResponseGroup[0];
-    }
-
-    if (latestResponseGroup) {
-      currQuestionId = latestResponseGroup.questionId; // 11
-      // latestResponseGroupId = latestResponseGroup._id;
-      currQuestionresponseId1 = latestResponseGroup.responseId1;
-      currQuestionresponseId2 = latestResponseGroup.responseId2;
-    }
-    // console.log('latestResponseGroup', latestResponseGroup);
-  }
-
-  const currQuestion = questions.length > 0 ? questions[currQuestionId] : null;
-  let currQuestionText = '';
-  if (currQuestion) {
-    currQuestionText = currQuestion.question;
-  }
-  const nextQuestionId = currQuestionId + 1;
-
-  // fetch responseId1 Response
-  const Id1Response = useSelector((state) => state.responseState.currResponse);
-  let Id1UserId = '';
-  let Id1CreatedAt = '';
-  if (Id1Response && isResponseWithin24Hours(Id1Response.createdAt)) {
-    Id1UserId = Id1Response.userId;
-    Id1CreatedAt = Id1Response.createdAt;
-    // console.log('Id1Response', Id1Response);
-  }
-
-  // fetch responseId2 Response
-  const Id2Response = useSelector((state) => state.responseState.anotherResponse);
-  let Id2UserId = '';
-  let Id2CreatedAt = '';
-  if (Id2Response && isResponseWithin24Hours(Id2Response.createAt)) {
-    Id2UserId = Id2Response.userId;
-    Id2CreatedAt = Id2Response.createdAt;
-  }
-  // console.log('Id2Response', Id2Response);
-
-  // here problem : // automatically change the pages depends on the conditions ,but cannot access submit response
-  useEffect(() => {
-    if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
-      checkConditionsAndNavigate();
-      setIsLoading(false);
-    }
-  }, [Id1Response, Id2Response, latestResponseGroup]);
+  // Set initial data
+  const [fontLoaded, setFontLoaded] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const { pairId } = user;
 
   useEffect(() => {
-    async function fetchData() {
-      if (currUserId) {
-        dispatch(fetchUserById(currUserId));
-        dispatch(fetchQuestions());
-        dispatch(fetchPartner(currUserId));
-        dispatch(fetchResponseByUserId(currUserId));
+    // Check if user response or partner response exists
+    // if no responses, then try to create daily response group
+    dispatch(createDailyResponseGroup(pairId));
+  }, []);
+
+  useEffect(() => {
+    // Fetch user response group
+    if (dailyResponseGroup.userResponseId) {
+      dispatch(fetchUserResponse(dailyResponseGroup.userResponseId));
+    }
+
+    // Fetch partner response group
+    if (dailyResponseGroup.partnerResponseId) {
+      dispatch(fetchPartnerResponse(dailyResponseGroup.partnerResponseId));
+    }
+
+    // Fetch daily question
+    if (dailyResponseGroup.questionId) {
+      dispatch(fetchDailyQuestion(dailyResponseGroup.questionId));
+    }
+  }, [dailyResponseGroup.userResponseId, dailyResponseGroup.partnerResponseId, dailyResponseGroup.questionId]);
+
+  useEffect(() => {
+    if (dailyResponseGroup) {
+      const userResponseText = userResponse.response;
+      const partnerResponseText = partnerResponse.response;
+
+      if (userResponseText && !partnerResponseText) {
+        navigation.navigate('CheckinUserResponded');
+      } else if (partnerResponseText && !userResponseText) {
+        navigation.navigate('CheckinPartnerResponded');
+      } else if (userResponseText && partnerResponseText) {
+        navigation.navigate('CheckinBothResponded');
       }
     }
-    fetchData();
-  }, [currUserId]);
+  }, [userResponse, partnerResponse]);
 
-  useEffect(() => {
-    async function pairData() {
-      if (currUserId) {
-        await dispatch(fetchPair(currUserId));
-      }
-    }
-    pairData();
-  }, [currUserId]);
-
-  useEffect(() => {
-    async function fetchGroupResponses() {
-      if (currUserPairId) {
-        await dispatch(fetchResponseGroupByPairId(currUserPairId));
-      }
-    }
-    fetchGroupResponses();
-  }, [currUserPairId]);
-
-  useEffect(() => {
-    async function fetchPartnerResponse() {
-      if (partnerId) {
-        await dispatch(fetchResponseByPartnerId(partnerId));
-      }
-    }
-    fetchPartnerResponse();
-  }, [partnerId]);
-
-  useEffect(() => {
-    async function fetchId1Response() {
-      if (currQuestionresponseId1) {
-        await dispatch(fetchResponse(currQuestionresponseId1));
-      }
-    }
-    fetchId1Response();
-  }, [currQuestionresponseId1]);
-
-  useEffect(() => {
-    async function fetchId2Response() {
-      if (currQuestionresponseId2) {
-        await dispatch(fetchResponse2(currQuestionresponseId2));
-      }
-    }
-    fetchId2Response();
-  }, [currQuestionresponseId2]);
-
-  // Refresh questions everyday
-  useEffect(() => {
-    const updateQuestionOnTime = () => {
-      const currentDate = new Date();
-      if (currentDate.getHours() === 18 && currentDate.getMinutes() === 4 && currentDate.getSeconds() === 0) {
-        setCurrentQuestionIndex((prevIndex) => (prevIndex + 1) % questions.length);
-
-        dispatch(createResponseGroup(
-          currUserPairId,
-          nextQuestionId,
-        ));
-      }
-
-      const nextDay = new Date(currentDate);
-      nextDay.setDate(currentDate.getDate() + 1);
-      nextDay.setHours(0);
-      nextDay.setMinutes(4);
-      const timeUntilNextUpdate = nextDay - currentDate;
-      setTimeout(updateQuestionOnTime, timeUntilNextUpdate);
-    };
-
-    updateQuestionOnTime();
-  }, [questions]);
-
-  // fetch Font
+  // fetch font
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
@@ -217,37 +94,12 @@ function CheckinPage({ navigation }) {
     }, 500);
   }, []);
 
-  const checkConditionsAndNavigate = () => {
-    console.log('latestResponseGroup tRYUEEE', latestResponseGroup);
-
-    if (Id1UserId !== undefined && Id2Response && latestResponseGroup) {
-      console.log('latestResponseGroup', latestResponseGroup);
-      if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === currUserId) {
-        navigation.navigate('CheckinUserResponded');
-      } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 === undefined && Id1Response && Id1UserId === partnerId) {
-        navigation.navigate('CheckinPartnerResponded');
-      } else if (currQuestionresponseId1 !== undefined && currQuestionresponseId2 !== undefined) {
-        navigation.navigate('CheckinBothResponded');
-      } else {
-        console.log('fail to navigate to proper pages in CheckinPage');
-      }
-    }
-  };
-  // useEffect(() => {
-  //   if (Id1Response !== '' && Id2Response !== '' && latestResponseGroup !== '') {
-  //     checkConditionsAndNavigate();
-  //     // dispatch(fetchResponse(currQuestionresponseId1));
-  //     // dispatch(fetchResponse2(currQuestionresponseId2));
-  //     // dispatch(fetchResponseGroupByPairId(currUserPairId));
-  //   }
-  // }, []);
-
   const displayNoResponses = () => {
     return (
       <View>
         <Card containerStyle={styles.cardContainer}>
           <Text style={styles.cardTitle}>Daily Question</Text>
-          <Card.Title style={styles.question}>{currQuestionText}</Card.Title>
+          <Card.Title style={styles.question}>{dailyQuestion.question}</Card.Title>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CheckinSubmit')}>
             <Text style={styles.buttonTxt}>Submit a Response</Text>
           </TouchableOpacity>

@@ -2,9 +2,9 @@ import mongoose, { Schema } from "mongoose";
 
 export const ResponseGroupSchema = new Schema({
     questionId: { type: Number, required: true },
-    pairId: { type: Schema.Types.ObjectId, ref: 'Pair' },
-    responseId1: { type: Schema.Types.ObjectId, ref: 'Response' },
-    responseId2: { type: Schema.Types.ObjectId, ref: 'Response' },
+    pairId: { type: Schema.Types.ObjectId, required: true, ref: 'Pair' },
+    userResponseId: { type: Schema.Types.ObjectId, ref: 'Response' },
+    partnerResponseId: { type: Schema.Types.ObjectId, ref: 'Response' },
 }, {
     timestamps: true,
     toObject: { virtuals: true },

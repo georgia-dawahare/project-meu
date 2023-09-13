@@ -7,7 +7,7 @@ import responseRoutes from './routers/ResponseRouter';
 import eventRoutes from './routers/EventRouter';
 import userRoutes from './routers/UserRouter';
 import pairRoutes from './routers/PairRouter';
-import questionsRoutes from './routers/QuestionsRouter';
+import questionRoutes from './routers/QuestionRouter';
 
 
 // initialize
@@ -38,7 +38,7 @@ app.use('/response_groups', responseGroupRoutes);
 app.use('/events', eventRoutes);
 app.use('/pairs', pairRoutes);
 app.use('/users', userRoutes);
-app.use('/questions', questionsRoutes);
+app.use('/questions', questionRoutes);
 
 
 // default index route
