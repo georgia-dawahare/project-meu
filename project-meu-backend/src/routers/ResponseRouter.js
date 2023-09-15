@@ -18,9 +18,9 @@ const handleCreateResponse = async (req, res) => {
 
 // Update response
 const handleUpdateResponse = async (req, res) => {
-    const responseGroupId = req.params.id;
+    const responseId = req.params.id;
     try {
-        const updatedResponse = await Responses.updateResponse(responseGroupId, req.body);
+        const updatedResponse = await Responses.updateResponse(responseId, req.body);
         res.json(updatedResponse);
     } catch (error) {
         res.status(500).json({ error });
@@ -94,5 +94,5 @@ router.route('/partnerId/:id')
 
 router.route('/anotherResponse/:id')
     .get(handleGetResponse2);
-    
+
 export default router;

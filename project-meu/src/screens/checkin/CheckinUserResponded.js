@@ -362,10 +362,13 @@
 // export default CheckinUserResponeded;
 
 import React from 'react';
+import {
+  Text,
+} from 'react-native';
 
 function CheckinUserResponded() {
   return (
-    <div>CheckinUserResponded</div>
+    <Text>CheckinUserResponded</Text>
   );
 }
 

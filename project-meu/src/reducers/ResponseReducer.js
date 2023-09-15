@@ -21,6 +21,8 @@ const ResponseReducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case ActionTypes.FETCH_USER_RESPONSE:
       return { ...state, userResponse: action.payload };
+    case ActionTypes.UPDATE_USER_RESPONSE:
+      return { ...state, userResponse: { ...state.userResponse, ...action.payload } };
     case ActionTypes.FETCH_RESPONSES:
       return { ...state, allResponses: action.payload };
     case ActionTypes.FETCH_PARTNER_RESPONSE:

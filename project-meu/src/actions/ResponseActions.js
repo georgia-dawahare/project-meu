@@ -8,14 +8,16 @@ export const ActionTypes = {
   FETCH_USER_RESPONSE: 'FETCH_USER_RESPONSE',
   FETCH_PARTNER_RESPONSE: 'FETCH_PARTNER_RESPONSE',
   FETCH_ANOTHER_RESPONSE: 'FETCH_ANOTHER_RESPONSE',
+  UPDATE_USER_RESPONSE: 'UPDATE_USER_RESPONSE',
 };
 
 // Create responses
 export function createResponse(uid, responseData) {
   // axios post
-  return () => {
+  return (dispatch) => {
     axios.post(`${apiUrl}/responses/${uid}`, responseData)
-      .then(() => {
+      .then((response) => {
+        dispatch({ type: ActionTypes.FETCH_USER_RESPONSE, payload: response.data });
         console.log('Successfully created response');
       }).catch((error) => {
         // Need to add error actions
@@ -27,11 +29,10 @@ export function createResponse(uid, responseData) {
 // Update response
 export function updateResponse(responseGroupId, updatedFields) {
   // axios patch
-  return () => {
-    console.log('updateResponse Actions ResponseGroupId', responseGroupId);
-    console.log('updateResponse Action updateFields : ', updatedFields);
+  return (dispatch) => {
     axios.patch(`${apiUrl}/responses/${responseGroupId}`, updatedFields)
-      .then(() => {
+      .then((response) => {
+        dispatch({ type: ActionTypes.UPDATE_USER_RESPONSE, payload: response.data });
         console.log('Successfully updated response');
       }).catch((error) => {
         // Need to add error actions
@@ -71,7 +72,7 @@ export function fetchPartnerResponse(partnerResponseId) {
   return (dispatch) => {
     axios.get(`${apiUrl}/responses/${partnerResponseId}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.FETCH_Partner_RESPONSE, payload: response.data });
+        dispatch({ type: ActionTypes.FETCH_PARTNER_RESPONSE, payload: response.data });
       }).catch((error) => {
         console.log('error fetching user: ', error);
       });

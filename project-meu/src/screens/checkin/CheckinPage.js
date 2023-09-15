@@ -36,10 +36,12 @@ function CheckinPage({ navigation }) {
   const { pairId } = user;
 
   useEffect(() => {
+    if (pairId) {
     // Check if user response or partner response exists
     // if no responses, then try to create daily response group
-    dispatch(createDailyResponseGroup(pairId));
-  }, []);
+      dispatch(createDailyResponseGroup(pairId));
+    }
+  }, [pairId]);
 
   useEffect(() => {
     // Fetch user response group
