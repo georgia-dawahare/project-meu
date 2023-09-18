@@ -1,25 +1,29 @@
 // Import required AWS SDK clients and commands for Node.js.
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../../libs/s3Client.js";
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+
 import * as fs from 'fs';
 
-const uploadImage = async (imageUrl) => {
-    // const fileContent = fs.readFileSync(imageUrl);
-    // const res = await fetch(imageUrl);
-    // const blob = await res.buffer()
+// TODO: put all credentials in env file
+const imagePath = "file:///Users/georgiadawahare/Library/Developer/CoreSimulator/Devices/DB86EC31-E723-475D-92A5-6501D27A1506/data/Containers/Data/Application/094A2203-837B-4B67-B302-016D8915A81F/Library/Caches/ExponentExperienceData/%2540projectmeu%252Fproject-meu/ImagePicker/42AF784E-07C5-48B1-AAD3-ED4CD7DC1B15.jpg"
 
-    // const fileStream = fs.createReadStream(imageUrl);
-    const testContent = 'test'
+const uploadImage = async (userId, imageUrl) => {
+    const fileName = `${userId}_${Date.now()}_${imageUrl}`;
 
     // Set the parameters
     const params = {
         Bucket: "meu-photo-bucket", // The name of the bucket. For example, 'sample-bucket-101'.
-        Key: imageUrl, // The name of the object. For example, 'sample_upload.txt'.
-        Body: testContent, // The content of the object. For example, 'Hello world!".
+        Key: fileName, // The name of the object. For example, 'sample_upload.txt'.
+        Body: imageUrl, // The content of the object. For example, 'Hello world!".
+        ContentType: 'application/octet-stream'
     };
+
+
     // Create an object and upload it to the Amazon S3 bucket.
     try {
         const results = await s3Client.send(new PutObjectCommand(params));
+
         console.log(
             "Successfully created " +
             params.Key +
@@ -28,32 +32,27 @@ const uploadImage = async (imageUrl) => {
             "/" +
             params.Key
         );
-        return results; // For unit tests.
+
+        return fileName; // For unit tests.
     } catch (err) {
         console.log("Error", err);
     }
 };
 
-const downloadImage = async (imageUrl) => {
+const downloadImage = async (fileName) => {
     const command = new GetObjectCommand({
         Bucket: "meu-photo-bucket",
-        Key: imageUrl
+        Key: fileName
     });
 
-    try {
-        const response = await s3Client.send(command);
-        // The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-        // const webStream = response.Body.transformToWebStream();
-        const str = await response.Body.transformToString();
-        console.log(str);
-        // console.log(webStream);
-    } catch (err) {
-        console.error(err);
-    }
+
+    const signedUrl = await getSignedUrl(s3Client, command);
+    console.log(signedUrl);
+    return signedUrl;
 }
 
-// uploadImage("test.txt");
-downloadImage("test.txt");
+const newFile = uploadImage("1", imagePath);
+downloadImage(newFile);
 
 const awsService = {
     downloadImage,
