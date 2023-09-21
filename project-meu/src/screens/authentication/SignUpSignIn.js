@@ -8,7 +8,6 @@ import {
   Image,
 } from 'react-native';
 import * as Font from 'expo-font';
-// import SignUpGraphic from '../../components/SignUpGraphic';
 
 function SignUpSignIn({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -41,7 +40,6 @@ function SignUpSignIn({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <SignUpGraphic /> */}
 
       <View style={styles.contentWrapper}>
         <Image
@@ -80,8 +78,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(230, 43, 133, 1)',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 56,
-    width: 300,
+    height: 60,
+    width: 342,
     borderRadius: 15,
   },
   buttonTxt: {
@@ -101,6 +99,7 @@ const styles = StyleSheet.create({
     color: '#E62B85',
     fontFamily: 'SF-Pro-Display-Semibold',
     fontSize: 16,
+    marginLeft: 2,
   },
   logoSplash: {
     width: 340,

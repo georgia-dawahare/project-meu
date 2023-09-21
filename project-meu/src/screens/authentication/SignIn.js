@@ -15,7 +15,6 @@ import {
 import * as Font from 'expo-font';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import SignUpGraphic from '../../components/SignUpGraphic';
 import Button from '../../components/Button';
 import { fetchFirestoreUser } from '../../actions/UserActions';
 
@@ -86,21 +85,20 @@ function SignIn({ navigation }) {
               source={require('../../../assets/icons/back-arrow.png')}
             />
           </TouchableOpacity>
-          {/* <SignUpGraphic /> */}
 
           {/* Sign In */}
           <View style={styles.signInWrapper}>
             <Text style={styles.SignupTxt}>
-              SIGN UP
+              SIGN IN
             </Text>
             <Text style={styles.SignupSubTxt}>
-              Log in to your account of MeU
+              Log in to your account of MeU!
             </Text>
             <View>
               <TextInput
                 placeholder="Enter your email address"
-                placeholderTextColor="gray"
-                textAlign="center"
+                placeholderTextColor="#A3A3A3"
+                textAlign="left"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
                 style={styles.input}
@@ -111,13 +109,17 @@ function SignIn({ navigation }) {
 
               <TextInput
                 placeholder="Enter your password"
-                placeholderTextColor="gray"
-                textAlign="center"
+                placeholderTextColor="#A3A3A3"
+                textAlign="left"
                 value={password}
                 onChangeText={(text) => setPassword(text)}
                 style={styles.input}
                 secureTextEntry
               />
+
+              <TouchableOpacity>
+                <Text style={styles.forgotPwText}>Forgot Password?</Text>
+              </TouchableOpacity>
 
               {/* Render the error message if passwordError is not empty */}
               {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
@@ -125,9 +127,9 @@ function SignIn({ navigation }) {
 
             {/* Sign In Button */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity>
+              {/* <TouchableOpacity>
                 <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity onPress={handleSignIn} style={styles.button}>
                 <Button title="Sign In" />
               </TouchableOpacity>
@@ -150,29 +152,28 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     alignSelf: 'flex-end',
-    left: 27,
+    left: 24,
     top: 80,
   },
   signInWrapper: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     marginTop: 240,
+    marginRight: 24,
+    marginLeft: 24,
   },
   SignupTxt: {
     fontFamily: 'SF-Pro-Display-Bold',
-    textAlign: 'left',
-    alignSelf: 'left',
-    marginLeft: 27,
+    alignSelf: 'flex-start',
     color: '#E62B85',
     fontSize: 32,
     letterSpacing: 1,
-    marginTop: -60,
+    marginTop: -70,
+
   },
   SignupSubTxt: {
     fontFamily: 'SF-Pro-Display-Medium',
-    textAlign: 'left',
-    alignSelf: 'left',
-    marginLeft: 27,
+    alignSelf: 'flex-start',
     marginTop: 18,
     marginBottom: 80,
     color: '#212121',
@@ -180,15 +181,17 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   input: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontFamily: 'SF-Pro-Display-Regular',
-    borderBottomColor: '#4F4F4F',
-    width: 300,
+    borderColor: '#EEEEEE',
+    width: 342,
     height: 56,
-    marginTop: 17,
+    marginTop: 20,
     fontSize: 16,
-    lineHeight: 24,
-    borderBottomWidth: 1,
+    lineHeight: 20,
+    paddingLeft: 12,
+    borderWidth: 1,
+    borderRadius: 15,
   },
   errorText: {
     color: '#E62B85',
@@ -199,14 +202,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 12,
+    alignSelf: 'center',
   },
   button: {
     marginTop: 60,
+
   },
-  buttonOutLineText: {
+  forgotPwText: {
     color: '#E62B85',
-    fontFamily: 'SF-Pro-Display-Regular',
-    fontSize: 16,
+    fontFamily: 'SF-Pro-Display-Medium',
+    fontSize: 14,
+    marginTop: 24,
+    marginLeft: 'auto', // 'auto'를 사용하여 오른쪽으로 정렬
   },
 });
 
