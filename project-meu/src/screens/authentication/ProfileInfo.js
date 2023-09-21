@@ -73,7 +73,7 @@ function ProfileInfo({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.backWrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.gobackIcon}>
           <Image
             source={require('../../../assets/icons/back-arrow.png')}
           />
@@ -81,11 +81,6 @@ function ProfileInfo({ navigation }) {
       </View>
 
       <View style={styles.mainContent}>
-        <Image
-          source={require('../../../assets/images/progress-2.png')}
-          style={styles.progress}
-        />
-
         <View>
           <Text style={styles.instructionTxt}>
             Successfully connected!
@@ -93,15 +88,9 @@ function ProfileInfo({ navigation }) {
             Please fill out your profile
           </Text>
         </View>
-
         <View>
           <TextInput style={styles.textInput} placeholder="First Name" onChangeText={(text) => setFirstName(text)} />
-          <View style={styles.line} />
-        </View>
-
-        <View>
           <TextInput style={styles.textInput} placeholder="Last Name" onChangeText={(text) => setLastName(text)} />
-          <View style={styles.line} />
         </View>
         <View style={styles.dataWrapper}>
           <Text style={styles.dateTxt}>
@@ -145,27 +134,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    marginLeft: 24,
+    marginRight: 24,
   },
-
   backWrapper: {
-    margin: 25,
+    marginTop: 30,
+    alignItems: 'flex-start',
   },
-
+  gobackIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-start',
+  },
   mainContent: {
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
-  line: {
-    width: 300,
-    height: 1,
-    backgroundColor: '#4f4f4f',
-    alignSelf: 'center',
-  },
   textInput: {
+    textAlign: 'left',
     fontFamily: 'SF-Pro-Display-Regular',
-    textAlign: 'center',
-    margin: 10,
+    borderColor: '#E2E2E2',
+    width: 342,
+    height: 56,
+    marginTop: 20,
+    fontSize: 14,
+    lineHeight: 18,
+    paddingLeft: 12,
+    borderWidth: 1,
+    borderRadius: 15,
   },
   dateTxt: {
     justifyContent: 'center',
@@ -174,23 +170,24 @@ const styles = StyleSheet.create({
   dataWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 300,
+    width: 342,
   },
-
   instructionTxt: {
     alignSelf: 'center',
     textAlign: 'center',
-    fontFamily: 'SF-Pro-Display-Medium',
-    fontSize: 18,
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontColor: '#212121',
+    fontSize: 20,
     lineHeight: 27,
+    marginTop: 60,
   },
   subtitle: {
     fontFamily: 'SF-Pro-Display-Medium',
-    color: 'rgba(106,108,115,1)',
+    color: '#969696',
     alignSelf: 'center',
     textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 21,
+    fontSize: 12,
+    lineHeight: 18,
     width: 225,
   },
   dateTimePicker: {
@@ -205,8 +202,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    height: 56,
-    width: 300,
+    height: 60,
+    width: 342,
     borderRadius: 15,
     margin: 20,
   },

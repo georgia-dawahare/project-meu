@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   input: {
     textAlign: 'left',
     fontFamily: 'SF-Pro-Display-Regular',
-    borderColor: '#EEEEEE',
+    borderColor: '#E2E2E2',
     width: 342,
     height: 56,
     marginTop: 20,

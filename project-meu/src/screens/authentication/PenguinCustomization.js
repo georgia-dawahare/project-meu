@@ -135,7 +135,6 @@ function PenguinCustomization({ navigation }) {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.gobackIcon}>
           <Image
             source={require('../../../assets/icons/back-arrow.png')}
-            style={styles.icon}
           />
         </TouchableOpacity>
       </View>
@@ -144,9 +143,7 @@ function PenguinCustomization({ navigation }) {
         <View style={styles.clearContainer}>
           <Text style={styles.buttonTxt} />
         </View>
-
         <Text style={styles.Text}>Customize your Penguin</Text>
-
         <View style={styles.imageContainer}>
           {renderGif()}
         </View>
@@ -193,14 +190,14 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignItems: 'flex-start',
   },
+  gobackIcon: {
+    position: 'absolute',
+    alignSelf: 'flex-start',
+  },
   mainContent: {
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
-  },
-  gobackIcon: {
-    position: 'absolute',
-    alignSelf: 'flex-start',
   },
   Text: {
     alignSelf: 'center',
