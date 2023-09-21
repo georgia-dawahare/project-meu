@@ -11,7 +11,8 @@ function SignUpGraphic() {
   useEffect(() => {
     async function loadFont() {
       await Font.loadAsync({
-        'SF-Pro-Display-Bold': require('../../assets/fonts/SF-Pro-Display-Bold.otf'),
+        'SF-Pro-Display-Regular': require('../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Semibold': require('../../assets/fonts/SF-Pro-Display-Semibold.otf'),
       });
 
       setFontLoaded(true);
@@ -26,7 +27,7 @@ function SignUpGraphic() {
   return (
     <View>
       <Image
-        source={require('../../assets/signup-vector.png')}
+        source={require('../../assets/images/signupVector.png')}
         style={styles.signUpVector}
       />
       <Text style={styles.welcomeTxt}>
@@ -47,13 +48,13 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   welcomeTxt: {
-    textAlign: 'left',
-    color: '#ffffff',
+    fontFamily: 'SF-Pro-Display-Semibold',
+    textAlign: 'center',
+    color: '#E62B85',
     fontSize: 28,
     letterSpacing: 1,
     marginLeft: 27,
     marginTop: 100,
-    fontFamily: 'SF-Pro-Display-Bold',
   },
 });
 

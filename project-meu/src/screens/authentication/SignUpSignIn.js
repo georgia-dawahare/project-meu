@@ -5,9 +5,10 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import * as Font from 'expo-font';
-import SignUpGraphic from '../../components/SignUpGraphic';
+// import SignUpGraphic from '../../components/SignUpGraphic';
 
 function SignUpSignIn({ navigation }) {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -16,6 +17,7 @@ function SignUpSignIn({ navigation }) {
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Regular': require('../../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
         'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
       });
 
@@ -39,15 +41,20 @@ function SignUpSignIn({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <SignUpGraphic />
+      {/* <SignUpGraphic /> */}
+
       <View style={styles.contentWrapper}>
+        <Image
+          source={require('../../../assets/images/logo.png')}
+          style={styles.logoSplash}
+        />
         <TouchableOpacity onPress={handleSignUp} style={styles.button}>
           <Text style={styles.buttonTxt}>Sign Up</Text>
         </TouchableOpacity>
         <View style={styles.signInPress}>
           <Text style={styles.buttonOutLineText}>
             Already have an ID?
-            <TouchableOpacity>
+            <TouchableOpacity style={styles.signinTextContainer}>
               <Text style={styles.signInText} onPress={handleSignIn}>  Sign In</Text>
             </TouchableOpacity>
           </Text>
@@ -88,11 +95,20 @@ const styles = StyleSheet.create({
   buttonOutLineText: {
     fontFamily: 'SF-Pro-Display-Regular',
     fontSize: 16,
+    marginTop: 4,
   },
   signInText: {
     color: '#E62B85',
     fontFamily: 'SF-Pro-Display-Semibold',
     fontSize: 16,
+  },
+  logoSplash: {
+    width: 340,
+    height: 300,
+    marginTop: 200,
+  },
+  signinTextContainer: {
+    marginTop: -2,
   },
 });
 
