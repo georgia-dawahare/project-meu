@@ -7,7 +7,7 @@
     "icon": "./assets/images/logo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/logo.png",
+      "image": "./assets/images/logo-thicker.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
       "permissions": ["CAMERA_ROLL", "CAMERA"]

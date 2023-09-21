@@ -38,17 +38,19 @@ function OnboardingPage({ navigation }) {
             style={styles.graphicsImg}
           />
         </View>
-        <Text style={styles.title}>
-          Whenever You Are,
-          {'\n'}
-          MeU Connects You
-        </Text>
-        <Text style={styles.subtitle}>
-          MeU connects long-distance couples with
-          {'\n'}
-          various interactions.
-        </Text>
-        <View>
+        <View style={styles.textContainer}>
+          <Text style={styles.title}>
+            Whenever You Are,
+            {'\n'}
+            MeU Connects You
+          </Text>
+          <Text style={styles.subtitle}>
+            MeU connects long-distance couples
+            {'\n'}
+            with various interactions!
+          </Text>
+        </View>
+        <View style={styles.button}>
           <TouchableOpacity onPress={() => { navigation.navigate('SignUpSignIn'); }}>
             <Button title="Let's MeU" />
           </TouchableOpacity>
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentWrapper: {
-    marginTop: 100,
+    marginTop: 80,
   },
   graphicsImg: {
     width: 150,
@@ -89,6 +91,13 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'center',
     marginBottom: 30,
+    marginTop: 4,
+  },
+  textContainer: {
+    marginTop: 10,
+  },
+  button: {
+    marginTop: 24,
   },
 });
 

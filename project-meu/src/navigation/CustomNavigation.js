@@ -2,23 +2,12 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeCalendar from '../screens/home/HomeCalendar';
 import PenguinsPage from '../screens/penguins/PenguinsPage';
-<<<<<<< HEAD
-import CheckinPage from '../screens/checkin/CheckinPage';
-import CheckinHistory from '../screens/checkin/CheckinHistory';
-import CheckinSubmit from '../screens/checkin/CheckinSubmit';
-import PartnerCheckinSubmit from '../screens/checkin/PartnerCheckinSubmit';
-import CheckinEdit from '../screens/checkin/CheckinEdit';
-import CheckinUserResponeded from '../screens/checkin/CheckinUserResponded';
-import CheckinPartnerResponded from '../screens/checkin/CheckinPartnerResponded';
-import CheckinBothResponded from '../screens/checkin/CheckinBothResponded';
-=======
 // import CheckinPage from '../screens/checkin/CheckinPage';
 // import CheckinHistory from '../screens/checkin/CheckinHistory';
 // import CheckinSubmit from '../screens/checkin/CheckinSubmit';
 // import CheckinUserResponeded from '../screens/checkin/CheckinUserResponded';
 // import CheckinPartnerResponeded from '../screens/checkin/CheckinPartnerResponded';
 // import CheckinBothResponeded from '../screens/checkin/CheckinBothResponded';
->>>>>>> a7f4d51d92825be9a6dab0dca18859703cfc623d
 import SettingPage from '../screens/settings/SettingPage';
 import VersionPage from '../screens/settings/VersionPage';
 // import SettingPersonalInfoPage from '../screens/settings/SettingPersonalInfoPage';
@@ -69,46 +58,6 @@ function HomeScreenNavigator() {
 
 export { HomeScreenNavigator };
 
-<<<<<<< HEAD
-function CheckinScreenNavigator() {
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="Checkin"
-        component={CheckinPage}
-      />
-      <Stack.Screen
-        name="CheckinSubmit"
-        component={CheckinSubmit}
-      />
-      <Stack.Screen
-        name="PartnerCheckinSubmit"
-        component={PartnerCheckinSubmit}
-      />
-      <Stack.Screen
-        name="CheckinEdit"
-        component={CheckinEdit}
-      />
-      <Stack.Screen
-        name="CheckinUserResponded"
-        component={CheckinUserResponeded}
-      />
-      <Stack.Screen
-        name="CheckinPartnerResponded"
-        component={CheckinPartnerResponded}
-      />
-      <Stack.Screen
-        name="CheckinBothResponded"
-        component={CheckinBothResponded}
-      />
-      <Stack.Screen
-        name="CheckinHistory"
-        component={CheckinHistory}
-      />
-    </Stack.Navigator>
-  );
-}
-=======
 // function CheckinScreenNavigator() {
 //   return (
 //     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -139,7 +88,6 @@ function CheckinScreenNavigator() {
 //     </Stack.Navigator>
 //   );
 // }
->>>>>>> a7f4d51d92825be9a6dab0dca18859703cfc623d
 
 // export { CheckinScreenNavigator };
 
