@@ -132,7 +132,7 @@ function PenguinCustomization({ navigation }) {
     <SafeAreaView style={styles.container}>
 
       <View style={styles.backWrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.gobackIcon}>
           <Image
             source={require('../../../assets/icons/back-arrow.png')}
             style={styles.icon}
@@ -141,11 +141,6 @@ function PenguinCustomization({ navigation }) {
       </View>
 
       <View style={styles.mainContent}>
-        {/* <Image
-          source={require('../../../assets/images/progress-3.png')}
-          style={styles.progress}
-        /> */}
-
         <View style={styles.clearContainer}>
           <Text style={styles.buttonTxt} />
         </View>
@@ -153,9 +148,7 @@ function PenguinCustomization({ navigation }) {
         <Text style={styles.Text}>Customize your Penguin</Text>
 
         <View style={styles.imageContainer}>
-          <View style={styles.overlayImage}>
-            {renderGif()}
-          </View>
+          {renderGif()}
         </View>
 
         <View style={styles.carouselContainer}>
@@ -192,29 +185,22 @@ function PenguinCustomization({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'space-between',
     marginLeft: 24,
     marginRight: 24,
   },
-  // backWrapper: {
-  //   margin: 24,
-  // },
+  backWrapper: {
+    marginLeft: 24,
+    marginTop: 30,
+    alignItems: 'flex-start',
+  },
   mainContent: {
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
-  // Icon: {
-  //   position: 'absolute',
-  //   top: 32,
-  //   left: 24,
-  //   height: 24,
-  //   zIndex: 2,
-  // },
-  icon: {
+  gobackIcon: {
     position: 'absolute',
     alignSelf: 'flex-start',
-    top: 30,
   },
   Text: {
     alignSelf: 'center',
@@ -223,7 +209,7 @@ const styles = StyleSheet.create({
     fontColor: '#212121',
     fontSize: 20,
     lineHeight: 27,
-    marginTop: 32,
+    marginTop: 60,
   },
   imageContainer: {
     flex: 2,
@@ -233,12 +219,14 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
+    marginTop: -60,
     aspectRatio: 332 / 255, // Set the aspect ratio of the image
     alignSelf: 'center',
     maxWidth: '100%', // Set a maximum width to prevent it from exceeding the screen width
   },
   carouselContainer: {
     flex: 1,
+    marginTop: -36,
   },
   icon: {
     alignItems: 'center',
@@ -252,18 +240,19 @@ const styles = StyleSheet.create({
     marginLeft: -22,
   },
   unselectedIcon: {
-    transform: [{ scale: 0.25 }],
+    transform: [{ scale: 0.3 }],
     alignItems: 'center',
     justifyContent: 'center',
   },
   circle: {
     position: 'absolute',
-    width: 75,
-    height: 75,
+    width: 74,
+    height: 74,
     borderColor: 'rgb(230, 43, 133)', // 'transparent'
-    borderRadius: 93, // 93 on SE
-    borderWidth: 7, // 7 on SE
-    transform: [{ translateX: 2 }, { translateY: 25 }],
+    borderRadius: 100,
+    borderWidth: 6, // 7 on SE
+    opacity: 0.4,
+    transform: [{ translateX: 1 }, { translateY: 25 }],
     backgroundColor: 'transparent',
     alignSelf: 'center',
   },
@@ -294,10 +283,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    height: 56,
-    width: 300,
+    height: 60,
+    width: 342,
     borderRadius: 15,
     margin: 20,
+    marginBottom: 48,
   },
   buttonContainer: {},
   clearContainer: {
