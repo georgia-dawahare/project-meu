@@ -32,6 +32,10 @@ function SignIn({ navigation }) {
     async function loadFont() {
       await Font.loadAsync({
         'SF-Pro-Display-Regular': require('../../../assets/fonts/SF-Pro-Display-Regular.otf'),
+        'SF-Pro-Display-Medium': require('../../../assets/fonts/SF-Pro-Display-Medium.otf'),
+        'SF-Pro-Display-Semibold': require('../../../assets/fonts/SF-Pro-Display-Semibold.otf'),
+        'SF-Pro-Display-Bold': require('../../../assets/fonts/SF-Pro-Display-Bold.otf'),
+
       });
 
       setFontLoaded(true);
@@ -79,16 +83,22 @@ function SignIn({ navigation }) {
           <TouchableOpacity onPress={() => { navigation.goBack(); }} style={styles.icon}>
             <Image
             // eslint-disable-next-line global-require
-              source={require('../../../assets/icons/x-white.png')}
+              source={require('../../../assets/icons/back-arrow.png')}
             />
           </TouchableOpacity>
-          <SignUpGraphic />
+          {/* <SignUpGraphic /> */}
 
           {/* Sign In */}
           <View style={styles.signInWrapper}>
+            <Text style={styles.SignupTxt}>
+              SIGN UP
+            </Text>
+            <Text style={styles.SignupSubTxt}>
+              Log in to your account of MeU
+            </Text>
             <View>
               <TextInput
-                placeholder="Email"
+                placeholder="Enter your email address"
                 placeholderTextColor="gray"
                 textAlign="center"
                 value={email}
@@ -100,7 +110,7 @@ function SignIn({ navigation }) {
               {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
               <TextInput
-                placeholder="Password"
+                placeholder="Enter your password"
                 placeholderTextColor="gray"
                 textAlign="center"
                 value={password}
@@ -115,12 +125,13 @@ function SignIn({ navigation }) {
 
             {/* Sign In Button */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={handleSignIn} style={styles.button}>
-                <Button title="Sign In" />
-              </TouchableOpacity>
               <TouchableOpacity>
                 <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={handleSignIn} style={styles.button}>
+                <Button title="Sign In" />
+              </TouchableOpacity>
+
             </View>
           </View>
           <View />
@@ -139,13 +150,34 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     alignSelf: 'flex-end',
-    right: 24,
-    top: 64,
-    zIndex: 2,
+    left: 27,
+    top: 80,
   },
   signInWrapper: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 240,
+  },
+  SignupTxt: {
+    fontFamily: 'SF-Pro-Display-Bold',
+    textAlign: 'left',
+    alignSelf: 'left',
+    marginLeft: 27,
+    color: '#E62B85',
+    fontSize: 32,
+    letterSpacing: 1,
+    marginTop: -60,
+  },
+  SignupSubTxt: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    textAlign: 'left',
+    alignSelf: 'left',
+    marginLeft: 27,
+    marginTop: 18,
+    marginBottom: 80,
+    color: '#212121',
+    fontSize: 16,
+    letterSpacing: 1,
   },
   input: {
     textAlign: 'center',
@@ -166,10 +198,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonContainer: {
-    marginTop: 40,
+    marginTop: 12,
   },
   button: {
-    marginBottom: 90,
+    marginTop: 60,
   },
   buttonOutLineText: {
     color: '#E62B85',
