@@ -88,10 +88,10 @@ function SignIn({ navigation }) {
 
           {/* Sign In */}
           <View style={styles.signInWrapper}>
-            <Text style={styles.SignupTxt}>
+            <Text style={styles.SignInTxt}>
               SIGN IN
             </Text>
-            <Text style={styles.SignupSubTxt}>
+            <Text style={styles.SignInSubTxt}>
               Log in to your account of MeU!
             </Text>
             <View>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginRight: 24,
     marginLeft: 24,
   },
-  SignupTxt: {
+  SignInTxt: {
     fontFamily: 'SF-Pro-Display-Bold',
     alignSelf: 'flex-start',
     color: '#E62B85',
@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
     marginTop: -70,
 
   },
-  SignupSubTxt: {
+  SignInSubTxt: {
     fontFamily: 'SF-Pro-Display-Medium',
     alignSelf: 'flex-start',
     marginTop: 18,
     marginBottom: 80,
     color: '#212121',
-    fontSize: 16,
+    fontSize: 12,
     letterSpacing: 1,
   },
   input: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SF-Pro-Display-Medium',
     fontSize: 14,
     marginTop: 24,
-    marginLeft: 'auto', // 'auto'를 사용하여 오른쪽으로 정렬
+    marginLeft: 'auto',
   },
 });
 

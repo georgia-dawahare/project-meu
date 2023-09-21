@@ -89,18 +89,17 @@ function RegisterEmailPassword({ navigation }) {
             </View>
             <View style={styles.contentWrapper}>
               <View>
-                <Image
-                  source={require('../../../assets/images/progress-1.png')}
-                  style={styles.progress}
-                />
-                <View style={styles.textWrapper}>
-                  <Text style={styles.text}>Nice to meet you! Please register to join MeU.</Text>
-                </View>
+                <Text style={styles.SignupTxt}>
+                  SIGN UP
+                </Text>
+                <Text style={styles.SignupSubTxt}>
+                  Nice to meet you! Please register to join MeU!
+                </Text>
               </View>
               <View style={styles.inputWrapper}>
                 <TextInput
                   placeholder="Email"
-                  placeholderTextColor="gray"
+                  placeholderTextColor="A3A3A3"
                   textAlign="center"
                   value={email}
                   onChangeText={(text) => setEmail(text)}
@@ -108,15 +107,16 @@ function RegisterEmailPassword({ navigation }) {
                 />
                 <TextInput
                   placeholder="Password"
-                  placeholderTextColor="gray"
+                  placeholderTextColor="A3A3A3"
                   textAlign="center"
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   style={styles.input}
                   secureTextEntry
                 />
-                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                {/* {error ? <Text style={styles.errorText}>{error}</Text> : null} */}
               </View>
+              {error ? <Text style={styles.errorText}>{error}</Text> : null}
               <View style={styles.buttonWrapper}>
                 <TouchableOpacity onPress={handleRegister} style={password && email ? styles.activeButton : styles.inactiveButton}>
                   <Text style={styles.buttonTxt}>Next</Text>
@@ -137,6 +137,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    marginLeft: 24,
+    marginRight: 24,
   },
   contentWrapper: {
     justifyContent: 'space-between',
@@ -145,34 +147,52 @@ const styles = StyleSheet.create({
     marginTop: 140,
   },
   icon: {
-    top: 50,
-    left: 25,
+    position: 'absolute',
+    alignSelf: 'flex-start',
+    top: 30,
   },
-  progress: {
-    width: 70,
-    height: 10,
-    alignSelf: 'center',
+  SignupTxt: {
+    fontFamily: 'SF-Pro-Display-Bold',
+    alignSelf: 'flex-start',
+    color: '#E62B85',
+    fontSize: 32,
+    letterSpacing: 1,
+    marginTop: -20,
+
+  },
+  SignupSubTxt: {
+    fontFamily: 'SF-Pro-Display-Medium',
+    alignSelf: 'flex-start',
+    marginTop: 18,
+    marginBottom: 80,
+    color: '#212121',
+    fontSize: 12,
+    letterSpacing: 1,
   },
   buttonWrapper: {
-    marginTop: 50,
+    marginTop: 100,
   },
   activeButton: {
     backgroundColor: '#E62B85',
-    height: 56,
-    width: 300,
+    height: 60,
+    width: 342,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
+    // marginTop: 80,
+    // marginTop: 100,
   },
   inactiveButton: {
     backgroundColor: '#FFB2D7',
-    height: 56,
-    width: 300,
+    height: 60,
+    width: 342,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
+    // marginTop: 80,
+    // marginTop: 100,
   },
   buttonTxt: {
     color: 'white',
@@ -183,15 +203,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontFamily: 'SF-Pro-Display-Regular',
-    borderBottomColor: '#4F4F4F',
-    width: 300,
+    borderColor: '#EEEEEE',
+    width: 342,
     height: 56,
-    marginTop: 17,
-    fontSize: 16,
-    lineHeight: 24,
-    borderBottomWidth: 1,
+    marginTop: 20,
+    fontSize: 14,
+    lineHeight: 18,
+    paddingLeft: 12,
+    borderWidth: 1,
+    borderRadius: 15,
   },
   text: {
     fontFamily: 'SF-Pro-Display-Semibold',
@@ -202,15 +224,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: 300,
   },
-  textWrapper: {
-    marginTop: 69,
-  },
   errorText: {
     color: '#E62B85',
     fontFamily: 'SF-Pro-Display-Regular',
     lineHeight: 24,
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: 'left',
+    marginTop: 10,
   },
 });
 
