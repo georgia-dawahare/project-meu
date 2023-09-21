@@ -132,18 +132,19 @@ function PenguinCustomization({ navigation }) {
     <SafeAreaView style={styles.container}>
 
       <View style={styles.backWrapper}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.icon}>
           <Image
             source={require('../../../assets/icons/back-arrow.png')}
+            style={styles.icon}
           />
         </TouchableOpacity>
       </View>
 
       <View style={styles.mainContent}>
-        <Image
+        {/* <Image
           source={require('../../../assets/images/progress-3.png')}
           style={styles.progress}
-        />
+        /> */}
 
         <View style={styles.clearContainer}>
           <Text style={styles.buttonTxt} />
@@ -191,29 +192,38 @@ function PenguinCustomization({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    marginLeft: 24,
+    marginRight: 24,
   },
-  backWrapper: {
-    margin: 25,
-  },
+  // backWrapper: {
+  //   margin: 24,
+  // },
   mainContent: {
     flex: 1,
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
-  Icon: {
+  // Icon: {
+  //   position: 'absolute',
+  //   top: 32,
+  //   left: 24,
+  //   height: 24,
+  //   zIndex: 2,
+  // },
+  icon: {
     position: 'absolute',
-    top: 32,
-    left: 24,
-    height: 24,
-    zIndex: 2,
+    alignSelf: 'flex-start',
+    top: 30,
   },
   Text: {
     alignSelf: 'center',
     textAlign: 'center',
-    fontFamily: 'SF-Pro-Display-Medium',
-    fontSize: 18,
+    fontFamily: 'SF-Pro-Display-Semibold',
+    fontColor: '#212121',
+    fontSize: 20,
     lineHeight: 27,
+    marginTop: 32,
   },
   imageContainer: {
     flex: 2,

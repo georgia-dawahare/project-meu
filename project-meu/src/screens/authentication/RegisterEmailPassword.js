@@ -54,7 +54,9 @@ function RegisterEmailPassword({ navigation }) {
     }
     if (userId) {
       dispatch(updatePassword(password));
-      navigation.navigate('CreatePair');
+      // navigation.navigate('CreatePair');
+      // temporary
+      navigation.navigate('PenguinCustomization');
     }
   };
 
@@ -93,13 +95,13 @@ function RegisterEmailPassword({ navigation }) {
                   SIGN UP
                 </Text>
                 <Text style={styles.SignupSubTxt}>
-                  Nice to meet you! Please register to join MeU!
+                  Nice to meet you. Please register to join MeU!
                 </Text>
               </View>
               <View style={styles.inputWrapper}>
                 <TextInput
                   placeholder="Email"
-                  placeholderTextColor="A3A3A3"
+                  placeholderTextColor="#A3A3A3"
                   textAlign="center"
                   value={email}
                   onChangeText={(text) => setEmail(text)}
@@ -107,14 +109,13 @@ function RegisterEmailPassword({ navigation }) {
                 />
                 <TextInput
                   placeholder="Password"
-                  placeholderTextColor="A3A3A3"
+                  placeholderTextColor="#A3A3A3"
                   textAlign="center"
                   value={password}
                   onChangeText={(text) => setPassword(text)}
                   style={styles.input}
                   secureTextEntry
                 />
-                {/* {error ? <Text style={styles.errorText}>{error}</Text> : null} */}
               </View>
               {error ? <Text style={styles.errorText}>{error}</Text> : null}
               <View style={styles.buttonWrapper}>
@@ -180,8 +181,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
-    // marginTop: 80,
-    // marginTop: 100,
   },
   inactiveButton: {
     backgroundColor: '#FFB2D7',
@@ -191,8 +190,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 15,
-    // marginTop: 80,
-    // marginTop: 100,
   },
   buttonTxt: {
     color: 'white',
