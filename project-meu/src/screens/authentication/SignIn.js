@@ -59,7 +59,7 @@ function SignIn({ navigation }) {
           setEmailError('');
         }
         if (errorCode.includes('password')) {
-          setPasswordError('Invalid password');
+          setPasswordError('Incorrect password');
         } else {
           setPasswordError('');
         }
@@ -105,7 +105,7 @@ function SignIn({ navigation }) {
               />
 
               {/* Render error message if emailError is not empty */}
-              {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+              {emailError ? <Text style={styles.errorTextEmail}>{emailError}</Text> : null}
 
               <TextInput
                 placeholder="Enter your password"
@@ -122,14 +122,11 @@ function SignIn({ navigation }) {
               </TouchableOpacity>
 
               {/* Render the error message if passwordError is not empty */}
-              {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+              {passwordError ? <Text style={styles.errorTextPW}>{passwordError}</Text> : null}
             </View>
 
             {/* Sign In Button */}
             <View style={styles.buttonContainer}>
-              {/* <TouchableOpacity>
-                <Text style={styles.buttonOutLineText}>Forgot Password?</Text>
-              </TouchableOpacity> */}
               <TouchableOpacity onPress={handleSignIn} style={styles.button}>
                 <Button title="Sign In" />
               </TouchableOpacity>
@@ -187,25 +184,34 @@ const styles = StyleSheet.create({
     width: 342,
     height: 56,
     marginTop: 20,
-    fontSize: 16,
-    lineHeight: 20,
+    fontSize: 14,
+    lineHeight: 18,
     paddingLeft: 12,
     borderWidth: 1,
     borderRadius: 15,
   },
-  errorText: {
+  errorTextEmail: {
     color: '#E62B85',
     fontFamily: 'SF-Pro-Display-Regular',
-    lineHeight: 21,
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: 'flex-start',
+    marginLeft: 12,
+    marginTop: 4,
+  },
+  errorTextPW: {
+    color: '#E62B85',
+    fontFamily: 'SF-Pro-Display-Regular',
+    fontSize: 12,
+    textAlign: 'flex-start',
+    marginLeft: 12,
+    marginTop: -32,
   },
   buttonContainer: {
     marginTop: 12,
     alignSelf: 'center',
   },
   button: {
-    marginTop: 60,
+    marginTop: 80,
 
   },
   forgotPwText: {
