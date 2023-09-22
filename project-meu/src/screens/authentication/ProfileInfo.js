@@ -106,7 +106,7 @@ function ProfileInfo({ navigation }) {
         </View>
 
         <View style={styles.dataWrapper}>
-          <Text>
+          <Text style={styles.dateTxt}>
             Your Anniversary:
           </Text>
           <DateTimePicker
@@ -165,6 +165,8 @@ const styles = StyleSheet.create({
   },
   dateTxt: {
     justifyContent: 'center',
+    fontFamily: 'SF-Pro-Display-Regular',
+    fontSize: 14,
   },
 
   dataWrapper: {
@@ -191,6 +193,7 @@ const styles = StyleSheet.create({
     width: 225,
   },
   dateTimePicker: {
+    // backgroundColor: '#458923',
   },
   buttonTxt: {
     fontFamily: 'SF-Pro-Display-Semibold',
